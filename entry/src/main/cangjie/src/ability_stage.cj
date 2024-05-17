@@ -1,5 +1,7 @@
-from ohos import base.*
-from ohos import ability.*
+from ohos import ability.Ability
+from ohos import ability.Want
+from ohos import ability.LaunchParam
+from ohos import window.WindowStage
 
 class MyAbilityStage <: AbilityStage {
     public override func onCreate(): Unit {

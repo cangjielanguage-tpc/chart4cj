@@ -4,7 +4,8 @@
 package core.utils
 
 public class MPPointD <: Poolable {
-    private static var pool: ObjectPool<MPPointD> = (ObjectPool.create(64, MPPointD(0.0, 0.0)).setReplenishPercentage(0.5) as ObjectPool<MPPointD>)()
+    private static var pool: ObjectPool<MPPointD> = (ObjectPool.create(64, MPPointD(0.0, 0.0)).setReplenishPercentage(
+        0.5) as ObjectPool<MPPointD>)()
 
     public static func getInstance(x: Float64, y: Float64): MPPointD {
         var result: MPPointD = pool.get()

@@ -1,6 +1,7 @@
-from ohos import base.*
-from ohos import ability.*
-from ohos import window.*
+from ohos import base.AppLog
+from ohos import ability.AbilityStage
+from ohos import ability.LaunchReason
+from cj_res_entry import cj_res_entry.app
 
 class MainAbility <: Ability {
     public init() {
@@ -9,7 +10,11 @@ class MainAbility <: Ability {
     }
 
     public override func onCreate(want: Want, launchParam: LaunchParam): Unit {
-        AppLog.info("MainAbility OnCreated.")
+        AppLog.info("MainAbility OnCreated.${want.abilityName}")
+        match (launchParam.launchReason) {
+            case LaunchReason.START_ABILITY => AppLog.info("START_ABILITY")
+            case _ => ()
+        }
     }
 
     public override func onWindowStageCreate(windowStage: WindowStage): Unit {
@@ -23,4 +28,3 @@ func createAbility(): MainAbility {
 }
 
 let ABILITY_REGISTER_RESULT = Ability.registerCreator("CangjieAbility", createAbility)
-

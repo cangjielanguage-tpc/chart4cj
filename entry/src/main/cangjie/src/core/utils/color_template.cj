@@ -113,13 +113,13 @@ public class ColorTemplate {
     /**
      * an "invalid" color that indicates that no color is set
      */
-    public static let COLOR_NONE: Int64 = 0x00112233
+    public static let COLOR_NONE: UInt32 = 0x00112233
     /**
      * this "color" is used for the Legend creation and indicates that the next
      * form should be skipped
      */
-    public static let COLOR_SKIP: Int64 = 0x00112234
-    public static let DKGRAY: Int64 = 0xFF444444
+    public static let COLOR_SKIP: UInt32 = 0x00112234
+    public static let DKGRAY: UInt32 = 0xFF444444
     /**
      * THE COLOR THEMES ARE PREDEFINED (predefined color integer arrays), FEEL
      * FREE TO CREATE YOUR OWN WITH AS MANY DIFFERENT COLORS AS YOU WANT
@@ -178,8 +178,8 @@ public class ColorTemplate {
      * @param colors an integer array of resource id's of colors
      * @return
      */
-    public static func createColors(colors: Array<Int64>): ArrayList<Int64> {
-        var result: ArrayList<Int64> = ArrayList<Int64>()
+    public static func createColors(colors: Array<UInt32>): ArrayList<UInt32> {
+        var result: ArrayList<UInt32> = ArrayList<UInt32>()
         result.appendAll(colors)
         return result
     }

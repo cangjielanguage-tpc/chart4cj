@@ -4,8 +4,3 @@
 /build
 /.cxx
 /.test
-/entry/libs/.*
-/entry/cj_res/src/AppR.cj
-/cjpm.lock
-/cangjie/src/index.cj.macrocall
-/entry/src/main/cangjie/cjpm.lock

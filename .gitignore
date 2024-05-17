@@ -10,3 +10,13 @@
 /.clang-tidy
 **/.test
 /.appanalyzer
+**/cj_res
+**/*.cj.macrocall
+*.ast
+*.macrocall
+entry/src/main/cangjie/.cache/lsp/
+.vscode
+.idea
+.cjpm-history
+target/
+/oh-package-lock.json5
