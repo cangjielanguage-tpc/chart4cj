@@ -4,7 +4,8 @@
 package core.utils
 
 public class MPPointF <: Poolable {
-    private static var pool: ObjectPool<MPPointF> = (ObjectPool.create(64, MPPointF(0.0, 0.0)).setReplenishPercentage(0.5) as ObjectPool<MPPointF>)()
+    private static var pool: ObjectPool<MPPointF> = (ObjectPool.create(64, MPPointF(0.0, 0.0)).setReplenishPercentage(
+        0.5) as ObjectPool<MPPointF>)()
 
     public var x: Float64 = 0.0
     public var y: Float64 = 0.0
