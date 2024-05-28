@@ -7,18 +7,18 @@ public class ObjectPool<T> where T <: Poolable {
     private static var ids: Int64 = 0
 
     private var poolId: Int64 = 0
-    private var desiredCapacity: Int64
-    private var objects: ArrayList<Any> = ArrayList<Any>()
-    private var objectsPointer: Int64
-    private var modelObject: T
-    private var replenishPercentage: Float64
+    private var desiredCapacity: Int64 = 0
+    private var objects: ?ArrayList<Any> = None
+    private var objectsPointer: Int64 = 0
+    private var modelObject: ?T = None
+    private var replenishPercentage: Float64 = 0.0
 
     public func getPoolId(): Int64 {
         return poolId
     }
 
-    public static func create(withCapacity: Int64, object: Poolable): ObjectPool<Poolable> {
-        var result: ObjectPool<Poolable> = ObjectPool(withCapacity, object)
+    public static func create(withCapacity: Int64, object: Poolable) {
+        var result = ObjectPool<Poolable>(withCapacity, object)
         result.poolId = ids
         ids++
 
@@ -33,7 +33,7 @@ public class ObjectPool<T> where T <: Poolable {
         this.objectsPointer = 0
         this.modelObject = object
         this.replenishPercentage = 1.0
-        this.refillPool()
+        this.refillPool(Option<Float64>.None)
     }
 
     public func setReplenishPercentage(percentage: Float64): Unit {
@@ -50,12 +50,12 @@ public class ObjectPool<T> where T <: Poolable {
         return replenishPercentage
     }
 
-    private func refillPool(): Unit {
-        this.refillPool(this.replenishPercentage)
-    }
-
-    private func refillPool(percentage: Float64): Unit {
-        var portionOfCapacity: Int64 = Int64(Float64(desiredCapacity) * percentage)
+    private func refillPool(percentage: ?Float64): Unit {
+        var p = percentage
+        if(percentage.isNone()) {
+            p = this.replenishPercentage
+        }
+        var portionOfCapacity: Int64 = Int64(Float64(desiredCapacity) * p())
 
         if (portionOfCapacity < 1) {
             portionOfCapacity = 1
@@ -64,17 +64,25 @@ public class ObjectPool<T> where T <: Poolable {
         }
 
         for (i in 0..portionOfCapacity) {
-            this.objects[i] = (modelObject as Poolable)().instantiate()
+            if(this.objects.isSome() && this.modelObject.isSome()) {
+                let poolableObj = this.modelObject().instantiate()
+                if(poolableObj.isSome()) {
+                    this.objects()[i] = poolableObj
+                }
+            }
+
         }
         objectsPointer = portionOfCapacity - 1
     }
 
     public func get(): T {
         if (this.objectsPointer == -1 && this.replenishPercentage > 0.0) {
-            this.refillPool()
+            this.refillPool(Option<Float64>.None)
         }
-
-        var result: Option<T> = objects[this.objectsPointer] as T
+        if (this.objects.isNone()) {
+            this.objects = ArrayList<Any>(this.desiredCapacity);
+        }
+        var result: Option<T> = objects()[this.objectsPointer] as T
         result().currentOwnerId = Poolable.NO_OWNER
         this.objectsPointer--
 
@@ -93,12 +101,12 @@ public class ObjectPool<T> where T <: Poolable {
         }
 
         this.objectsPointer++
-        if (this.objectsPointer >= objects.size) {
+        if (this.objectsPointer >= objects().size) {
             this.resizePool()
         }
 
         object.currentOwnerId = this.poolId
-        objects[this.objectsPointer] = object
+        objects()[this.objectsPointer] = object
     }
 
     public func recycle(objects: ArrayList<T>): Unit {
@@ -120,7 +128,7 @@ public class ObjectPool<T> where T <: Poolable {
                 }
             }
             object.currentOwnerId = this.poolId
-            this.objects[this.objectsPointer + 1 + i] = object
+            this.objects()[this.objectsPointer + 1 + i] = object
         }
         this.objectsPointer += objectsListSize
     }
@@ -130,13 +138,13 @@ public class ObjectPool<T> where T <: Poolable {
         this.desiredCapacity *= 2
         var temp: ArrayList<Any> = ArrayList<Any>()
         for (i in 0..oldCapacity) {
-            temp[i] = this.objects[i]
+            temp[i] = this.objects()[i]
         }
         this.objects = temp
     }
 
     public func getPoolCapacity(): Int64 {
-        return this.objects.size
+        return this.objects().size
     }
 
     public func getPoolCount(): Int64 {
