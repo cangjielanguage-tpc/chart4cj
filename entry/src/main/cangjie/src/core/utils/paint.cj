@@ -391,7 +391,7 @@ public open class Paint {
     }
 }
 
-class TextPaint <: Paint {
+public class TextPaint <: Paint {
     var text: String = ""
 
     public init() {
