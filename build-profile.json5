@@ -30,6 +30,10 @@
           ]
         }
       ]
+    },
+    {
+      "name": "mpchart",
+      "srcPath": "./mpchart"
     }
   ]
 }

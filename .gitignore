@@ -20,3 +20,5 @@ entry/src/main/cangjie/.cache/lsp/
 .cjpm-history
 target/
 /oh-package-lock.json5
+mpchart/src/main/cangjie/cjpm.lock
+mpchart/BuildProfile.ets
