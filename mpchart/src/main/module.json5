@@ -1,0 +1,9 @@
+{
+  "module": {
+    "name": "mpchart",
+    "type": "har",
+    "deviceTypes": [
+      "default"
+    ]
+  }
+}
