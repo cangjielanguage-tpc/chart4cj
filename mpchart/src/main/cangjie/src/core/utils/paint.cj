@@ -4,18 +4,18 @@
 package core.utils
 
 public open class Paint {
-    var styleType: Style = Style.FILL_AND_STROKE
-    var globalAlpha: Float64 = 0.0
+    public var styleType: Style = Style.FILL_AND_STROKE
+    public var globalAlpha: Float64 = 0.0
     var globalCompositeOperation: String = "source-over"
 
     var fillStyle: Color = Color.WHITE
     var fillStyle1: String = "#ffffff"
-    var fillStyle2: CanvasGradient = CanvasGradient(0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    var fillStyle2: CanvasGradient = CanvasRenderingContext2D(RenderingContextSettings(antialias: true)).createLinearGradient(0,0,0,0)
     //var fillStyle3: CanvasPattern
 
     var strokeStyle: Color = Color.BLACK
     var strokeStyle1: String = "#000000"
-    var strokeStyle2: CanvasGradient = CanvasGradient(0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    var strokeStyle2: CanvasGradient = CanvasRenderingContext2D(RenderingContextSettings(antialias: true)).createLinearGradient(0,0,0,0)
     // var strokeStyle3: CanvasPattern
 
     var filter: String = "none"

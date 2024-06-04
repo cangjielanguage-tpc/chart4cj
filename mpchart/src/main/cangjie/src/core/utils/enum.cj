@@ -145,11 +145,17 @@ public enum FillDirection <: Equatable<FillDirection> {
     | LEFT
 
     public operator func ==(b: FillDirection): Bool {
-        this == b
+        match ((this, b)) {
+            case (DOWN, DOWN) => true
+            case (UP, UP) => true
+            case (RIGHT, RIGHT) => true
+            case (LEFT, LEFT) => true
+            case _ => false
+        }
     }
 
     public operator func !=(b: FillDirection): Bool {
-        this != b
+        return !(this == b)
     }
 }
 
@@ -167,34 +173,49 @@ public enum XAxisLabelPosition {
     }
 }
 
-public enum AxisDependency {
+public enum AxisDependency <: Equatable<AxisDependency> {
     | LEFT
     | RIGHT
 
     public operator func ==(b: AxisDependency): Bool {
-        this == b
+        match ((this, b)) {
+            case (LEFT, LEFT) => true
+            case (RIGHT, RIGHT) => true
+            case _ => false
+        }
     }
 
     public operator func !=(b: AxisDependency): Bool {
-        this != b
+        return !(this == b)
+    }
+    public func toString(): String {
+        match (this) {
+            case LEFT => "left"
+            case RIGHT => "right"
+        }
     }
 }
 
-public enum Rounding {
+public enum Rounding <: Equatable<Rounding> {
     | UP
     | DOWN
     | CLOSEST
 
     public operator func ==(b: Rounding): Bool {
-        this == b
+        match ((this, b)) {
+            case (UP, UP) => true
+            case (DOWN, DOWN) => true
+            case (CLOSEST, CLOSEST) => true
+            case _ => false
+        }
     }
 
     public operator func !=(b: Rounding): Bool {
-        this != b
+        return !(this == b)
     }
 }
 
-public enum LegendForm {
+public enum LegendForm <: Equatable<LegendForm> {
     /**
      * Avoid drawing a form
      */
@@ -226,10 +247,18 @@ public enum LegendForm {
     | LINE
 
     public operator func ==(b: LegendForm): Bool {
-        this == b
+        match ((this, b)) {
+            case (NONE, NONE) => true
+            case (EMPTY, EMPTY) => true
+            case (DEFAULT, DEFAULT) => true
+            case (SQUARE, SQUARE) => true
+            case (CIRCLE, CIRCLE) => true
+            case (LINE, LINE) => true
+            case _ => false
+        }
     }
 
     public operator func !=(b: LegendForm): Bool {
-        this != b
+        return !(this == b)
     }
 }
