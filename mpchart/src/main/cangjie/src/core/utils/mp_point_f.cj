@@ -4,8 +4,7 @@
 package core.utils
 
 public class MPPointF <: Poolable {
-    private static var pool: ?ObjectPool<MPPointF> = (ObjectPool.create(64, MPPointF(0.0, 0.0)).setReplenishPercentage(
-        0.5) as ObjectPool<MPPointF>)
+    private static var pool: ObjectPool<MPPointF> = ObjectPool(64, MPPointF(0.0, 0.0)).create()
 
     public var x: Float64 = 0.0
     public var y: Float64 = 0.0
@@ -19,28 +18,28 @@ public class MPPointF <: Poolable {
     }
 
     public static func getInstance(x: Float64, y: Float64): MPPointF {
-        var result: MPPointF = pool().get()
+        var result: MPPointF = pool.get()
         result.x = x
         result.y = y
         return result
     }
 
     public static func getInstance(): MPPointF {
-        return pool().get()
+        return pool.get()
     }
 
     public static func getInstance(copy: MPPointF): MPPointF {
-        var result: MPPointF = pool().get()
+        var result: MPPointF = pool.get()
         result.x = copy.x
         result.y = copy.y
         return result
     }
     public static func recycleInstance(instance: MPPointF) {
-        pool().recycle(instance)
+        pool.recycle(instance)
     }
 
     public static func recycleInstances(instances: ArrayList<MPPointF>) {
-        pool().recycle(instances)
+        pool.recycle(instances)
     }
 
     public func getX(): Float64 {
@@ -51,7 +50,7 @@ public class MPPointF <: Poolable {
         return this.y
     }
 
-    public func instantiate(): ?Poolable {
+    public func instantiate(): Poolable {
         return MPPointF(0.0, 0.0)
     }
 }

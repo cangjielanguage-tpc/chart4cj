@@ -1,28 +1,25 @@
-/**
- * Created on 2024/4/16
- */
+
 package core.utils
 
-public class MPPointD <: Poolable {
-    private static var pool: ?ObjectPool<MPPointD> = (ObjectPool.create(64, MPPointD(0.0, 0.0)).setReplenishPercentage(
-        0.5) as ObjectPool<MPPointD>)
+public class MPPointD <: Poolable{
+    public static var pool: ObjectPool<MPPointD> = ObjectPool(32, MPPointD(0.0, 0.0)).create()
 
     public static func getInstance(x: Float64, y: Float64): MPPointD {
-        var result: MPPointD = pool().get()
+        var result: MPPointD = pool.get()
         result.x = x
         result.y = y
         return result
     }
 
     public static func recycleInstance(instance: MPPointD) {
-        pool().recycle(instance)
+        pool.recycle(instance)
     }
 
     public static func recycleInstances(instances: ArrayList<MPPointD>) {
-        pool().recycle(instances)
+        pool.recycle(instances)
     }
 
-    public func instantiate(): ?Poolable {
+    public func instantiate(): MPPointD {
         return MPPointD(0.0, 0.0)
     }
 
@@ -34,6 +31,7 @@ public class MPPointD <: Poolable {
         this.x = x
         this.y = y
     }
+
 
     /**
      * returns a string representation of the object
