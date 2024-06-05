@@ -56,7 +56,7 @@ public class LegendRenderer <: Renderer {
      *
      * @param data
      */
-    public func computeLegend(data: ?ChartData<IPieDataSet, PieEntry>): Unit {
+    public func computeLegend(data: ?ChartData<IPieDataSet, PiEntry>): Unit {
         if (this.mLegend.isSome() && !this.mLegend().isLegendCustom() && data.isSome()) {
             this.computedEntries.clear()
 
