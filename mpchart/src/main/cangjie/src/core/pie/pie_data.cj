@@ -1,0 +1,102 @@
+/**
+ * Created on 2024/5/8
+ */
+package core.pie
+
+/**
+ * A PieData object can only represent one DataSet. Unlike all other charts, the
+ * legend labels of the PieChart are created from the x-values array, and not
+ * from the DataSet labels. Each PieData object can only represent one
+ * PieDataSet (multiple PieDataSets inside a single PieChart are not possible).
+ */
+public class PieData <: ChartData<IPieDataSet, PiEntry> {
+    public init() {
+        super()
+    }
+
+    public init(dataSet: IPieDataSet) {
+        super([dataSet])
+         this.notifyDataChanged()
+    }
+
+
+    /**
+     * Sets the PieDataSet this data object should represent.
+     *
+     * @param dataSet
+     */
+    public func setDataSet(dataSet: IPieDataSet): Unit {
+        this.mDataSets.clear()
+        this.mDataSets.append(dataSet)
+        this.notifyDataChanged()
+    }
+
+    /**
+     * Returns the DataSet this PieData object represents. A PieData object can
+     * only contain one DataSet.
+     *
+     * @return
+     */
+    public func getDataSet(): IPieDataSet {
+        return this.mDataSets.get(0)()
+    }
+
+    public override func getDataSets(): ArrayList<IPieDataSet> {
+        let dataSets: ArrayList<IPieDataSet> = super.getDataSets()
+
+        if (dataSets.size < 1) {
+            AppLog.info("mpchart,Found multiple data sets while pie chart only allows one")
+        }
+
+        return dataSets
+    }
+
+    /**
+     * The PieData object can only have one DataSet. Use getDataSet() method instead.
+     *
+     * @param index
+     * @return
+     */
+    public override func getDataSetByIndex(index: Int64): ?IPieDataSet {
+        return if (index == 0) {
+            this.getDataSet()
+        } else {
+            None
+        }
+    }
+
+    public override func getDataSetByLabel(label: String, ignorecase: Bool): ?IPieDataSet {
+        return if (ignorecase) {
+            if (Utils.equalsIgnoreCase(label, this.mDataSets.get(0)().getLabel())) {
+                this.mDataSets.get(0)
+            } else {
+                None
+            }
+        } else {
+            if (label == this.mDataSets.get(0)().getLabel()) {
+                this.mDataSets.get(0)
+            } else {
+                None
+            }
+        }
+    }
+
+    public override func getEntryForHighlight(highlight: Highlight): PiEntry {
+        return this.getDataSet().getEntryForIndex(Int64(highlight.getX()))
+    }
+
+    /**
+     * Returns the sum of all values in this PieData object.
+     *
+     * @return
+     */
+    public func getYValueSum(): Float64 {
+        var sum: Float64 = 0.0
+        let index: Int64 = this.getDataSet().getEntryCount()
+        for (i in 0..index) {
+            sum += this.getDataSet().getEntryForIndex(i).getY()
+        }
+
+        return sum
+    }
+}
