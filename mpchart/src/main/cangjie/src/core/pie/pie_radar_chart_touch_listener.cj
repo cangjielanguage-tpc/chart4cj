@@ -159,7 +159,6 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
             this.mTouchStartPoint.y) > Utils.handleDataValues(8.0)) {
             this.mLastGesture = ChartGesture.ROTATE
             this.mTouchMode = 6
-            this.mChart.disableScroll()
         } else if (this.mTouchMode == 6) {
             this.updateGestureRotation(xCoordinate, yCoordinate)
             this.mChart.invalidate()
@@ -191,7 +190,6 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
             this.mTouchStartPoint.y) > Utils.handleDataValues(8.0)) {
             this.mLastGesture = ChartGesture.ROTATE
             this.mTouchMode = 6
-            this.mChart.disableScroll()
         } else if (this.mTouchMode == 6) {
             this.updateGestureRotation(xCoordinate, yCoordinate)
             this.mChart.invalidate()
@@ -225,7 +223,6 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
             }
         }
 
-        this.mChart.enableScroll()
         this.mTouchMode = 0
 
         this.endAction(isTouchEvent, event)
@@ -256,7 +253,6 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
             }
         }
 
-        this.mChart.enableScroll()
         this.mTouchMode = 0
 
         this.endAction(isTouchEvent, event)
