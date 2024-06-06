@@ -141,6 +141,13 @@ public abstract class DataRenderer <: Renderer {
         }
         this.mValuePaint.setColor(color)
         Utils.resetContext2DStyle(c, this.mValuePaint)
+        if(this.mValuePaint.getStyle() != Style.STROKE) {
+            c.beginPath();
+            if (this.mViewPortHandler.isSome()) {
+              c.fillText(formatter.getFormattedValue(value, entry, dataSetIndex, this.mViewPortHandler()), x, y);
+            }
+            c.closePath();
+        }
         match (this.mValuePaint.getStyle()) {
             case Style.STROKE =>
                 c.beginPath()
@@ -157,9 +164,9 @@ public abstract class DataRenderer <: Renderer {
             case Style.FILL => ()
             case Style.FILL_AND_STROKE => ()
         }
-        if (isHorizontalFlip) {
-            c.restore()
-        }
+//        if (isHorizontalFlip) {
+//            c.restore()
+//        }
         // this.mValuePaint.setColor(color);
         // let textPaint = new TextPaint();
         // textPaint.set(this.mValuePaint);

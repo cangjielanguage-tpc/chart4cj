@@ -67,11 +67,11 @@ public open class EntryOhos <: BaseEntry {
         //            return false
         //        }
 
-        if (math.abs(e.x - this.x) > Utils.FLOAT_EPSILON) {
+        if (abs(e.x - this.x) > Utils.FLOAT_EPSILON) {
             return false
         }
 
-        if (math.abs(e.getY() - this.getY()) > Utils.FLOAT_EPSILON) {
+        if (abs(e.getY() - this.getY()) > Utils.FLOAT_EPSILON) {
             return false
         }
 

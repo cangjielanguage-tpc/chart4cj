@@ -36,7 +36,6 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
                 entries.append(m.get(i)().copy());
             }
         }
-
         let copied = PieDataSet(entries, this.getLabel());
         this.copyTo(copied);
         return copied;
@@ -64,7 +63,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
 
         this.mSliceSpace = Utils.handleDataValues(dp)
     }
-
+    
     public func getSliceSpace(): Float64 {
         return this.mSliceSpace;
     }
@@ -98,7 +97,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
     public func setSelectionShift(shift: Float64): Unit {
         this.mShift = Utils.handleDataValues(shift)
     }
-
+    
     public func getSelectionShift(): Float64 {
         return this.mShift;
     }
@@ -110,7 +109,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
     public func setXValuePosition(xValuePosition: ValuePosition): Unit {
         this.mXValuePosition = xValuePosition
     }
-
+    
     public func getYValuePosition(): ValuePosition {
         return this.mYValuePosition;
     }
@@ -130,6 +129,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
         this.mValueLineColor = valueLineColor
     }
 
+    
     public func isUseValueColorForLineEnabled(): Bool {
         return this.mUseValueColorForLine;
     }
@@ -166,7 +166,6 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
     public func getValueLinePart1Length(): Float64 {
         return this.mValueLinePart1Length;
     }
-
     public func setValueLinePart1Length(valueLinePart1Length: Float64): Unit {
         this.mValueLinePart1Length = valueLinePart1Length
     }
@@ -194,6 +193,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
     }
 
     /** Gets the color for the highlighted sector */
+    // @Nullable
     public func getHighlightColor(): UInt32 {
         return this.mHighlightColor();
     }

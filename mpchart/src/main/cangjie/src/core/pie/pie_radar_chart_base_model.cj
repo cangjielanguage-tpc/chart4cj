@@ -16,7 +16,6 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
 
     public init() {
         super()
-        //todo
         //this.mChartTouchListener = PieRadarChartTouchListener((this as PieRadarChartBaseModel<ChartData<IDataSet<EntryOhos>>>))
     }
 
@@ -189,7 +188,7 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
         }
 
         let minOffset: Float64 = Utils.handleDataValues(this.mMinOffset)
-        // todo
+
         //    if (this is RadarChartModel) {
         //      const x: XAxis = this.getXAxis()
         //      if (x.isEnabled() && x.isDrawLabelsEnabled()) {

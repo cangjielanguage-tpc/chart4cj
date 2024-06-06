@@ -1,8 +1,3 @@
-from std import sync.*
-from std import collection.*
-from std import time.Duration
-from mpchart import core.pie.*
-
 @Component
 class PieChart {
     var model: PieChartModel = PieChartModel()

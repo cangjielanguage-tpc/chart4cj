@@ -208,7 +208,7 @@ public class Legend <: ComponentBase {
     public func setCustom(entries: ArrayList<LegendEntry>): Unit {
         this.mEntries = []
         for (i in 0..entries.size) {
-            this.mEntries[i] = entries.get(i)()
+            this.mEntries[i] = entries[i]
         }
         this.mIsLegendCustom = true
     }
