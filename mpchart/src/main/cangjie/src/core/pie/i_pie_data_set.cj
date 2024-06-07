@@ -71,5 +71,6 @@ public interface  IPieDataSet <: IDataSet<PiEntry> {
     /**
      * Gets the color for the highlighted sector
      * */
+    // @Nullable
      func getHighlightColor(): UInt32
 }

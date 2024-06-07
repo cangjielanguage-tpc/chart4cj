@@ -16,6 +16,8 @@ public class TransformerHorizontalBarChart <: Transformer {
     public func prepareMatrixOffset(inverted: Bool): Unit {
         this.mMatrixOffset.reset()
 
+        // offset.postTranslate(mOffsetLeft, getHeight() - mOffsetBottom)
+
         if (!inverted) {
             this.mMatrixOffset.postTranslate(
                 this.mViewPortHandler.offsetLeft(),
@@ -28,5 +30,11 @@ public class TransformerHorizontalBarChart <: Transformer {
             )
             this.mMatrixOffset.postScale(-1.0, 1.0)
         }
+        //mMatrixOffset.set(offset)
+
+        // mMatrixOffset.reset()
+        //
+        // mMatrixOffset.postTranslate(mOffsetLeft, getHeight() -
+        // mOffsetBottom)
     }
 }

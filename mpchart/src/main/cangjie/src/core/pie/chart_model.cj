@@ -110,7 +110,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      * initialize all paints and stuff
      */
     public init() {
-        //this.mAnimator = ChartAnimator(ChartModel())
+
         this.mMaxHighlightDistance = Utils.handleDataValues(500.0)
         this.mDescription = Description()
         this.mLegend = Legend()
@@ -119,7 +119,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
         this.mXAxis = XAxis()
         this.mDescPaint = Paint()
         this.mInfoPaint = Paint()
-        this.mInfoPaint.setColor(Color.RED) // orange
+        this.mInfoPaint.setColor(Color.RED)
         this.mInfoPaint.setTextAlign(TextAlignStyle.Center)
         this.mInfoPaint.setTextSize(Utils.handleDataValues(12.0))
 
@@ -302,6 +302,8 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      * Draws the description text in the bottom right corner of the chart (per default)
      */
     protected func drawDescription(c: CanvasRenderingContext2D): Unit {
+
+
         // check if description should be drawn
         if (this.mDescription.isEnabled()) {
             let position: ?MPPointF = this.mDescription.getPosition()
@@ -632,6 +634,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
             case _ => return
         }
 
+        // let paints: Paint[] = []
 
         // if there is no marker view or drawing marker is disabled
         if (this.mMarker.isNone() || this.isDrawMarkersEnabled() || !this.valuesToHighlight()) {
@@ -658,19 +661,15 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
                                 // callbacks to update the content
                                 // this.mMarker.refreshContent(e, highlight)
                                 this.mMarker().draw(c, pos[0], pos[1], ee, highlight)
-                                // draw the marker
+
                             }
                         }
-//                        else {
-//                            if (this.mAnimator.isNone() || Float64(entryIndex) > Float64(d.getEntryCount()) *
-//                                this.mAnimator().getPhaseX()) {
-//                                continue
-//                            }
-//                        }
+
                     }
                 }
             }
         }
+        // return paints
     }
 
     protected func drawLongPressMarkers(c: CanvasRenderingContext2D): Unit {
@@ -1145,7 +1144,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      *
      * @return
      */
-    public func getDescription(): ?Description {
+    public func getDescription(): Description {
         return this.mDescription
     }
 
@@ -1178,6 +1177,24 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      */
     public func getContentRect(): MyRect {
         return this.mViewPortHandler.getContentRect()
+    }
+
+    /**
+     * disables intercept touchevents
+     */
+    public func disableScroll() {
+        //        ViewParent parent = getParent()
+        //        if (parent != null)
+        //            parent.requestDisallowInterceptTouchEvent(true)
+    }
+
+    /**
+     * enables intercept touchevents
+     */
+    public func enableScroll() {
+        //        ViewParent parent = getParent()
+        //        if (parent != null)
+        //            parent.requestDisallowInterceptTouchEvent(false)
     }
 
     /**
@@ -1339,8 +1356,6 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
     public func getCenterOfView(): MPPointF {
         return this.getCenter()
     }
-
-    //    @Override
     public func onSizeChanged(w: Float64, h: Float64, oldw: Float64, oldh: Float64): Unit {
         if (this.mLogEnabled) {
             AppLog.info(LOG_TAG + "OnSizeChanged()")
@@ -1362,13 +1377,32 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
         // This may cause the chart view to mutate properties affecting the view port --
         //   lets do this before we try to run any pending jobs on the view port itself
         this.notifyDataSetChanged()
+
+        // for (Runnable r : mJobs) {
+        //     post(r)
+        // }
+        //
+        // mJobs.clear()
+
+        // super.onSizeChanged(w, h, oldw, oldh)
     }
+
+    //
+    /**
+     * Setting this to true will set the layer-type HARDWARE for the view, false
+     * will set layer-type SOFTWARE.
+     *
+     * @param enabled
+     */
+    public func setHardwareAccelerationEnabled(enabled: Bool) {
+
+    }
+
 
     /**
      * unbind flag
      */
     private var mUnbind: Bool = false
-
     /**
      * Set this to true to enable "unbinding" of drawables. When a View is detached
      * from a window. This helps avoid memory leaks.

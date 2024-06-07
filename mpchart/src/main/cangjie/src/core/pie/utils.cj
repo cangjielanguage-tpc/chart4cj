@@ -40,8 +40,9 @@ public abstract class Utils {
      */
     public static func calcTextWidth(paint: Paint, demoText: String): Float64 {
         Utils.resetContext2DStyle(Utils.canvasContext2d, paint)
-        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
-        return textMetrics.width
+//        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
+//        return textMetrics.width
+        return 20.0
     }
 
     private static var mCalcTextHeightRect: MyRect = MyRect()
@@ -56,8 +57,9 @@ public abstract class Utils {
      */
     public static func calcTextHeight(paint: Paint, demoText: String): Float64 {
         Utils.resetContext2DStyle(Utils.canvasContext2d, paint)
-        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
-        return textMetrics.height
+//        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
+//        return textMetrics.height
+        return 20.0
     }
 
     public static func getLineHeight(paint: Paint, c: ?CanvasRenderingContext2D): Float64 {
@@ -66,8 +68,9 @@ public abstract class Utils {
             canvasRenderingContext2D = Utils.canvasContext2d
         }
         Utils.resetContext2DStyle(canvasRenderingContext2D(), paint)
-        let textMetrics: TextMetrics = canvasRenderingContext2D().measureText("Test")
-        return textMetrics.height
+//        let textMetrics: TextMetrics = canvasRenderingContext2D().measureText("Test")
+//        return textMetrics.height
+        return 20.0
     }
 
     public static func getLineSpacing(paint: Paint, c: ?CanvasRenderingContext2D): Float64 {
@@ -76,16 +79,17 @@ public abstract class Utils {
             canvasRenderingContext2D = Utils.canvasContext2d
         }
         Utils.resetContext2DStyle(canvasRenderingContext2D(), paint)
-        let textMetrics: TextMetrics = canvasRenderingContext2D().measureText("Test")
-        return textMetrics.height * 0.3
+//        let textMetrics: TextMetrics = canvasRenderingContext2D().measureText("Test")
+//        return textMetrics.height * 0.3
+        return 20.0
     }
 
     public static func calcTextSize(paint: Paint, demoText: String): FSize {
         Utils.resetContext2DStyle(Utils.canvasContext2d, paint)
-        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
-        let width: Float64 = textMetrics.width
-        let height: Float64 = textMetrics.height
-        let fsize: FSize = FSize(width, height)
+//        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
+//        let width: Float64 = textMetrics.width
+//        let height: Float64 = textMetrics.height
+        let fsize: FSize = FSize(20.0, 20.0)
         return fsize
     }
 

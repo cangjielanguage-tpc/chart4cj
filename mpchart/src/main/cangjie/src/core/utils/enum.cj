@@ -1,11 +1,23 @@
 package core.utils
 
-public enum Style {
+public enum Style <: Equatable<Style> {
     | FILL
     | STROKE
     | FILL_AND_STROKE
-}
 
+    public operator func ==(b: Style): Bool {
+        match ((this, b)) {
+            case (FILL, FILL) => true
+            case (STROKE, STROKE) => true
+            case (FILL_AND_STROKE, FILL_AND_STROKE) => true
+            case _ => false
+        }
+    }
+
+    public operator func !=(b: Style): Bool {
+        return !(this == b)
+    }
+}
 public enum TextAlign {
     | CENTER
     | END

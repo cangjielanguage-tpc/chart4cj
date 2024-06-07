@@ -200,7 +200,6 @@ public class Fill {
             }
         }
     }
-    // todo 此处cangjieUI未实现c.fill(Path2D)
     /* public func fillPath(c: CanvasRenderingContext2D, /*path: Path2D, */paint: Paint, clipRect: ?MyRect): Unit {
         match (this.mType) {
             case FillType.EMPTY => return

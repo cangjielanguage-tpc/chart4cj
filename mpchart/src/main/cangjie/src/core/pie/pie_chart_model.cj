@@ -171,19 +171,19 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
             return [];
         }
         // calculate the text position
-        let x: Float64 =
+        let x: Float64 = /*(float)*/
             (r
             * cos(
             MyMath.toRadians((rotationAngle + this.mAbsoluteAngles[entryIndex] - offset)
             * this.mAnimator().getPhaseY())) + center.x);
-        let y: Float64 =
+        let y: Float64 = /* (float)*/
             (r
             * sin(
             MyMath.toRadians((rotationAngle + this.mAbsoluteAngles[entryIndex] - offset)
             * this.mAnimator().getPhaseY())) + center.y);
 
         MPPointF.recycleInstance(center);
-        return [x, y]
+        return [x, y] /*new float[]{x, y}*/
             ;
     }
 
@@ -195,14 +195,14 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
             let entryCount: Int64 = d.getEntryCount();
 
             if (this.mDrawAngles.size != entryCount) {
-                this.mDrawAngles = Array<Float64>(entryCount, item: 0.0)
+                this.mDrawAngles = Array<Float64>(entryCount, item: 0.0) //new float[entryCount];
             } else {
                 for (i in 0..entryCount) {
                     this.mDrawAngles[i] = 0.0
                 }
             }
             if (this.mAbsoluteAngles.size != entryCount) {
-                this.mAbsoluteAngles = Array<Float64>(entryCount, item: 0.0)
+                this.mAbsoluteAngles = Array<Float64>(entryCount, item: 0.0) //new float[entryCount];
             } else {
                 for (i in 0..entryCount) {
                     this.mAbsoluteAngles[i] = 0.0
@@ -215,7 +215,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
 
             let hasMinAngle: Bool = this.mMinAngleForSlices != 0.0 && Float64(entryCount) * this.mMinAngleForSlices <=
                 this.mMaxAngle;
-            let minAngles: Array<Float64> = Array<Float64>(entryCount, item: 0.0)
+            let minAngles: Array<Float64> = Array<Float64>(entryCount, item: 0.0) //new float[entryCount];
 
             var cnt: Int64 = 0;
             var offset: Float64 = 0.0;
@@ -382,7 +382,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @param color
      */
     public func setHoleColor(color: UInt32): Unit {
-        (
+        ( /*(PieChartRenderer)*/
             this.mRenderer as PieChartRenderer)?.getPaintHole().setColor(Color(color))
     }
 
@@ -510,7 +510,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @param sizeDp
      */
     public func setCenterTextSize(sizeDp: Float64): Unit {
-        (
+        ( /*(PieChartRenderer)*/
             this.mRenderer as PieChartRenderer)().getPaintCenterText().setTextSize(Utils.handleDataValues(sizeDp));
     }
 
@@ -520,7 +520,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @param sizePixels
      */
     public func setCenterTextSizePixels(sizePixels: Float64): Unit {
-        (
+        ( /*(PieChartRenderer)*/
             this.mRenderer as PieChartRenderer)().getPaintCenterText().setTextSize(sizePixels);
     }
 
@@ -627,6 +627,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      *
      * @param enabled
      */
+    // @Deprecated
     public func setDrawSliceText(enabled: Bool): Unit {
         this.mDrawEntryLabels = enabled
     }
@@ -792,5 +793,6 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
         if (this.mRenderer.isSome() && this.mRenderer is PieChartRenderer) {
             (this.mRenderer as PieChartRenderer)().releaseBitmap();
         }
+        // super.onDetachedFromWindow();
     }
 }

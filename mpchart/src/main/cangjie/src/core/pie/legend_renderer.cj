@@ -70,17 +70,17 @@ public class LegendRenderer <: Renderer {
                 let clrs: ArrayList<UInt32> = dataSet().getColors()
                 let entryCount: Int64 = dataSet().getEntryCount()
 
-                if (dataSet is PieDataSet) {
-                    let pds = dataSet as IPieDataSet
+                if (dataSet() is PieDataSet) {
+                    let pds: ?IPieDataSet = dataSet() as IPieDataSet
                     for (j in 0..entryCount) {
                         this.computedEntries.append(
                             LegendEntry(
-                                (pds().getEntryForIndex(j) as IPieDataSet)().getLabel(),
+                                pds().getEntryForIndex(j).getLabel(),
                                 dataSet().getForm(),
                                 dataSet().getFormSize(),
                                 dataSet().getFormLineWidth(),
                                 dataSet().getFormLineDashEffect(),
-                                clrs.get(j)()
+                                clrs[j]
                             )
                         )
                     }
