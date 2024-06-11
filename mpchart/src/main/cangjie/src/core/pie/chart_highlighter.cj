@@ -3,7 +3,7 @@
  */
 package core.pie
 
-public class ChartHighlighter<P, S, E> <: IHighlighter where P <: BarLineScatterCandleBubbleDataProvider<S, E>,
+public open class ChartHighlighter<P, S, E> <: IHighlighter where P <: BarLineScatterCandleBubbleDataProvider<S, E>,
     S <: IDataSet<E>, E <: EntryOhos {
     /**
      * instance of the data-provider
@@ -18,8 +18,7 @@ public class ChartHighlighter<P, S, E> <: IHighlighter where P <: BarLineScatter
         this.mChart = chart
     }
 
-    //    @Override
-    public func getHighlight(x: Float64, y: Float64): ?Highlight {
+    public open func getHighlight(x: Float64, y: Float64): ?Highlight {
         let pos: MPPointD = this.getValsForTouch(x, y)
         let xVal: Float64 = pos.x
         MPPointD.recycleInstance(pos)
@@ -238,7 +237,7 @@ public class ChartHighlighter<P, S, E> <: IHighlighter where P <: BarLineScatter
      * @param y2
      * @return
      */
-    protected func getDistance(x1: Float64, y1: Float64, x2: Float64, y2: Float64): Float64 {
+    protected open func getDistance(x1: Float64, y1: Float64, x2: Float64, y2: Float64): Float64 {
         let sun: Float64 = pow(x1 - x2, 2) + pow(y1 - y2, 2)
         return sqrt(sun)
     }

@@ -48,13 +48,13 @@ public abstract class DataRenderer <: Renderer {
         this.mHighlightPaint.setColor("#FFBB73")
     }
 
-    //         protected func isDrawingValuesAllowed(chart: ChartInterface): Bool {
-    //           let chartData = chart.getData()
-    //           if (this.mViewPortHandler.isSome() && chartData.isSome()) {
-    //             return Float64(chartData().getEntryCount()) < Float64(chart.getMaxVisibleCount()) * this.mViewPortHandler().getScaleX()
-    //           }
-    //           return false
-    //         }
+    protected func isDrawingValuesAllowed(chart: ChartInterface<IDataSet<EntryOhos>, EntryOhos>): Bool {
+        let chartData = chart.getData()
+            if (this.mViewPortHandler.isSome() && chartData.isSome()) {
+                return Float64(chartData().getEntryCount()) < Float64(chart.getMaxVisibleCount()) * this.mViewPortHandler().getScaleX()
+            }
+        return false
+    }
 
     /**
      * Returns the Paint object this renderer uses for drawing the values
