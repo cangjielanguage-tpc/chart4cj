@@ -9,15 +9,15 @@ package core.pie
  */
 public abstract class BarLineScatterCandleBubbleData<S, E> <: ChartData<S, E> where S <: IBarLineScatterCandleBubbleDataSet<E>,
     E <: EntryOhos {
-    init() {
+    public init() {
         super()
     }
 
-    init(sets: Array<S>) {
+    public init(sets: Array<S>) {
         super(sets)
     }
 
-    init(sets: ArrayList<S>) {
+    public init(sets: ArrayList<S>) {
         super(sets)
     }
 }
