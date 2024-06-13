@@ -18,14 +18,14 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
         super(chart)
     }
 
-    public func onSingleTapUp(isTouchEvent: Bool, e: TouchEvent) {
+    public func onSingleTapUp(isTouchEvent: Bool, e: Any) {
         this.actionDown(isTouchEvent, e)
         this.mLastGesture = ChartGesture.SINGLE_TAP
 
         let l: ?OnChartGestureListener = this.mChart.getOnChartGestureListener()
 
         if (l.isSome()) {
-            l().onChartSingleTappedTouchEvent(isTouchEvent, e)
+            l().onChartSingleTapped(isTouchEvent, e)
         }
 
         if (!this.mChart.isHighlightPerTapEnabled()) {
@@ -35,37 +35,15 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
         var y: Float64 = 0.0
         if (isTouchEvent) {
             let touch = e as TouchEvent
-            if (touch().touches.size == 0) {
-                return
+            if (touch.isNone() || touch().touches.size == 0) {
+                return;
             }
             x = touch().touches[0].x
             y = touch().touches[0].y
-        }
-        let h: Highlight = this.mChart.getHighlightByTouchPoint(x, y)()
-        this.performHighlight(h, Option<TouchEvent>.None)
-
-        this.actionUp(isTouchEvent, e)
-    }
-
-    public func onSingleTapUp(isTouchEvent: Bool, e: GestureEvent) {
-        this.actionDown(isTouchEvent, e)
-        this.mLastGesture = ChartGesture.SINGLE_TAP
-
-        let l: ?OnChartGestureListener = this.mChart.getOnChartGestureListener()
-
-        if (l.isSome()) {
-            l().onChartSingleTappedGestureEvent(isTouchEvent, e)
-        }
-
-        if (!this.mChart.isHighlightPerTapEnabled()) {
-            return
-        }
-        var x: Float64 = 0.0
-        var y: Float64 = 0.0
-        if (isTouchEvent) {
+        } else {
             let gesture = e as GestureEvent
-            if (gesture().fingerList.size == 0) {
-                return
+            if (gesture.isNone() || gesture().fingerList.size == 0) {
+                return;
             }
             x = gesture().fingerList[0].localX
             y = gesture().fingerList[0].localY
@@ -76,22 +54,29 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
         this.actionUp(isTouchEvent, e)
     }
 
-    public func actionDown(isTouchEvent: Bool, touchEvent: TouchEvent) {
+    public func actionDown(isTouchEvent: Bool, event: Any) {
         if (this.mChart.isRotationEnabled()) {
             return
         }
         var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = touchEvent
-            if (touch.touches.size == 0) {
-                return
+            let touch = event as TouchEvent
+            if (touch.isNone() || touch().touches.size == 0) {
+                return;
             }
-            xCoordinate = touch.touches[0].x
-            yCoordinate = touch.touches[0].y
+            xCoordinate = touch().touches[0].x
+            yCoordinate = touch().touches[0].y
+        } else {
+            let gesture = event as GestureEvent
+            if (gesture.isNone() || gesture().fingerList.size == 0) {
+                return;
+            }
+            xCoordinate = gesture().fingerList[0].localX
+            yCoordinate = gesture().fingerList[0].localY
         }
 
-        this.startAction(isTouchEvent, touchEvent)
+        this.startAction(isTouchEvent, event)
 
         this.stopDeceleration()
 
@@ -106,49 +91,26 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
         this.mTouchStartPoint.y = yCoordinate
     }
 
-    public func actionDown(isTouchEvent: Bool, gestureEvent: GestureEvent) {
-        if (this.mChart.isRotationEnabled()) {
-            return
-        }
-        var xCoordinate: Float64 = 0.0
-        var yCoordinate: Float64 = 0.0
-        if (isTouchEvent) {
-            let gesture = gestureEvent
-            if (gesture.fingerList.size == 0) {
-                return
-            }
-            xCoordinate = gesture.fingerList[0].localX
-            yCoordinate = gesture.fingerList[0].localY
-        }
-
-        this.startAction(isTouchEvent, gestureEvent)
-
-        this.stopDeceleration()
-
-        this.resetVelocity()
-
-        if (this.mChart.isDragDecelerationEnabled()) {
-            this.sampleVelocity(xCoordinate, yCoordinate)
-        }
-
-        this.setGestureStartAngle(xCoordinate, yCoordinate)
-        this.mTouchStartPoint.x = xCoordinate
-        this.mTouchStartPoint.y = yCoordinate
-    }
-
-    public func actionMove(isTouchEvent: Bool, event: TouchEvent) {
+    public func actionMove(isTouchEvent: Bool, event: Any) {
         if (!(this.mChart as PieRadarChartBaseModel<D, S, E>)().isRotationEnabled()) {
             return
         }
         var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = event
-            if (touch.touches.size == 0) {
-                return
+            let touch = event as TouchEvent
+            if (touch.isNone() || touch().touches.size == 0) {
+                return;
             }
-            xCoordinate = touch.touches[0].x
-            yCoordinate = touch.touches[0].y
+            xCoordinate = touch().touches[0].x
+            yCoordinate = touch().touches[0].y
+        } else {
+            let gesture = event as GestureEvent
+            if (gesture.isNone() || gesture().fingerList.size == 0) {
+                return;
+            }
+            xCoordinate = gesture().fingerList[0].localX
+            yCoordinate = gesture().fingerList[0].localY
         }
         if (this.mChart.isDragDecelerationEnabled()) {
             this.sampleVelocity(xCoordinate, yCoordinate)
@@ -168,48 +130,23 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
         this.endAction(isTouchEvent, event)
     }
 
-    public func actionMove(isTouchEvent: Bool, event: GestureEvent) {
-        if (!(this.mChart as PieRadarChartBaseModel<D, S, E>)().isRotationEnabled()) {
-            return
-        }
+    public func actionUp(isTouchEvent: Bool, event: Any) {
         var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
         if (isTouchEvent) {
-            var gesture = event
-            if (gesture.fingerList.size == 0) {
-                return
+            let touch = event as TouchEvent
+            if (touch.isNone() || touch().touches.size == 0) {
+                return;
             }
-            xCoordinate = gesture.fingerList[0].localX
-            yCoordinate = gesture.fingerList[0].localY
-        }
-        if (this.mChart.isDragDecelerationEnabled()) {
-            this.sampleVelocity(xCoordinate, yCoordinate)
-        }
-
-        if (this.mTouchMode == 0 &&
-            PieRadarChartTouchListener<D, S, E>.distance(xCoordinate, this.mTouchStartPoint.x, yCoordinate,
-            this.mTouchStartPoint.y) > Utils.handleDataValues(8.0)) {
-            this.mLastGesture = ChartGesture.ROTATE
-            this.mTouchMode = 6
-            this.mChart.disableScroll()
-        } else if (this.mTouchMode == 6) {
-            this.updateGestureRotation(xCoordinate, yCoordinate)
-            this.mChart.invalidate()
-        }
-
-        this.endAction(isTouchEvent, event)
-    }
-
-    public func actionUp(isTouchEvent: Bool, event: TouchEvent) {
-        var xCoordinate: Float64 = 0.0
-        var yCoordinate: Float64 = 0.0
-        if (isTouchEvent) {
-            let touch = event
-            if (touch.touches.size == 0) {
-                return
+            xCoordinate = touch().touches[0].x
+            yCoordinate = touch().touches[0].y
+        } else {
+            let gesture = event as GestureEvent
+            if (gesture.isNone() || gesture().fingerList.size == 0) {
+                return;
             }
-            xCoordinate = touch.touches[0].x
-            yCoordinate = touch.touches[0].y
+            xCoordinate = gesture().fingerList[0].localX
+            yCoordinate = gesture().fingerList[0].localY
         }
         if (this.mChart.isDragDecelerationEnabled()) {
             this.stopDeceleration()
@@ -231,60 +168,16 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
         this.endAction(isTouchEvent, event)
     }
 
-    public func actionUp(isTouchEvent: Bool, event: GestureEvent) {
-        var xCoordinate: Float64 = 0.0
-        var yCoordinate: Float64 = 0.0
-        if (isTouchEvent) {
-            let gesture = event
-            if (gesture.fingerList.size == 0) {
-                return
-            }
-            xCoordinate = gesture.fingerList[0].localX
-            yCoordinate = gesture.fingerList[0].localY
-        }
-        if (this.mChart.isDragDecelerationEnabled()) {
-            this.stopDeceleration()
-
-            this.sampleVelocity(xCoordinate, yCoordinate)
-
-            this.mDecelerationAngularVelocity = this.calculateVelocity()
-
-            if (this.mDecelerationAngularVelocity != 0.0) {
-                this.mDecelerationLastTime = (DateTime.nowUTC().second * 1000)
-
-                this.mChart.invalidate()
-            }
-        }
-
-        this.mChart.enableScroll()
-        this.mTouchMode = 0
-
-        this.endAction(isTouchEvent, event)
-    }
-
-    public func actionCancel(isTouchEvent: Bool, event: TouchEvent) {
+    public func actionCancel(isTouchEvent: Bool, event: Any) {
         this.mTouchMode = 0
         this.endAction(isTouchEvent, event)
     }
 
-    public func actionCancel(isTouchEvent: Bool, event: GestureEvent) {
-        this.mTouchMode = 0
-        this.endAction(isTouchEvent, event)
-    }
-
-    public func actionPinchDown(isTouchEvent: Bool, event: TouchEvent) {
+    public func actionPinchDown(isTouchEvent: Bool, event: Any) {
         throw UnsupportedException("Method not implemented.")
     }
 
-    public func actionPinchDown(isTouchEvent: Bool, event: GestureEvent) {
-        throw UnsupportedException("Method not implemented.")
-    }
-
-    public func actionPinchUp(isTouchEvent: Bool, event: TouchEvent) {
-        throw UnsupportedException("Method not implemented.")
-    }
-
-    public func actionPinchUp(isTouchEvent: Bool, event: GestureEvent) {
+    public func actionPinchUp(isTouchEvent: Bool, event: Any) {
         throw UnsupportedException("Method not implemented.")
     }
 
@@ -300,8 +193,11 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
         let currentTime: Int64 = DateTime.nowUTC().second
 
         this._velocitySamples.append(
-            AngularVelocitySample(currentTime,
-            (this.mChart as PieRadarChartBaseModel<D, S, E>)().getAngleForPoint(touchLocationX, touchLocationY)))
+            AngularVelocitySample(
+                currentTime,
+                (this.mChart as PieRadarChartBaseModel<D, S, E>)().getAngleForPoint(touchLocationX, touchLocationY)
+            )
+        )
 
         var count = this._velocitySamples.size
         // Remove samples older than our sample time - 1 seconds
@@ -323,7 +219,7 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
     }
 
     public func updateGestureRotation(x: Float64, y: Float64): Unit {
-        this.mChart.setRotationAngle(this.mChart .getAngleForPoint(x, y) - this.mStartAngle)
+        this.mChart.setRotationAngle(this.mChart.getAngleForPoint(x, y) - this.mStartAngle)
     }
 
     public func computeScroll(): Unit {
@@ -337,8 +233,8 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
 
         let timeInterval = (currentTime - this.mDecelerationLastTime) / 1000
 
-        this.mChart.setRotationAngle(this.mChart.getRotationAngle() + this.mDecelerationAngularVelocity *
-            Float64(timeInterval))
+        this.mChart.setRotationAngle(
+            this.mChart.getRotationAngle() + this.mDecelerationAngularVelocity * Float64(timeInterval))
 
         this.mDecelerationLastTime = currentTime
 
@@ -395,10 +291,19 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
 
         return velocity
     }
-    public func onDoubleTap(isTouchEvent: Bool, event: TouchEvent): Unit {
+    public func onDoubleTap(isTouchEvent: Bool, event: Any): Unit {
         throw Exception("Method not implemented.")
     }
-    public func onDoubleTap(isTouchEvent: Bool, event: GestureEvent): Unit {
+
+    public func onLongPressed(isTouchEvent: Bool, event: Any) {
+        throw Exception("Method not implemented.")
+    }
+
+    public func onLongPressUp(isTouchEvent: Bool, event: Any) {
+        throw Exception("Method not implemented.")
+    }
+
+    public func onLongPressCancel(isTouchEvent: Bool, event: Any) {
         throw Exception("Method not implemented.")
     }
 }

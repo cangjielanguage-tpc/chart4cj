@@ -225,7 +225,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      * every time data is changed dynamically. Not calling this method can lead
      * to crashes or unexpected behaviour.
      */
-    public func notifyDataSetChanged(): Unit
+    public open func notifyDataSetChanged(): Unit
 
     /**
      * Calculates the offsets of the chart to the border depending on the
@@ -487,9 +487,9 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
 
     public func highlightValue(x: Float64, y: Float64, dataSetIndex: Int64, dataIndex: Int64, callListener: Bool) {
         if (dataSetIndex < 0 || dataSetIndex >= this.mData().getDataSetCount()) {
-            this.highlightValue(Option<Highlight>.None, callListener)
+            this.highlightValueForObject(Option<Highlight>.None, callListener)
         } else {
-            this.highlightValue(
+            this.highlightValueForObject(
                 Highlight(x, y, dataSetIndex, dataIndex, 0, 0.0, 0.0, Option<AxisDependency>.None),
                 callListener
             )
@@ -501,7 +501,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
     }
 
     public func highlightValue(high: ?Highlight): Unit {
-        highlightValue(high, false)
+        highlightValueForObject(high, false)
     }
     /**
      * Highlights the value selected by touch gesture. Unlike
@@ -511,7 +511,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      * @param high         - the highlight object
      * @param callListener - call the listener
      */
-    public func highlightValue(high: ?Highlight, callListener: Bool): Unit {
+    public func highlightValueForObject(high: ?Highlight, callListener: Bool): Unit {
         var highlight = high
 
         //    let callListenerBool: Bool = match (callListener) {
@@ -934,11 +934,11 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
         return MPPointF.getInstance(this.width / 2.0, this.height / 2.0)
     }
 
-    public func getWidth(): Float64 {
+    public open func getWidth(): Float64 {
         return this.width
     }
 
-    public func getHeight(): Float64 {
+    public open func getHeight(): Float64 {
         return this.height
     }
 
@@ -1356,7 +1356,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
     public func getCenterOfView(): MPPointF {
         return this.getCenter()
     }
-    public func onSizeChanged(w: Float64, h: Float64, oldw: Float64, oldh: Float64): Unit {
+    public open func onSizeChanged(w: Float64, h: Float64, oldw: Float64, oldh: Float64): Unit {
         if (this.mLogEnabled) {
             AppLog.info(LOG_TAG + "OnSizeChanged()")
         }

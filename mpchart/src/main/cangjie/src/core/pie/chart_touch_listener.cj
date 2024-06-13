@@ -68,19 +68,11 @@ public abstract class ChartTouchListener<C, D, S, E> where C <: ChartModel<D, S,
      *
      * @param me
      */
-    public func startAction(isTouchEvent: Bool, me: TouchEvent) {
+    public func startAction(isTouchEvent: Bool, me: Any) {
         let l: ?OnChartGestureListener = this.mChart.getOnChartGestureListener();
 
         if (l.isSome()) {
-            l().onChartGestureStartTouchEvent(isTouchEvent, me, this.mLastGesture)
-        }
-    }
-
-    public func startAction(isTouchEvent: Bool, me: GestureEvent) {
-        let l: ?OnChartGestureListener = this.mChart.getOnChartGestureListener();
-
-        if (l.isSome()) {
-            l().onChartGestureStartGestureEvent(isTouchEvent, me, this.mLastGesture)
+            l().onChartGestureStart(isTouchEvent, me, this.mLastGesture)
         }
     }
 
@@ -89,21 +81,14 @@ public abstract class ChartTouchListener<C, D, S, E> where C <: ChartModel<D, S,
      *
      * @param me
      */
-    public func endAction(isTouchEvent: Bool, me: TouchEvent) {
+    public func endAction(isTouchEvent: Bool, me: Any) {
         let l: ?OnChartGestureListener = this.mChart.getOnChartGestureListener();
 
         if (l.isSome()) {
-            l().onChartGestureEndTouchEvent(isTouchEvent, me, this.mLastGesture);
+            l().onChartGestureStart(isTouchEvent, me, this.mLastGesture);
         }
     }
 
-    public func endAction(isTouchEvent: Bool, me: GestureEvent) {
-        let l: ?OnChartGestureListener = this.mChart.getOnChartGestureListener();
-
-        if (l.isSome()) {
-            l().onChartGestureEndGestureEvent(isTouchEvent, me, this.mLastGesture);
-        }
-    }
     /**
      * Sets the last value that was highlighted via touch.
      *
@@ -139,10 +124,10 @@ public abstract class ChartTouchListener<C, D, S, E> where C <: ChartModel<D, S,
     protected func performHighlight(h: Highlight, e: ?TouchEvent) {
         if (Utils.isHighLightEquals(h, this.mLastHighlighted)) {
             // this.mChart.highlightValue(0,undefined,undefined, undefined,true);
-            this.mChart.highlightValue(Option<Highlight>.None, true);
+            this.mChart.highlightValueForObject(Option<Highlight>.None, true);
             this.mLastHighlighted = None
         } else {
-            this.mChart.highlightValue(h, true);
+            this.mChart.highlightValueForObject(h, true);
             this.mLastHighlighted = h
         }
     }
@@ -164,33 +149,25 @@ public abstract class ChartTouchListener<C, D, S, E> where C <: ChartModel<D, S,
 
     //public func onTouch(event: TouchEvent): Unit
 
-    public func onSingleTapUp(isTouchEvent: Bool, event: TouchEvent): Unit
-    public func onSingleTapUp(isTouchEvent: Bool, event: GestureEvent): Unit
+    public func onSingleTapUp(isTouchEvent: Bool, event: Any): Unit
 
-    public func onDoubleTap(isTouchEvent: Bool, event: TouchEvent): Unit
-    public func onDoubleTap(isTouchEvent: Bool, event: GestureEvent): Unit
+    public func onDoubleTap(isTouchEvent: Bool, event: Any): Unit
 
-    //public func onLongPressed(isTouchEvent: Bool, event: Event): Unit
+    public func onLongPressed(isTouchEvent: Bool, event: Any): Unit
 
-    //public func onLongPressUp(isTouchEvent: Bool, event: Event): Unit
+    public func onLongPressUp(isTouchEvent: Bool, event: Any): Unit
 
-    //public func onLongPressCancel(isTouchEvent: Bool, event: Event): Unit
+    public func onLongPressCancel(isTouchEvent: Bool, event: Any): Unit
 
-    public func actionDown(isTouchEvent: Bool, touchEvent: TouchEvent): Unit
-    public func actionDown(isTouchEvent: Bool, gestureEvent: GestureEvent): Unit
+    public func actionDown(isTouchEvent: Bool, touchEvent: Any): Unit
 
-    public func actionMove(isTouchEvent: Bool, touchEvent: TouchEvent): Unit
-    public func actionMove(isTouchEvent: Bool, gestureEvent: GestureEvent): Unit
+    public func actionMove(isTouchEvent: Bool, touchEvent: Any): Unit
 
-    public func actionUp(isTouchEvent: Bool, touchEvent: TouchEvent): Unit
-    public func actionUp(isTouchEvent: Bool, gestureEvent: GestureEvent): Unit
+    public func actionUp(isTouchEvent: Bool, touchEvent: Any): Unit
 
-    public func actionCancel(isTouchEvent: Bool, event: TouchEvent): Unit
-    public func actionCancel(isTouchEvent: Bool, event: GestureEvent): Unit
+    public func actionCancel(isTouchEvent: Bool, event: Any): Unit
 
-    public func actionPinchDown(isTouchEvent: Bool, event: TouchEvent): Unit
-    public func actionPinchDown(isTouchEvent: Bool, event: GestureEvent): Unit
+    public func actionPinchDown(isTouchEvent: Bool, event: Any): Unit
 
-    public func actionPinchUp(isTouchEvent: Bool, event: TouchEvent): Unit
-    public func actionPinchUp(isTouchEvent: Bool, event: GestureEvent): Unit
+    public func actionPinchUp(isTouchEvent: Bool, event: Any): Unit
 }
