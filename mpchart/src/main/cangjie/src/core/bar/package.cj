@@ -16,6 +16,7 @@ from ohos import animator.*
 from std import collection.*
 from std import math.*
 from std import format.*
+from std import time.*
 
 
 extend Option<T> {

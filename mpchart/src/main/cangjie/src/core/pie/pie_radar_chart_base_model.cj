@@ -81,7 +81,7 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
     }
 
     public func notifyDataSetChanged() {
-        if (let Some(md: ChartData<IPieDataSet, PiEntry>) <- this.mData) {
+        if (let Some(md: ChartData<IDataSet<EntryOhos>, EntryOhos>) <- this.mData) {
             this.calcMinMax()
 
             this.mLegendRenderer?.computeLegend(md)

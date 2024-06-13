@@ -56,21 +56,20 @@ public class LegendRenderer <: Renderer {
      *
      * @param data
      */
-    public func computeLegend(data: ?ChartData<IPieDataSet, PiEntry>): Unit {
+    public func computeLegend(data: ?ChartData<IDataSet<EntryOhos>, EntryOhos>): Unit {
         if (this.mLegend.isSome() && !this.mLegend().isLegendCustom() && data.isSome()) {
             this.computedEntries.clear()
 
             // loop for building up the colors and labels used in the legend
             for (i in 0..data().getDataSetCount()) {
-                let dataSet: Option<IPieDataSet> = data().getDataSetByIndex(i)
+                let dataSet: Option<IDataSet<EntryOhos>> = data().getDataSetByIndex(i)
                 if (dataSet.isNone()) {
                     continue
                 }
 
                 let clrs: ArrayList<UInt32> = dataSet().getColors()
                 let entryCount: Int64 = dataSet().getEntryCount()
-
-                if (dataSet() is PieDataSet) {
+               if (dataSet() is PieDataSet) {
                     let pds: ?IPieDataSet = dataSet() as IPieDataSet
                     for (j in 0..entryCount) {
                         this.computedEntries.append(
@@ -111,7 +110,7 @@ public class LegendRenderer <: Renderer {
                 match (this.mLegend) {
                     case Some(l) =>
                         l.setEntries(this.computedEntries)
-                        let tf: FontFamily /*Typeface*/
+                        let tf: FontFamily
                             = l.getTypeface()
 
                         this.mLegendLabelPaint.setFontFamily(tf)
