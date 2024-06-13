@@ -16,12 +16,13 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
 
     public init() {
         super()
-        //this.mChartTouchListener = PieRadarChartTouchListener((this as PieRadarChartBaseModel<ChartData<IDataSet<EntryOhos>>>))
+        // 子类去实现
+        //this.mChartTouchListener = PieRadarChartTouchListener<D, S, E>(this)
     }
 
     public func getMaxVisibleCount(): Int64 {
-        if (this.mData.isSome()) {
-            return this.mData().getEntryCount()
+        if (let Some(data) <- this.mData) {
+            return data.getEntryCount()
         } else {
             return 0
         }

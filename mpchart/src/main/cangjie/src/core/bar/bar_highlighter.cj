@@ -113,8 +113,8 @@ public class BarHighlighter <: ChartHighlighter<BarDataProvider, IBarDataSet, Ba
         return abs(x1 - x2)
     }
 
-    protected func getData(): ?BarData /*BarLineScatterCandleBubbleData*/
-    {
-        return this.mChart.getBarData()
+    protected func getData(): ?BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos> {
+        return this.mChart.getBarData() as BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
+            EntryOhos>
     }
 }

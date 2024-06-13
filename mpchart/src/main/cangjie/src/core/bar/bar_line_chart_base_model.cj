@@ -3,8 +3,8 @@
  */
 package core.bar
 
-public abstract class BarLineChartBaseModel <: ChartModel<BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
-    EntryOhos>, IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos> {
+public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & BarLineScatterCandleBubbleDataProvider<S, E> where D <: BarLineScatterCandleBubbleData<S,
+    E>, S <: IBarLineScatterCandleBubbleDataSet<E>, E <: EntryOhos {
     protected var mMaxVisibleCount: Int64 = 100
     /**
      * flag that indicates if auto scaling on the y axis is enabled
@@ -88,13 +88,11 @@ public abstract class BarLineChartBaseModel <: ChartModel<BarLineScatterCandleBu
         this.mAxisRendererLeft = YAxisRenderer(this.mViewPortHandler, this.mAxisLeft(), this.mLeftAxisTransformer())
         this.mAxisRendererRight = YAxisRenderer(this.mViewPortHandler, this.mAxisRight(), this.mRightAxisTransformer())
 
-        if (this.mXAxis.isSome()) {
-            this.mXAxisRenderer = XAxisRenderer(this.mViewPortHandler, this.mXAxis(), this.mLeftAxisTransformer())
+        if (let Some(xaxis) <- this.mXAxis) {
+            this.mXAxisRenderer = XAxisRenderer(this.mViewPortHandler, xaxis, this.mLeftAxisTransformer())
         }
         //子类去实现
         //this.setHighlighter((ChartHighlighter(this) as ChartHighlighter<BarLineScatterCandleBubbleDataProvider<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)())
-
-        //this.mChartTouchListener = BarLineChartTouchListener(this, this.mViewPortHandler.getMatrixTouch(), 3.0) as ChartTouchListener<Chart<ChartData<IDataSet<EntryOhos>>>>
 
         this.mGridBackgroundPaint = Paint()
         this.mGridBackgroundPaint().setStyle(Style.FILL)
@@ -140,7 +138,7 @@ public abstract class BarLineChartBaseModel <: ChartModel<BarLineScatterCandleBu
         return this.mYAxisExtensionLine
     }
 
-    public func onDraw(context2D: CanvasRenderingContext2D): Unit {
+    public open func onDraw(context2D: CanvasRenderingContext2D): Unit {
         super.onDraw(context2D)
 
         if (this.mData.isNone() || this.mRenderer.isNone() || !this.mChartSizeCorrected) {
@@ -187,14 +185,14 @@ public abstract class BarLineChartBaseModel <: ChartModel<BarLineScatterCandleBu
             }
         }
 
-        if (this.mXAxisRenderer.isSome()) {
-            this.mXAxisRenderer().renderAxisLine(context2D, extraLine: 0.0)
+        if (let Some(xAxisRenderer) <- this.mXAxisRenderer) {
+            xAxisRenderer.renderAxisLine(context2D, extraLine: 0.0)
         }
-        if (this.mAxisRendererLeft.isSome()) {
-            this.mAxisRendererLeft().renderAxisLine(context2D, extraLine: Float64(extraLength))
+        if (let Some(axisRendererLeft) <- this.mAxisRendererLeft) {
+            axisRendererLeft.renderAxisLine(context2D, extraLine: Float64(extraLength))
         }
-        if (this.mAxisRendererRight.isSome()) {
-            this.mAxisRendererRight().renderAxisLine(context2D, extraLine: Float64(extraLength))
+        if (let Some(axisRendererRight) <- this.mAxisRendererRight) {
+            axisRendererRight.renderAxisLine(context2D, extraLine: Float64(extraLength))
         }
 
         if (this.mXAxisRenderer.isSome() && this.mXAxis.isSome() && this.mXAxis().isDrawGridLinesBehindDataEnabled()) {
@@ -437,7 +435,7 @@ public abstract class BarLineChartBaseModel <: ChartModel<BarLineScatterCandleBu
         this.calculateOffsets()
     }
 
-    protected func calcMinMax(): Unit {
+    protected open func calcMinMax(): Unit {
         if (this.mData.isNone()) {
             return
         }
@@ -693,7 +691,8 @@ public abstract class BarLineChartBaseModel <: ChartModel<BarLineScatterCandleBu
     }
 
     public func calcPos(isTouchEvent: Bool, event: Any) {
-        return (this.mChartTouchListener as BarLineChartTouchListener)().getXyByEvent(isTouchEvent, event)
+        return (this.mChartTouchListener as BarLineChartTouchListener<D, S, E>)().
+            getXyByEvent(isTouchEvent, event)
     }
 
     public func onPinch(isTouchEvent: Bool, actionType: PinchActionType, event: Any): Unit {
@@ -711,8 +710,8 @@ public abstract class BarLineChartBaseModel <: ChartModel<BarLineScatterCandleBu
         }
     }
     public func computeScroll(): Unit {
-        if (this.mChartTouchListener() is BarLineChartTouchListener) {
-            (this.mChartTouchListener() as BarLineChartTouchListener)().computeScroll()
+        if(let Some(listener: BarLineChartTouchListener<D, S, E>) <- this.mChartTouchListener){
+           listener.computeScroll()
         }
     }
 

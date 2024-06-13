@@ -28,30 +28,30 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
     /**
      * if true, the hole will see-through to the inner tips of the slices
      */
-    private var mDrawSlicesUnderHole: Bool = false;
+    private var mDrawSlicesUnderHole: Bool = false
     /**
      * if true, the values inside the piechart are drawn as percent values
      */
-    private var mUsePercentValues: Bool = false;
+    private var mUsePercentValues: Bool = false
     /**
      * if true, the slices of the piechart are rounded
      */
-    private var mDrawRoundedSlices: Bool = false;
+    private var mDrawRoundedSlices: Bool = false
     /**
      * variable for the text that is drawn in the center of the pie-chart
      */
-    private var mCenterText: String = "";
+    private var mCenterText: String = ""
 
     private var mCenterTextOffset: MPPointF = MPPointF.getInstance(0.0, 0.0)
     /**
      * indicates the size of the hole in the center of the piechart, default:
      * radius / 2
      */
-    private var mHoleRadiusPercent: Float64 = 50.0;
+    private var mHoleRadiusPercent: Float64 = 50.0
     /**
      * the radius of the transparent circle next to the chart-hole in the center
      */
-    protected var mTransparentCircleRadiusPercent: Float64 = 55.0;
+    protected var mTransparentCircleRadiusPercent: Float64 = 55.0
     /**
      * if enabled, centertext is drawn
      */
@@ -65,20 +65,30 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
     private var mMinAngleForSlices: Float64 = 0.0
     public var context2d: ?CanvasRenderingContext2D = Option<CanvasRenderingContext2D>.None
 
-    public init() {
-        super();
+    private init() {
+        super()
         this.mAnimator = ChartAnimator(this)
         if (this.mAnimator.isSome()) {
             this.mRenderer = PieChartRenderer(this, this.mAnimator(), this.mViewPortHandler)
         }
         this.mXAxis = None
-        let pieHigh: PieHighlighter = PieHighlighter(this);
+        let pieHigh: PieHighlighter = PieHighlighter(this)
         this.mHighlighter = pieHigh as IHighlighter
+        //子类实现
+        //this.mChartTouchListener = PieRadarChartTouchListener<PieData, IPieDataSet, PiEntry>
+    }
+
+    public static func Init(): PieChartModel {
+        let model = PieChartModel()
+        let lister: ChartTouchListener<PieData, IPieDataSet, PiEntry> = PieRadarChartTouchListener<PieData, IPieDataSet, PiEntry>(
+            model)
+        model.mChartTouchListener = lister
+        return model
     }
 
     public func invalidate() {
         if (this.context2d.isSome()) {
-            this.onDraw(this.context2d());
+            this.onDraw(this.context2d())
         }
     }
 
@@ -87,14 +97,14 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
     }
 
     public func onChartSizeChanged(newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64) {
-        super.onSizeChanged(newWidth, newHeight, oldWidth, oldHeight);
+        super.onSizeChanged(newWidth, newHeight, oldWidth, oldHeight)
     }
 
     public func onDraw(canvas: CanvasRenderingContext2D): Unit {
-        super.onDraw(canvas);
+        super.onDraw(canvas)
 
         if (this.mData.isNone()) {
-            return;
+            return
         }
 
         this.mRenderer?.drawData(canvas)
@@ -109,25 +119,25 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
 
         this.mLegendRenderer?.renderLegend(canvas)
 
-        this.drawDescription(canvas);
+        this.drawDescription(canvas)
 
-        this.drawMarkers(canvas);
+        this.drawMarkers(canvas)
     }
 
     public func calculateOffsets(): Unit {
-        super.calculateOffsets();
+        super.calculateOffsets()
 
         // prevent nullpointer when no data set
         if (let Some(d) <- this.mData) {
-            let diameter: Float64 = this.getDiameter();
-            let radius: Float64 = diameter / 2.0;
+            let diameter: Float64 = this.getDiameter()
+            let radius: Float64 = diameter / 2.0
 
-            let c: ?MPPointF = this.getCenterOffsets();
+            let c: ?MPPointF = this.getCenterOffsets()
             if (c.isNone()) {
-                return;
+                return
             }
 
-            let shift: Float64 = (this.mData() as PieData)().getDataSet().getSelectionShift();
+            let shift: Float64 = (this.mData() as PieData)().getDataSet().getSelectionShift()
 
             // create the circle box that will contain the pie-chart (the bounds of
             // the pie-chart)
@@ -136,23 +146,23 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
                 c().y - radius + shift,
                 c().x + radius - shift,
                 c().y + radius - shift
-            );
+            )
 
-            MPPointF.recycleInstance(c());
+            MPPointF.recycleInstance(c())
         } else {
             return
         }
     }
 
     protected func calcMinMax(): Unit {
-        this.calcAngles();
+        this.calcAngles()
     }
 
     public func getMarkerPosition(highlight: Highlight): Array<Float64> {
-        let center: MPPointF = this.getCenterCircleBox();
-        var r: Float64 = this.getRadius();
+        let center: MPPointF = this.getCenterCircleBox()
+        var r: Float64 = this.getRadius()
 
-        var off: Float64 = r / 10.0 * 3.6;
+        var off: Float64 = r / 10.0 * 3.6
 
         if (this.isDrawHoleEnabled()) {
             off = (r - (r / 100.0 * this.getHoleRadius())) / 2.0
@@ -160,31 +170,31 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
 
         r -= off // offset to keep things inside the chart
 
-        let rotationAngle: Float64 = this.getRotationAngle();
+        let rotationAngle: Float64 = this.getRotationAngle()
 
-        let entryIndex: Int64 = Int64(round(highlight.getX()));
+        let entryIndex: Int64 = Int64(round(highlight.getX()))
 
         // offset needed to center the drawn text in the slice
-        let offset: Float64 = this.mDrawAngles[entryIndex] / 2.0;
+        let offset: Float64 = this.mDrawAngles[entryIndex] / 2.0
 
         if (this.mAnimator.isNone()) {
-            return [];
+            return []
         }
         // calculate the text position
         let x: Float64 = /*(float)*/
             (r
             * cos(
             MyMath.toRadians((rotationAngle + this.mAbsoluteAngles[entryIndex] - offset)
-            * this.mAnimator().getPhaseY())) + center.x);
+            * this.mAnimator().getPhaseY())) + center.x)
         let y: Float64 = /* (float)*/
             (r
             * sin(
             MyMath.toRadians((rotationAngle + this.mAbsoluteAngles[entryIndex] - offset)
-            * this.mAnimator().getPhaseY())) + center.y);
+            * this.mAnimator().getPhaseY())) + center.y)
 
-        MPPointF.recycleInstance(center);
+        MPPointF.recycleInstance(center)
         return [x, y] /*new float[]{x, y}*/
-            ;
+            
     }
 
     /**
@@ -192,43 +202,43 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      */
     private func calcAngles(): Unit {
         if (let Some(d: PieData) <- this.mData) {
-            let entryCount: Int64 = d.getEntryCount();
+            let entryCount: Int64 = d.getEntryCount()
 
             if (this.mDrawAngles.size != entryCount) {
-                this.mDrawAngles = Array<Float64>(entryCount, item: 0.0) //new float[entryCount];
+                this.mDrawAngles = Array<Float64>(entryCount, item: 0.0) //new float[entryCount]
             } else {
                 for (i in 0..entryCount) {
                     this.mDrawAngles[i] = 0.0
                 }
             }
             if (this.mAbsoluteAngles.size != entryCount) {
-                this.mAbsoluteAngles = Array<Float64>(entryCount, item: 0.0) //new float[entryCount];
+                this.mAbsoluteAngles = Array<Float64>(entryCount, item: 0.0) //new float[entryCount]
             } else {
                 for (i in 0..entryCount) {
                     this.mAbsoluteAngles[i] = 0.0
                 }
             }
 
-            let yValueSum: Float64 = d.getYValueSum();
+            let yValueSum: Float64 = d.getYValueSum()
 
-            let dataSets: ArrayList<IPieDataSet> = d.getDataSets();
+            let dataSets: ArrayList<IPieDataSet> = d.getDataSets()
 
             let hasMinAngle: Bool = this.mMinAngleForSlices != 0.0 && Float64(entryCount) * this.mMinAngleForSlices <=
-                this.mMaxAngle;
-            let minAngles: Array<Float64> = Array<Float64>(entryCount, item: 0.0) //new float[entryCount];
+                this.mMaxAngle
+            let minAngles: Array<Float64> = Array<Float64>(entryCount, item: 0.0) //new float[entryCount]
 
-            var cnt: Int64 = 0;
-            var offset: Float64 = 0.0;
-            var diff: Float64 = 0.0;
+            var cnt: Int64 = 0
+            var offset: Float64 = 0.0
+            var diff: Float64 = 0.0
 
             for (i in 0..d.getDataSetCount()) {
-                let set: IPieDataSet = dataSets.get(i)();
+                let set: IPieDataSet = dataSets.get(i)()
 
                 for (j in 0..set.getEntryCount()) {
-                    let drawAngle: Float64 = this.calcAngle(abs(set.getEntryForIndex(j).getY()), yValueSum);
+                    let drawAngle: Float64 = this.calcAngle(abs(set.getEntryForIndex(j).getY()), yValueSum)
 
                     if (hasMinAngle) {
-                        let temp: Float64 = drawAngle - this.mMinAngleForSlices;
+                        let temp: Float64 = drawAngle - this.mMinAngleForSlices
                         if (temp <= 0.0) {
                             minAngles[cnt] = this.mMinAngleForSlices
                             offset += -temp
@@ -246,7 +256,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
                         this.mAbsoluteAngles[cnt] = this.mAbsoluteAngles[cnt - 1] + this.mDrawAngles[cnt]
                     }
 
-                    cnt++;
+                    cnt++
                 }
             }
 
@@ -279,19 +289,19 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
 
         // no highlight
         if (!this.valuesToHighlight()) {
-            return false;
+            return false
         }
 
         if (this.mIndicesToHighlight.isSome()) {
             for (i in 0..this.mIndicesToHighlight().size) {
                 // check if the xvalue for the given dataset needs highlight
                 if (round(Float64(this.mIndicesToHighlight()[i].getX())) == index) {
-                    return true;
+                    return true
                 }
             }
         }
 
-        return false;
+        return false
     }
 
     /**
@@ -302,9 +312,9 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      */
     private func calcAngleSum(value: Float64): Float64 {
         if (let Some(d: PieData) <- this.mData) {
-            return this.calcAngle(value, d.getYValueSum());
+            return this.calcAngle(value, d.getYValueSum())
         } else {
-            return -1.0;
+            return -1.0
         }
     }
 
@@ -316,21 +326,21 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return
      */
     private func calcAngle(value: Float64, yValueSum: Float64): Float64 {
-        return value / yValueSum * this.mMaxAngle;
+        return value / yValueSum * this.mMaxAngle
     }
 
     public func getIndexForAngle(angle: Float64): Int64 {
 
         // take the current angle of the chart into consideration
-        let a: Float64 = Utils.getNormalizedAngle(angle - this.getRotationAngle());
+        let a: Float64 = Utils.getNormalizedAngle(angle - this.getRotationAngle())
 
         for (i in 0..this.mAbsoluteAngles.size) {
             if (this.mAbsoluteAngles[i] > a) {
-                return i;
+                return i
             }
         }
 
-        return -1; // return -1 if no index found
+        return -1 // return -1 if no index found
     }
 
     /**
@@ -341,16 +351,16 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      */
     public func getDataSetIndexForIndex(xIndex: Float64): Int64 {
         if (let Some(d: PieData) <- this.mData) {
-            let dataSets: ArrayList<IPieDataSet> = d.getDataSets();
+            let dataSets: ArrayList<IPieDataSet> = d.getDataSets()
 
             for (i in 0..dataSets.size) {
                 if (dataSets[i].getEntryForXValue(xIndex, Float64.NaN, rounding: Rounding.CLOSEST).isSome()) {
-                    return i;
+                    return i
                 }
             }
-            return -1;
+            return -1
         } else {
-            return -1;
+            return -1
         }
     }
 
@@ -362,7 +372,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return
      */
     public func getDrawAngles(): Array<Float64> {
-        return this.mDrawAngles;
+        return this.mDrawAngles
     }
 
     /**
@@ -372,7 +382,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return
      */
     public func getAbsoluteAngles(): Array<Float64> {
-        return this.mAbsoluteAngles;
+        return this.mAbsoluteAngles
     }
 
     /**
@@ -383,7 +393,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      */
     public func setHoleColor(color: UInt32): Unit {
         ( /*(PieChartRenderer)*/
-            this.mRenderer as PieChartRenderer)?.getPaintHole().setColor(Color(color))
+            this.mRenderer() as PieChartRenderer)?.getPaintHole().setColor(Color(color))
     }
 
     /**
@@ -400,7 +410,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return true if slices are visible behind the hole.
      */
     public func isDrawSlicesUnderHoleEnabled(): Bool {
-        return this.mDrawSlicesUnderHole;
+        return this.mDrawSlicesUnderHole
     }
 
     /**
@@ -419,7 +429,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return
      */
     public func isDrawHoleEnabled(): Bool {
-        return this.mDrawHole;
+        return this.mDrawHole
     }
 
     /**
@@ -439,7 +449,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      */
     public func getCenterText(): String /*CharSequence*/
     {
-        return this.mCenterText;
+        return this.mCenterText
     }
 
     /**
@@ -458,22 +468,22 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return
      */
     public func isDrawCenterTextEnabled(): Bool {
-        return this.mDrawCenterText;
+        return this.mDrawCenterText
     }
 
     protected func getRequiredLegendOffset(): Float64 {
         if (this.mLegendRenderer.isSome()) {
-            return this.mLegendRenderer().getLabelPaint().getTextSize() * 2.0;
+            return this.mLegendRenderer().getLabelPaint().getTextSize() * 2.0
         }
-        return 0.0;
+        return 0.0
     }
 
     protected func getRequiredBaseOffset(): Float64 {
-        return 0.0;
+        return 0.0
     }
 
     public func getRadius(): Float64 {
-        return min(this.mCircleBox.width() / 2.0, this.mCircleBox.height() / 2.0);
+        return min(this.mCircleBox.width() / 2.0, this.mCircleBox.height() / 2.0)
     }
 
     /**
@@ -482,7 +492,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return
      */
     public func getCircleBox(): MyRect {
-        return this.mCircleBox;
+        return this.mCircleBox
     }
 
     /**
@@ -491,7 +501,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return
      */
     public func getCenterCircleBox(): MPPointF {
-        return MPPointF.getInstance(this.mCircleBox.centerX(), this.mCircleBox.centerY());
+        return MPPointF.getInstance(this.mCircleBox.centerX(), this.mCircleBox.centerY())
     }
 
     /**
@@ -500,8 +510,9 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @param t
      */
     public func setCenterTextTypeface(t: FontFamily): Unit {
-        ( /*(PieChartRenderer)*/
-            this.mRenderer as PieChartRenderer)().getPaintCenterText().setFontFamily(t);
+        if (let Some(render: PieChartRenderer) <- this.mRenderer) {
+            render.getPaintCenterText().setFontFamily(t)
+        }
     }
 
     /**
@@ -510,8 +521,9 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @param sizeDp
      */
     public func setCenterTextSize(sizeDp: Float64): Unit {
-        ( /*(PieChartRenderer)*/
-            this.mRenderer as PieChartRenderer)().getPaintCenterText().setTextSize(Utils.handleDataValues(sizeDp));
+        if (let Some(render: PieChartRenderer) <- this.mRenderer) {
+            render.getPaintCenterText().setTextSize(Utils.handleDataValues(sizeDp))
+        }
     }
 
     /**
@@ -520,8 +532,9 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @param sizePixels
      */
     public func setCenterTextSizePixels(sizePixels: Float64): Unit {
-        ( /*(PieChartRenderer)*/
-            this.mRenderer as PieChartRenderer)().getPaintCenterText().setTextSize(sizePixels);
+        if (let Some(render: PieChartRenderer) <- this.mRenderer) {
+            render.getPaintCenterText().setTextSize(sizePixels)
+        }
     }
 
     /**
@@ -541,7 +554,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return
      */
     public func getCenterTextOffset(): MPPointF {
-        return MPPointF.getInstance(this.mCenterTextOffset.x, this.mCenterTextOffset.y);
+        return MPPointF.getInstance(this.mCenterTextOffset.x, this.mCenterTextOffset.y)
     }
 
     /**
@@ -550,8 +563,9 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @param color
      */
     public func setCenterTextColor(color: UInt32): Unit {
-        ( /*(PieChartRenderer)*/
-            this.mRenderer as PieChartRenderer)().getPaintCenterText().setColor(Color(color));
+        if (let Some(render: PieChartRenderer) <- this.mRenderer) {
+            render.getPaintCenterText().setColor(Color(color))
+        }
     }
 
     /**
@@ -570,7 +584,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return
      */
     public func getHoleRadius(): Float64 {
-        return this.mHoleRadiusPercent;
+        return this.mHoleRadiusPercent
     }
 
     /**
@@ -580,14 +594,13 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      */
     public func setTransparentCircleColor(color: UInt32): Unit {
         if (this.mRenderer.isNone()) {
-            return;
+            return
         }
-        let p: Paint = ( /*(PieChartRenderer) */
-            this.mRenderer as PieChartRenderer)().getPaintTransparentCircle();
-        let alpha: Float64 = p.getGlobalAlpha();
-        p.setColor(Color(color));
+        let p: Paint = (this.mRenderer() as PieChartRenderer)().getPaintTransparentCircle()
+        let alpha: Float64 = p.getGlobalAlpha()
+        p.setColor(Color(color))
 
-        p.setGlobalAlpha(alpha);
+        p.setGlobalAlpha(alpha)
     }
 
     /**
@@ -603,7 +616,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
     }
 
     public func getTransparentCircleRadius(): Float64 {
-        return this.mTransparentCircleRadiusPercent;
+        return this.mTransparentCircleRadiusPercent
     }
 
     /**
@@ -614,22 +627,9 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @param alpha 0-255
      */
     public func setTransparentCircleAlpha(alpha: Float64): Unit {
-        if (this.mRenderer.isNone()) {
-            return;
+        if (let Some(render: PieChartRenderer) <- this.mRenderer) {
+            render.getPaintTransparentCircle().setGlobalAlpha(alpha / 255.0)
         }
-        ( /*(PieChartRenderer)*/
-            this.mRenderer as PieChartRenderer)().getPaintTransparentCircle().setGlobalAlpha(alpha / 255.0);
-    }
-
-    /**
-     * Set this to true to draw the entry labels into the pie slices (Provided by the getLabel() method of the PiEntry class).
-     * Deprecated -> use setDrawEntryLabels(...) instead.
-     *
-     * @param enabled
-     */
-    // @Deprecated
-    public func setDrawSliceText(enabled: Bool): Unit {
-        this.mDrawEntryLabels = enabled
     }
 
     /**
@@ -647,7 +647,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return
      */
     public func isDrawEntryLabelsEnabled(): Bool {
-        return this.mDrawEntryLabels;
+        return this.mDrawEntryLabels
     }
 
     /**
@@ -656,8 +656,9 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @param color
      */
     public func setEntryLabelColor(color: UInt32): Unit {
-        ( /*(PieChartRenderer) */
-            this.mRenderer as PieChartRenderer)().getPaintEntryLabels().setColor(Color(color));
+        if (let Some(render: PieChartRenderer) <- this.mRenderer) {
+            render.getPaintEntryLabels().setColor(Color(color))
+        }
     }
 
     /**
@@ -666,8 +667,9 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @param tf
      */
     public func setEntryLabelTypeface(tf: FontFamily): Unit {
-        ( /*(PieChartRenderer)*/
-            this.mRenderer as PieChartRenderer)().getPaintEntryLabels().setFontFamily(tf);
+        if (let Some(render: PieChartRenderer) <- this.mRenderer) {
+            render.getPaintEntryLabels().setFontFamily(tf)
+        }
     }
 
     /**
@@ -676,8 +678,9 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @param size
      */
     public func setEntryLabelTextSize(size: Float64): Unit {
-        ( /*(PieChartRenderer)*/
-            this.mRenderer as PieChartRenderer)().getPaintEntryLabels().setTextSize(Utils.handleDataValues(size));
+        if (let Some(render: PieChartRenderer) <- this.mRenderer) {
+            render.getPaintEntryLabels().setTextSize(Utils.handleDataValues(size))
+        }
     }
 
     /**
@@ -697,7 +700,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return
      */
     public func isDrawRoundedSlicesEnabled(): Bool {
-        return this.mDrawRoundedSlices;
+        return this.mDrawRoundedSlices
     }
 
     /**
@@ -717,7 +720,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return
      */
     public func isUsePercentValuesEnabled(): Bool {
-        return this.mUsePercentValues;
+        return this.mUsePercentValues
     }
 
     /**
@@ -735,11 +738,11 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * default 1.f (100%)
      */
     public func getCenterTextRadiusPercent(): Float64 {
-        return this.mCenterTextRadiusPercent;
+        return this.mCenterTextRadiusPercent
     }
 
     public func getMaxAngle(): Float64 {
-        return this.mMaxAngle;
+        return this.mMaxAngle
     }
 
     /**
@@ -767,7 +770,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @return minimum angle for slices
      */
     public func getMinAngleForSlices(): Float64 {
-        return this.mMinAngleForSlices;
+        return this.mMinAngleForSlices
     }
 
     /**
@@ -790,9 +793,9 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
 
     protected func onDetachedFromWindow(): Unit {
         // releases the bitmap in the renderer to avoid oom error
-        if (this.mRenderer.isSome() && this.mRenderer is PieChartRenderer) {
-            (this.mRenderer as PieChartRenderer)().releaseBitmap();
+        if (let Some(render: PieChartRenderer) <- this.mRenderer) {
+            render.releaseBitmap()
         }
-        // super.onDetachedFromWindow();
+        // super.onDetachedFromWindow()
     }
 }

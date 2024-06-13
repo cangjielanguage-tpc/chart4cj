@@ -228,8 +228,8 @@ public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
         this.mBarRect.set(left, top, right, bottom)
 
-        trans.rectToPixelPhase(this.mBarRect, if (this.mAnimator.isSome()) {
-            this.mAnimator().getPhaseY()
+        trans.rectToPixelPhase(this.mBarRect, if (let Some(animator) <- this.mAnimator) {
+            animator.getPhaseY()
         } else {
             1.0
         })
@@ -297,8 +297,8 @@ public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 // if only single values are drawn (sum)
                 if (!dataSet.isStacked()) {
                     var j: Int64 = 0
-                    while (j < buffer.buffer.size * Int64(if (this.mAnimator.isSome()) {
-                                this.mAnimator().getPhaseX()
+                    while (j < buffer.buffer.size * Int64(if ( let Some(animator) <- this.mAnimator) {
+                                animator.getPhaseX()
                             } else {
                                 1.0
                             })) {
@@ -319,8 +319,8 @@ public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                         if (dataSet.isDrawValuesEnabled()) {
                             let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
-                            if (valueFormatter.isSome()) {
-                                this.drawValue(c, valueFormatter(), val, entry, i, x,
+                            if (let Some(formatter) <- valueFormatter) {
+                                this.drawValue(c, formatter, val, entry, i, x,
                                     if (val >= 0.0) {
                                     (buffer.buffer[j + 1] + posOffset)
                                 } else {
@@ -356,8 +356,8 @@ public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                     var bufferIndex: Int64 = 0
                     var index: Int64 = 0
 
-                    while (index < dataSet.getEntryCount() * Int64(if (this.mAnimator.isSome()) {
-                                this.mAnimator().getPhaseX()
+                    while (index < dataSet.getEntryCount() * Int64(if (let Some(animator) <- this.mAnimator) {
+                                animator.getPhaseX()
                             } else {
                                 1.0
                             })) {
@@ -383,8 +383,8 @@ public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                             if (dataSet.isDrawValuesEnabled()) {
                                 let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
-                                if (valueFormatter.isSome()) {
-                                    this.drawValue(c, valueFormatter(), entry.getY(), entry, i, x,
+                                if (let Some(formatter) <- valueFormatter) {
+                                    this.drawValue(c, formatter, entry.getY(), entry, i, x,
                                         buffer.buffer[bufferIndex + 1] + (if (entry.getY() >= 0.0) {
                                         posOffset
                                     } else {
@@ -438,8 +438,8 @@ public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                                 k += 2
                                 idx++
                             }
-                            if (trans.isSome()) {
-                                trans().pointValuesToPixel(transformed)
+                            if (let Some(tran) <- trans) {
+                                tran.pointValuesToPixel(transformed)
                             }
 
                             var m: Int64 = 0
@@ -464,10 +464,10 @@ public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                                 if (dataSet.isDrawValuesEnabled()) {
                                     let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
-                                    if (valueFormatter.isSome()) {
+                                    if (let Some(formatter) <- valueFormatter) {
                                         this.drawValue(
                                             c,
-                                            valueFormatter(),
+                                            formatter,
                                             vals()[k / 2],
                                             entry,
                                             i,
@@ -549,10 +549,10 @@ public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                     y2 = -e().getNegativeSum()
                 } else {
                     let dataRanges: ?Array<RangeChart> = e().getRanges()
-                    if (dataRanges.isSome()) {
-                        let range: RangeChart = dataRanges()[high.getStackIndex()]
+                    if (let Some(ranges) <- dataRanges) {
+                        let range: RangeChart = ranges[high.getStackIndex()]
                         //堆叠柱状图顶部的柱形绘制圆角
-                        if (radius != 0.0 && high.getStackIndex() == dataRanges().size - 1) {
+                        if (radius != 0.0 && high.getStackIndex() == ranges.size - 1) {
                             drawRadius = true
                         }
                         y1 = range.myfrom
@@ -566,8 +566,8 @@ public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 y1 = e().getY()
                 y2 = 0.0
             }
-            if (trans.isSome()) {
-                this.prepareBarHighlight(e().getX(), y1, y2, barData().getBarWidth() / 2.0, trans())
+            if (let Some(tran) <- trans) {
+                this.prepareBarHighlight(e().getX(), y1, y2, barData().getBarWidth() / 2.0, tran)
             }
 
             // 圆角位置

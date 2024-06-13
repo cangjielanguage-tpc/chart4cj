@@ -3,7 +3,7 @@
  */
 package core.pie
 
-public interface BarLineScatterCandleBubbleDataProvider<S, E> <: ChartInterface<S, E> where S <: IDataSet<E>,
+public interface BarLineScatterCandleBubbleDataProvider<S, E> <: ChartInterface<S, E> where S <: IBarLineScatterCandleBubbleDataSet<E>,
     E <: EntryOhos {
     func getTransformer(axis: AxisDependency): ?Transformer
 
@@ -13,5 +13,5 @@ public interface BarLineScatterCandleBubbleDataProvider<S, E> <: ChartInterface<
 
     func getHighestVisibleX(): Float64
 
-    func getData(): ?ChartData<S, E> //BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>,EntryOhos>
+    func getData(): ?ChartData<S, E>
 }

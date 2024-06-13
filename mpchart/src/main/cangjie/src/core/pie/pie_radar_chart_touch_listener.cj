@@ -3,7 +3,7 @@
  */
 package core.pie
 
-public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarChartBaseModel<D, S, E>, D, S, E> where D <: ChartData<S,
+public class PieRadarChartTouchListener< D, S, E> <: ChartTouchListener<D, S, E> where D <: ChartData<S,
     E>, S <: IDataSet<E>, E <: EntryOhos {
     private var mTouchStartPoint: MPPointF = MPPointF.getInstance(0.0, 0.0)
     /**
@@ -13,22 +13,24 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
     private var _velocitySamples: ArrayList<AngularVelocitySample> = ArrayList<AngularVelocitySample>()
     private var mDecelerationLastTime: Int64 = 0
     private var mDecelerationAngularVelocity: Float64 = 0.0
+    var pieChart: PieRadarChartBaseModel<D, S, E>
 
     public init(chart: PieRadarChartBaseModel<D, S, E>) {
         super(chart)
+        this.pieChart = chart
     }
 
     public func onSingleTapUp(isTouchEvent: Bool, e: Any) {
         this.actionDown(isTouchEvent, e)
         this.mLastGesture = ChartGesture.SINGLE_TAP
 
-        let l: ?OnChartGestureListener = this.mChart.getOnChartGestureListener()
+        let l: ?OnChartGestureListener = this.pieChart.getOnChartGestureListener()
 
         if (l.isSome()) {
             l().onChartSingleTapped(isTouchEvent, e)
         }
 
-        if (!this.mChart.isHighlightPerTapEnabled()) {
+        if (!this.pieChart.isHighlightPerTapEnabled()) {
             return
         }
         var x: Float64 = 0.0
@@ -48,14 +50,14 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
             x = gesture().fingerList[0].localX
             y = gesture().fingerList[0].localY
         }
-        let h: Highlight = this.mChart.getHighlightByTouchPoint(x, y)()
+        let h: Highlight = this.pieChart.getHighlightByTouchPoint(x, y)()
         this.performHighlight(h, Option<TouchEvent>.None)
 
         this.actionUp(isTouchEvent, e)
     }
 
     public func actionDown(isTouchEvent: Bool, event: Any) {
-        if (this.mChart.isRotationEnabled()) {
+        if (this.pieChart.isRotationEnabled()) {
             return
         }
         var xCoordinate: Float64 = 0.0
@@ -82,7 +84,7 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
 
         this.resetVelocity()
 
-        if (this.mChart.isDragDecelerationEnabled()) {
+        if (this.pieChart.isDragDecelerationEnabled()) {
             this.sampleVelocity(xCoordinate, yCoordinate)
         }
 
@@ -92,7 +94,7 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
     }
 
     public func actionMove(isTouchEvent: Bool, event: Any) {
-        if (!(this.mChart as PieRadarChartBaseModel<D, S, E>)().isRotationEnabled()) {
+        if (!(this.pieChart as PieRadarChartBaseModel<D, S, E>)().isRotationEnabled()) {
             return
         }
         var xCoordinate: Float64 = 0.0
@@ -112,7 +114,7 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
             xCoordinate = gesture().fingerList[0].localX
             yCoordinate = gesture().fingerList[0].localY
         }
-        if (this.mChart.isDragDecelerationEnabled()) {
+        if (this.pieChart.isDragDecelerationEnabled()) {
             this.sampleVelocity(xCoordinate, yCoordinate)
         }
 
@@ -121,10 +123,10 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
             this.mTouchStartPoint.y) > Utils.handleDataValues(8.0)) {
             this.mLastGesture = ChartGesture.ROTATE
             this.mTouchMode = 6
-            this.mChart.disableScroll()
+            this.pieChart.disableScroll()
         } else if (this.mTouchMode == 6) {
             this.updateGestureRotation(xCoordinate, yCoordinate)
-            this.mChart.invalidate()
+            this.pieChart.invalidate()
         }
 
         this.endAction(isTouchEvent, event)
@@ -148,7 +150,7 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
             xCoordinate = gesture().fingerList[0].localX
             yCoordinate = gesture().fingerList[0].localY
         }
-        if (this.mChart.isDragDecelerationEnabled()) {
+        if (this.pieChart.isDragDecelerationEnabled()) {
             this.stopDeceleration()
 
             this.sampleVelocity(xCoordinate, yCoordinate)
@@ -158,11 +160,11 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
             if (this.mDecelerationAngularVelocity != 0.0) {
                 this.mDecelerationLastTime = (DateTime.nowUTC().second * 1000)
 
-                this.mChart.invalidate()
+                this.pieChart.invalidate()
             }
         }
 
-        this.mChart.enableScroll()
+        this.pieChart.enableScroll()
         this.mTouchMode = 0
 
         this.endAction(isTouchEvent, event)
@@ -195,7 +197,7 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
         this._velocitySamples.append(
             AngularVelocitySample(
                 currentTime,
-                (this.mChart as PieRadarChartBaseModel<D, S, E>)().getAngleForPoint(touchLocationX, touchLocationY)
+                (this.pieChart as PieRadarChartBaseModel<D, S, E>)().getAngleForPoint(touchLocationX, touchLocationY)
             )
         )
 
@@ -215,11 +217,11 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
     }
 
     public func setGestureStartAngle(x: Float64, y: Float64): Unit {
-        this.mStartAngle = this.mChart.getAngleForPoint(x, y) - this.mChart.getRawRotationAngle()
+        this.mStartAngle = this.pieChart.getAngleForPoint(x, y) - this.pieChart.getRawRotationAngle()
     }
 
     public func updateGestureRotation(x: Float64, y: Float64): Unit {
-        this.mChart.setRotationAngle(this.mChart.getAngleForPoint(x, y) - this.mStartAngle)
+        this.pieChart.setRotationAngle(this.pieChart.getAngleForPoint(x, y) - this.mStartAngle)
     }
 
     public func computeScroll(): Unit {
@@ -229,12 +231,12 @@ public class PieRadarChartTouchListener<D, S, E> <: ChartTouchListener<PieRadarC
 
         let currentTime = DateTime.nowUTC().second * 1000
 
-        this.mDecelerationAngularVelocity *= this.mChart.getDragDecelerationFrictionCoef()
+        this.mDecelerationAngularVelocity *= this.pieChart.getDragDecelerationFrictionCoef()
 
         let timeInterval = (currentTime - this.mDecelerationLastTime) / 1000
 
-        this.mChart.setRotationAngle(
-            this.mChart.getRotationAngle() + this.mDecelerationAngularVelocity * Float64(timeInterval))
+        this.pieChart.setRotationAngle(
+            this.pieChart.getRotationAngle() + this.mDecelerationAngularVelocity * Float64(timeInterval))
 
         this.mDecelerationLastTime = currentTime
 

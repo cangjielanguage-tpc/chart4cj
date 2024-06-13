@@ -100,9 +100,9 @@ public class LegendRenderer <: Renderer {
 
                 if (this.mLegend.isSome() && this.mLegend().getExtraEntries().isSome()) {
                     let dataSource: ?Array<LegendEntry> = this.mLegend().getExtraEntries()
-                    if (dataSource.isSome()) {
-                        for (i in 0..dataSource().size) {
-                            this.computedEntries.append(dataSource()[i])
+                    if (let Some(data) <- dataSource) {
+                        for (i in 0..data.size) {
+                            this.computedEntries.append(data[i])
                         }
                     }
                 }
@@ -189,13 +189,13 @@ public class LegendRenderer <: Renderer {
                 if (orientation == LegendOrientation.VERTICAL) {
                     originPosX = xoffset
                 } else {
-                    if (this.mViewPortHandler.isSome()) {
-                        originPosX = this.mViewPortHandler().contentLeft() + xoffset
+                    if (let Some(handle) <- this.mViewPortHandler) {
+                        originPosX = handle.contentLeft() + xoffset
                     }
                 }
-                if (this.mViewPortHandler.isSome()) {
+                if (let Some(handle) <- this.mViewPortHandler) {
                     AppLog.info(
-                        "1. originPosX(${originPosX})= xoffset(${xoffset}) + mViewPortHandler.contentLeft(${this.mViewPortHandler().contentLeft()})"
+                        "1. originPosX(${originPosX})= xoffset(${xoffset}) + mViewPortHandler.contentLeft(${handle.contentLeft()})"
                     )
                 }
 
@@ -204,11 +204,11 @@ public class LegendRenderer <: Renderer {
                 }
 
             case LegendHorizontalAlignment.RIGHT =>
-                if (this.mViewPortHandler.isSome()) {
+                if (let Some(handle) <- this.mViewPortHandler) {
                     if (orientation == LegendOrientation.VERTICAL) {
-                        originPosX = this.mViewPortHandler().getChartWidth() - xoffset
+                        originPosX = handle.getChartWidth() - xoffset
                     } else {
-                        originPosX = this.mViewPortHandler().contentRight() - xoffset
+                        originPosX = handle.contentRight() - xoffset
                     }
                 }
 
@@ -217,11 +217,11 @@ public class LegendRenderer <: Renderer {
                 }
 
             case LegendHorizontalAlignment.CENTER =>
-                if (this.mViewPortHandler.isSome()) {
+                if (let Some(handle) <- this.mViewPortHandler) {
                     if (orientation == LegendOrientation.VERTICAL) {
-                        originPosX = this.mViewPortHandler().getChartWidth() / 2.0
+                        originPosX = handle.getChartWidth() / 2.0
                     } else {
-                        originPosX = this.mViewPortHandler().contentLeft()
+                        originPosX = handle.contentLeft()
                             + this.mViewPortHandler().contentWidth() / 2.0
                     }
                 }
@@ -257,17 +257,17 @@ public class LegendRenderer <: Renderer {
                         posY = yoffset
                         AppLog.info("2.0 posY(${posY})= yoffset(${yoffset})")
 
-                    case LegendVerticalAlignment.BOTTOM => if (this.mViewPortHandler.isSome()) {
-                        posY = this.mViewPortHandler().getChartHeight() - yoffset - this.mLegend().mNeededHeight
+                    case LegendVerticalAlignment.BOTTOM => if (let Some(handle) <- this.mViewPortHandler) {
+                        posY = handle.getChartHeight() - yoffset - this.mLegend().mNeededHeight
                         AppLog.info(
-                            "2.1 posY(${posY})= mViewPortHandler.getChartHeight(${this.mViewPortHandler().getChartHeight()})-mNeededHeight(${this.mLegend().mNeededHeight})-yoffset(${yoffset})"
+                            "2.1 posY(${posY})= mViewPortHandler.getChartHeight(${handle.getChartHeight()})-mNeededHeight(${this.mLegend().mNeededHeight})-yoffset(${yoffset})"
                         )
                     }
 
-                    case LegendVerticalAlignment.CENTER => if (this.mViewPortHandler.isSome()) {
-                        posY = (this.mViewPortHandler().getChartHeight() - this.mLegend().mNeededHeight) / 2.0 + yoffset
+                    case LegendVerticalAlignment.CENTER => if (let Some(handle) <- this.mViewPortHandler) {
+                        posY = (handle.getChartHeight() - this.mLegend().mNeededHeight) / 2.0 + yoffset
                         AppLog.info(
-                            "2.1 posY(${posY})= mViewPortHandler.getChartHeight(${this.mViewPortHandler().getChartHeight()})-mNeededHeight/2(${this.mLegend().mNeededHeight / 2.0})+yoffset(${yoffset})"
+                            "2.1 posY(${posY})= mViewPortHandler.getChartHeight(${handle.getChartHeight()})-mNeededHeight/2(${this.mLegend().mNeededHeight / 2.0})+yoffset(${yoffset})"
                         )
                     }
                 }
@@ -368,8 +368,8 @@ public class LegendRenderer <: Renderer {
                         posY = if (horizontalAlignment == LegendHorizontalAlignment.CENTER) {
                             0.0
                         } else {
-                            if (this.mViewPortHandler.isSome()) {
-                                this.mViewPortHandler().contentTop()
+                            if (let Some(handle) <- this.mViewPortHandler) {
+                                handle.contentTop()
                             } else {
                                 0.0
                             }
@@ -378,14 +378,14 @@ public class LegendRenderer <: Renderer {
 
                     case LegendVerticalAlignment.BOTTOM =>
                         posY = if (horizontalAlignment == LegendHorizontalAlignment.CENTER) {
-                            if (this.mViewPortHandler.isSome()) {
-                                this.mViewPortHandler().getChartHeight()
+                            if (let Some(handle) <- this.mViewPortHandler) {
+                                handle.getChartHeight()
                             } else {
                                 0.0
                             }
                         } else {
-                            if (this.mViewPortHandler.isSome()) {
-                                this.mViewPortHandler().contentBottom()
+                            if (let Some(handle) <- this.mViewPortHandler) {
+                                handle.contentBottom()
                             } else {
                                 0.0
                             }
@@ -393,8 +393,8 @@ public class LegendRenderer <: Renderer {
 
                         posY -= this.mLegend().mNeededHeight + yoffset
 
-                    case LegendVerticalAlignment.CENTER => if (this.mViewPortHandler.isSome()) {
-                        posY = this.mViewPortHandler().getChartHeight() / 2.0 - this.mLegend().mNeededHeight / 2.0 +
+                    case LegendVerticalAlignment.CENTER => if (let Some(handle) <- this.mViewPortHandler) {
+                        posY = handle.getChartHeight() / 2.0 - this.mLegend().mNeededHeight / 2.0 +
                             this.mLegend().getYOffset()
                     }
                 }

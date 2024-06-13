@@ -143,20 +143,20 @@ public abstract class DataRenderer <: Renderer {
         Utils.resetContext2DStyle(c, this.mValuePaint)
         if(this.mValuePaint.getStyle() != Style.STROKE) {
             c.beginPath();
-            if (this.mViewPortHandler.isSome()) {
-              c.fillText(formatter.getFormattedValue(value, entry, dataSetIndex, this.mViewPortHandler()), x, y);
+            if (let Some(handle) <- this.mViewPortHandler) {
+              c.fillText(formatter.getFormattedValue(value, entry, dataSetIndex, handle), x, y);
             }
             c.closePath();
         }
         match (this.mValuePaint.getStyle()) {
             case Style.STROKE =>
                 c.beginPath()
-                if (this.mViewPortHandler.isSome()) {
+                if (let Some(handle) <- this.mViewPortHandler) {
                     if (isHorizontalFlip) {
-                        c.strokeText(formatter.getFormattedValue(value, entry, dataSetIndex, this.mViewPortHandler()),
+                        c.strokeText(formatter.getFormattedValue(value, entry, dataSetIndex, handle),
                             -x, y)
                     } else {
-                        c.strokeText(formatter.getFormattedValue(value, entry, dataSetIndex, this.mViewPortHandler()), x,
+                        c.strokeText(formatter.getFormattedValue(value, entry, dataSetIndex, handle), x,
                             y)
                     }
                 }
