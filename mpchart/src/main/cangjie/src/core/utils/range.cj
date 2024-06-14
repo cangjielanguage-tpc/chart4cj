@@ -1,7 +1,7 @@
 /**
  * Created on 2024/5/27
  */
-package core.bar
+package core.utils
 
 public class RangeChart {
     public var myfrom: Float64 = 0.0;

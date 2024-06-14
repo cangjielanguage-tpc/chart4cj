@@ -24,3 +24,10 @@ from std import random.*
 from mpchart import core.pie.*
 from mpchart import core.utils.*
 from mpchart import core.components.*
+from mpchart import core.bar.*
+
+extend Option<T> {
+    operator func ()(): T {
+        this.getOrThrow()
+    }
+}
