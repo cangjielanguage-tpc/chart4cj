@@ -69,33 +69,116 @@ public class LegendRenderer <: Renderer {
 
                 let clrs: ArrayList<UInt32> = dataSet().getColors()
                 let entryCount: Int64 = dataSet().getEntryCount()
-               if (dataSet() is PieDataSet) {
-                    let pds: ?IPieDataSet = dataSet() as IPieDataSet
-                    for (j in 0..entryCount) {
-                        this.computedEntries.append(
-                            LegendEntry(
-                                pds().getEntryForIndex(j).getLabel(),
-                                dataSet().getForm(),
-                                dataSet().getFormSize(),
-                                dataSet().getFormLineWidth(),
-                                dataSet().getFormLineDashEffect(),
-                                clrs[j]
+
+                match (dataSet) {
+                    case Some(pieDataSet: IPieDataSet) =>
+                        for (j in 0..entryCount) {
+                            this.computedEntries.append(
+                                LegendEntry(
+                                    pieDataSet.getEntryForIndex(j).getLabel(),
+                                    dataSet().getForm(),
+                                    dataSet().getFormSize(),
+                                    dataSet().getFormLineWidth(),
+                                    dataSet().getFormLineDashEffect(),
+                                    clrs[j]
+                                )
                             )
-                        )
-                    }
-                    let label = pds().getLabel()
-                    if (label != "") {
-                        this.computedEntries.append(
-                            LegendEntry(
-                                dataSet().getLabel(),
-                                LegendForm.NONE,
-                                Float64.NaN,
-                                Float64.NaN,
-                                Option<DashPathEffect>.None,
-                                ColorTemplate.COLOR_NONE
+                        }
+                        let label = pieDataSet.getLabel()
+                        if (label != "") {
+                            this.computedEntries.append(
+                                LegendEntry(
+                                    dataSet().getLabel(),
+                                    LegendForm.NONE,
+                                    Float64.NaN,
+                                    Float64.NaN,
+                                    Option<DashPathEffect>.None,
+                                    ColorTemplate.COLOR_NONE
+                                )
                             )
-                        )
-                    }
+                        }
+                    case Some(barDataSet: IBarDataSet) =>
+                        let sLabels: Array<String> = barDataSet.getStackLabels();
+
+                        let minEntries: Int64 = min(clrs.size, barDataSet.getStackSize());
+
+                        for (j in 0..minEntries) {
+                            var label: String = ""
+                            if (sLabels.size > 0) {
+                                let labelIndex: Int64 = j % minEntries;
+                                label = if (labelIndex < sLabels.size) {
+                                    sLabels[labelIndex]
+                                } else {
+                                    ""
+                                }
+                            } else {
+                                label = ""
+                            }
+
+                            let dashEffect = dataSet().getFormLineDashEffect(); // 使用空对象作为默认值
+                            this.computedEntries.append(
+                                LegendEntry(
+                                    label,
+                                    dataSet().getForm(),
+                                    dataSet().getFormSize(),
+                                    dataSet().getFormLineWidth(),
+                                    dashEffect,
+                                    clrs[j]
+                                )
+                            );
+                        }
+
+                        let label = barDataSet.getLabel();
+                        if (label != "") {
+                            // add the legend description label
+                            let dashEffect = dataSet().getFormLineDashEffect();
+                            this.computedEntries.append(
+                                LegendEntry(
+                                    dataSet().getLabel(),
+                                    LegendForm.NONE,
+                                    Float64.NaN,
+                                    Float64.NaN,
+                                    dashEffect,
+                                    ColorTemplate.COLOR_NONE
+                                )
+                            );
+                        }
+                    case _ =>
+                        let j: Int64 = 0;
+                        while (j < clrs.size && j < entryCount) {
+                            var label: String = ""
+
+                            // if multiple colors are set for a DataSet, group them
+                            if (j < clrs.size - 1 && j < entryCount - 1) {
+                                label = ""
+                            } else { // add label to the last entry
+                                if (data.isNone()) {
+                                    label = ""
+                                }
+                                let dataObj = data().getDataSetByIndex(i);
+                                if (dataObj.isNone()) {
+                                    label = ""
+                                } else {
+                                    label = dataObj().getLabel()
+                                }
+                            }
+                            var clrsData: UInt32 = 0;
+                            if (clrs.isEmpty()) {
+                                clrsData = 0
+                            }
+                            clrsData = (clrs[j])
+                            let dashEffect = dataSet().getFormLineDashEffect(); // 使用空对象作为默认值
+                            this.computedEntries.append(
+                                LegendEntry(
+                                    label,
+                                    dataSet().getForm(),
+                                    dataSet().getFormSize(),
+                                    dataSet().getFormLineWidth(),
+                                    dashEffect,
+                                    clrsData
+                                )
+                            );
+                        }
                 }
 
                 if (this.mLegend.isSome() && this.mLegend().getExtraEntries().isSome()) {
@@ -110,8 +193,7 @@ public class LegendRenderer <: Renderer {
                 match (this.mLegend) {
                     case Some(l) =>
                         l.setEntries(this.computedEntries)
-                        let tf: FontFamily
-                            = l.getTypeface()
+                        let tf: FontFamily = l.getTypeface()
 
                         this.mLegendLabelPaint.setFontFamily(tf)
 
