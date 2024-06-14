@@ -16,6 +16,7 @@ from ohos import device_info.*
 from ohos import animator.*
 from std import unicode.{UnicodeExtension}
 from std import time.*
+from std import convert.*
 from ohos import image.*
 
 extend Option<T> {

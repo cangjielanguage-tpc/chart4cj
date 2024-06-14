@@ -3,8 +3,8 @@
  */
 package core.pie
 
-public abstract class IBarDataSet <: IBarLineScatterCandleBubbleDataSet<BarEntry> {
-    public func getFills(): ArrayList<Fill>
+public interface IBarDataSet <: IBarLineScatterCandleBubbleDataSet<BarEntry> {
+    public func getFills(): ?ArrayList<Fill>
 
     public func getFill(index: Int64): Fill
 

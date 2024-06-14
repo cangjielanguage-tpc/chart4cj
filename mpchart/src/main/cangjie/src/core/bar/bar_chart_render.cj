@@ -147,7 +147,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         buffer.feed(dataSet)
         trans().pointValuesToPixel(buffer.buffer)
 
-        let fills: ArrayList<Fill> = dataSet.getFills()
+        let fills: ArrayList<Fill> = dataSet.getFills()()
         let isCustomFill: Bool = !fills.isEmpty()
         let isSingleColor: Bool = dataSet.getColors().size == 1
         let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())

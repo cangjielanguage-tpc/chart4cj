@@ -1,5 +1,6 @@
+package core.charts
 @Component
-class PieChart {
+public class PieChart {
     var model: PieChartModel = PieChartModel.build()
     private var setting: RenderingContextSettings = RenderingContextSettings(antialias: true)
     private var context2D: CanvasRenderingContext2D = CanvasRenderingContext2D(this.setting)

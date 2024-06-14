@@ -3,7 +3,7 @@
  */
 package core.bar
 
-public open class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> {
+public open class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IBarDataSet {
     /**
      * the maximum number of bars that are stacked upon each other, this value
      * is calculated from the Entries that are added to the DataSet

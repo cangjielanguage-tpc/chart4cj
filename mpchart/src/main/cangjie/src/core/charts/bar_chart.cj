@@ -1,8 +1,6 @@
-/**
- * Created on 2024/6/14
- */
+package core.charts
 @Component
-class BarChart {
+public class BarChart {
     var model: BarChartModel = BarChartModel.build()
     private var setting: RenderingContextSettings = RenderingContextSettings(antialias: true)
     private var context2D: CanvasRenderingContext2D = CanvasRenderingContext2D(this.setting)

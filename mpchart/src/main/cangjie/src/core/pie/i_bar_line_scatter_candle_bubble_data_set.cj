@@ -3,6 +3,6 @@
  */
 package core.pie
 
-public abstract class IBarLineScatterCandleBubbleDataSet<E> <: IDataSet<E> where E <: EntryOhos {
+public interface  IBarLineScatterCandleBubbleDataSet<E> <: IDataSet<E> where E <: EntryOhos {
     public func getHighLightColor(): UInt32
 }
