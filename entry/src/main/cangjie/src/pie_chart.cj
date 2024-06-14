@@ -1,6 +1,6 @@
 @Component
 class PieChart {
-    var model: PieChartModel = PieChartModel()
+    var model: PieChartModel = PieChartModel.Init()
     private var setting: RenderingContextSettings = RenderingContextSettings(antialias: true)
     private var context2D: CanvasRenderingContext2D = CanvasRenderingContext2D(this.setting)
 

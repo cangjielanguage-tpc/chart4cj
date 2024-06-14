@@ -322,8 +322,8 @@ public abstract class AxisBase <: ComponentBase {
             this.mLabelCount = countt
         }
         this.mForceLabels = false
-        if (force.isSome()) {
-            this.mForceLabels = force()
+        if (let Some(f) <- force) {
+            this.mForceLabels = f
         }
     }
 

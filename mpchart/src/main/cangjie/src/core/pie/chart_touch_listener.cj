@@ -3,35 +3,7 @@
  */
 package core.pie
 
-public enum ChartGesture <: ToString {
-    | NONE
-    | DRAG
-    | X_ZOOM
-    | Y_ZOOM
-    | PINCH_ZOOM
-    | ROTATE
-    | SINGLE_TAP
-    | DOUBLE_TAP
-    | LONG_PRESS
-    | FLING
-
-    public func toString(): String {
-        match (this) {
-            case NONE => "NONE"
-            case DRAG => "DRAG"
-            case X_ZOOM => "X_ZOOM"
-            case Y_ZOOM => "Y_ZOOM"
-            case PINCH_ZOOM => "PINCH_ZOOM"
-            case ROTATE => "ROTATE"
-            case SINGLE_TAP => "SINGLE_TAP"
-            case DOUBLE_TAP => "DOUBLE_TAP"
-            case LONG_PRESS => "LONG_PRESS"
-            case FLING => "FLING"
-        }
-    }
-}
-
-public abstract class ChartTouchListener<C, D, S, E> where C <: ChartModel<D, S, E>, D <: ChartData<S, E>,
+public abstract class ChartTouchListener<D, S, E> where  D <: ChartData<S, E>,
     S <: IDataSet<E>, E <: EntryOhos {
     /**
      * the last touch gesture that has been performed
@@ -57,9 +29,9 @@ public abstract class ChartTouchListener<C, D, S, E> where C <: ChartModel<D, S,
     /**
      * the chart the listener represents
      */
-    protected var mChart: C
+    protected var mChart: ChartModel<D, S, E>
 
-    public init(chart: C) {
+    public init(chart: ChartModel<D, S, E> ) {
         this.mChart = chart
     }
 
@@ -71,8 +43,8 @@ public abstract class ChartTouchListener<C, D, S, E> where C <: ChartModel<D, S,
     public func startAction(isTouchEvent: Bool, me: Any) {
         let l: ?OnChartGestureListener = this.mChart.getOnChartGestureListener();
 
-        if (l.isSome()) {
-            l().onChartGestureStart(isTouchEvent, me, this.mLastGesture)
+        if (let Some(listener) <- l) {
+            listener.onChartGestureStart(isTouchEvent, me, this.mLastGesture)
         }
     }
 
@@ -84,8 +56,8 @@ public abstract class ChartTouchListener<C, D, S, E> where C <: ChartModel<D, S,
     public func endAction(isTouchEvent: Bool, me: Any) {
         let l: ?OnChartGestureListener = this.mChart.getOnChartGestureListener();
 
-        if (l.isSome()) {
-            l().onChartGestureStart(isTouchEvent, me, this.mLastGesture);
+        if (let Some(listener) <- l) {
+            listener.onChartGestureStart(isTouchEvent, me, this.mLastGesture);
         }
     }
 

@@ -63,7 +63,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      * listener that is called when a value on the chart is selected
      */
     protected var mSelectionListener: ?OnChartValueSelectedListener = None
-    protected var mChartTouchListener: ?ChartTouchListener<ChartModel<D, S, E>, D, S, E> = None
+    protected var mChartTouchListener: ?ChartTouchListener<D, S, E> = None
     /**
      * text that is displayed when the chart is empty
      */
@@ -461,7 +461,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      * @param dataIndex The data index to search in (only used in CombinedChartView currently)
      * @param callListener Should the listener be called for this change
      */
-    public func highlightValue(x: Float64, dataSetIndex: Int64, dataIndex: Int64): Unit {
+    public open func highlightValue(x: Float64, dataSetIndex: Int64, dataIndex: Int64): Unit {
         highlightValue(x, dataSetIndex, dataIndex, true)
     }
 
@@ -576,7 +576,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      * @param y
      * @return
      */
-    public func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {
+    public open func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {
         if (this.mData.isNone()) {
             AppLog.error(LOG_TAG + ":Can't select by touch. No data set.")
             return Option<Highlight>.None
@@ -596,7 +596,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      *
      * @param l
      */
-    public func setOnTouchListener(l: ChartTouchListener<ChartModel<D, S, E>, D, S, E>): Unit {
+    public func setOnTouchListener(l: ChartTouchListener<D, S, E>): Unit {
         this.mChartTouchListener = l
     }
 
@@ -605,7 +605,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      *
      * @return
      */
-    public func getOnTouchListener(): ?ChartTouchListener<ChartModel<D, S, E>, D, S, E> {
+    public func getOnTouchListener(): ?ChartTouchListener<D, S, E> {
         return this.mChartTouchListener
     }
 
@@ -657,10 +657,10 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
                             if (!this.mViewPortHandler.isInBounds(pos[0], pos[1])) {
                                 continue
                             }
-                            if (this.mMarker.isSome()) {
+                            if (let Some(marker) <- this.mMarker) {
                                 // callbacks to update the content
                                 // this.mMarker.refreshContent(e, highlight)
-                                this.mMarker().draw(c, pos[0], pos[1], ee, highlight)
+                                marker.draw(c, pos[0], pos[1], ee, highlight)
 
                             }
                         }
@@ -1343,7 +1343,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      * @param highlighter
      */
     public func setHighlighter(
-        highlighter: ChartHighlighter<BarLineScatterCandleBubbleDataProvider<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>,
+        highlighter: ChartHighlighter<BarLineScatterCandleBubbleDataProvider<IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>, IBarLineScatterCandleBubbleDataSet<EntryOhos>,
             EntryOhos>) {
         this.mHighlighter = highlighter
     }

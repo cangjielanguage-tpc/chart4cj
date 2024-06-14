@@ -191,8 +191,8 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
      */
     public func toSimpleString(): String {
         var size = 0
-        if (this.mEntries.isSome()) {
-            size = this.mEntries().size
+        if (let Some(entries) <- this.mEntries) {
+            size = entries.size
         }
 
         let str: String = "DataSet, label: " + this.getLabel() + ", entries: " + size.toString() + "\n"
@@ -287,8 +287,8 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
 
         let index: Int64 = this.getEntryIndex(xValue, closestToY, myRounding)
         if (index > -1) {
-            if (this.mEntries.isSome()) {
-                return this.mEntries().get(index)()
+            if (let Some(entries) <- this.mEntries) {
+                return entries[index]
             }
         }
 
@@ -403,8 +403,8 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
 
                 // loop over all "equal" entries
                 for (m in 0..high) {
-                    if (this.mEntries.isSome()) {
-                        entry = this.mEntries().get(m)()
+                    if (let Some(entries) <- this.mEntries) {
+                        entry = entries[m]
                         if (entry.getX() == xValue) {
                             entries.append(entry)
                         } else {
