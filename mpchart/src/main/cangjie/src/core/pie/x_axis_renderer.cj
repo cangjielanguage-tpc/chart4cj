@@ -6,7 +6,7 @@ package core.pie
 /**
  * Created on 2024/4/22
  */
-public class XAxisRenderer <: AxisRenderer {
+public open class XAxisRenderer <: AxisRenderer {
     protected var mXAxis: XAxis
 
     public init(viewPortHandler: ViewPortHandler, xAxis: XAxis, trans: Transformer) {
@@ -23,7 +23,7 @@ public class XAxisRenderer <: AxisRenderer {
         this.mGridPaint.setDashPathEffect(dashPathEffect)
     }
 
-    public func computeAxis(min: Float64, max: Float64, inverted: Bool) {
+    public open func computeAxis(min: Float64, max: Float64, inverted: Bool) {
         var mins: Float64 = min
         var maxs: Float64 = max
         if (this.mViewPortHandler().contentWidth() > 10.0 && !this.mViewPortHandler().isFullyZoomedOutX()) {
@@ -66,7 +66,7 @@ public class XAxisRenderer <: AxisRenderer {
         this.computeSize()
     }
 
-    protected func computeSize() {
+    protected open func computeSize() {
         let longest: String = this.mXAxis.getLongestLabel()
 
         this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface())
@@ -92,7 +92,7 @@ public class XAxisRenderer <: AxisRenderer {
         FSize.recycleInstance(labelSize)
     }
 
-    public func renderAxisLabels(c: CanvasRenderingContext2D): Unit {
+    public open func renderAxisLabels(c: CanvasRenderingContext2D): Unit {
         if (!this.mXAxis.isEnabled() || !this.mXAxis.isDrawLabelsEnabled()) {
             return
         }
@@ -170,7 +170,7 @@ public class XAxisRenderer <: AxisRenderer {
      *
      * @param pos
      */
-    protected func drawLabels(c: CanvasRenderingContext2D, pos: Float64, anchor: MPPointF): Unit {
+    protected open func drawLabels(c: CanvasRenderingContext2D, pos: Float64, anchor: MPPointF): Unit {
         let labelRotationAngleDegrees = this.mXAxis.getLabelRotationAngle()
         let centeringEnabled = this.mXAxis.isCenterAxisLabelsEnabled()
 
@@ -269,7 +269,7 @@ public class XAxisRenderer <: AxisRenderer {
 
     protected var mGridClippingRect: MyRect = MyRect()
 
-    public func getGridClippingRect(): MyRect {
+    public open func getGridClippingRect(): MyRect {
         match (this.mViewPortHandler) {
             case Some(m) => this.mGridClippingRect.set(m.getContentRect().left, m.getContentRect().top,
                 m.getContentRect().right, m.getContentRect().bottom)
@@ -289,7 +289,7 @@ public class XAxisRenderer <: AxisRenderer {
      * @param y
      * @param gridLinePath
      */
-    protected func drawGridLine(c: CanvasRenderingContext2D, x: Float64, y: Float64): Unit {
+    protected open func drawGridLine(c: CanvasRenderingContext2D, x: Float64, y: Float64): Unit {
         Utils.resetContext2DStyle(c, this.mGridPaint)
         c.beginPath()
         let moveToY: Float64 = match (this.mViewPortHandler) {
@@ -360,7 +360,7 @@ public class XAxisRenderer <: AxisRenderer {
      *
      * @param c
      */
-    public func renderLimitLines(c: CanvasRenderingContext2D): Unit {
+    public open func renderLimitLines(c: CanvasRenderingContext2D): Unit {
         let limitLines = this.mXAxis.getLimitLines()
 
         //limitLines && this.renderLinesInner(c, limitLines)

@@ -3,7 +3,7 @@
  */
 package core.bar
 
-public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
+public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
     public var mChart: BarDataProvider
     /**
      * the rect object that is used for drawing the bars
@@ -30,7 +30,7 @@ public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         this.mBarBorderPaint.setStyle(Style.STROKE)
     }
 
-    public func initBuffers(): Unit {
+    public open func initBuffers(): Unit {
         let barData: ?BarData = this.mChart.getBarData()
         match (barData) {
             case Some(bardata) =>
@@ -73,7 +73,7 @@ public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
     protected var mBarShadowRectBuffer: MyRect = MyRect()
 
-    protected func drawDataSet(c: CanvasRenderingContext2D, dataSet: IBarDataSet, index: Int64): Unit {
+    protected open func drawDataSet(c: CanvasRenderingContext2D, dataSet: IBarDataSet, index: Int64): Unit {
         let trans: ?Transformer = this.mChart.getTransformer(dataSet.getAxisDependency())
 
         this.mBarBorderPaint.setColor(Color(dataSet.getBarBorderColor()))
@@ -220,7 +220,7 @@ public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         }
     }
 
-    protected func prepareBarHighlight(x: Float64, y1: Float64, y2: Float64, barWidthHalf: Float64, trans: Transformer): Unit {
+    protected open func prepareBarHighlight(x: Float64, y1: Float64, y2: Float64, barWidthHalf: Float64, trans: Transformer): Unit {
         let left: Float64 = x - barWidthHalf
         let right: Float64 = x + barWidthHalf
         let top: Float64 = y1
@@ -599,7 +599,7 @@ public class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
      * Sets the drawing position of the highlight object based on the riven bar-rect.
      * @param high
      */
-    protected func setHighlightDrawPos(high: Highlight, bar: MyRect): Unit {
+    protected open func setHighlightDrawPos(high: Highlight, bar: MyRect): Unit {
         high.setDraw(bar.centerX(), bar.top)
     }
 

@@ -48,7 +48,7 @@ public abstract class DataRenderer <: Renderer {
         this.mHighlightPaint.setColor("#FFBB73")
     }
 
-    protected func isDrawingValuesAllowed(chart: ChartInterface<IDataSet<EntryOhos>, EntryOhos>): Bool {
+    protected open func isDrawingValuesAllowed(chart: ChartInterface<IDataSet<EntryOhos>, EntryOhos>): Bool {
         let chartData = chart.getData()
             if (this.mViewPortHandler.isSome() && chartData.isSome()) {
                 return Float64(chartData().getEntryCount()) < Float64(chart.getMaxVisibleCount()) * this.mViewPortHandler().getScaleX()

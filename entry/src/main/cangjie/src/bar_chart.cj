@@ -3,7 +3,7 @@
  */
 @Component
 class BarChart {
-    var model: BarChartModel = BarChartModel()
+    var model: BarChartModel = BarChartModel.build()
     private var setting: RenderingContextSettings = RenderingContextSettings(antialias: true)
     private var context2D: CanvasRenderingContext2D = CanvasRenderingContext2D(this.setting)
 
