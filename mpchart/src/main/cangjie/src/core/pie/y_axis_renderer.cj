@@ -3,7 +3,7 @@
  */
 package core.pie
 
-public class YAxisRenderer <: AxisRenderer {
+public open class YAxisRenderer <: AxisRenderer {
     protected var mYAxis: YAxis
     protected var mZeroLinePaint: Paint = Paint()
 
@@ -23,7 +23,7 @@ public class YAxisRenderer <: AxisRenderer {
     /**
      * draws the y-axis labels to the screen
      */
-    public func renderAxisLabels(c: CanvasRenderingContext2D): Unit {
+    public open func renderAxisLabels(c: CanvasRenderingContext2D): Unit {
         if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawLabelsEnabled()) {
             return
         }
@@ -96,7 +96,7 @@ public class YAxisRenderer <: AxisRenderer {
      * @param fixedPosition
      * @param positions
      */
-    protected func drawYLabels(c: CanvasRenderingContext2D, fixedPosition: Float64, positions: Array<Float64>,
+    protected open func drawYLabels(c: CanvasRenderingContext2D, fixedPosition: Float64, positions: Array<Float64>,
         offset: Float64): Unit {
         let fromIndex: Int64 = if (this.mYAxis.isDrawBottomYLabelEntryEnabled()) {
             0
@@ -179,7 +179,7 @@ public class YAxisRenderer <: AxisRenderer {
 
     protected var mGridClippingRect: MyRect = MyRect()
 
-    public func getGridClippingRect(): MyRect {
+    public open func getGridClippingRect(): MyRect {
         this.mGridClippingRect.set(this.mViewPortHandler().getContentRect().left,
             this.mViewPortHandler().getContentRect().top, this.mViewPortHandler().getContentRect().right,
             this.mViewPortHandler().getContentRect().bottom)
@@ -197,7 +197,7 @@ public class YAxisRenderer <: AxisRenderer {
      * @param positions
      * @return
      */
-    protected func linePath(c: CanvasRenderingContext2D, i: Int64, positions: Array<Float64>): Unit {
+    protected open func linePath(c: CanvasRenderingContext2D, i: Int64, positions: Array<Float64>): Unit {
         c.beginPath()
         c.moveTo(this.mViewPortHandler().offsetLeft(), positions[i + 1])
         c.lineTo(this.mViewPortHandler().contentRight(), positions[i + 1])
@@ -213,7 +213,7 @@ public class YAxisRenderer <: AxisRenderer {
      *
      * @return
      */
-    protected func getTransformedPositions(): Array<Float64> {
+    protected open func getTransformedPositions(): Array<Float64> {
         if (this.mGetTransformedPositionsBuffer.size != Int64(this.mYAxis.mEntryCount) * 2) {
             this.mGetTransformedPositionsBuffer = Array<Float64>(Int64(this.mYAxis.mEntryCount) * 2, item: 0.0)
         }
@@ -237,7 +237,7 @@ public class YAxisRenderer <: AxisRenderer {
     /**
      * Draws the zero line.
      */
-    protected func drawZeroLine(c: CanvasRenderingContext2D): Unit {
+    protected open func drawZeroLine(c: CanvasRenderingContext2D): Unit {
         c.save()
 
         this.mZeroLineClippingRect.set(this.mViewPortHandler().getContentRect().left,
@@ -265,7 +265,7 @@ public class YAxisRenderer <: AxisRenderer {
         c.restore()
     }
 
-    protected var mRenderLimitLinesBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
+    var mRenderLimitLinesBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
     protected var mLimitLineClippingRect: MyRect = MyRect()
 
     public func renderLine(c: CanvasRenderingContext2D, l: LimitLine) {
@@ -323,7 +323,7 @@ public class YAxisRenderer <: AxisRenderer {
      *
      * @param c
      */
-    public func renderLimitLines(c: CanvasRenderingContext2D): Unit {
+    public open func renderLimitLines(c: CanvasRenderingContext2D): Unit {
         let limitLines: ArrayList<LimitLine> = this.mYAxis.getLimitLines()
 
         if (limitLines.size <= 0) {

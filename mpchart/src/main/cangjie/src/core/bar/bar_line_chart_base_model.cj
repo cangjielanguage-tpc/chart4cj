@@ -330,7 +330,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         this.drawCycles = 0
     }
 
-    protected func prepareValuePxMatrix(): Unit {
+    protected open func prepareValuePxMatrix(): Unit {
         if (this.mLogEnabled && this.mXAxis.isSome()) {
             AppLog.info(
                 "mpchart: Preparing Value-Px Matrix, xmin: ${this.mXAxis().mAxisMinimum}, xmax: ${this.mXAxis().mAxisMaximum}, xdelta: ${this.mXAxis().mAxisRange}"
@@ -457,7 +457,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             )
         }
     }
-    protected func calculateLegendOffsets(offsets: MyRect): Unit {
+    protected open func calculateLegendOffsets(offsets: MyRect): Unit {
         offsets.left = 0.0
         offsets.right = 0.0
         offsets.top = 0.0
@@ -519,7 +519,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
 
     protected var mOffsetsBuffer: MyRect = MyRect()
 
-    public func calculateOffsets(): Unit {
+    public open func calculateOffsets(): Unit {
         if (!this.mCustomViewPortEnabled) {
             var offsetLeft: Float64 = 0.0
             var offsetRight: Float64 = 0.0
@@ -691,8 +691,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     }
 
     public func calcPos(isTouchEvent: Bool, event: Any) {
-        return (this.mChartTouchListener as BarLineChartTouchListener<D, S, E>)().
-            getXyByEvent(isTouchEvent, event)
+        return (this.mChartTouchListener as BarLineChartTouchListener<D, S, E>)().getXyByEvent(isTouchEvent, event)
     }
 
     public func onPinch(isTouchEvent: Bool, actionType: PinchActionType, event: Any): Unit {
@@ -710,8 +709,8 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         }
     }
     public func computeScroll(): Unit {
-        if(let Some(listener: BarLineChartTouchListener<D, S, E>) <- this.mChartTouchListener){
-           listener.computeScroll()
+        if (let Some(listener: BarLineChartTouchListener<D, S, E>) <- this.mChartTouchListener) {
+            listener.computeScroll()
         }
     }
 
@@ -856,7 +855,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      *
      * @param maxXRange The maximum visible range of x-values.
      */
-    public func setVisibleXRangeMaximum(maxXRange: Float64): Unit {
+    public open func setVisibleXRangeMaximum(maxXRange: Float64): Unit {
         var xScale: Float64 = 1.0
         if (this.mXAxis.isSome()) {
             xScale = this.mXAxis().mAxisRange / (maxXRange)
@@ -888,7 +887,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      * @param minXRange
      * @param maxXRange
      */
-    public func setVisibleXRange(minXRange: Float64, maxXRange: Float64): Unit {
+    public open func setVisibleXRange(minXRange: Float64, maxXRange: Float64): Unit {
         var minScale: Float64 = 1.0
         if (this.mXAxis.isSome()) {
             minScale = this.mXAxis().mAxisRange / minXRange
@@ -907,7 +906,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      * @param maxYRange the maximum visible range on the y-axis
      * @param axis      the axis for which this limit should apply
      */
-    public func setVisibleYRangeMaximum(maxYRange: Float64, axis: AxisDependency): Unit {
+    public open func setVisibleYRangeMaximum(maxYRange: Float64, axis: AxisDependency): Unit {
         let yScale: Float64 = this.getAxisRange(axis) / maxYRange
         this.mViewPortHandler.setMinimumScaleY(yScale)
     }
@@ -918,7 +917,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      * @param minYRange
      * @param axis      the axis for which this limit should apply
      */
-    public func setVisibleYRangeMinimum(minYRange: Float64, axis: AxisDependency): Unit {
+    public open func setVisibleYRangeMinimum(minYRange: Float64, axis: AxisDependency): Unit {
         let yScale: Float64 = this.getAxisRange(axis) / minYRange
         this.mViewPortHandler.setMaximumScaleY(yScale)
     }
@@ -930,7 +929,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      * @param maxYRange
      * @param axis
      */
-    public func setVisibleYRange(minYRange: Float64, maxYRange: Float64, axis: AxisDependency): Unit {
+    public open func setVisibleYRange(minYRange: Float64, maxYRange: Float64, axis: AxisDependency): Unit {
         let minScale: Float64 = this.getAxisRange(axis) / minYRange
         let maxScale: Float64 = this.getAxisRange(axis) / maxYRange
         this.mViewPortHandler.setMinMaxScaleY(minScale, maxScale)
@@ -1089,7 +1088,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         return this.mDrawListener
     }
 
-    protected var mGetPositionBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
+    private var mGetPositionBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
 
     /**
      * Returns a recyclable MPPointF instance.
@@ -1099,7 +1098,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      * @param e
      * @return
      */
-    public func getPosition(e: EntryOhos, axis: AxisDependency): MPPointF {
+    public open func getPosition(e: EntryOhos, axis: AxisDependency): MPPointF {
         this.mGetPositionBuffer[0] = e.getX()
         this.mGetPositionBuffer[1] = e.getY()
 
@@ -1455,7 +1454,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      *
      * @return
      */
-    public func getLowestVisibleX(): Float64 {
+    public open func getLowestVisibleX(): Float64 {
         let transformer: ?Transformer = this.getTransformer(AxisDependency.LEFT)
         if (transformer.isSome()) {
             transformer().getValuesByTouchPoint(this.mViewPortHandler.contentLeft(),
@@ -1479,7 +1478,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      *
      * @return
      */
-    public func getHighestVisibleX(): Float64 {
+    public open func getHighestVisibleX(): Float64 {
         let transformer: ?Transformer = this.getTransformer(AxisDependency.LEFT)
         if (transformer.isSome()) {
             transformer().getValuesByTouchPoint(this.mViewPortHandler.contentRight(),

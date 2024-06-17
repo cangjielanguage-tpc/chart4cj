@@ -3,12 +3,12 @@
  */
 package core.bar
 
-public class BarHighlighter <: ChartHighlighter<BarDataProvider, IBarDataSet, BarEntry> {
+public open class BarHighlighter <: ChartHighlighter<BarDataProvider, IBarDataSet, BarEntry> {
     public init(chart: BarDataProvider) {
         super(chart)
     }
 
-    public func getHighlight(x: Float64, y: Float64): ?Highlight {
+    public open func getHighlight(x: Float64, y: Float64): ?Highlight {
         let high: ?Highlight = super.getHighlight(x, y)
         if (let Some(light) <- high) {
             let pos: MPPointD = super.getValsForTouch(x, y)
@@ -109,7 +109,7 @@ public class BarHighlighter <: ChartHighlighter<BarDataProvider, IBarDataSet, Ba
         }
     }
 
-    protected func getDistance(x1: Float64, y1: Float64, x2: Float64, y2: Float64): Float64 {
+    protected open func getDistance(x1: Float64, y1: Float64, x2: Float64, y2: Float64): Float64 {
         return abs(x1 - x2)
     }
 

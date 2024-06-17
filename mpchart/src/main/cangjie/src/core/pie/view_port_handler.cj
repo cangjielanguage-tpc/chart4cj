@@ -3,7 +3,7 @@
  */
 package core.pie
 
-public class ViewPortHandler {
+public open class ViewPortHandler {
     public var mMatrixTouch: Matrix = Matrix()
     /**
      * this rectangle defines the area in which graph values can be drawn

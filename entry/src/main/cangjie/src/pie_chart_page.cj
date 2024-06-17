@@ -4,7 +4,7 @@ class PieChartPage {
 
     //标题栏标题
     private var title: String = "PieChart"
-    private var model: PieChartModel = PieChartModel.Init()
+    private var model: PieChartModel = PieChartModel.build()
     protected let parties: Array<String> = ["Party A", "Party B", "Party C", "Party D", "Party E", "Party F", "Party G",
     "Party H", "Party I", "Party J", "Party K", "Party L", "Party M", "Party N", "Party O", "Party P", "Party Q",
     "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X", "Party Y", "Party Z"]

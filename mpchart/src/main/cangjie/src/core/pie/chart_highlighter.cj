@@ -156,7 +156,7 @@ public open class ChartHighlighter<P, S, E> <: IHighlighter where P <: BarLineSc
      * @param rounding
      * @return
      */
-    protected func buildHighlights(set: IDataSet<EntryOhos>, dataSetIndex: Int64, xVal: Float64, rounding: Rounding): ArrayList<Highlight> {
+    protected open func buildHighlights(set: IDataSet<EntryOhos>, dataSetIndex: Int64, xVal: Float64, rounding: Rounding): ArrayList<Highlight> {
         let highlights: ArrayList<Highlight> = ArrayList<Highlight>()
 
         //noinspection unchecked

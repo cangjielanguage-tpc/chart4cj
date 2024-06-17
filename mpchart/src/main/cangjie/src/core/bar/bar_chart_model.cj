@@ -3,7 +3,7 @@
  */
 package core.bar
 
-public class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, BarEntry> & BarDataProvider {
+public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, BarEntry> & BarDataProvider {
     public var context2d: ?CanvasRenderingContext2D = None
 
     /**
@@ -19,6 +19,27 @@ public class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, BarEnt
      */
     private var mDrawBarShadow: Bool = false
     private var mFitBars: Bool = false
+
+    init() {
+        super()
+    }
+
+    public static func build(): BarChartModel {
+        let model: BarChartModel = BarChartModel()
+        model.mRenderer = BarChartRenderer(model, model.mAnimator(), model.mViewPortHandler)
+
+        model.setHighlighter(
+            (BarHighlighter(model) as ChartHighlighter<BarLineScatterCandleBubbleDataProvider<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
+            EntryOhos>, IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>)())
+
+        let xAxis: ?XAxis = model.getXAxis()
+        if (let Some(xaxis) <- xAxis) {
+            xaxis.setSpaceMin(0.5)
+            xaxis.setSpaceMax(0.5)
+        }
+
+        return model
+    }
 
     public func invalidate(): Unit {
         if (let Some(context2d) <- this.context2d) {
@@ -37,22 +58,6 @@ public class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, BarEnt
     public func onDraw(c: CanvasRenderingContext2D): Unit {
         super.onDraw(c)
     }
-
-    public init() {
-        super()
-        this.mRenderer = BarChartRenderer(this, this.mAnimator(), this.mViewPortHandler)
-
-        this.setHighlighter(
-            (BarHighlighter(this) as ChartHighlighter<BarLineScatterCandleBubbleDataProvider<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
-            EntryOhos>, IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>)())
-
-        let xAxis: ?XAxis = this.getXAxis()
-        if (let Some(xaxis) <- xAxis) {
-            xaxis.setSpaceMin(0.5)
-            xaxis.setSpaceMax(0.5)
-        }
-    }
-
     protected func calcMinMax(): Unit {
         match (this.mData) {
             case Some(data: BarData) =>
@@ -86,7 +91,7 @@ public class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, BarEnt
      * @param y
      * @return
      */
-    public func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {
+    public open func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {
         if (this.mData.isNone()) {
             AppLog.error("mpchart: Can't select by touch. No data set.")
             return None
@@ -130,7 +135,7 @@ public class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, BarEnt
      * @param e
      * @return
      */
-    public func getBarBounds(e: BarEntry, outputRect: MyRect): Unit {
+    public open func getBarBounds(e: BarEntry, outputRect: MyRect): Unit {
         match (this.mData) {
             case Some(data: BarData) =>
                 let bounds: MyRect = outputRect

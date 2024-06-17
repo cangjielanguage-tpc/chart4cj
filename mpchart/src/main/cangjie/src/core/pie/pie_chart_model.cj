@@ -78,7 +78,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
         //this.mChartTouchListener = PieRadarChartTouchListener<PieData, IPieDataSet, PiEntry>
     }
 
-    public static func Init(): PieChartModel {
+    public static func build(): PieChartModel {
         let model = PieChartModel()
         let lister: ChartTouchListener<PieData, IPieDataSet, PiEntry> = PieRadarChartTouchListener<PieData, IPieDataSet, PiEntry>(
             model)
