@@ -99,7 +99,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
 
         trans?.pointValuesToPixel(buffer.buffer)
 
-        let isCustomFill: Bool = !dataSet.getFills().isEmpty()
+        let isCustomFill: Bool = !dataSet.getFills()().isEmpty()
         let isSingleColor: Bool = dataSet.getColors().size == 1
         let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
 

@@ -4,7 +4,7 @@
 package core.bar
 
 public class HorizontalBarChartModel <: BarChartModel {
-    public init() {
+    protected  init() {
         super()
         this.mViewPortHandler = HorizontalViewPortHandler()
 
@@ -31,6 +31,11 @@ public class HorizontalBarChartModel <: BarChartModel {
             this.mXAxisRenderer = XAxisRendererHorizontalBarChart(this.mViewPortHandler, xaxis,
                 this.mLeftAxisTransformer(), this)
         }
+    }
+
+    public static func build(): HorizontalBarChartModel {
+        let model: HorizontalBarChartModel = HorizontalBarChartModel()
+        return model
     }
 
     protected func calculateLegendOffsets(offsets: MyRect): Unit {

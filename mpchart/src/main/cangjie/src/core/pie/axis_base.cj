@@ -401,9 +401,9 @@ public abstract class AxisBase <: ComponentBase {
         line.setLineWidth(customLine.getLineWidth())
         line.setLineColor(customLine.getLineColor())
         line.enableDashedLine(
-            customLine.getDashPathEffect().getLineLength(),
-            customLine.getDashPathEffect().getSpaceLength(),
-            customLine.getDashPathEffect().getPhase()
+            customLine.getDashPathEffect()().getLineLength(),
+            customLine.getDashPathEffect()().getSpaceLength(),
+            customLine.getDashPathEffect()().getPhase()
         )
         this.mGridLines.append(line)
     }

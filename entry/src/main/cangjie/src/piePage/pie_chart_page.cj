@@ -1,3 +1,4 @@
+package piePage
 @Entry
 @Component
 class PieChartPage {

@@ -1143,11 +1143,11 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      *
      * @param color
      */
-    //          public func setGridBackgroundColor(color: string | number | CanvasGradient | CanvasPattern): Unit  {
-    //            if (this.mGridBackgroundPaint) {
-    //              this.mGridBackgroundPaint.setColor(color)
-    //            }
-    //          }
+      public func setGridBackgroundColor(color: UInt32 ): Unit  {
+        if (let Some(paint) <- this.mGridBackgroundPaint) {
+          paint.setColor(Color(color))
+        }
+      }
 
     /**
      * Set this to true to enable dragging (moving the chart with the finger)
