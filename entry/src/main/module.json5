@@ -9,10 +9,11 @@
     ],
     "deliveryWithInstall": true,
     "installationFree": false,
+    "srcEntry": "default.MyAbilityStage",
     "abilities": [
       {
         "name": "CangjieAbility",
-        "srcEntry": "./cangjie/src/index.cj",
+        "srcEntry": "default.MainAbility",
         "description": "$string:EntryAbility_desc",
         "icon": "$media:layered_image",
         "label": "$string:EntryAbility_label",
