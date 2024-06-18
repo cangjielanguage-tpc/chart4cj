@@ -6,215 +6,529 @@ chart4Ohos 是一个包含各种类型图表的图表库，主要用于业务数
 
 ## 1 生成各种类型的图表，包括：线形图、条形图、饼状图、蜡烛图、气泡图、雷达图、散点图、瀑布图、组合图、自定义图表
 
-### 1.1 饼状图 PieChart
+### 1.1 图表基础信息基类
 
-#### 1.1.1 PiEntry Class API Description
-
-饼状图数据结构
+#### 1.1.1 EntryOhos Class API Description
 
 ```cangjie
-public class PiEntry <: EntryOhos {
-    
+public class EntryOhos <: BaseEntry {
+      
     /*
      * 构造 
      * 
-     * 参数 yValue - 比例值
+     * 参数 x - x 值
+     * 参数 y - y 值
      */
-    public init (yValue: Float64)
+    public init (x: Float64, y: Float64)
     
     /*
      * 构造 
      * 
-     * 参数 yValue - 比例值
-     * 参数 data - 额外数据
-     */
-    public init (yValue: Float64, data: Any)
-    
-    /*
-     * 构造 
-     * 
-     * 参数 yValue - 比例值
-     * 参数 icon - 图标图像 （cangjie UI ChartPixelMap）
-     */
-    public init (yValue: Float64, icon: ChartPixelMap)
-    
-    /*
-     * 构造 
-     * 
-     * 参数 yValue - 比例值
-     * 参数 icon - 图标图像 （cangjie UI ChartPixelMap）
+     * 参数 x - x 值
+     * 参数 y - y 值
      * 参数 data - 数据
      */
-    public init (yValue: Float64, icon: ChartPixelMap, data: Any)
+    public init (x: Float64, y: Float64, data: Any)
     
     /*
      * 构造 
      * 
-     * 参数 yValue -  比例值
-     * 参数 label - 标签字符
+     * 参数 x - x 值
+     * 参数 y - y 值
+     * 参数 icon - 图标图像
      */
-    public init (yValue: Float64, label: String)
+    public init (x: Float64, y: Float64, icon: ChartPixelMap)
     
     /*
      * 构造 
      * 
-     * 参数 yValue - 比例值
-     * 参数 label - 标签字符
-     * 参数 data - 附加数据
-     */
-    public init (yValue: Float64, label: String, data: Any)
-    
-    /*
-     * 构造 
-     * 
-     * 参数 yValue -  比例值
-     * 参数 label - 标签字符
-     * 参数 icon - 图标图像 （cangjie UI ChartPixelMap）
-     */
-    public init (yValue: Float64, label: String, icon: ChartPixelMap)
-    
-    /*
-     * 构造 
-     * 
-     * 参数 yValue - 比例值
-     * 参数 label - 标签字符
-     * 参数 icon - 图标图像 （cangjie UI ChartPixelMap）
+     * 参数 x - x 值
+     * 参数 y - y 值
+     * 参数 icon - 图标图像
      * 参数 data - 数据
      */
-    public init (yValue: Float64, label: String, icon: ChartPixelMap, data: Any)
+    public init (x: Float64, y: Float64, icon: ChartPixelMap, data: Any)
+      
+   
+    /*
+     * 获取 x 值
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getX (): Float64
+    
+    
+    /*
+     * 设置 x 值
+     * 
+     * 参数 x - x 值
+     * 返回值 Unit - 
+     */
+    public func setX (x: Float64): Unit
+    
+    /*
+     * 创建副本
+     * 
+     * 返回值 PiEntry - 
+     */
+    public func copy (): EntryOhos
+
+    /*
+     * 比较项目的值、xlndex 和数据。如果这些点中的条目相等，则返回true，否则返回false。
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func equalTo(e: EntryOhos): Bool
+
+    /*
+     * 返回包含 x-index 和 value 的条目的字符串表示形式
+     * 
+     * 返回值 String 
+     */
+    public func toString(): String
 }
 ```
 
-#### 1.1.2 IPieDataSet interface API Description
+#### 1.1.2 IDataSet interface API Description
 
 ```cangjie
-public interface  IPieDataSet <: IDataSet<PiEntry> {}
+public interface IDataSet<E> where E <: EntryOhos {
+
+     func getYMin(): Float64
+    
+     func getYMax(): Float64
+
+     func getXMin(): Float64
+    
+     func getXMax(): Float64
+    
+     func getEntryCount(): Int64
+
+     func calcMinMax(): Unit
+
+     func calcMinMaxY(fromX: Float64, toX: Float64): Unit
+    
+     func getEntryForXValue(xValue: Float64, closestToY: Float64, rounding!: Rounding): ?E
+    
+     func getEntriesForXValue(xValue: Float64): ArrayList<E>
+    
+     func getEntryForIndex(index: Int64): E
+
+     func getEntryIndex(xValue: Float64, closestToY: Float64, rounding: Rounding): Int64
+    
+     func getEntryIndexByEntry(e: E): Int64
+
+     func getIndexInEntries(xIndex: Float64): Int64
+    
+     func addEntry(e: ?E): Bool
+    
+     func addEntryOrdered(e: E): Unit
+    
+     func removeFirst(): Bool
+
+     func removeLast(): Bool
+    
+     func removeEntry(e: E): Bool
+
+     func removeEntryByXValue(xValue: Float64): Bool
+    
+     func removeEntryByIndex(indexL: Int64): Bool
+    
+     func contains(entry: E): Bool
+    
+     func clear(): Unit
+
+     func getLabel(): String
+    
+     func setLabel(label: String): Unit
+
+     func getAxisDependency(): AxisDependency
+    
+     func setAxisDependency(dependency: AxisDependency): Unit
+    
+     func getColors(): ArrayList<UInt32>
+
+     func getColor(): UInt32
+    
+     func getColor(index: Int64): UInt32
+    
+     func isHighlightEnabled(): Bool
+    
+     func setHighlightEnabled(enabled: Bool): Unit
+    
+     func setValueFormatter(f: IValueFormatter): Unit
+    
+     func getValueFormatter(): ?IValueFormatter
+    
+     func needsFormatter(): Bool
+    
+     func setValueTextColor(color: UInt32): Unit
+    
+     func setValueTextColors(colors: ArrayList<UInt32>): Unit
+    
+     func setValueTypeface(tf: FontFamily): Unit
+    
+     func setValueTextSize(size: Float64): Unit
+    
+     func getValueTextColor(index: ?Int64): UInt32
+    
+     func getValueTypeface(): FontFamily
+    
+     func getValueTextSize(): Float64
+
+     func getForm(): LegendForm
+
+     func getFormSize(): Float64
+    
+     func getFormLineWidth(): Float64
+    
+     func getFormLineDashEffect(): ?DashPathEffect
+    
+     func setDrawValues(enabled: Bool): Unit
+
+     func isDrawValuesEnabled(): Bool
+    
+     func setDrawIcons(enabled: Bool): Unit
+
+     func isDrawIconsEnabled(): Bool
+    
+     func setIconsOffset(offset: MPPointF): Unit
+    
+     func getIconsOffset(): MPPointF
+    
+     func setVisible(visible: Bool): Unit
+    
+     func isVisible(): Bool
+}
 
 ```
+#### 1.1.3 ChartData Class API Description
 
-#### 1.1.3 PieDataSet Class API Description
-
-饼状图数据集对象
+图表数据类
 
 ```cangjie
-public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
+public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     
     /*
-     * 使用它所表示的给定值(PiEntry)创建新的DataSet对象。此外，还可以指定描述DataSet的标签。
+     * 无参构造 
      * 
-     * 参数 yVals - PiEntry集合
-     * 参数 label - 饼状图描述
      */
-    public init (yVals: ArrayList<PiEntry>, label: String)
-       
+    public init ()
     
     /*
-     * 设置 piechart 切片之间留出的空间。默认:0.0 无空间，最大20.0
+     * 有参构造 
      * 
-     * 参数 spaceDp - 切片之前的空间
-     * 返回值 Unit - 
+     * 参数 dataSets - 数据集
      */
-    public func setSliceSpace (spaceDp: Float64): Unit
-    
+    public init (dataSets: ArrayList<S>)
     
     /*
-     * 启用后，当最小值小于切片间距本身时，切片间距将为0.0。
+     * 有参构造  
      * 
-     * 参数 autoDisable - true/false
-     * 返回值 Unit - 
+     * 参数 dataSets - 数据集
      */
-    public func setAutomaticallyDisableSliceSpacing (autoDisable: Bool): Unit
-    
+    public init (dataSets: Array<S>)
     
     /*
-     * 设置此DataSet的突出显示的piechart切片从图表中心“移位”的距离，默认为12.0
+     * 调用此方法以让ChartData知道基础数据已更改。当包含的数据发生更改时，调用此函数将重新计算。
      * 
-     * 参数 shift - 距离
      * 返回值 Unit - 
      */
-    public func setSelectionShift (shift: Float64): Unit
-        
-    /*
-     * 设置 x 轴值的位置 *
-     * 
-     * 参数 xValuePosition - ValuePosition
-     * 返回值 Unit - 
-     */
-    public func setXValuePosition (xValuePosition: ValuePosition): Unit
-        
-    /*
-     * 设置 y 轴值的位置 *
-     * 
-     * 参数 yValuePosition - ValuePosition
-     * 返回值 Unit - 
-     */
-    public func setYValuePosition (yValuePosition: ValuePosition): Unit
-        
-    /*
-     * 设置值引导线颜色
-     * 
-     * 参数 valueLineColor - 颜色值
-     * 返回值 Unit - 
-     */
-    public func setValueLineColor (valueLineColor: UInt32): Unit
+    public func notifyDataChanged (): Unit
     
     /*
-     * 是否设置值引导线的颜色
+     * 计算所有数据集上的最小和最大Y值。
      * 
-     * 参数 enabled - true/false
+     * 参数 fromX - 开始计算的x值
+     * 参数 toX - 应执行计算的x值
      * 返回值 Unit - 
      */
-    public func setUseValueColorForLine (enabled: Bool): Unit
-       
-    /*
-     * 设置值引导线宽度
-     * 
-     * 参数 valueLineWidth - 行宽
-     * 返回值 Unit - 
-     */
-    public func setValueLineWidth (valueLineWidth: Float64): Unit
-       
-    /*
-     * 设置超出切片大小的百分比（表示偏移量）*
-     * 
-     * 参数 valueLinePart1OffsetPercentage - 百分比
-     * 返回值 Unit - 
-     */
-    public func setValueLinePart1OffsetPercentage (valueLinePart1OffsetPercentage: Float64): Unit
-        
-    /*
-     * 设置图表上半部分的长度 *
-     * 
-     * 参数 valueLinePart1Length - 长度
-     * 返回值 Unit - 
-     */
-    public func setValueLinePart1Length (valueLinePart1Length: Float64): Unit
-       
-    /*
-     * 设置图表下半部分的长度 *
-     * 
-     * 参数 valueLinePart2Length - 长度
-     * 返回值 Unit - 
-     */
-    public func setValueLinePart2Length (valueLinePart2Length: Float64): Unit
-    
+    public func calcMinMaxY (fromX: Float64, toX: Float64): Unit
     
     /*
-     * 设置可变长度
+     * 计算所有DataSet上的最小值和最大值(x和y)
      * 
-     * 参数 valueLineVariableLength - true/false
      * 返回值 Unit - 
      */
-    public func setValueLineVariableLength (valueLineVariableLength: Bool): Unit
-       
+    public func calcMinMax (): Unit
+    
     /*
-     * 设置高亮显示的扇区颜色
+     * 返回此对象包含的DataSet数
+     * 
+     * 返回值 Int64 - 
+     */
+    public func getDataSetCount (): Int64
+    
+    /*
+     * 返回指定轴的最小y值。
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getYMin (): Float64
+    
+    /*
+     * 返回指定轴的最小y值。
+     * 
+     * 参数 axis - AxisDependency
+     * 返回值 Float64 - 
+     */
+    public func getYMin (axis: AxisDependency): Float64
+    
+    /*
+     *  返回指定轴的最大y值。
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getYMax (): Float64
+    
+    /*
+     * 返回指定轴的最大y值。
+     * 
+     * 参数 axis - AxisDependency
+     * 返回值 Float64 - 
+     */
+    public func getYMax (axis: AxisDependency): Float64
+    
+    /*
+     * 返回指定轴的最小x值。
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getXMin (): Float64
+    
+    /*
+     * 返回指定轴的最大x值。
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getXMax (): Float64
+    
+    /*
+     * 返回此ChartData对象持有的所有DataSet对象。
+     * 
+     * 返回值 ArrayList<S> - DataSet对象
+     */
+    public open func getDataSets (): ArrayList<S>
+    
+    /*
+     * 以字符串数组的形式返回所有数据集的标签。
+     * 
+     * 返回值 Array<String> - 
+     */
+    public func getDataSetLabels (): Array<String>
+    
+    /*
+     * 获取相应高亮显示对象的Entry
+     * 
+     * 参数 highlight - 高亮
+     * 返回值 EntryOhos - 
+     */
+    public open func getEntryForHighlight (highlight: Highlight): EntryOhos
+    
+    /*
+     * 返回具有给定标签的DataSet对象。搜索可以区分大小写，也可以不区分大小写重要提示:此方法在运行时进行计算。在性能危急的情况下小心使用。
+     * 
+     * 参数 label - 给定标签
+     * 参数 ignorecase - 是否区分大小写
+     * 返回值 ?S - 
+     */
+    public open func getDataSetByLabel (label: String, ignorecase: Bool): ?S
+    
+    /*
+     * 根据索引获取DataSet对象
+     * 
+     * 参数 index - 索引
+     * 返回值 ?S - S/Option<S>.None
+     */
+    public open func getDataSetByIndex (index: Int64): ?S
+    
+    /*
+     * 动态添加数据集
+     * 
+     * 参数 d - 数据
+     * 返回值 Unit - 
+     */
+    public func addDataSet (d: S): Unit
+    
+    /*
+     * 从此数据对象中移除给定的DataSet。也会重新计算所有的最小值和最大值。如果删除了数据集，则返回true;如果不能删除任何数据集，则返回false。
+     * 
+     * 参数 d - 数据集
+     * 返回值 Bool - true/false
+     */
+    public func removeDataSet (d: S): Bool
+    
+    /*
+     * 从数据对象中移除DataSet数组中给定索引处的DataSet。也会重新计算所有的最小值和最大值。如果删除了DataSet，则返回true;如果不能删除DataSet，则返回false。
+     * 
+     * 参数 index - 索引
+     * 返回值 Bool - true/false
+     */
+    public func removeDataSetByIndex (index: Int64): Bool
+    
+    /*
+     * 在指定的索引处向DataSet添加一个Entry。条目添加到列表的未尾。
+     * 
+     * 参数 e - Entry
+     * 参数 dataSetIndex - 指定索引
+     * 返回值 Unit - 
+     */
+    public func addEntry (e: E, dataSetIndex: Int64): Unit
+    
+    /*
+     * 从指定索引处的DataSet中移除给定的Entry对象。
+     * 
+     * 参数 e - Entry对象
+     * 参数 dataSetIndex - 指定索引
+     * 返回值 Bool - true/false
+     */
+    public func removeEntry (e: E, dataSetIndex: Int64): Bool
+    
+    /*
+     * 移除指定索引中最接近给定DataSet的Entry对象。如果删除条目，则返回true;如果没有找到符合指定要求的条目，则返回false。
+     * 
+     * 参数 xValue - 给定值
+     * 参数 dataSetIndex - 给定索引
+     * 返回值 Bool - 
+     */
+    public func removeEntryByXValue (xValue: Float64, dataSetIndex: Int64): Bool
+    
+    /*
+     * 返回包含所提供的项的DataSet，如果没有DataSet包含此项，则返回 Option<S>.None
+     * 
+     * 参数 e - EntryOhos
+     * 返回值 ?S - DataSet
+     */
+    public func getDataSetForEntry (e: EntryOhos): ?S
+    
+    /*
+     * 返回此对象所代表的所有Dataset对象中使用的所有颜色。
+     * 
+     * 返回值 Array<UInt32> - 所有颜色数组
+     */
+    public func getColors (): Array<UInt32>
+    
+    /*
+     * 返回此数据对象的DataSet数组中提供的DataSet的索引，如果不存在，返回-1。
+     * 
+     * 参数 dataSet - DataSet
+     * 返回值 Int64 - 索引
+     */
+    public func getIndexOfDataSet (dataSet: S): Int64
+    
+    /*
+     * 返回在左轴上具有依赖关系的数据集数组中的第一个数据集。如果找不到具有左依赖关系的数据集，则返Option<S>.None。
+     * 
+     * 参数 sets - 数据集
+     * 返回值 ?S - 数据集
+     */
+    public func getFirstRight (sets: ArrayList<S>): ?S
+    
+    /*
+     * 为该数据对象包含的所有数据集设置自定义IValueFormatter。
+     * 
+     * 参数 f - IValueFormatter
+     * 返回值 Unit - 
+     */
+    public func setValueFormatter (f: ?IValueFormatter): Unit
+    
+    /*
+     * 为该数据对象包含的所有Dataset设置值-文本的颜色(绘制值标签的颜色)
      * 
      * 参数 color - 颜色
      * 返回值 Unit - 
      */
-    public func setHighlightColor (color: UInt32): Unit
-
+    public func setValueTextColor (color: UInt32): Unit
+    
+    /*
+     * 为该数据对象包含的所有Dataset设置相同的值-颜色列表。
+     * 
+     * 参数 colors - 颜色集
+     * 返回值 Unit - 
+     */
+    public func setValueTextColors (colors: ArrayList<UInt32>): Unit
+    
+    /*
+     * 设置此数据对象包含的所有数据集的所有值标签的字体。
+     * 
+     * 参数 tf - 字体
+     * 返回值 Unit - 
+     */
+    public func setValueTypeface (tf: FontFamily): Unit
+    
+    /*
+     * 设置此数据对象包含的所有DataSet的值-文本的大小(以vp为单位)
+     * 
+     * 参数 size - 字体大小
+     * 返回值 Unit - 
+     */
+    public func setValueTextSize (size: Float64): Unit
+    
+    /*
+     * 启用/禁用此数据对象包含的所有DataSet的绘图值(值-文本)
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit - 
+     */
+    public func setDrawValues (enabled: Bool): Unit
+    
+    /*
+     * 启用/禁用此数据对象包含的所有DataSet的突出显示值。如果设置为true这意味着可以通过编程方式或通过触摸手势突出显示值。
+     * 
+     * 参数 enabled - true/false 
+     * 返回值 Unit - 
+     */
+    public func setHighlightEnabled (enabled: Bool): Unit
+    
+    /*
+     * 如果启用了所有基础值的突出显示，则返回true;如果未启用，则返回false。
+     * 
+     * 返回值 Bool - true/false 
+     */
+    public func isHighlightEnabled (): Bool
+    
+    /*
+     * 从所有数据集中清除此数据对象并删除所有条目。别忘了在这之后让图表失效。
+     * 
+     * 返回值 Unit - 
+     */
+    public func clearValues (): Unit
+    
+    /*
+     * 检查此数据对象是否包含指定的数据集。如果是则返回真，如果不是则返回假。
+     * 
+     * 参数 dataSet - 数据对象
+     * 返回值 Bool - true/false 
+     */
+    public func contains (dataSet: S): Bool
+    
+    /*
+     * 返回此数据对象包含的所有DataSet对象的总条目计数。
+     * 
+     * 返回值 Int64 - 总条目计数
+     */
+    public func getEntryCount (): Int64
+    
+    /*
+     * 返回具有最大条目数的DataSet对象，如果没有DataSet，返回 Option<S>.None
+     * 
+     * 返回值 ?S - 
+     */
+    public func getMaxEntryCountSet (): ?S
+    
+    /*
+     * 设置是否仅通过X轴距离来判断是否高亮点。
+     * 
+     * 参数 highlightByXDistance - 是否仅通过X轴距离来判断是否高亮点
+     */
+    public func setHighlightByXDistance (highlightByXDistance: Bool)
+    
+    /*
+     * 检查是否仅通过X轴距离来判断是否高亮点。
+     * 
+     * 返回值 Bool - 是否仅通过X轴距离来判断是否高亮点的布尔值
+     */
+    public func isHighlightByXDistance (): Bool
 }
 ```
 
@@ -389,7 +703,1092 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
 }
 ```
 
-#### 1.1.4 PieData Class API Description
+#### 1.1.5 ChartModel Class API Description
+
+所有图表配置构建类的基类。
+
+```cangjie
+public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorUpdateListener {
+    
+    /*
+     * 获取图表 Y 轴最小值
+     * 
+     * 返回值 Float64 - 最小值
+     */
+    public func getYChartMin (): Float64
+    
+    /*
+     * 获取图表 Y 轴最大值
+     * 
+     * 返回值 Float64 - 最大值
+     */
+    public func getYChartMax (): Float64
+    
+    /*
+     * 获取图表最大显示数量
+     * 
+     * 返回值 Int64 - 数量
+     */
+    public func getMaxVisibleCount (): Int64
+    
+    /*
+     * 更新动画效果
+     * 
+     * 参数 result - ohos 的 AnimatorResult
+     * 返回值 Unit
+     */
+    public func onAnimationUpdate (result: AnimatorResult): Unit
+    
+    
+    /*
+     * 为图表设置新的数据对象
+     * 
+     * 参数 data - 数据
+     * 返回值 Unit
+     */
+    public func setData (data: ?ChartData<S, E>): Unit
+    
+    /*
+     * 清空图表的所有数据，将其置空null，并刷新图表。
+     * 
+     * 返回值 Unit
+     */
+    public func clear (): Unit
+    
+    /*
+     * 从图表中删除所有数据集（以及条目），并刷新图表。
+     * 
+     * 返回值 Unit
+     */
+    public func clearValues (): Unit
+    
+    /*
+     * 判断图表数据是否为空
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func isEmpty (): Bool
+    
+    /*
+     * 如果图表已经设置了作业的维度，则立即发布作业，或者将作业添加到执行队列中。 
+     * 
+     * 参数 job - 作业
+     * 返回值 Unit - 
+     */
+    public func addViewportJob (job: MoveViewJob): Unit
+    
+    /*
+     * 图表数据刷新。
+     * 
+     * 返回值 Unit
+     */
+    public func notifyDataSetChanged (): Unit
+    
+    /*
+     * 计算图表到边框的偏移量，具体取决于图例的位置，x轴y轴的长度，及其的标签位置。
+     * 
+     * 返回值 Unit 
+     */
+    public open func calculateOffsets (): Unit
+    
+    /*
+     * 图表绘制方法。
+     * 
+     * 参数 c - 图表绘制的上下文。
+     * 返回值 Unit - 
+     */
+    public open func onDraw (c: CanvasRenderingContext2D): Unit
+    
+    /*
+     * 判断字符串是否为空
+     * 
+     * 参数 str - String
+     * 返回值 Bool - true/false
+     *            - str 为 None 或 size = 0 为true
+     */
+    public func strIsEmpty (str: ?String): Bool
+    
+    /*
+     * 设置最后一个手势单点
+     * 
+     * 返回值 Unit - 
+     */
+    public func setLastGestureSingleTap (): Unit
+    
+    /*
+     * 设置最后一个手势长按
+     * 
+     * 返回值 Unit - 
+     */
+    public func setLastGestureLongPress (): Unit
+    
+    /*
+     * 获取高亮的最大距离
+     * 
+     * 返回值 Float64 
+     */
+    public func getMaxHighlightDistance (): Float64
+    
+    /*
+     * 设置 MaxHighlightDista
+     * 
+     * 参数 distDp - 
+     * 返回值 Unit - 
+     */
+    public func setMaxHighlightDistance (distDp: Float64): Unit
+    
+    /*
+     * 返回当前高亮显示值的数组。这可能是空值，如果没有突出显示，则为空数组。
+     * 
+     * 返回值 ?Array<Highlight> - 高亮显示值的数组
+     *                          - Array<Highlight>
+     *                          - Option<Array<Highlight>>.None
+     */
+    public func getHighlighted (): ?Array<Highlight>
+    
+    /*
+     * 判断启用每次点击高亮显示
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func isHighlightPerTapEnabled (): Bool
+    
+    /*
+     * 判断启用每次长按高亮显示
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func isHighlightPerLongPressEnabled (): Bool
+    
+    /*
+     * 设置是否启用每次点击高亮显示
+     * 
+     * 参数 enabled - true/false
+     */
+    public func setHighlightPerTapEnabled (enabled: Bool)
+    
+    /*
+     * 设置是否启用每次长按高亮显示
+     * 
+     * 参数 enabled - true/false
+     */
+    public func setHighlightPerLongPressEnabled (enabled: Bool)
+    
+    /*
+     * 判断值是否高亮显示
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func valuesToHighlight (): Bool
+    
+    /*
+     * 突出显示给定数组值高亮显示
+     * 
+     * 参数 highs - Array<Highlight>
+     */
+    public func highlightValuesForArray (highs: Array<Highlight>)
+    
+    /*
+     * 高亮显示给定数据集中给定x值处的任何y值
+     * 
+     * 参数 x - 要突出显示的x值
+     * 参数 dataSetIndex - 要搜索的数据集索引
+     * 参数 dataIndex - 要搜索的数据索引
+     * 返回值 Unit - 
+     */
+    public func highlightValue (x: Float64, dataSetIndex: Int64, dataIndex: Int64): Unit
+    
+    /*
+     * 高亮显示给定数据集中给定x值处的任何y值
+     * 
+     * 参数 x - 要突出显示的x值
+     * 参数 dataSetIndex - 要搜索的数据集索引
+     * 返回值 Unit - 
+     */
+    public func highlightValue (x: Float64, dataSetIndex: Int64): Unit
+    
+    /*
+     * 高亮显示给定数据集中给定x值处的任何y值
+     * 
+     * 参数 x - 要突出显示的x值
+     * 参数 y - 要突出显示的y值。
+     * 参数 dataSetIndex - 要搜索的数据集索引
+     * 参数 dataIndex - 要搜索的数据索引
+     * 返回值 Unit - 
+     */
+    public func highlightValue (x: Float64, y: Float64, dataSetIndex: Int64, dataIndex: Int64): Unit
+    
+    /*
+     * 高亮显示给定数据集中给定x值处的任何y值
+     * 
+     * 参数 x - 要突出显示的x值
+     * 参数 y - 要突出显示的y值
+     * 参数 dataSetIndex - 要搜索的数据集索引
+     * 返回值 Unit - 
+     */
+    public func highlightValue (x: Float64, y: Float64, dataSetIndex: Int64): Unit
+    
+    /*
+     * 高亮显示给定数据集中给定x值处的任何y值
+     * 
+     * 参数 x - 要突出显示的x值
+     * 参数 dataSetIndex - 要搜索的数据集索引
+     * 参数 dataIndex - 要搜索的数据索引
+     * 参数 callListener - 是否应为此更改调用侦听器
+     * 返回值 Unit - 
+     */
+    public func highlightValue (x: Float64, dataSetIndex: Int64, dataIndex: Int64, callListener: Bool): Unit
+    
+    /*
+     * 高亮显示给定数据集中给定x值处的任何y值
+     * 
+     * 参数 x - 要突出显示的x值
+     * 参数 dataSetIndex - 要搜索的数据集索引
+     * 参数 callListener - 是否应为此更改调用侦听器
+     * 返回值 Unit - 
+     */
+    public func highlightValue (x: Float64, dataSetIndex: Int64, callListener: Bool): Unit
+    
+    /*
+     * 高亮显示给定数据集中给定x值处的任何y值
+     * 
+     * 参数 x - 要突出显示的x值
+     * 参数 y - 要突出显示的y值
+     * 参数 dataSetIndex - 要搜索的数据集索引
+     * 参数 dataIndex - 要搜索的数据索引
+     * 参数 callListener - 是否应为此更改调用侦听器
+     */
+    public func highlightValue (x: Float64, y: Float64, dataSetIndex: Int64, dataIndex: Int64, callListener: Bool)
+    
+    /*
+     * 高亮显示给定数据集中给定x值处的任何y值
+     * 
+     * 参数 x - 要突出显示的x值
+     * 参数 y - 要突出显示的x值
+     * 参数 dataSetIndex - 要搜索的数据集索引
+     * 参数 callListener - 是否应为此更改调用侦听器
+     * 返回值 Unit - 
+     */
+    public func highlightValue (x: Float64, y: Float64, dataSetIndex: Int64, callListener: Bool): Unit
+    
+    /*
+     * 高亮显示通过触摸手势选择的值
+     * 
+     * 参数 high - 高亮显示对象
+     * 返回值 Unit - 
+     */
+    public func highlightValue (high: ?Highlight): Unit
+    
+    /*
+     * 高亮显示通过触摸手势选择的值
+     * 
+     * 参数 high - 高亮显示对象
+     * 参数 callListener - 调用侦听器
+     * 返回值 Unit - 
+     */
+    public func highlightValue (high: ?Highlight, callListener: Bool): Unit
+    
+    /*
+     * 重绘图表。
+     * 
+     * 返回值 Unit 
+     */
+    public func invalidate (): Unit
+    
+    /*
+     * 设置图表绘制的上下文。
+     * 
+     * 参数 context2d - 图表绘制的上下文。
+     * 返回值 Unit - 
+     */
+    public func setContext2D (context2d: CanvasRenderingContext2D): Unit
+    
+    /*
+     * 更新图表正确Size。
+     * 
+     * 参数 newWidth - 图表当前显示的宽。
+     * 参数 newHeight - 图表当前显示的高。
+     * 参数 oldWidth - 图表改变Size前显示的宽。
+     * 参数 oldHeight - 	图表改变Size前显示的高。
+     * 返回值 Unit - 
+     */
+    public func onChartSizeChanged (newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64): Unit
+    
+    /*
+     * 返回图表触摸屏幕时的 Highlight 对象（包含 x-index 和 DataSet 索引）。
+     * 
+     * 参数 x - 屏幕触摸点的x轴坐标。
+     * 参数 y - 屏幕触摸点的y轴坐标。
+     * 返回值 ?Highlight - 触摸点的高亮对象。
+     *                   - Highlight
+     *                   - Option<Highlight>.None
+     */
+    public func getHighlightByTouchPoint (x: Float64, y: Float64): ?Highlight
+    
+    /*
+     * 设置触摸监听器
+     * 
+     * 参数 l - 触摸监听事件
+     * 返回值 Unit 
+     */
+    public func setOnTouchListener (l: ChartTouchListener<ChartModel<D,S,E>,D,S,E>): Unit
+    
+    /*
+     * 获取触摸监听事件
+     * 
+     * 返回值 ?ChartTouchListener<ChartModel<D,S,E>,D,S,E>  
+     */
+    public func getOnTouchListener (): ?ChartTouchListener<ChartModel<D,S,E>,D,S,E>
+    
+    /*
+     * 获取标记点
+     * 
+     * 参数 high - 高亮显示对象
+     * 返回值 Array<Float64> - 
+     */
+    public open func getMarkerPosition (high: Highlight): Array<Float64>
+    
+    /*
+     * 返回负责对图表值进行动画处理的动画制作者。
+     * 
+     * 返回值 ?ChartAnimator - 动画管理类。
+     *                      - ChartAnimator
+     *                      - Option<ChartAnimator>.None
+     */
+    public func getAnimator (): ?ChartAnimator
+    
+    /*
+     * 如果设置为 true，则图表在润色后继续滚动默认值：true
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func isDragDecelerationEnabled (): Bool
+    
+    /*
+     * 设置是否开启惯性滑动
+     * 
+     * 参数 enabled - true/false
+     */
+    public func setDragDecelerationEnabled (enabled: Bool)
+    
+    /*
+     * 获取 DragDecelerationFrictionC
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getDragDecelerationFrictionCoef (): Float64
+    
+    /*
+     * 设置 DragDecelerationFrictionC
+     * 
+     * 参数 newValue - 
+     */
+    public func setDragDecelerationFrictionCoef (newValue: Float64)
+    
+    /*
+     * 展示图表时同时带有X轴，Y轴动画
+     * 
+     * 参数 durationMillisX - X轴条目动画播放的时长，单位毫秒。
+     * 参数 durationMillisY - Y轴条目动画播放的时长，单位毫秒。
+     * 参数 easingX - X轴动画差值曲线（可选值见 animateX）
+     * 参数 easingY - Y轴动画差值曲线（可选值见 animateX）
+     * 返回值 Unit
+     */
+    public func animateXY (durationMillisX: Int32, durationMillisY: Int32, easingX: String, easingY: String): Unit
+    
+    /*
+     * 展示图表时带有X轴动画。
+     * 
+     * 参数 durationMillis - 动画播放的时长，单位毫秒。
+     * 参数 easing - 动画差值曲线，可选值：参考仓颉语言系统 API 参考-UI 界面-ohos.animator
+     *       动画插值曲线，仅支持以下可选值：
+     *       "linear"：动画线性变化。
+     *       "ease"：动画开始和结束时的速度较慢，cubic-bezier(0.25、0.1、0.25、1.0)。
+     *       "ease-in"：动画播放速度先慢后快，cubic-bezier(0.42, 0.0, 1.0, 1.0)。
+     *       "ease-out"：动画播放速度先快后慢，cubic-bezier(0.0, 0.0, 0.58, 1.0)。
+     *       "ease-in-out"：动画播放速度先加速后减速，cubic-bezier(0.42, 0.0, 0.58, 1.0)。
+     *       "fast-out-slow-in"：标准曲线，cubic-bezier(0.4，0.0，0.2，1.0)。
+     *       "linear-out-slow-in"：减速曲线，cubic-bezier(0.0，0.0，0.2，1.0)。
+     *       "fast-out-linear-in"：加速曲线，cubic-bezier(0.4, 0.0, 1.0, 1.0)。
+     *       "friction"：阻尼曲线，cubic-bezier(0.2, 0.0, 0.2, 1.0)。
+     *       "extreme-deceleration"：急缓曲线，cubic-bezier(0.0, 0.0, 0.0, 1.0)。
+     *       "rhythm"：节奏曲线，cubic-bezier(0.7, 0.0, 0.2, 1.0)。
+     *       "sharp"：锐利曲线，cubic-bezier(0.33, 0.0, 0.67, 1.0)。
+     *       "smooth"：平滑曲线，cubic-bezier(0.4, 0.0, 0.4, 1.0)。
+     *       "cubic-bezier(x1,y1,x2,y2)"：三次贝塞尔曲线，x1、x2的值必须处于0-1之间。例如"cubic-bezier(0.42,0.0,0.58,1.0)"。
+     *       "steps(number,step-position)"：阶梯曲线，number必须设置，为正整数，step-position参数可选，支持设置start或end，默认值为end。例如"steps(3,start)"。
+     * 返回值 Unit 
+     */
+    public func animateX (durationMillis: Int32, easing: String): Unit
+    
+    /*
+     * 展示图表时带有Y轴动画。
+     * 
+     * 参数 durationMillis - 动画播放的时长，单位毫秒。
+     * 参数 easing - 动画差值曲线，可选值：参考仓颉语言系统 API 参考-UI 界面-ohos.animator
+     *       动画插值曲线，仅支持以下可选值：
+     *       "linear"：动画线性变化。
+     *       "ease"：动画开始和结束时的速度较慢，cubic-bezier(0.25、0.1、0.25、1.0)。
+     *       "ease-in"：动画播放速度先慢后快，cubic-bezier(0.42, 0.0, 1.0, 1.0)。
+     *       "ease-out"：动画播放速度先快后慢，cubic-bezier(0.0, 0.0, 0.58, 1.0)。
+     *       "ease-in-out"：动画播放速度先加速后减速，cubic-bezier(0.42, 0.0, 0.58, 1.0)。
+     *       "fast-out-slow-in"：标准曲线，cubic-bezier(0.4，0.0，0.2，1.0)。
+     *       "linear-out-slow-in"：减速曲线，cubic-bezier(0.0，0.0，0.2，1.0)。
+     *       "fast-out-linear-in"：加速曲线，cubic-bezier(0.4, 0.0, 1.0, 1.0)。
+     *       "friction"：阻尼曲线，cubic-bezier(0.2, 0.0, 0.2, 1.0)。
+     *       "extreme-deceleration"：急缓曲线，cubic-bezier(0.0, 0.0, 0.0, 1.0)。
+     *       "rhythm"：节奏曲线，cubic-bezier(0.7, 0.0, 0.2, 1.0)。
+     *       "sharp"：锐利曲线，cubic-bezier(0.33, 0.0, 0.67, 1.0)。
+     *       "smooth"：平滑曲线，cubic-bezier(0.4, 0.0, 0.4, 1.0)。
+     *       "cubic-bezier(x1,y1,x2,y2)"：三次贝塞尔曲线，x1、x2的值必须处于0-1之间。例如"cubic-bezier(0.42,0.0,0.58,1.0)"。
+     *       "steps(number,step-position)"：阶梯曲线，number必须设置，为正整数，step-position参数可选，支持设置start或end，默认值为end。例如"steps(3,start)"。
+     * 返回值 Unit 
+     */
+    public func animateY (durationMillis: Int32, easing: String): Unit
+    
+    /*
+     * 获取 X 轴对象   
+     * 
+     * 返回值 ?XAxis - XAxis
+     *               - Option<XAxis>.None
+     */
+    public func getXAxis (): ?XAxis
+    
+    /*
+     * 返回默认的数据格式化接口实现类。
+     * 
+     * 返回值 IValueFormatter - 数据格式化接口实现类 IValueFormatter
+     */
+    public func getDefaultValueFormatter (): IValueFormatter
+    
+    /*
+     * 为图表设置选择监听事件
+     * 
+     * 参数 l - 监听事件
+     * 返回值 Unit 
+     */
+    public func setOnChartValueSelectedListener (l: OnChartValueSelectedListener): Unit
+    
+    /*
+     * 为图表设置手势监听事件
+     * 
+     * 参数 l - 手势监听事件
+     * 返回值 Unit 
+     */
+    public func setOnChartGestureListener (l: OnChartGestureListener): Unit
+    
+    /*
+     * 获取自定义手势监听事件
+     * 
+     * 返回值 ?OnChartGestureListener - OnChartGestureListener
+     *                                - Option<OnChartGestureListener>.None
+     */
+    public func getOnChartGestureListener (): ?OnChartGestureListener
+    
+    /*
+     * 获取 Y 轴最大值
+     * 
+     * 返回值 Float64 - 最大值
+     */
+    public func getYMax (): Float64
+    
+    /*
+     * 获取 Y 轴最小值
+     * 
+     * 返回值 Float64 - 最小值
+     */
+    public func getYMin (): Float64
+    
+    /*
+     * 获取图表X轴最大值
+     * 
+     * 返回值 Float64 - 最大值
+     */
+    public func getXChartMax (): Float64
+    
+    /*
+     * 获取图表X轴最小值
+     * 
+     * 返回值 Float64 - 最小值
+     */
+    public func getXChartMin (): Float64
+    
+    /*
+     * 获取X轴范围
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getXRange (): Float64
+    
+    /*
+     * 返回图表(整个视图)的中心点的可回收的MPPointF实例。
+     * 
+     * 返回值 MPPointF - 可回收的MPPointF实例。
+     */
+    public func getCenter (): MPPointF
+    
+    /*
+     * 获取图表宽度
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getWidth (): Float64
+    
+    /*
+     * 获取图表高度
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getHeight (): Float64
+    
+    /*
+     * 返回图表的图形绘制的中心区域的可回收的MPPointF实例。
+     * 
+     * 返回值 ?MPPointF - 可回收的MPPointF实例。
+     *                 - MPPointF
+     *                 - Option<MPPointF>.None
+     */
+    public func getCenterOffsets (): ?MPPointF
+    
+    /*
+     * 设置图表额外偏移量
+     * 
+     * 参数 left - 左
+     * 参数 top - 高
+     * 参数 right - 右
+     * 参数 bottom - 下
+     */
+    public func setExtraOffsets (left: Float64, top: Float64, right: Float64, bottom: Float64)
+    
+    /*
+     * 设置附加到视口顶部的额外偏移
+     * 
+     * 参数 offset - 
+     */
+    public func setExtraTopOffset (offset: Float64)
+    
+    /*
+     * 获取附加到视口顶部的额外偏移
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getExtraTopOffset (): Float64
+    
+    /*
+     * 设置附加到视口右边的额外偏移
+     * 
+     * 参数 offset - 
+     */
+    public func setExtraRightOffset (offset: Float64)
+    
+    /*
+     * 获取附加到视口右边的额外偏移
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getExtraRightOffset (): Float64
+    
+    /*
+     * 设置附加到视口底部的额外偏移
+     * 
+     * 参数 offset - 
+     */
+    public func setExtraBottomOffset (offset: Float64)
+    
+    /*
+     * 设置附加到视口底部的额外偏移
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getExtraBottomOffset (): Float64
+    
+    /*
+     * 设置附加到视口左边的额外偏移
+     * 
+     * 参数 offset - 
+     */
+    public func setExtraLeftOffset (offset: Float64)
+    
+    /*
+     * 设置附加到视口左边的额外偏移
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getExtraLeftOffset (): Float64
+    
+    /*
+     * 将其设置为 true 可启用图表的log输出
+     * 
+     * 参数 enabled - true/false
+     */
+    public func setLogEnabled (enabled: Bool)
+    
+    /*
+     * 判断图表是否启用的日志输出
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func isLogEnabled (): Bool
+    
+    /*
+     * 设置文本，通知用户没有可用于绘制图表的数据。
+     * 
+     * 参数 text - 文本
+     */
+    public func setNoDataText (text: String)
+    
+    /*
+     * 设置无数据文本的颜色
+     * 
+     * 参数 color - 
+     */
+    public func setNoDataTextColor (color: Color)
+    
+    /*
+     * 设置无数据文本的字体
+     * 
+     * 参数 tf - 字体
+     */
+    public func setNoDataTextTypeface (tf: FontFamily)
+    
+    /*
+     * 对齐无数据文本
+     * 
+     * 参数 align - 
+     */
+    public func setNoDataTextAlignment (align: TextAlignStyle)
+    
+    /*
+     * 设置为false。禁用图表所有手势与触摸
+     * 
+     * 参数 enabled - true/false
+     */
+    public func setTouchEnabled (enabled: Bool)
+    
+    /*
+     * 获取是否禁用图表的所有手势与触摸
+     * 
+     * 返回值 Bool - 
+     */
+    public func getTouchEnabled (): Bool
+    
+    /*
+     * 设置在图表上单击某个值时显示的标记
+     * 
+     * 参数 marker - IMarker
+     */
+    public func setMarker (marker: IMarker)
+    
+    /*
+     * 设置长按标记
+     * 
+     * 参数 marker - 
+     */
+    public func setLongPressMarker (marker: IMarker)
+    
+    /*
+     * 获取是否做了标记显示
+     * 
+     * 返回值 ?IMarker - IMarker
+     *                - Option<IMarker>.None
+     */
+    public func getMarker (): ?IMarker
+    
+    /*
+     * 获取长按标记
+     * 
+     * 返回值 ?IMarker - IMarker
+     *                - Option<IMarker>.None
+     */
+    public func getLongPressMarker (): ?IMarker
+    
+    /*
+     * 设置标记区域
+     * 
+     * 参数 v - IMarker
+     */
+    public func setMarkerView (v: IMarker)
+    
+    /*
+     * 获取标记区域
+     * 
+     * 返回值 ?IMarker - IMarker
+     *                - Option<IMarker>.None 
+     */
+    public func getMarkerView (): ?IMarker
+    
+    /*
+     * 设置图表描述信息
+     * 
+     * 参数 desc - Description
+     */
+    public func setDescription (desc: Description)
+    
+    /*
+     * 获取图表描述信息
+     * 
+     * 返回值 ?Description - Description
+     *                    - Option<Description>.None
+     */
+    public func getDescription (): ?Description
+    
+    /*
+     * 获取图例对象。
+     * 
+     * 返回值 ?Legend - 获取图例对象。
+     *               - Legend
+     *               - Option<Legend>.None
+     */
+    public func getLegend (): ?Legend
+    
+    /*
+     * 获取图例渲染器。
+     * 
+     * 返回值 ?LegendRenderer - 获取图例渲染器。
+     *                        - LegendRenderer
+     *                       - Option<LegendRenderer>.None
+     */
+    public func getLegendRenderer (): ?LegendRenderer
+    
+    /*
+     * 返回图表绘制的内容区域的矩形。
+     * 
+     * 返回值 MyRect - 图表绘制的内容区域的矩形。
+     */
+    public func getContentRect (): MyRect
+    
+    /*
+     * 判断是否开启绘画标记点显示
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func isDrawMarkerViewsEnabled (): Bool
+    
+    /*
+     * 设置是否开启绘画标记点显示
+     * 
+     * 参数 enabled - true/false
+     */
+    public func setDrawMarkerViews (enabled: Bool)
+    
+    /*
+     * 如果在点按值时启用了绘制标记，则返回true 
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func isDrawMarkersEnabled (): Bool
+    
+    /*
+     * 如果在长按值时启用了绘制标记，则返回true 
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func isDrawLongPressMarkersEnabled (): Bool
+    
+    /*
+     * 将此设置为true可在点击图表值时绘制用户指定的标记
+     * 
+     * 参数 enabled - true/false
+     */
+    public func setDrawMarkers (enabled: Bool)
+    
+    /*
+     * 将此设置为true可在长按图表值时绘制用户指定的标记
+     * 
+     * 参数 enabled - true/false
+     */
+    public func setDrawLongPressMarkers (enabled: Bool)
+    
+    /*
+     * 返回已为图表设置的 ChartData 对象。
+     * 
+     * 返回值 ?ChartData<S,E> - 数据对象。
+     *                       - ChartData<S,E>
+     *                       - Option<ChartData<S,E>>.None
+     */
+    public func getData (): ?ChartData<S,E>
+    
+    /*
+     * 返回负责图表内容区域及其偏移量和维度的图表的ViewPortHandler
+     * 
+     * 返回值 ViewPortHandler - ViewPortHandler
+     */
+    public func getViewPortHandler (): ViewPortHandler
+    
+    /*
+     * 获取图表数据渲染器。
+     * 
+     * 返回值 ?DataRenderer - 获取图表数据渲染器。
+     *                      - DataRenderer
+     *                      - Option<DataRenderer>.None
+     */
+    public func getRenderer (): ?DataRenderer
+    
+    /*
+     * 设置图表数据渲染器。
+     * 
+     * 参数 renderer - 图表数据渲染器
+     */
+    public func setRenderer (renderer: ?DataRenderer)
+    
+    /*
+     * 返回当前高亮显示条目接口。
+     * 
+     * 返回值 ?IHighlighter - 获取触摸点的高亮对象接口类。
+     *                     - IHighlighter
+     *                     - Option<IHighlighter>.None
+     */
+    public func getHighlighter (): ?IHighlighter
+    
+    /*
+     * 设置高亮显示
+     * 
+     * 参数 highlighter - 高亮显示接口类
+     */
+    public func setHighlighter (highlighter: ChartHighlighter<BarLineScatterCandleBubbleDataProvider<IDataSet<EntryOhos>,EntryOhos>,IDataSet<EntryOhos>,EntryOhos>)
+    
+    /*
+     * 返回图表(整个视图)的中心点的可回收的MPPointF实例。
+     * 
+     * 返回值 MPPointF - 可回收的MPPointF实例。
+     */
+    public func getCenterOfView (): MPPointF
+    
+    /*
+     * 改变图表大小
+     * 
+     * 参数 w - 新宽
+     * 参数 h - 新高
+     * 参数 oldw - 旧宽
+     * 参数 oldh - 旧高
+     * 返回值 Unit - 
+     */
+    public func onSizeChanged (w: Float64, h: Float64, oldw: Float64, oldh: Float64): Unit
+       
+    /*
+     * 将此设置为true以启用可绘制对象从当视图从窗口分离时，这有助于避免内存泄漏。
+     * 默认值:false
+     * 
+     * 参数 enabled - true/false
+     */
+    public func setUnbindEnabled (enabled: Bool)
+}
+
+```
+
+### 1.2 饼状图 PieChart
+
+#### 1.2.1 PiEntry Class API Description
+
+饼状图数据结构
+
+```cangjie
+public class PiEntry <: EntryOhos {
+    
+    /*
+     * 构造 
+     * 
+     * 参数 yValue - 比例值
+     */
+    public init (yValue: Float64)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 yValue - 比例值
+     * 参数 data - 额外数据
+     */
+    public init (yValue: Float64, data: Any)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 yValue - 比例值
+     * 参数 icon - 图标图像 （cangjie UI ChartPixelMap）
+     */
+    public init (yValue: Float64, icon: ChartPixelMap)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 yValue - 比例值
+     * 参数 icon - 图标图像 （cangjie UI ChartPixelMap）
+     * 参数 data - 数据
+     */
+    public init (yValue: Float64, icon: ChartPixelMap, data: Any)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 yValue -  比例值
+     * 参数 label - 标签字符
+     */
+    public init (yValue: Float64, label: String)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 yValue - 比例值
+     * 参数 label - 标签字符
+     * 参数 data - 附加数据
+     */
+    public init (yValue: Float64, label: String, data: Any)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 yValue -  比例值
+     * 参数 label - 标签字符
+     * 参数 icon - 图标图像 （cangjie UI ChartPixelMap）
+     */
+    public init (yValue: Float64, label: String, icon: ChartPixelMap)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 yValue - 比例值
+     * 参数 label - 标签字符
+     * 参数 icon - 图标图像 （cangjie UI ChartPixelMap）
+     * 参数 data - 数据
+     */
+    public init (yValue: Float64, label: String, icon: ChartPixelMap, data: Any)
+}
+```
+
+#### 1.2.2 IPieDataSet interface API Description
+
+```cangjie
+public interface  IPieDataSet <: IDataSet<PiEntry> {}
+
+```
+
+#### 1.2.3 PieDataSet Class API Description
+
+饼状图数据集对象
+
+```cangjie
+public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
+    
+    /*
+     * 使用它所表示的给定值(PiEntry)创建新的DataSet对象。此外，还可以指定描述DataSet的标签。
+     * 
+     * 参数 yVals - PiEntry集合
+     * 参数 label - 饼状图描述
+     */
+    public init (yVals: ArrayList<PiEntry>, label: String)
+       
+    
+    /*
+     * 设置 piechart 切片之间留出的空间。默认:0.0 无空间，最大20.0
+     * 
+     * 参数 spaceDp - 切片之前的空间
+     * 返回值 Unit - 
+     */
+    public func setSliceSpace (spaceDp: Float64): Unit
+    
+    
+    /*
+     * 启用后，当最小值小于切片间距本身时，切片间距将为0.0。
+     * 
+     * 参数 autoDisable - true/false
+     * 返回值 Unit - 
+     */
+    public func setAutomaticallyDisableSliceSpacing (autoDisable: Bool): Unit
+    
+    
+    /*
+     * 设置此DataSet的突出显示的piechart切片从图表中心“移位”的距离，默认为12.0
+     * 
+     * 参数 shift - 距离
+     * 返回值 Unit - 
+     */
+    public func setSelectionShift (shift: Float64): Unit
+        
+    /*
+     * 设置 x 轴值的位置 *
+     * 
+     * 参数 xValuePosition - ValuePosition
+     * 返回值 Unit - 
+     */
+    public func setXValuePosition (xValuePosition: ValuePosition): Unit
+        
+    /*
+     * 设置 y 轴值的位置 *
+     * 
+     * 参数 yValuePosition - ValuePosition
+     * 返回值 Unit - 
+     */
+    public func setYValuePosition (yValuePosition: ValuePosition): Unit
+        
+    /*
+     * 设置值引导线颜色
+     * 
+     * 参数 valueLineColor - 颜色值
+     * 返回值 Unit - 
+     */
+    public func setValueLineColor (valueLineColor: UInt32): Unit
+    
+    /*
+     * 是否设置值引导线的颜色
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit - 
+     */
+    public func setUseValueColorForLine (enabled: Bool): Unit
+       
+    /*
+     * 设置值引导线宽度
+     * 
+     * 参数 valueLineWidth - 行宽
+     * 返回值 Unit - 
+     */
+    public func setValueLineWidth (valueLineWidth: Float64): Unit
+       
+    /*
+     * 设置超出切片大小的百分比（表示偏移量）*
+     * 
+     * 参数 valueLinePart1OffsetPercentage - 百分比
+     * 返回值 Unit - 
+     */
+    public func setValueLinePart1OffsetPercentage (valueLinePart1OffsetPercentage: Float64): Unit
+        
+    /*
+     * 设置图表上半部分的长度 *
+     * 
+     * 参数 valueLinePart1Length - 长度
+     * 返回值 Unit - 
+     */
+    public func setValueLinePart1Length (valueLinePart1Length: Float64): Unit
+       
+    /*
+     * 设置图表下半部分的长度 *
+     * 
+     * 参数 valueLinePart2Length - 长度
+     * 返回值 Unit - 
+     */
+    public func setValueLinePart2Length (valueLinePart2Length: Float64): Unit
+    
+    
+    /*
+     * 设置可变长度
+     * 
+     * 参数 valueLineVariableLength - true/false
+     * 返回值 Unit - 
+     */
+    public func setValueLineVariableLength (valueLineVariableLength: Bool): Unit
+       
+    /*
+     * 设置高亮显示的扇区颜色
+     * 
+     * 参数 color - 颜色
+     * 返回值 Unit - 
+     */
+    public func setHighlightColor (color: UInt32): Unit
+
+}
+```
+
+#### 1.2.4 PieData Class API Description
 
 饼状图数据包
 
@@ -447,7 +1846,7 @@ public class PieData<: ChartData<IPieDataSet,PiEntry> {
 }
 ```
 
-#### 1.1.5 PieChartModel Class API Description
+#### 1.2.5 PieChartModel Class API Description
 
 饼状图配置构建类
 
@@ -578,14 +1977,6 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     public func setTransparentCircleAlpha (alpha: Float64): Unit
     
     /*
-     * 将此设置为true将条目标签绘制到饼图扇区中*
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit - 
-     */
-    public func setDrawSliceText (enabled: Bool): Unit
-    
-    /*
      * 将此设置为true则将条目标签绘制到饼图切片中*
      * 
      * 参数 enabled - true/false
@@ -662,483 +2053,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
 }
 ```
 
-#### 1.1.6 ChartModel Class API Description
-
-所有图表配置构建类的基类。
-
-```cangjie
-public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorUpdateListener {
-          
-    /*
-     * 更新动画效果
-     * 
-     * 参数 result - ohos 的 AnimatorResult
-     * 返回值 Unit
-     */
-    public func onAnimationUpdate (result: AnimatorResult): Unit
-    
-    /*
-     * 清空图表的所有数据，将其置空null，并刷新图表。
-     * 
-     * 返回值 Unit
-     */
-    public func clear (): Unit
-    
-    /*
-     * 从图表中删除所有数据集（以及条目），并刷新图表。
-     * 
-     * 返回值 Unit
-     */
-    public func clearValues (): Unit
-      
-    /*
-     * 图表数据刷新。
-     * 
-     * 返回值 Unit
-     */
-    public func notifyDataSetChanged (): Unit
-    
-    /*
-     * 设置最后一个手势单点
-     * 
-     * 返回值 Unit - 
-     */
-    public func setLastGestureSingleTap (): Unit
-    
-    /*
-     * 设置最后一个手势长按
-     * 
-     * 返回值 Unit - 
-     */
-    public func setLastGestureLongPress (): Unit
-    
-    
-    /*
-     * 设置最大高亮距离*
-     * 
-     * 参数 distDp - 
-     * 返回值 Unit - 
-     */
-    public func setMaxHighlightDistance (distDp: Float64): Unit
-     
-    /*
-     * 设置是否启用每次点击高亮显示
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setHighlightPerTapEnabled (enabled: Bool)
-    
-    /*
-     * 设置是否启用每次长按高亮显示
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setHighlightPerLongPressEnabled (enabled: Bool)
-      
-    /*
-     * 突出显示给定数组值高亮显示*
-     * 
-     * 参数 highs - Array<Highlight>
-     */
-    public func highlightValuesForArray (highs: Array<Highlight>)
-    
-    /*
-     * 高亮显示给定数据集中的给定位置*
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 参数 dataIndex - 要搜索的数据索引
-     * 返回值 Unit - 
-     */
-    public func highlightValue (x: Float64, dataSetIndex: Int64, dataIndex: Int64): Unit
-    
-    /*
-     * 高亮显示给定数据集中的给定位置*
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 返回值 Unit - 
-     */
-    public func highlightValue (x: Float64, dataSetIndex: Int64): Unit
-    
-    /*
-     * 高亮显示给定数据集中的给定位置*
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 y - 要突出显示的y值。
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 参数 dataIndex - 要搜索的数据索引
-     * 返回值 Unit - 
-     */
-    public func highlightValue (x: Float64, y: Float64, dataSetIndex: Int64, dataIndex: Int64): Unit
-    
-    /*
-     * 高亮显示给定数据集中的给定位置*
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 y - 要突出显示的y值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 返回值 Unit - 
-     */
-    public func highlightValue (x: Float64, y: Float64, dataSetIndex: Int64): Unit
-    
-    /*
-     * 高亮显示给定数据集中给定x值处的任何y值*
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 参数 dataIndex - 要搜索的数据索引
-     * 参数 callListener - 是否应为此更改调用侦听器
-     * 返回值 Unit - 
-     */
-    public func highlightValue (x: Float64, dataSetIndex: Int64, dataIndex: Int64, callListener: Bool): Unit
-    
-    /*
-     * 高亮显示给定数据集中给定x值处的任何y值*
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 参数 callListener - 是否应为此更改调用侦听器
-     * 返回值 Unit - 
-     */
-    public func highlightValue (x: Float64, dataSetIndex: Int64, callListener: Bool): Unit
-    
-    /*
-     * 高亮显示给定数据集中给定x值处的任何y值*
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 y - 要突出显示的y值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 参数 dataIndex - 要搜索的数据索引
-     * 参数 callListener - 是否应为此更改调用侦听器
-     */
-    public func highlightValue (x: Float64, y: Float64, dataSetIndex: Int64, dataIndex: Int64, callListener: Bool)
-    
-    /*
-     * 高亮显示给定数据集中给定x值处的任何y值*
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 y - 要突出显示的x值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 参数 callListener - 是否应为此更改调用侦听器
-     * 返回值 Unit - 
-     */
-    public func highlightValue (x: Float64, y: Float64, dataSetIndex: Int64, callListener: Bool): Unit
-    
-    /*
-     * 高亮显示通过触摸手势选择的值
-     * 
-     * 参数 high - 高亮显示对象
-     * 返回值 Unit - 
-     */
-    public func highlightValue (high: ?Highlight): Unit
-    
-    /*
-     * 高亮显示通过触摸手势选择的值
-     * 
-     * 参数 high - 高亮显示对象
-     * 参数 callListener - 调用侦听器
-     * 返回值 Unit - 
-     */
-    public func highlightValue (high: ?Highlight, callListener: Bool): Unit
-    
-    /*
-     * 重绘图表。
-     * 
-     * 返回值 Unit 
-     */
-    public func invalidate (): Unit
-    
-
-    /*
-     * 设置触摸监听器
-     * 
-     * 参数 l - 触摸监听事件
-     * 返回值 Unit 
-     */
-    public func setOnTouchListener (l: ChartTouchListener<ChartModel<D,S,E>,D,S,E>): Unit
-    
-    /*
-     * 获取触摸监听事件
-     * 
-     * 返回值 ?ChartTouchListener<ChartModel<D,S,E>,D,S,E>  
-     */
-    public func getOnTouchListener (): ?ChartTouchListener<ChartModel<D,S,E>,D,S,E>
-  
-    
-    /*
-     * 设置是否开启惯性滑动*
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setDragDecelerationEnabled (enabled: Bool)
-    
-    
-    /*
-     * 设置 DragDecelerationFrictionC*
-     * 
-     * 参数 newValue - 
-     */
-    public func setDragDecelerationFrictionCoef (newValue: Float64)
-    
-    /*
-     * 展示图表时同时带有X轴，Y轴动画
-     * 
-     * 参数 durationMillisX - X轴条目动画播放的时长，单位毫秒。
-     * 参数 durationMillisY - Y轴条目动画播放的时长，单位毫秒。
-     * 参数 easingX - X轴动画差值曲线（可选值见 animateX）
-     * 参数 easingY - Y轴动画差值曲线（可选值见 animateX）
-     * 返回值 Unit
-     */
-    public func animateXY (durationMillisX: Int32, durationMillisY: Int32, easingX: String, easingY: String): Unit
-    
-    /*
-     * 展示图表时带有X轴动画。
-     * 
-     * 参数 durationMillis - 动画播放的时长，单位毫秒。
-     * 参数 easing - 动画差值曲线，可选值：参考仓颉语言系统 API 参考-UI 界面-ohos.animator
-     *       动画插值曲线，仅支持以下可选值：
-     *       "linear"：动画线性变化。
-     *       "ease"：动画开始和结束时的速度较慢，cubic-bezier(0.25、0.1、0.25、1.0)。
-     *       "ease-in"：动画播放速度先慢后快，cubic-bezier(0.42, 0.0, 1.0, 1.0)。
-     *       "ease-out"：动画播放速度先快后慢，cubic-bezier(0.0, 0.0, 0.58, 1.0)。
-     *       "ease-in-out"：动画播放速度先加速后减速，cubic-bezier(0.42, 0.0, 0.58, 1.0)。
-     *       "fast-out-slow-in"：标准曲线，cubic-bezier(0.4，0.0，0.2，1.0)。
-     *       "linear-out-slow-in"：减速曲线，cubic-bezier(0.0，0.0，0.2，1.0)。
-     *       "fast-out-linear-in"：加速曲线，cubic-bezier(0.4, 0.0, 1.0, 1.0)。
-     *       "friction"：阻尼曲线，cubic-bezier(0.2, 0.0, 0.2, 1.0)。
-     *       "extreme-deceleration"：急缓曲线，cubic-bezier(0.0, 0.0, 0.0, 1.0)。
-     *       "rhythm"：节奏曲线，cubic-bezier(0.7, 0.0, 0.2, 1.0)。
-     *       "sharp"：锐利曲线，cubic-bezier(0.33, 0.0, 0.67, 1.0)。
-     *       "smooth"：平滑曲线，cubic-bezier(0.4, 0.0, 0.4, 1.0)。
-     *       "cubic-bezier(x1,y1,x2,y2)"：三次贝塞尔曲线，x1、x2的值必须处于0-1之间。例如"cubic-bezier(0.42,0.0,0.58,1.0)"。
-     *       "steps(number,step-position)"：阶梯曲线，number必须设置，为正整数，step-position参数可选，支持设置start或end，默认值为end。例如"steps(3,start)"。
-     * 返回值 Unit 
-     */
-    public func animateX (durationMillis: Int32, easing: String): Unit
-    
-    /*
-     * 展示图表时带有Y轴动画。
-     * 
-     * 参数 durationMillis - 动画播放的时长，单位毫秒。
-     * 参数 easing - 动画差值曲线，可选值：参考仓颉语言系统 API 参考-UI 界面-ohos.animator
-     *       动画插值曲线，仅支持以下可选值：
-     *       "linear"：动画线性变化。
-     *       "ease"：动画开始和结束时的速度较慢，cubic-bezier(0.25、0.1、0.25、1.0)。
-     *       "ease-in"：动画播放速度先慢后快，cubic-bezier(0.42, 0.0, 1.0, 1.0)。
-     *       "ease-out"：动画播放速度先快后慢，cubic-bezier(0.0, 0.0, 0.58, 1.0)。
-     *       "ease-in-out"：动画播放速度先加速后减速，cubic-bezier(0.42, 0.0, 0.58, 1.0)。
-     *       "fast-out-slow-in"：标准曲线，cubic-bezier(0.4，0.0，0.2，1.0)。
-     *       "linear-out-slow-in"：减速曲线，cubic-bezier(0.0，0.0，0.2，1.0)。
-     *       "fast-out-linear-in"：加速曲线，cubic-bezier(0.4, 0.0, 1.0, 1.0)。
-     *       "friction"：阻尼曲线，cubic-bezier(0.2, 0.0, 0.2, 1.0)。
-     *       "extreme-deceleration"：急缓曲线，cubic-bezier(0.0, 0.0, 0.0, 1.0)。
-     *       "rhythm"：节奏曲线，cubic-bezier(0.7, 0.0, 0.2, 1.0)。
-     *       "sharp"：锐利曲线，cubic-bezier(0.33, 0.0, 0.67, 1.0)。
-     *       "smooth"：平滑曲线，cubic-bezier(0.4, 0.0, 0.4, 1.0)。
-     *       "cubic-bezier(x1,y1,x2,y2)"：三次贝塞尔曲线，x1、x2的值必须处于0-1之间。例如"cubic-bezier(0.42,0.0,0.58,1.0)"。
-     *       "steps(number,step-position)"：阶梯曲线，number必须设置，为正整数，step-position参数可选，支持设置start或end，默认值为end。例如"steps(3,start)"。
-     * 返回值 Unit 
-     */
-    public func animateY (durationMillis: Int32, easing: String): Unit
-    
-    /*
-     * 为图表设置选择监听事件
-     * 
-     * 参数 l - 监听事件
-     * 返回值 Unit 
-     */
-    public func setOnChartValueSelectedListener (l: OnChartValueSelectedListener): Unit
-    
-    /*
-     * 为图表设置手势监听事件
-     * 
-     * 参数 l - 手势监听事件
-     * 返回值 Unit 
-     */
-    public func setOnChartGestureListener (l: OnChartGestureListener): Unit
-    
-    /*
-     * 获取自定义手势监听事件
-     * 
-     * 返回值 ?OnChartGestureListener - OnChartGestureListener
-     *                                - Option<OnChartGestureListener>.None
-     */
-    public func getOnChartGestureListener (): ?OnChartGestureListener
-    
-           
-    /*
-     * 设置图表额外偏移量*
-     * 
-     * 参数 left - 左
-     * 参数 top - 高
-     * 参数 right - 右
-     * 参数 bottom - 下
-     */
-    public func setExtraOffsets (left: Float64, top: Float64, right: Float64, bottom: Float64)
-    
-    /*
-     * 设置附加到视口顶部的额外偏移
-     * 
-     * 参数 offset - 
-     */
-    public func setExtraTopOffset (offset: Float64)
-    
-    
-    /*
-     * 设置附加到视口右边的额外偏移
-     * 
-     * 参数 offset - 
-     */
-    public func setExtraRightOffset (offset: Float64)
-    
-    
-    /*
-     * 设置附加到视口底部的额外偏移
-     * 
-     * 参数 offset - 
-     */
-    public func setExtraBottomOffset (offset: Float64)
-    
-    
-    /*
-     * 设置附加到视口左边的额外偏移
-     * 
-     * 参数 offset - 
-     */
-    public func setExtraLeftOffset (offset: Float64)
-    
-    
-    /*
-     * 将其设置为 true 可启用图表的log输出
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setLogEnabled (enabled: Bool)
-     
-    /*
-     * 设置文本，通知用户没有可用于绘制图表的数据。
-     * 
-     * 参数 text - 文本
-     */
-    public func setNoDataText (text: String)
-    
-    /*
-     * 设置无数据文本的颜色
-     * 
-     * 参数 color - 
-     */
-    public func setNoDataTextColor (color: Color)
-    
-    /*
-     * 设置无数据文本的字体
-     * 
-     * 参数 tf - 字体
-     */
-    public func setNoDataTextTypeface (tf: FontFamily)
-    
-    /*
-     * 对齐无数据文本
-     * 
-     * 参数 align - 
-     */
-    public func setNoDataTextAlignment (align: TextAlignStyle)
-    
-    /*
-     * 设置为false。禁用图表所有手势与触摸
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setTouchEnabled (enabled: Bool)
-    
-    /*
-     * 设置在图表上单击某个值时显示的标记
-     * 
-     * 参数 marker - IMarker
-     */
-    public func setMarker (marker: IMarker)
-    
-    /*
-     * 设置长按标记
-     * 
-     * 参数 marker - 
-     */
-    public func setLongPressMarker (marker: IMarker)
-    
-    /*
-     * 设置标记区域
-     * 
-     * 参数 v - IMarker
-     */
-    public func setMarkerView (v: IMarker)
-       
-    /*
-     * 设置图表描述信息
-     * 
-     * 参数 desc - Description
-     */
-    public func setDescription (desc: Description)
-      
-    /*
-     * 获取图例对象。
-     * 
-     * 返回值 ?Legend - 获取图例对象。
-     *               - Legend
-     *               - Option<Legend>.None
-     */
-    public func getLegend (): ?Legend
-    
-    /*
-     * 设置是否开启绘画标记点显示
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setDrawMarkerViews (enabled: Bool)
-    
-    /*
-     * 将此设置为true可在点击图表时显示用户指定的标记
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setDrawMarkers (enabled: Bool)
-    
-    /*
-     * 将此设置为true可在长按图表时显示用户指定的标记
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setDrawLongPressMarkers (enabled: Bool)
-     
-    /*
-     * 设置高亮显示
-     * 
-     * 参数 highlighter - 高亮显示接口类
-     */
-    public func setHighlighter (highlighter: ChartHighlighter<BarLineScatterCandleBubbleDataProvider<IDataSet<EntryOhos>,EntryOhos>,IDataSet<EntryOhos>,EntryOhos>)
-     
-    /*
-     * 改变图表大小
-     * 
-     * 参数 w - 新宽
-     * 参数 h - 新高
-     * 参数 oldw - 旧宽
-     * 参数 oldh - 旧高
-     * 返回值 Unit - 
-     */
-    public func onSizeChanged (w: Float64, h: Float64, oldw: Float64, oldh: Float64): Unit
-       
-    /*
-     * 将此设置为true以启用可绘制对象从当视图从窗口分离时，这有助于避免内存泄漏。
-     * 默认值:false
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setUnbindEnabled (enabled: Bool)
-}
-
-```
-
-#### 1.1.6 PieChart Class API Description
+#### 1.2.6 PieChart Class API Description
 
 饼状图组件
 
@@ -1149,11 +2064,11 @@ class PieChart {
 }
 ```
 
-### 1.2 图例 Legend
+### 1.3 图例 Legend
 
 图表 Legend(图例) 部件
 
-#### 1.2.1 LegendEntry Class API Description
+#### 1.3.1 LegendEntry Class API Description
 
 ```cangjie
 public class LegendEntry {
@@ -1178,8 +2093,7 @@ public class LegendEntry {
 }
 ```
 
-
-#### 1.2.2 Legend Class API Description
+#### 1.3.2 Legend Class API Description
 
 图例对象
 
@@ -1370,7 +2284,7 @@ public class Legend<: ComponentBase {
 }
 ```
 
-### 1.3 文本描述
+### 1.4 文本描述
 
 图表文本描述
 
@@ -1409,7 +2323,7 @@ public class Description<: ComponentBase {
 }
 ```
 
-### 1.4 DefaultValueFormatter Class API Description
+### 1.5 DefaultValueFormatter Class API Description
 
 ```
 public class DefaultValueFormatter <: IValueFormatter {
@@ -1419,7 +2333,10 @@ public class DefaultValueFormatter <: IValueFormatter {
     public init(digits: Int64)
 }
 ```
-### 1.5 高亮
+
+### 1.6 高亮
+
+#### 1.6.1 Highlight
 ```cangjie
 public class Highlight {
     /**
@@ -1443,9 +2360,138 @@ public class Highlight {
 }
 
 ```
-### 1.6 其他接口
+#### 1.6.2 ChartHighlighter
 
-#### 1.6.1 ChartPixelMap Class API Description
+```cangjie
+public open class ChartHighlighter<P, S, E> <: IHighlighter where P <: BarLineScatterCandleBubbleDataProvider<S, E>,
+    S <: IDataSet<E>, E <: EntryOhos {
+    
+    public init(chart: P) 
+
+    public open func getHighlight(x: Float64, y: Float64): ?Highlight
+
+    public func getClosestHighlightByPixel(closestValues: ArrayList<Highlight>, x: Float64, y: Float64,
+        axis: ?AxisDependency, minSelectionDistance: Float64): ?Highlight
+    
+}
+```
+
+#### 1.6.3 ChartHighlighter
+
+```cangjie
+public interface BarLineScatterCandleBubbleDataProvider<S, E> <: ChartInterface<S, E> where S <: IDataSet<E>,
+    E <: EntryOhos {
+    func getTransformer(axis: AxisDependency): ?Transformer
+
+    func isInverted(axis: AxisDependency): Bool
+
+    func getLowestVisibleX(): Float64
+
+    func getHighestVisibleX(): Float64
+
+    func getData(): ?ChartData<S, E>
+}
+```
+
+### 1.7 IMarker
+#### 1.7.1 IMarker interface API Description
+
+```cangjie
+public interface IMarker {
+
+    /**
+     * 返回 IMarker在x轴和y轴上的偏移量。
+     */
+    func getOffset(): MPPointF
+
+    /**
+     * 返回 用于绘制的特定“点”的偏移量
+     *
+     * 参数 posX - 标记绘制的 x 位置
+     * 参数 posY - 标记绘制的 Y位置
+     */
+    func getOffsetForDrawingAtPoint(posX: Float64, posY: Float64): MPPointF
+
+    /**
+     * 使用给定的Canvas对象在屏幕的给定位置绘制IMarker
+     *
+     * 参数 canvas
+     * 参数 posX
+     * 参数 posY
+     */
+    func draw(c: CanvasRenderingContext2D, posX: Float64, posY: Float64, e: EntryOhos, highlight: Highlight): Unit
+}
+
+```
+#### 1.7.2 MarkerView class API Description
+
+```cangjie
+
+public class MarkerView <: IMarker {
+    /**
+     * 初始化构造
+     */
+    public init()
+    
+    /**
+     * 设置指定的点的偏移量
+     *
+     * 参数 offset - 指定点
+     */
+    public func setOffsetByMPPointF(offset: MPPointF)
+    
+    /**
+     * 设置指定的点的偏移量
+     *
+     * 参数 posX - 标记绘制的 x 位置
+     * 参数 posY - 标记绘制的 Y位置
+     */
+    public func setOffset(offsetX: Float64, offsetY: Float64): Unit 
+    
+    /**
+     * 返回 IMarker在x轴和y轴上的偏移量。
+     */
+    public func getOffset(): MPPointF
+    
+    /**
+     * 返回 用于绘制的特定“点”的偏移量
+     *
+     * 参数 posX - 标记绘制的 x 位置
+     * 参数 posY - 标记绘制的 Y位置
+     */
+    public func setChartView(chart: ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>): Unit
+    
+    /**
+     * 返回 用于绘制的特定“点”的偏移量
+     *
+     * 参数 posX - 标记绘制的 x 位置
+     * 参数 posY - 标记绘制的 Y位置
+     */
+    public func getChartView(): ?ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos> 
+    
+    /**
+     * 返回 用于绘制的特定“点”的偏移量
+     *
+     * 参数 posX - 标记绘制的 x 位置
+     * 参数 posY - 标记绘制的 Y位置
+     */
+    public func getOffsetForDrawingAtPoint(posX: Float64, posY: Float64): MPPointF
+    
+    /**
+     * 使用给定的Canvas对象在屏幕的给定位置绘制IMarker
+     *
+     * 参数 canvas
+     * 参数 posX
+     * 参数 posY
+     */
+    public func draw(c: CanvasRenderingContext2D, posX: Float64, posY: Float64, e: EntryOhos, highlight: Highlight) 
+}
+
+```
+
+### 1.8 其他接口
+
+#### 1.8.1 ChartPixelMap Class API Description
 
 图表像素图
 
@@ -1475,7 +2521,7 @@ public class ChartPixelMap {
 }
 ```
 
-#### 1.6.2 MPPointF Class API Description
+#### 1.8.2 MPPointF Class API Description
 
 ```cangjie
 public class MPPointF<: Poolable {
@@ -1490,9 +2536,9 @@ public class MPPointF<: Poolable {
 }
 ```
 
-#### 1.6.3 enum
+#### 1.8.3 enum
 
-##### 1.6.3.1 FontFamily
+##### 1.8.3.1 FontFamily
 
 字体样式
 
@@ -1515,7 +2561,7 @@ public enum FontFamily {
 ```
 
 
-##### 1.6.3.2 LegendForm
+##### 1.8.3.2 LegendForm
 
 图例样式
 
@@ -1535,7 +2581,7 @@ public enum LegendForm <: Equatable<LegendForm> {
 
 ```
 
-##### 1.6.3.3 ValuePosition
+##### 1.8.3.3 ValuePosition
 
 数值位置
 ```cangjie
@@ -1549,7 +2595,7 @@ public enum ValuePosition <: Equatable<ValuePosition> {
 }
 ```
 
-##### 1.6.3.4 LegendHorizontalAlignment
+##### 1.8.3.4 LegendHorizontalAlignment
 
 图例水平对齐方式
 
@@ -1565,9 +2611,9 @@ public enum LegendHorizontalAlignment {
 }
 ```
 
-##### 1.6.3.5 LegendOrientation
+##### 1.8.3.5 LegendOrientation
 
-图例方向
+图例水平垂直方向
 
 ```cangjie
 public enum LegendOrientation {
@@ -1580,9 +2626,9 @@ public enum LegendOrientation {
 }
 ```
 
-##### 1.6.3.6 LegendDirection
+##### 1.8.3.6 LegendDirection
 
-图例方向
+图例从左到右、从右到左方向
 
 ```cangjie
 public enum LegendDirection {
@@ -1595,7 +2641,7 @@ public enum LegendDirection {
 }
 ```
 
-##### 1.6.3.7 LegendDirection
+##### 1.8.3.7 LegendDirection
 
 图例垂直对齐方式
 
@@ -1609,7 +2655,8 @@ public enum LegendVerticalAlignment {
 }
 ```
 
-### 1.7 饼图示例
+<<<<<<< HEAD
+### 1.9 饼图示例
 
 ```cangjie
 from ohos import base.LengthProp
@@ -1756,11 +2803,11 @@ func render() {
 }
 ```
 
-### 1.8 柱状图 BarChart
+### 1.10 柱状图 BarChart
 
-#### 1.8.1 垂直柱状图
+#### 1.10.1 垂直柱状图
 
-##### 1.8.1.1 BarEntry Class API Description
+##### 1.10.1.1 BarEntry Class API Description
 
 柱状图数据结构
 
@@ -1839,7 +2886,7 @@ public class BarEntry <: EntryOhos {
     public init(x: Float64, y: Array<Float64>, icon: ChartPixelMap, data: Any)
 }
 ```
-##### 1.8.1.2 IBarDataSet interface API Description
+##### 1.10.1.2 IBarDataSet interface API Description
 
 ```cangjie
 public interface IBarDataSet <: IBarLineScatterCandleBubbleDataSet<BarEntry> {
@@ -1899,7 +2946,7 @@ public interface IBarDataSet <: IBarLineScatterCandleBubbleDataSet<BarEntry> {
 
 ```
 
-##### 1.8.1.3 BarDataSet Class API Description
+##### 1.10.1.3 BarDataSet Class API Description
 ```cangjie
 public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBarDataSet {
     
@@ -1914,7 +2961,7 @@ public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBa
     /*
      * 创建副本
      * 
-     * 返回值 DataSet<BarEntry> - 
+     * 返回值 DataSet<BarEntry> - 柱状图数据集
      */
     public func copy (): DataSet<BarEntry>
     
@@ -1977,7 +3024,7 @@ public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBa
 }
 ```
 
-##### 1.8.1.4  BarData Class API Description
+##### 1.10.1.4  BarData Class API Description
 ```cangjie
 public open class BarData<: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry> {
     
@@ -1989,14 +3036,14 @@ public open class BarData<: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry
     /*
      * 构造 
      * 
-     * 参数 dataSets - 
+     * 参数 dataSets - 柱状图数据集合
      */
     public init (dataSets: Array<IBarDataSet>)
     
     /*
      * 构造 
      * 
-     * 参数 dataSets - IBarDataSet 集合
+     * 参数 dataSets - 柱状图数据集合
      */
     public init (dataSets: ArrayList<IBarDataSet>)
     
@@ -2011,7 +3058,7 @@ public open class BarData<: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry
     /*
      * 获取每个条形图在坐标轴上的宽度
      * 
-     * 返回值 Float64 - 
+     * 返回值 Float64 - 宽度
      */
     public func getBarWidth (): Float64
     
@@ -2026,7 +3073,7 @@ public open class BarData<: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry
     /*
      * 获取顶部圆角半径
      * 
-     * 返回值 Float64 - 
+     * 返回值 Float64 - 半径
      */
     public func getTopRadius (): Float64
     
@@ -2045,14 +3092,14 @@ public open class BarData<: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry
      * 
      * 参数 groupSpace - 组之间的间距
      * 参数 barSpace - 各条目之间的间距
-     * 返回值 Float64 - 
+     * 返回值 Float64 - 宽度
      */
     public func getGroupWidth (groupSpace: Float64, barSpace: Float64): Float64
 }
 
 ```
 
-##### 1.8.1.5 BarDataProvider interface API Description
+##### 1.10.1.5 BarDataProvider interface API Description
 ```cangjie
 public interface BarDataProvider <: BarLineScatterCandleBubbleDataProvider<IBarDataSet, BarEntry> {
     func getBarData(): ?BarData
@@ -2064,7 +3111,7 @@ public interface BarDataProvider <: BarLineScatterCandleBubbleDataProvider<IBarD
     func isHighlightFullBarEnabled(): Bool
 }
 ```
-##### 1.8.1.6  BarChartModel Class API Description
+##### 1.10.1.6  BarChartModel Class API Description
 ```cangjie
 public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, BarEntry> & BarDataProvider {
     
@@ -2095,7 +3142,7 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
     /*
      * 绘图
      * 
-     * 参数 c - CanvasRenderingContext2D
+     * 参数 c - 标准库画布工具
      * 返回值 Unit - 
      */
     public func onDraw (c: CanvasRenderingContext2D): Unit
@@ -2105,7 +3152,7 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
      * 
      * 参数 x - x值
      * 参数 y - y值
-     * 返回值 ?Highlight - 
+     * 返回值 ?Highlight - 高亮
      */
     public open func getHighlightByTouchPoint (x: Float64, y: Float64): ?Highlight
     
@@ -2129,7 +3176,7 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
     /*
      * 设置是否突出显示某个条目（堆叠柱状图）
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setHighlightFullBarEnabled (enabled: Bool): Unit
@@ -2147,14 +3194,14 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
     /*
      * 获取柱状图条目
      * 
-     * 返回值 ?BarData - 
+     * 返回值 ?BarData - 柱状图条目
      */
     public func getBarData (): ?BarData
     
     /*
      * 是否在x轴范围的两侧各增加一半条形图宽度，以使条形图完全显示出来。
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setFitBars (enabled: Bool): Unit
@@ -2171,12 +3218,12 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
 }
 ```
 
-##### 1.8.1.6 BarChart Class API Description
+##### 1.10.1.6 BarChart Class API Description
 ```cangjie
 @Component
 public class BarChart {}
 ```
-##### 1.8.1.7 示例
+##### 1.10.1.7 示例
 
 ```cangjie
 @Entry
@@ -2324,9 +3371,9 @@ class BarChartMultiplePage {
 
 ```
 
-#### 1.8.2 水平柱状图
+#### 1.10.2 水平柱状图
 
-##### 1.8.2.1 HorizontalBarChartModel Class API Description
+##### 1.10.2.1 HorizontalBarChartModel Class API Description
 
 ```cangjie
 public class HorizontalBarChartModel<: BarChartModel {
@@ -2334,7 +3381,7 @@ public class HorizontalBarChartModel<: BarChartModel {
     /*
      * 初始化水平柱状图
      * 
-     * 返回值 HorizontalBarChartModel - 
+     * 返回值 HorizontalBarChartModel - 水平柱状图
      */
     public static func build (): HorizontalBarChartModel
     
@@ -2384,13 +3431,13 @@ public class HorizontalBarChartModel<: BarChartModel {
     public func setVisibleYRange (minYRange: Float64, maxYRange: Float64, axis: AxisDependency): Unit
 }
 ```
-##### 1.8.2.2 HorizontalBarChart Class API Description
+##### 1.10.2.2 HorizontalBarChart Class API Description
 
 ```cangjie
 @Component
 public class HorizontalBarChart {}
 ```
-##### 1.8.2.3 示例
+##### 1.10.2.3 示例
 
 ```cangjie
 @Entry
@@ -2484,9 +3531,9 @@ class HorizontalBarChartPage {
 
 ```
 
-#### 1.8.3  坐标轴
+#### 1.10.3  坐标轴
 
-##### 1.8.3.1 AxisBase  interface API Description
+##### 1.10.3.1 AxisBase  interface API Description
 
 ```cangjie
 public abstract class AxisBase<: ComponentBase {
@@ -2499,7 +3546,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置轴上的最小标签数
      * 
-     * 参数 labels - 
+     * 参数 labels - 标签数
      * 返回值 Unit - 
      */
     public func setAxisMinLabels (labels: Int64): Unit
@@ -2507,7 +3554,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置轴上的最大标签数
      * 
-     * 参数 labels - 
+     * 参数 labels - 标签数
      * 返回值 Unit - 
      */
     public func setAxisMaxLabels (labels: Int64): Unit
@@ -2515,7 +3562,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 是否设置网格线
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setDrawGridLines (enabled: Bool): Unit
@@ -2523,7 +3570,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 是否设置轴线
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setDrawAxisLine (enabled: Bool): Unit
@@ -2531,7 +3578,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置轴标签是否居中显示
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setCenterAxisLabels (enabled: Bool): Unit
@@ -2539,7 +3586,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置网格线颜色
      * 
-     * 参数 color - 
+     * 参数 color - 颜色
      * 返回值 Unit - 
      */
     public func setGridColor (color: Color): Unit
@@ -2547,7 +3594,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置轴线宽度
      * 
-     * 参数 width - 
+     * 参数 width - 宽度
      * 返回值 Unit - 
      */
     public func setAxisLineWidth (width: Float64): Unit
@@ -2555,7 +3602,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置网格线宽度
      * 
-     * 参数 width - 
+     * 参数 width - 宽度
      * 返回值 Unit - 
      */
     public func setGridLineWidth (width: Float64): Unit
@@ -2563,7 +3610,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置轴线颜色
      * 
-     * 参数 color - 
+     * 参数 color - 颜色
      * 返回值 Unit - 
      */
     public func setAxisLineColor (color: Color): Unit
@@ -2571,7 +3618,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 是否设置标签显示
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setDrawLabels (enabled: Bool): Unit
@@ -2579,8 +3626,8 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置标签数量
      * 
-     * 参数 count - 
-     * 参数 force - 
+     * 参数 count - 标签数量
+     * 参数 force - true/false
      * 返回值 Unit - 
      */
     public func setLabelCount (count: Int64, force: ?Bool): Unit
@@ -2588,7 +3635,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 是否设置轴上的粒度显示
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setGranularityEnabled (enabled: Bool): Unit
@@ -2596,15 +3643,15 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 放大时设置轴上的最小间隔
      * 
-     * 参数 granularity - 
+     * 参数 granularity - 最小间隔
      * 返回值 Unit - 
      */
     public func setGranularity (granularity: Float64): Unit
     
     /*
-     * 添加先知先 
+     * 添加限制线
      * 
-     * 参数 l - 
+     * 参数 l - 限制线
      * 返回值 Unit - 
      */
     public func addLimitLine (l: LimitLine): Unit
@@ -2612,14 +3659,14 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 添加网格线 
      * 
-     * 参数 customLine - 
+     * 参数 customLine - 网格线接口
      */
     public func addGridLine (customLine: GridLineConfig)
     
     /*
      * 移除限制线
      * 
-     * 参数 l - 
+     * 参数 l - 限制线
      * 返回值 Unit - 
      */
     public func removeLimitLine (l: LimitLine): Unit
@@ -2634,7 +3681,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 如果设置为true，则在实际数据后面绘制LimitLines，否则在顶部绘制。默认值:false
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setDrawLimitLinesBehindData (enabled: Bool): Unit
@@ -2643,7 +3690,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 如果设置为false，网格线将绘制在实际数据的顶部，否则绘制在后面。默认值:true
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setDrawGridLinesBehindData (enabled: Bool): Unit
@@ -2651,7 +3698,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置轴值的数据格式
      * 
-     * 参数 f - 
+     * 参数 f - 坐标轴值格式
      * 返回值 Unit - 
      */
     public func setValueFormatter (f: IAxisValueFormatter): Unit
@@ -2659,7 +3706,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 获取轴值的数据格式
      * 
-     * 返回值 ?IAxisValueFormatter - 
+     * 返回值 ?IAxisValueFormatter - 坐标轴值格式
      */
     public func getValueFormatter (): ?IAxisValueFormatter
     
@@ -2676,7 +3723,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置网格线的形式
      * 
-     * 参数 effect - DashPathEffect
+     * 参数 effect - 虚线接口
      * 返回值 Unit - 
      */
     public func setGridDashedLine (effect: DashPathEffect): Unit
@@ -2692,7 +3739,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 获取网格线的形式
      * 
-     * 返回值 DashPathEffect - 
+     * 返回值 DashPathEffect - 虚线接口
      */
     public func getGridDashPathEffect (): DashPathEffect
     
@@ -2709,7 +3756,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置轴线为虚线
      * 
-     * 参数 effect - 
+     * 参数 effect - 虚线接口
      * 返回值 Unit - 
      */
     public func setAxisLineDashedLine (effect: DashPathEffect): Unit
@@ -2725,28 +3772,28 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 返回为轴线设置的DashPathEffect
      * 
-     * 返回值 DashPathEffect - 
+     * 返回值 DashPathEffect - 虚线接口
      */
     public func getAxisLineDashPathEffect (): DashPathEffect
     
     /*
      * 重置轴线的最大值
      * 
-     * 返回值 Unit - 
+     * 返回值 Unit - 最大值
      */
     public func resetAxisMaximum (): Unit
     
     /*
      * 重置轴线的最小值
      * 
-     * 返回值 Unit - 
+     * 返回值 Unit - 最小值
      */
     public func resetAxisMinimum (): Unit
     
     /*
      * 设置轴线最小值
      * 
-     * 参数 min - 
+     * 参数 min - 最小值
      * 返回值 Unit - 
      */
     public func setAxisMinimum (min: Float64): Unit
@@ -2754,7 +3801,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置轴线的最大值
      * 
-     * 参数 max - 
+     * 参数 max - 最大值
      * 返回值 Unit - 
      */
     public func setAxisMaximum (max: Float64): Unit
@@ -2762,7 +3809,7 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置额外最小间距*
      * 
-     * 参数 mSpaceMin - 
+     * 参数 mSpaceMin - 间距
      * 返回值 Unit - 
      */
     public func setSpaceMin (mSpaceMin: Float64): Unit
@@ -2770,14 +3817,14 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置额外最大间距*
      * 
-     * 参数 mSpaceMax - 
+     * 参数 mSpaceMax - 间距
      * 返回值 Unit - 
      */
     public func setSpaceMax (mSpaceMax: Float64): Unit
 }
 ```
 
-##### 1.8.3.2 XAxis interface API Description
+##### 1.10.3.2 XAxis interface API Description
 X轴
 ```cangjie
 public class XAxis<: AxisBase {
@@ -2791,7 +3838,7 @@ public class XAxis<: AxisBase {
     /*
      * 设置轴位置
      * 
-     * 参数 pos - 
+     * 参数 pos - 位置
      * 返回值 Unit - 
      */
     public func setPosition (pos: XAxisPosition): Unit
@@ -2799,7 +3846,7 @@ public class XAxis<: AxisBase {
     /*
      * 设置绘制X轴标签的角度
      * 
-     * 参数 angle - 
+     * 参数 angle - 角度
      * 返回值 Unit - 
      */
     public func setLabelRotationAngle (angle: Int64): Unit
@@ -2807,7 +3854,7 @@ public class XAxis<: AxisBase {
     /*
      * 如果设置为true，将避免图表中第一个和最后一个标签从图表边缘或屏幕上“剪切”
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setAvoidFirstLastClipping (enabled: Bool): Unit
@@ -2815,7 +3862,7 @@ public class XAxis<: AxisBase {
     /*
      * 设置标签偏移量
      * 
-     * 参数 xOffset - 
+     * 参数 xOffset - 偏移量 
      * 返回值 Unit - 
      */
     public func setLabelXOffset (xOffset: Int64): Unit
@@ -2823,7 +3870,7 @@ public class XAxis<: AxisBase {
     /*
      * 设置x标签的位置
      * 
-     * 参数 position - XAxisLabelPosition
+     * 参数 position - x轴标签位置
      * 返回值 Unit - 
      */
     public func setXAxisLabelPosition (position: XAxisLabelPosition): Unit
@@ -2831,7 +3878,7 @@ public class XAxis<: AxisBase {
     /*
      * 设置自定义标签数组
      * 
-     * 参数 numbers - 
+     * 参数 numbers - 标签数组
      * 返回值 Unit - 
      */
     public func setCustomLabels (numbers: Array<Float64>): Unit
@@ -2839,13 +3886,13 @@ public class XAxis<: AxisBase {
     /*
      * 设置是否绘制自定义标签
      * 
-     * 参数 flag - 
+     * 参数 flag - true/false
      * 返回值 Unit - 
      */
     public func setDrawCustomLabels (flag: Bool): Unit
 }
 ```
-##### 1.8.3.3 YAxis Class API Description
+##### 1.10.3.3 YAxis Class API Description
 Y轴
 ```cangjie
 public class YAxis<: AxisBase {
@@ -2860,7 +3907,7 @@ public class YAxis<: AxisBase {
     /*
      * 设置Y轴最小宽度
      * 
-     * 参数 minWidth - 
+     * 参数 minWidth - 宽度
      * 返回值 Unit - 
      */
     public func setMinWidth (minWidth: Float64): Unit
@@ -2868,7 +3915,7 @@ public class YAxis<: AxisBase {
     /*
      * 设置Y轴最大宽度
      * 
-     * 参数 maxWidth - 
+     * 参数 maxWidth - 宽度
      * 返回值 Unit - 
      */
     public func setMaxWidth (maxWidth: Float64): Unit
@@ -2876,7 +3923,7 @@ public class YAxis<: AxisBase {
     /*
      * 设置Y轴位置
      * 
-     * 参数 pos - 
+     * 参数 pos - 位置
      * 返回值 Unit - 
      */
     public func setPosition (pos: YAxisLabelPosition): Unit
@@ -2884,7 +3931,7 @@ public class YAxis<: AxisBase {
     /*
      * 设置Y轴标签偏移量
      * 
-     * 参数 xOffset - 
+     * 参数 xOffset - 偏移量
      * 返回值 Unit - 
      */
     public func setLabelXOffset (xOffset: Float64): Unit
@@ -2892,7 +3939,7 @@ public class YAxis<: AxisBase {
     /*
      * 将此设置为true以启用绘制顶部y-label条目
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setDrawTopYLabelEntry (enabled: Bool): Unit
@@ -2900,7 +3947,7 @@ public class YAxis<: AxisBase {
     /*
      * 设置y轴反转
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setInverted (enabled: Bool): Unit
@@ -2908,7 +3955,7 @@ public class YAxis<: AxisBase {
     /*
      * 设置顶轴空间占整个范围的百分比。
      * 
-     * 参数 percent - 
+     * 参数 percent - 百分比
      * 返回值 Unit - 
      */
     public func setSpaceTop (percent: Float64): Unit
@@ -2916,7 +3963,7 @@ public class YAxis<: AxisBase {
     /*
      * 设置底部轴空间占整个范围的百分比
      * 
-     * 参数 percent - 
+     * 参数 percent - 百分比
      * 返回值 Unit - 
      */
     public func setSpaceBottom (percent: Float64): Unit
@@ -2924,7 +3971,7 @@ public class YAxis<: AxisBase {
     /*
      * 将此设置为true以绘制零线，而不管是否启用了其他网格线。默认值:false
      * 
-     * 参数 mDrawZeroLine - 
+     * 参数 mDrawZeroLine - true/false
      * 返回值 Unit - 
      */
     public func setDrawZeroLine (mDrawZeroLine: Bool): Unit
@@ -2932,7 +3979,7 @@ public class YAxis<: AxisBase {
     /*
      * 设置零线颜色
      * 
-     * 参数 color - 
+     * 参数 color - 颜色
      * 返回值 Unit - 
      */
     public func setZeroLineColor (color: Color): Unit
@@ -2940,14 +3987,14 @@ public class YAxis<: AxisBase {
     /*
      * 设置零线宽度
      * 
-     * 参数 width - 
+     * 参数 width - 宽度
      * 返回值 Unit - 
      */
     public func setZeroLineWidth (width: Float64): Unit
 }
 ```
 
-##### 1.8.3.4 LimitLine Class API Description
+##### 1.10.3.4 LimitLine Class API Description
 限制线
 ```cangjie
 public class LimitLine<: ComponentBase {
@@ -2970,7 +4017,7 @@ public class LimitLine<: ComponentBase {
     /*
      * 设置限制线的宽度
      * 
-     * 参数 width - 
+     * 参数 width - 宽度
      */
     public func setLineWidth (width: Float64)
     
@@ -2992,41 +4039,40 @@ public class LimitLine<: ComponentBase {
     
     /*
      * 禁用虚线
-     * 
      */
     public func disableDashedLine ()
     
     /*
      * 返回为此LimitLine设置的DashPathEffect
      * 
-     * 返回值 ?DashPathEffect - 
+     * 返回值 ?DashPathEffect - 虚线设置类
      */
     public func getDashPathEffect (): ?DashPathEffect
     
     /*
      * 设置文本样式
      * 
-     * 参数 style - 
+     * 参数 style - 样式
      */
     public func setTextStyle (style: Style)
     
     /*
      * 设置标签位置
      * 
-     * 参数 pos - 
+     * 参数 pos - 位置
      */
     public func setLabelPosition (pos: LimitLabelPosition)
     
     /*
      * 设置标签内容
      * 
-     * 参数 label - 
+     * 参数 label - 标签
      */
     public func setLabel (label: String)
 }
 ```
 
-##### 1.8.3.5 GridLineConfig Class API Description
+##### 1.10.3.5 GridLineConfig Class API Description
 网格线
 ```cangjie
 public class GridLineConfig {
@@ -3042,15 +4088,15 @@ public class GridLineConfig {
 }
 ```
 
-##### 1.8.3.6 ValueFormatter
+##### 1.10.3.6 ValueFormatter
 
-###### 1.8.3.6.1 IAxisValueFormatter
+###### 1.10.3.6.1 IAxisValueFormatter
 ```cangjie
 public interface IAxisValueFormatter {
     func getFormattedValue(value: Float64, axis: AxisBase): String
 }
 ```
-###### 1.8.3.6.2 DefaultAxisValueFormatter
+###### 1.10.3.6.2 DefaultAxisValueFormatter
 
 ```cangjie
 public class DefaultAxisValueFormatter<: IAxisValueFormatter {
@@ -3066,31 +4112,31 @@ public class DefaultAxisValueFormatter<: IAxisValueFormatter {
      * 获取格式化后的值
      * 
      * 参数 value - 值
-     * 参数 axis - AxisBase
-     * 返回值 String - 
+     * 参数 axis - 坐标轴
+     * 返回值 String - 格式化后的值
      */
     public func getFormattedValue (value: Float64, axis: AxisBase): String
     
     /*
      * 获取小数位数
      * 
-     * 返回值 Int64 - 
+     * 返回值 Int64 - 小数位数
      */
     public func getDecimalDigits (): Int64
 }
 ```
 
 
-#### 1.8.4 柱状图父类
+#### 1.10.4 柱状图父类
 
-##### 1.8.4.1 IBarLineScatterCandleBubbleDataSet interface API Description
+##### 1.10.4.1 IBarLineScatterCandleBubbleDataSet interface API Description
 
 ```cangjie
 public interface  IBarLineScatterCandleBubbleDataSet<E> <: IDataSet<E> where E <: EntryOhos {
     public func getHighLightColor(): UInt32
 }
 ```
-##### 1.8.4.2 BarLineScatterCandleBubbleDataSet abstract API Description
+##### 1.10.4.2 BarLineScatterCandleBubbleDataSet abstract API Description
 ```cangjie
 public abstract class BarLineScatterCandleBubbleDataSet<E> <: DataSet<E> {
     public init (yVals: ArrayList<E>, label: String)
@@ -3101,7 +4147,7 @@ public abstract class BarLineScatterCandleBubbleDataSet<E> <: DataSet<E> {
 }
 ```
 
-##### 1.8.4.3  BarLineScatterCandleBubbleData abstract API Description
+##### 1.10.4.3  BarLineScatterCandleBubbleData abstract API Description
 ```cangjie
 public abstract class BarLineScatterCandleBubbleData<(S, E)> <: ChartData<S,E> {
     
@@ -3113,7 +4159,7 @@ public abstract class BarLineScatterCandleBubbleData<(S, E)> <: ChartData<S,E> {
 }
 ```
 
-##### 1.8.4.4 BarLineScatterCandleBubbleDataProvider interface API Description
+##### 1.10.4.4 BarLineScatterCandleBubbleDataProvider interface API Description
 ```cangjie
 public interface BarLineScatterCandleBubbleDataProvider<S, E> <: ChartInterface<S, E> where S <: IBarLineScatterCandleBubbleDataSet<E>,
     E <: EntryOhos {
@@ -3129,7 +4175,7 @@ public interface BarLineScatterCandleBubbleDataProvider<S, E> <: ChartInterface<
 }
 ```
 
-##### 1.8.4.5 BarLineChartBaseModel abstract API Description
+##### 1.10.4.5 BarLineChartBaseModel abstract API Description
 ```cangjie
 public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarLineScatterCandleBubbleDataProvider<S,E> {
     
@@ -3166,7 +4212,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 绘制图表
      * 
-     * 参数 context2D - onDraw
+     * 参数 context2D - CanvasRenderingContext2D 标准库UI画布组件
      * 返回值 Unit - 
      */
     public open func onDraw (context2D: CanvasRenderingContext2D): Unit
@@ -3209,7 +4255,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
      * 设置Y轴最大区域大小
      * 
      * 参数 maxYRange - 最大区域大小
-     * 参数 axis - AxisDependency
+     * 参数 axis - 轴位置
      * 返回值 Unit - 
      */
     public open func setVisibleYRangeMaximum (maxYRange: Float64, axis: AxisDependency): Unit
@@ -3218,7 +4264,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
      * 设置Y轴最小区域大小
      * 
      * 参数 minYRange - 最小区域大小
-     * 参数 axis - AxisDependency
+     * 参数 axis - 轴位置
      * 返回值 Unit - 
      */
     public open func setVisibleYRangeMinimum (minYRange: Float64, axis: AxisDependency): Unit
@@ -3228,7 +4274,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
      * 
      * 参数 minYRange - 最小范围
      * 参数 maxYRange - 最大范围
-     * 参数 axis - AxisDependency
+     * 参数 axis - 轴位置
      * 返回值 Unit - 
      */
     public open func setVisibleYRange (minYRange: Float64, maxYRange: Float64, axis: AxisDependency): Unit
@@ -3246,7 +4292,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
      * 
      * 参数 xValue - x轴上的指定位置
      * 参数 yValue - y轴上的指定位置
-     * 参数 axis - AxisDependency
+     * 参数 axis - 轴位置
      * 返回值 Unit - 
      */
     public func moveViewTo (xValue: Float64, yValue: Float64, axis: AxisDependency): Unit
@@ -3256,7 +4302,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
      * 
      * 参数 xValue - x轴上的指定位置
      * 参数 yValue - y轴上的指定位置
-     * 参数 axis - AxisDependency
+     * 参数 axis - 轴位置
      * 参数 duration - 动画间隔
      * 返回值 Unit - 
      */
@@ -3266,7 +4312,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
      * 将视口的设置为Y轴指定位置
      * 
      * 参数 yValue - Y轴指定位置
-     * 参数 axis - AxisDependency
+     * 参数 axis - 轴位置
      * 返回值 Unit - 
      */
     public func centerViewToY (yValue: Float64, axis: AxisDependency): Unit
@@ -3276,7 +4322,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
      * 
      * 参数 xValue - X轴指定位置
      * 参数 yValue - Y轴指定位置
-     * 参数 axis - AxisDependency
+     * 参数 axis - 轴位置
      * 返回值 Unit - 
      */
     public func centerViewTo (xValue: Float64, yValue: Float64, axis: AxisDependency): Unit
@@ -3313,7 +4359,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 设置绘图监听事件
      * 
-     * 参数 drawListener - OnDrawListener
+     * 参数 drawListener - 绘图监听事件
      * 返回值 Unit - 
      */
     public func setOnDrawListener (drawListener: OnDrawListener): Unit
@@ -3321,14 +4367,14 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 获取绘图监听事件
      * 
-     * 返回值 ?OnDrawListener - 
+     * 返回值 ?OnDrawListener - 绘图监听事件
      */
     public func getDrawListener (): ?OnDrawListener
     
     /*
      * 设置图表可绘制的最大数量
      * 
-     * 参数 count - 
+     * 参数 count - 数量
      * 返回值 Unit - 
      */
     public func setMaxVisibleValueCount (count: Int64): Unit
@@ -3336,7 +4382,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 设置图表可绘制的最大数量
      * 
-     * 返回值 Int64 - 
+     * 返回值 Int64 - 数量 
      */
     public func getMaxVisibleCount (): Int64
     
@@ -3360,7 +4406,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 设置是否启用图表拖动效果
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setDragEnabled (enabled: Bool): Unit
@@ -3368,24 +4414,24 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 设置是否启用X轴上的拖动效果
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setDragXEnabled (enabled: Bool): Unit
     
     
     /*
-     * 设置 DragYEnab
+     * 设置Y轴是否拖动
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setDragYEnabled (enabled: Bool): Unit
     
     /*
-     * 设置是否启用Y轴上的拖动效果 
+     * 判断是否启用Y轴上的拖动效果 
      * 
-     * 返回值 Bool - 
+     * 返回值 Bool - true/false
      */
     public func isDragYEnabled (): Bool
     
@@ -3424,7 +4470,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 是否设置网格背景颜色
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setDrawGridBackground (enabled: Bool): Unit
@@ -3432,7 +4478,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 是否设置边框线
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setDrawBorders (enabled: Bool): Unit
@@ -3440,7 +4486,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 设置值是否在矩阵中*
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setClipValuesToContent (enabled: Bool): Unit
@@ -3448,7 +4494,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 设置数据是否在矩阵中
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setClipDataToContent (enabled: Bool): Unit
@@ -3456,7 +4502,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 设置边框线的宽度
      * 
-     * 参数 width - 
+     * 参数 width - 宽度
      * 返回值 Unit - 
      */
     public func setBorderWidth (width: Float64): Unit
@@ -3464,7 +4510,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 设置边框线的颜色
      * 
-     * 参数 color - 
+     * 参数 color - 颜色
      * 返回值 Unit - 
      */
     public func setBorderColor (color: UInt32): Unit
@@ -3472,7 +4518,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 设置图表最小偏移量
      * 
-     * 参数 minOffset - 
+     * 参数 minOffset - 偏移量
      * 返回值 Unit - 
      */
     public func setMinOffset (minOffset: Float64): Unit
@@ -3481,37 +4527,37 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 设置图表旋转后是否保持原位置
      * 
-     * 参数 keepPositionOnRotation - 
+     * 参数 keepPositionOnRotation - true/false
      * 返回值 Unit - 
      */
     public func setKeepPositionOnRotation (keepPositionOnRotation: Bool): Unit
     
-    *
+    /*
      * 获取左侧Y轴
      * 
-     * 返回值 ?YAxis - 
+     * 返回值 ?YAxis - Y轴
      */
     public func getAxisLeft (): ?YAxis
     
     /*
      * 获取右侧Y轴
      * 
-     * 返回值 ?YAxis - 
+     * 返回值 ?YAxis - Y轴
      */
     public func getAxisRight (): ?YAxis
     
     /*
-     * 获取X轴
+     * 获取Y轴
      * 
-     * 参数 axis - AxisDependency
-     * 返回值 ?YAxis - 
+     * 参数 axis - 轴位置
+     * 返回值 ?YAxis - Y轴
      */
     public func getAxis (axis: AxisDependency): ?YAxis
     
     /*
      * 如果设置为真，可以用2个手指同时缩放x和y轴
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setPinchZoom (enabled: Bool): Unit
@@ -3519,7 +4565,7 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 设置x拖动偏移量
      * 
-     * 参数 offset - 
+     * 参数 offset - 偏移量
      * 返回值 Unit - 
      */
     public func setDragOffsetX (offset: Float64): Unit
@@ -3527,81 +4573,18 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
     /*
      * 设置y拖动偏移量
      * 
-     * 参数 offset - 
+     * 参数 offset - 偏移量
      * 返回值 Unit - 
      */
     public func setDragOffsetY (offset: Float64): Unit
     
     /*
-     * 获取X坐标轴渲染
-     * 
-     * 返回值 ?XAxisRenderer - 
-     */
-    public func getRendererXAxis (): ?XAxisRenderer
-    
-    /*
-     * 设置X坐标轴渲染
-     * 
-     * 参数 xAxisRenderer - 
-     * 返回值 Unit - 
-     */
-    public func setXAxisRenderer (xAxisRenderer: XAxisRenderer): Unit
-    
-    /*
-     * 获取左边Y轴渲染器
-     * 
-     * 返回值 ?YAxisRenderer - 
-     */
-    public func getRendererLeftYAxis (): ?YAxisRenderer
-    
-    /*
-     * 设置左边Y轴渲染器
-     * 
-     * 参数 rendererLeftYAxis - 
-     * 返回值 Unit - 
-     */
-    public func setRendererLeftYAxis (rendererLeftYAxis: YAxisRenderer): Unit
-    
-    /*
-     * 获取右边Y轴渲染器
-     * 
-     * 返回值 ?YAxisRenderer - 
-     */
-    public func getRendererRightYAxis (): ?YAxisRenderer
-    
-    /*
-     * 设置右边Y轴渲染器
-     * 
-     * 参数 rendererRightYAxis - 
-     * 返回值 Unit - 
-     */
-    public func setRendererRightYAxis (rendererRightYAxis: YAxisRenderer): Unit
-    
-    
-    /*
      * 设置是否可在y轴上设置缩放
      * 
-     * 参数 enabled - 
+     * 参数 enabled - true/false
      * 返回值 Unit - 
      */
     public func setAutoScaleMinMaxEnabled (enabled: Bool): Unit
-    
-    /*
-     * 设置绘制网格背景*
-     * 
-     * 参数 p - Paint
-     * 参数 which - 
-     * 返回值 Unit - 
-     */
-    public func setPaint (p: Paint, which: Float64): Unit
-    
-    /*
-     * 获取网格背景*
-     * 
-     * 参数 which - 
-     * 返回值 ?Paint - 
-     */
-    public func getPaint (which: Float64): ?Paint
     
     /*
      * 图表尺寸改变
@@ -3616,9 +4599,9 @@ public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarL
 }
 ```
 
-#### 1.8.5 其他
+#### 1.10.5 其他
 
-##### 1.8.5.1 LimitLabelPosition
+##### 1.10.5.1 LimitLabelPosition
 限制线标签位置
 
 ```cangjie
@@ -3634,7 +4617,7 @@ public enum LimitLabelPosition <: Equatable<LimitLabelPosition> {
 }
 ```
 
-##### 1.8.5.2 Style
+##### 1.10.5.2 Style
 
 限制线文本样式
 
@@ -3650,7 +4633,7 @@ public enum Style <: Equatable<Style> {
 }
 ```
 
-##### 1.8.5.3 XAxisLabelPosition
+##### 1.10.5.3 XAxisLabelPosition
 
 x轴标签位置
 
@@ -3664,7 +4647,7 @@ public enum XAxisLabelPosition {
 }
 ```
 
-##### 1.8.5.4 XAxisPosition
+##### 1.10.5.4 XAxisPosition
 
 x轴位置
 
@@ -3680,15 +4663,30 @@ public enum XAxisPosition <: Equatable<XAxisPosition> {
     public operator func !=(b: XAxisPosition): Bool
 }
 ```
+##### 1.10.5.5 AxisDependency
 
-##### 1.8.5.5 DashPathEffect
+Y 轴方向
+
+```cangjie
+public enum AxisDependency <: Equatable<AxisDependency> {
+    | LEFT
+    | RIGHT
+
+    public operator func ==(b: AxisDependency): Bool
+
+    public operator func !=(b: AxisDependency): Bool
+    public func toString(): String
+}
+```
+
+##### 1.10.5.6 DashPathEffect
 
 ```cangjie
 public class DashPathEffect {
     public init(dash: Array<Int64>, offset: Int64)
 }
 ```
-##### 1.8.5.6 DashPathEffectConfig
+##### 1.10.5.7 DashPathEffectConfig
 
 ```cangjie
 public class DashPathEffectConfig {
@@ -3696,16 +4694,193 @@ public class DashPathEffectConfig {
 }
 ```
 
+##### 1.10.5.8 Fill Class API Description
+
+填充
+
+```cangjie
+public class Fill {
+    
+    /*
+     * 构造 
+     * 
+     * 参数 color - 开始颜色
+     * 参数 endColor - 结束颜色
+     */
+    public init (color: UInt32, endColor: UInt32)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 color - 开始颜色组
+     * 参数 endColor - 结束颜色组
+     */
+    public init (color: Array<UInt32>, endColor: Array<Float64>)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 color - ChartPixelMap
+     */
+    public init (color: ChartPixelMap)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 color - 颜色数组
+     */
+    public init (color: Array<UInt32>)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 color - UInt32 颜色
+     */
+    public init (color: UInt32)
+      
+    /*
+     * 设置填充样式
+     * 
+     * 参数 types - 
+     * 返回值 Unit - 
+     */
+    public func setType (types: FillType): Unit
+    
+  
+    /*
+     * 设置颜色
+     * 
+     * 参数 color - 
+     * 返回值 Unit - 
+     */
+    public func setColor (color: UInt32): Unit
+    
+    /*
+     * 设置渐变位置
+     * 
+     * 参数 positions - 
+     * 返回值 Unit - 
+     */
+    public func setGradientPositions (positions: Array<Float64>): Unit
+    
+    /*
+     * 设置渐变颜色
+     * 
+     * 参数 color - 
+     * 返回值 Unit - 
+     */
+    public func setGradientColors (color: Array<UInt32>): Unit
+    
+    /*
+     * 设置渐变颜色组
+     * 
+     * 参数 color - 开始
+     * 参数 endColor - 结束
+     * 返回值 Unit - 
+     */
+    public func setGradientColors (color: UInt32, endColor: UInt32): Unit
+    
+    /*
+     * 设置透明度
+     * 
+     * 参数 alpha - 
+     * 返回值 Unit - 
+     */
+    public func setAlpha (alpha: Float64): Unit
+    
+    /*
+     * 填充矩形
+     * 
+     * 参数 c - CanvasRenderingContext2D
+     * 参数 paint - Paint
+     * 参数 left - 左
+     * 参数 top - 上
+     * 参数 right - 右
+     * 参数 bottom - 下
+     * 参数 gradientDirection - 填充方向
+     * 参数 radius - 圆角
+     * 参数 cornerType - 圆角绘制类型
+     * 返回值 Unit - 
+     */
+    public func fillRect (c: CanvasRenderingContext2D, paint: Paint, left: Float64, top: Float64, right: Float64, bottom: Float64, gradientDirection: FillDirection, radius: Float64, cornerType: RoundCornerType): Unit
+}
+```
 
 
+##### 1.10.5.9 FillType
 
+填充样式
 
+```cangjie
+public enum FillType {
+    | EMPTY             //空
+    | COLOR             //颜色
+    | LINEAR_GRADIENT   //线性渐变
+    | DRAWABLE          //可绘制
+}
+```
 
+##### 1.10.5.10 FillDirection
 
+填充方向
 
+```cangjie
+public enum FillDirection <: Equatable<FillDirection> {
+    | DOWN  //下
+    | UP    //上
+    | RIGHT //右
+    | LEFT  //左
+}
 
+```
+##### 1.10.5.11 RoundCornerType
 
+矩形圆角绘制类型
 
+```cangjie
+public enum RoundCornerType {
+    | UP    // 顶部
+    | down  // 底部
+    | both  // 都有
+}
+```
+##### 1.10.5.12 YAxisLabelPosition
 
+Y轴标签的位置
 
+```cangjie
+public enum YAxisLabelPosition <: Equatable<YAxisLabelPosition> {
+    | OUTSIDE_CHART  //表外
+    | INSIDE_CHART   //表内
+}
+```
 
+##### 1.10.5.13 OnDrawListener
+
+图表绘制时监听器
+
+```cangjie
+public interface OnDrawListener {
+
+    /**
+     * 每当用手指添加条目时调用
+     *
+     * 参数 entry - 条目
+     */
+    func onEntryAdded(entry: EntryOhos): Unit
+
+    /**
+     * 每当项目突出显示后被用户移动时调用
+     *
+     * 参数 entry - 条目
+     */
+    func onEntryMoved(entry: EntryOhos): Unit
+
+    /**
+     * 当绘制手指被抬起并且绘制完成时调用。
+     *
+     * 参数 dataSet - the last drawn DataSet
+     */
+    func onDrawFinished(dataSet: DataSet<EntryOhos>): Unit
+}
+```
