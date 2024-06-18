@@ -19,7 +19,7 @@
 
 [target.aarch64-linux-ohos.bin-dependencies]
   path-option = ["${AARCH64_LIBS}", "${AARCH64_MACRO_LIBS}"]
-package-option = {}
+  package-option = {}
 
 [target.x86_64-unknown-windows-gnu.bin-dependencies]
   path-option = ["${X86_64_LIBS}", "${X86_64_MACRO_LIBS}"]

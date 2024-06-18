@@ -1,3 +1,8 @@
+from ohos import base.AppLog
+from ohos import ability.AbilityStage
+from ohos import ability.LaunchReason
+from cj_res_entry import cj_res_entry.app
+
 class MainAbility <: Ability {
     public init() {
         super()
@@ -17,9 +22,3 @@ class MainAbility <: Ability {
         windowStage.loadContent("MyView")
     }
 }
-
-func createAbility(): MainAbility {
-    MainAbility()
-}
-
-let ABILITY_REGISTER_RESULT = Ability.registerCreator("CangjieAbility", createAbility)
