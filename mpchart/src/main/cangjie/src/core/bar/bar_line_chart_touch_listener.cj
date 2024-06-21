@@ -3,7 +3,8 @@
  */
 package core.bar
 
-public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> where  D <: BarLineScatterCandleBubbleData<S, E>, S <: IBarLineScatterCandleBubbleDataSet<E>, E <: EntryOhos {
+public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> where D <: BarLineScatterCandleBubbleData<S,
+    E>, S <: IBarLineScatterCandleBubbleDataSet<E>, E <: EntryOhos {
     /**
      * the original touch-matrix from the chart
      */
@@ -46,7 +47,7 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
     private var mLongPressStatus: Bool = false
     private var isDragging: Bool = false
 
-    var barChartModel:BarLineChartBaseModel<D, S, E>
+    var barChartModel: BarLineChartBaseModel<D, S, E>
 
     /**
      * Constructor with initialization parameters.
@@ -77,7 +78,8 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
     }
 
     public func actionDown(isTouchEvent: Bool, event: Any): Unit {
-        if (!this.barChartModel.isDragEnabled() && (!this.barChartModel.isScaleXEnabled() && !this.barChartModel.isScaleYEnabled())) {
+        if (!this.barChartModel.isDragEnabled() && (!this.barChartModel.isScaleXEnabled() &&
+            !this.barChartModel.isScaleYEnabled())) {
             return
         }
         var xCoordinate: Float64 = 0.0
@@ -138,23 +140,8 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
     }
 
     public func actionMove(isTouchEvent: Bool, event: Any): Unit {
-        var xCoordinate: Float64 = 0.0
-        var yCoordinate: Float64 = 0.0
-        if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
-                return
-            }
-            xCoordinate = touch().touches[0].x
-            yCoordinate = touch().touches[0].y
-        } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return
-            }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
-        }
+        var xCoordinate: Float64 = actionMoveisTouchEventFunc(isTouchEvent, event)[0]
+        var yCoordinate: Float64 = actionMoveisTouchEventFunc(isTouchEvent, event)[1]
 
         if (!this.barChartModel.getViewPortHandler().isInBounds(xCoordinate, yCoordinate)) {
             this.barChartModel.highlightValueForObject(Option<Highlight>.None, true)
@@ -168,58 +155,116 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         }
 
         if (this.mTouchMode == 1 /*ChartTouchListener.DRAG*/ ) {
-            this.barChartModel.disableScroll()
-            let x: Float64 = if (this.barChartModel.isDragXEnabled()) {
-                xCoordinate - this.mTouchStartPoint.x
-            } else {
-                0.0
-            }
-            let y: Float64 = if (this.barChartModel.isDragYEnabled()) {
-                yCoordinate - this.mTouchStartPoint.y
-            } else {
-                0.0
-            }
-            this.performDrag(isTouchEvent, event, x, y)
+            actionMoveTouchModeIs1(isTouchEvent, event, xCoordinate, yCoordinate)
         } else if (this.mTouchMode == 2 || this.mTouchMode == 3 || this.mTouchMode == 4) {
             this.barChartModel.disableScroll()
             if (this.barChartModel.isScaleXEnabled() || this.barChartModel.isScaleYEnabled()) {
                 this.performZoom(isTouchEvent, event)
-            } else if (this.mTouchMode == 0 &&
-                abs(
-                ChartTouchListener<D, S, E>.distance(xCoordinate, this.mTouchStartPoint.x, yCoordinate,
-                this.mTouchStartPoint.y)) > this.mDragTriggerDist && this.barChartModel.getViewPortHandler().isInBounds(
-                xCoordinate, yCoordinate)) {
-                if (this.barChartModel.isDragEnabled()) {
-                    this.isDragging = true
-
-                    let shouldPan: Bool = !this.barChartModel.isFullyZoomedOut() || !this.barChartModel.hasNoDragOffset()
-                    if (shouldPan) {
-                        let distanceX: Float64 = abs(xCoordinate - this.mTouchStartPoint.x)
-                        let distanceY: Float64 = abs(yCoordinate - this.mTouchStartPoint.y)
-                        // Disable dragging in a direction that's disallowed
-                        if ((this.barChartModel.isDragXEnabled() || distanceY >= distanceX) && (this.barChartModel.isDragYEnabled() ||
-                            distanceY <= distanceX)) {
-                            this.mLastGesture = ChartGesture.DRAG
-                            this.mTouchMode = 1
-                        }
-                    } else {
-                        if (this.barChartModel.isHighlightPerDragEnabled()) {
-                            this.mLastGesture = ChartGesture.DRAG
-                            this.performHighlightDrag(isTouchEvent, event, true)
-                        }
-                    }
-                }
             }
+        } else if (this.mTouchMode == 0 &&
+            abs(
+            ChartTouchListener<D, S, E>.distance(xCoordinate, this.mTouchStartPoint.x, yCoordinate,
+            this.mTouchStartPoint.y)) > this.mDragTriggerDist && this.barChartModel.getViewPortHandler().isInBounds(
+            xCoordinate, yCoordinate)) {
+            actionMoveTouchModeIs0(isTouchEvent, event, xCoordinate, yCoordinate)
+        }
 
-            // perform the transformation, update the chart
-            this.mMatrix = this.barChartModel.getViewPortHandler().refresh(
-                this.mMatrix,
-                (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(),
-                true
-            )
+        // perform the transformation, update the chart
+        this.mMatrix = this.barChartModel.getViewPortHandler().refresh(
+            this.mMatrix,
+            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(
+                ),
+            true
+        )
+    }
+
+    private func actionMoveisTouchEventFunc(isTouchEvent: Bool, event: Any): (Float64, Float64) {
+        var xCoordinate: Float64 = 0.0
+        var yCoordinate: Float64 = 0.0
+        if (isTouchEvent) {
+            let touch = event as TouchEvent
+            if (touch.isNone() || touch().touches.size == 0) {
+                return (xCoordinate, yCoordinate)
+            }
+            xCoordinate = touch().touches[0].x
+            yCoordinate = touch().touches[0].y
+            return (xCoordinate, yCoordinate)
+        } else {
+            let gesture = event as GestureEvent
+            if (gesture.isNone() || gesture().fingerList.size == 0) {
+                return (xCoordinate, yCoordinate)
+            }
+            xCoordinate = gesture().fingerList[0].localX
+            yCoordinate = gesture().fingerList[0].localY
+            return (xCoordinate, yCoordinate)
         }
     }
 
+    private func actionMoveTouchModeIs1(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64): Unit {
+        this.barChartModel.disableScroll()
+        let x: Float64 = if (this.barChartModel.isDragXEnabled()) {
+            xCoordinate - this.mTouchStartPoint.x
+        } else {
+            0.0
+        }
+        let y: Float64 = if (this.barChartModel.isDragYEnabled()) {
+            yCoordinate - this.mTouchStartPoint.y
+        } else {
+            0.0
+        }
+        this.performDrag(isTouchEvent, event, x, y)
+    }
+
+    private func actionMoveTouchModeIs0(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64) {
+        if (this.barChartModel.isDragEnabled()) {
+            this.isDragging = true
+
+            let shouldPan: Bool = !this.barChartModel.isFullyZoomedOut() || !this.barChartModel.hasNoDragOffset()
+            if (shouldPan) {
+                let distanceX: Float64 = abs(xCoordinate - this.mTouchStartPoint.x)
+                let distanceY: Float64 = abs(yCoordinate - this.mTouchStartPoint.y)
+                // Disable dragging in a direction that's disallowed
+                if ((this.barChartModel.isDragXEnabled() || distanceY >= distanceX) && (this.barChartModel.
+                    isDragYEnabled() || distanceY <= distanceX)) {
+                    this.mLastGesture = ChartGesture.DRAG
+                    this.mTouchMode = 1
+                }
+            } else {
+                if (this.barChartModel.isHighlightPerDragEnabled()) {
+                    this.mLastGesture = ChartGesture.DRAG
+                    this.performHighlightDrag(isTouchEvent, event, true)
+                }
+            }
+        }
+    }
+
+    private func touchMode0Or7(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64): Unit {
+        if (this.barChartModel.isDragEnabled()) {
+            this.isDragging = true
+
+            let shouldPan: Bool = !this.barChartModel.isFullyZoomedOut() || !this.barChartModel.hasNoDragOffset()
+            if (shouldPan && !this.mLongPressStatus) {
+                let distanceX: Float64 = abs(xCoordinate - this.mTouchStartPoint.x)
+                let distanceY: Float64 = abs(yCoordinate - this.mTouchStartPoint.y)
+                // Disable dragging in a direction that's disallowed
+                if ((this.barChartModel.isDragXEnabled() || distanceY >= distanceX) && (this.barChartModel.
+                    isDragYEnabled() || distanceY <= distanceX)) {
+                    this.mLastGesture = ChartGesture.DRAG
+                    this.mTouchMode = 1
+                    this.performHighlightDrag(isTouchEvent, event, true)
+                }
+            } else if (this.mLongPressStatus) {
+                if (this.barChartModel.isHighlightPerDragEnabled()) {
+                    this.mLastGesture = ChartGesture.DRAG
+                    this.performHighlightDrag(isTouchEvent, event, true)
+                }
+            } else if (!this.mLongPressStatus) {
+                // response event of sliding left or right
+                this.barChartModel.getOnChartGestureListener()?.onChartTranslate(isTouchEvent, event,
+                    xCoordinate - this.mStartPointX, yCoordinate - this.mStartPointY)
+            }
+        }
+    }
     private func longPressCursorAction(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64) {
         if (this.mTouchMode == 1) {
             this.barChartModel.disableScroll()
@@ -245,37 +290,14 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             abs(
             ChartTouchListener<D, S, E>.distance(xCoordinate, this.mTouchStartPoint.x, yCoordinate,
             this.mTouchStartPoint.y)) > this.mDragTriggerDist) {
-            if (this.barChartModel.isDragEnabled()) {
-                this.isDragging = true
-
-                let shouldPan: Bool = !this.barChartModel.isFullyZoomedOut() || !this.barChartModel.hasNoDragOffset()
-                if (shouldPan && !this.mLongPressStatus) {
-                    let distanceX: Float64 = abs(xCoordinate - this.mTouchStartPoint.x)
-                    let distanceY: Float64 = abs(yCoordinate - this.mTouchStartPoint.y)
-                    // Disable dragging in a direction that's disallowed
-                    if ((this.barChartModel.isDragXEnabled() || distanceY >= distanceX) && (this.barChartModel.isDragYEnabled() ||
-                        distanceY <= distanceX)) {
-                        this.mLastGesture = ChartGesture.DRAG
-                        this.mTouchMode = 1
-                        this.performHighlightDrag(isTouchEvent, event, true)
-                    }
-                } else if (this.mLongPressStatus) {
-                    if (this.barChartModel.isHighlightPerDragEnabled()) {
-                        this.mLastGesture = ChartGesture.DRAG
-                        this.performHighlightDrag(isTouchEvent, event, true)
-                    }
-                } else if (!this.mLongPressStatus) {
-                    // response event of sliding left or right
-                    this.barChartModel.getOnChartGestureListener()?.onChartTranslate(isTouchEvent, event,
-                        xCoordinate - this.mStartPointX, yCoordinate - this.mStartPointY)
-                }
-            }
+            touchMode0Or7(isTouchEvent, event, xCoordinate, yCoordinate)
         }
 
         // perform the transformation, update the chart
         this.mMatrix = this.barChartModel.getViewPortHandler().refresh(
             this.mMatrix,
-            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(),
+            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(
+                ),
             true
         )
     }
@@ -339,7 +361,8 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         // perform the transformation, update the chart
         this.mMatrix = this.barChartModel.getViewPortHandler().refresh(
             this.mMatrix,
-            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(),
+            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(
+                ),
             true
         )
     }
@@ -350,7 +373,8 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         // perform the transformation, update the chart
         this.mMatrix = this.barChartModel.getViewPortHandler().refresh(
             this.mMatrix,
-            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(),
+            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(
+                ),
             true
         )
     }
@@ -415,6 +439,94 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         this.barChartModel.invalidate()
     }
 
+    private func performZoomTouchModeIs4(totalDist: Float64, h: ViewPortHandler, l: ?OnChartGestureListener,
+        t: MPPointF, isTouchEvent: Bool, event: Any) {
+        this.mLastGesture = ChartGesture.PINCH_ZOOM
+
+        let scale: Float64 = totalDist / this.mSavedDist // total scale
+
+        let isZoomingOut: Bool = (scale < 1.0)
+
+        let canZoomMoreX: Bool = if (isZoomingOut) {
+            h.canZoomOutMoreX()
+        } else {
+            h.canZoomInMoreX()
+        }
+
+        let canZoomMoreY: Bool = if (isZoomingOut) {
+            h.canZoomOutMoreY()
+        } else {
+            h.canZoomInMoreY()
+        }
+
+        let scaleX: Float64 = if (this.barChartModel.isScaleXEnabled()) {
+            scale
+        } else {
+            1.0
+        }
+        let scaleY: Float64 = if (this.barChartModel.isScaleYEnabled()) {
+            scale
+        } else {
+            1.0
+        }
+
+        if (canZoomMoreY || canZoomMoreX) {
+            this.mMatrix.set(this.mSavedMatrix)
+            this.mMatrix.postScale(scaleX, scaleY, centerX: t.x, centerY: t.y)
+
+            if (let Some(listener) <- l) {
+                listener.onChartScale(isTouchEvent, event, scaleX, scaleY)
+            }
+        }
+    }
+
+    private func performZoomTouchModeIs2(h: ViewPortHandler, isTouchEvent: Bool, event: Any, t: MPPointF,
+        l: ?OnChartGestureListener) {
+        this.mLastGesture = ChartGesture.X_ZOOM
+
+        let xDist: Float64 = BarLineChartTouchListener<D, S, E>.getXDist(isTouchEvent, event)
+        let scaleX: Float64 = xDist / this.mSavedXDist // x-axis scale
+
+        let isZoomingOut: Bool = (scaleX < 1.0)
+        let canZoomMoreX: Bool = if (isZoomingOut) {
+            h.canZoomOutMoreX()
+        } else {
+            h.canZoomInMoreX()
+        }
+
+        if (canZoomMoreX) {
+            this.mMatrix.set(this.mSavedMatrix)
+            this.mMatrix.postScale(scaleX, 1.0, centerX: t.x, centerY: t.y)
+
+            if (let Some(listener) <- l) {
+                listener.onChartScale(isTouchEvent, event, scaleX, 1.0)
+            }
+        }
+    }
+
+    private func performZoomTouchModeIs3(totalDist: Float64, h: ViewPortHandler, l: ?OnChartGestureListener,
+        t: MPPointF, isTouchEvent: Bool, event: Any) {
+        this.mLastGesture = ChartGesture.Y_ZOOM
+
+        let yDist: Float64 = BarLineChartTouchListener<D, S, E>.getYDist(isTouchEvent, event)
+        let scaleY: Float64 = yDist / this.mSavedYDist // y-axis scale
+
+        let isZoomingOut: Bool = (scaleY < 1.0)
+        let canZoomMoreY: Bool = if (isZoomingOut) {
+            h.canZoomOutMoreY()
+        } else {
+            h.canZoomInMoreY()
+        }
+
+        if (canZoomMoreY) {
+            this.mMatrix.set(this.mSavedMatrix)
+            this.mMatrix.postScale(1.0, scaleY, centerX: t.x, centerY: t.y)
+
+            if (let Some(listener) <- l) {
+                listener.onChartScale(isTouchEvent, event, 1.0, scaleY)
+            }
+        }
+    }
     /**
      * Performs the all operations necessary for pinch and axis zoom.
      *
@@ -444,85 +556,11 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
 
                 // take actions depending on the activated touch mode
                 if (this.mTouchMode == 4 /* ChartTouchListener.PINCH_ZOOM*/ ) {
-                    this.mLastGesture = ChartGesture.PINCH_ZOOM
-
-                    let scale: Float64 = totalDist / this.mSavedDist // total scale
-
-                    let isZoomingOut: Bool = (scale < 1.0)
-
-                    let canZoomMoreX: Bool = if (isZoomingOut) {
-                        h.canZoomOutMoreX()
-                    } else {
-                        h.canZoomInMoreX()
-                    }
-
-                    let canZoomMoreY: Bool = if (isZoomingOut) {
-                        h.canZoomOutMoreY()
-                    } else {
-                        h.canZoomInMoreY()
-                    }
-
-                    let scaleX: Float64 = if (this.barChartModel.isScaleXEnabled()) {
-                        scale
-                    } else {
-                        1.0
-                    }
-                    let scaleY: Float64 = if (this.barChartModel.isScaleYEnabled()) {
-                        scale
-                    } else {
-                        1.0
-                    }
-
-                    if (canZoomMoreY || canZoomMoreX) {
-                        this.mMatrix.set(this.mSavedMatrix)
-                        this.mMatrix.postScale(scaleX, scaleY, centerX: t.x, centerY: t.y)
-
-                        if (let Some(listener) <- l) {
-                            listener.onChartScale(isTouchEvent, event, scaleX, scaleY)
-                        }
-                    }
+                    performZoomTouchModeIs4(totalDist, h, l, t, isTouchEvent, event)
                 } else if (this.mTouchMode == 2 /*ChartTouchListener.X_ZOOM*/ && this.barChartModel.isScaleXEnabled()) {
-                    this.mLastGesture = ChartGesture.X_ZOOM
-
-                    let xDist: Float64 = BarLineChartTouchListener<D, S, E>.getXDist(isTouchEvent, event)
-                    let scaleX: Float64 = xDist / this.mSavedXDist // x-axis scale
-
-                    let isZoomingOut: Bool = (scaleX < 1.0)
-                    let canZoomMoreX: Bool = if (isZoomingOut) {
-                        h.canZoomOutMoreX()
-                    } else {
-                        h.canZoomInMoreX()
-                    }
-
-                    if (canZoomMoreX) {
-                        this.mMatrix.set(this.mSavedMatrix)
-                        this.mMatrix.postScale(scaleX, 1.0, centerX: t.x, centerY: t.y)
-
-                        if (let Some(listener) <- l) {
-                            listener.onChartScale(isTouchEvent, event, scaleX, 1.0)
-                        }
-                    }
+                    performZoomTouchModeIs2(h, isTouchEvent, event, t, l)
                 } else if (this.mTouchMode == 3 /* ChartTouchListener.Y_ZOOM*/ && this.barChartModel.isScaleYEnabled()) {
-                    this.mLastGesture = ChartGesture.Y_ZOOM
-
-                    let yDist: Float64 = BarLineChartTouchListener<D, S, E>.getYDist(isTouchEvent, event)
-                    let scaleY: Float64 = yDist / this.mSavedYDist // y-axis scale
-
-                    let isZoomingOut: Bool = (scaleY < 1.0)
-                    let canZoomMoreY: Bool = if (isZoomingOut) {
-                        h.canZoomOutMoreY()
-                    } else {
-                        h.canZoomInMoreY()
-                    }
-
-                    if (canZoomMoreY) {
-                        this.mMatrix.set(this.mSavedMatrix)
-                        this.mMatrix.postScale(1.0, scaleY, centerX: t.x, centerY: t.y)
-
-                        if (let Some(listener) <- l) {
-                            listener.onChartScale(isTouchEvent, event, 1.0, scaleY)
-                        }
-                    }
+                    performZoomTouchModeIs3(totalDist, h, l, t, isTouchEvent, event)
                 }
 
                 MPPointF.recycleInstance(t)
@@ -712,8 +750,8 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
      * @return
      */
     private func inverted(): Bool {
-        return (this.mClosestDataSetToTouch.isNone() && this.barChartModel.isAnyAxisInverted()) || (this.mClosestDataSetToTouch.
-            isSome()
+        return (this.mClosestDataSetToTouch.isNone() && this.barChartModel.isAnyAxisInverted()) || (this.
+            mClosestDataSetToTouch.isSome()
             && this.barChartModel.isInverted(this.mClosestDataSetToTouch().getAxisDependency()))
     }
 
@@ -945,7 +983,8 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
 
         this.mMatrix = this.barChartModel.getViewPortHandler().refresh(
             this.mMatrix,
-            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(),
+            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(
+                ),
             false
         )
 

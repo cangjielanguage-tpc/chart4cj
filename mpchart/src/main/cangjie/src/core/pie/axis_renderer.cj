@@ -184,70 +184,13 @@ public abstract class AxisRenderer <: Renderer {
         // force label count
         if (this.mAxis.isForceLabelsEnabled()) {
             interval = range / Float64(labelCount - 1)
-            this.mAxis.mEntryCount = Float64(labelCount)
-
-            if (this.mAxis.mEntries.size < labelCount) {
-                // Ensure stops contains at least numStops elements.
-                this.mAxis.mEntries = ArrayList<Float64>(labelCount)
-            }
-
-            var v = min
-
-            for (_ in 0..labelCount) {
-                this.mAxis.mEntries.append(v)
-                v += interval
-            }
-
+            xaxisIsForceLablesEnabled(labelCount, min, interval)
             n = labelCount
 
         // no forced count
         } else {
-            var first: Float64 = if (interval == 0.0) {
-                0.0
-            } else {
-                ceil(yMin / interval) * interval
-            }
-            if (this.mAxis.isCenterAxisLabelsEnabled()) {
-                first -= interval
-            }
-
-            let last: Float64 = if (interval == 0.0) {
-                0.0
-            } else {
-                Utils.nextUp(floor(yMax / interval) * interval)
-            }
-
-            var f: Float64 = 0.0
-            var i: Int64 = 0
-
-            if (interval != 0.0 && last != first) {
-                f = first
-                while (f <= last) {
-                    n++
-                    f += interval
-                }
-            } else if (last == first && n == 0) {
-                n = 1
-            }
-
-            this.mAxis.mEntryCount = Float64(n)
-
-            if (this.mAxis.mEntries.size < n) {
-                // Ensure stops contains at least numStops elements.
-                this.mAxis.mEntries = ArrayList<Float64>(n)
-            }
-            f = first
-            i = 0
-            while (i < n) {
-                if (f == 0.0) {
-                    f = 0.0
-                } // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
-
-                // this.mAxis.mEntries[i] = f
-                this.mAxis.mEntries.append(f)
-                f += interval
-                i++
-            }
+            interval = xaxisIsForceLablesDesnabled(interval, yMin, yMax, n)[0]
+            n = xaxisIsForceLablesDesnabled(interval, yMin, yMax, n)[1]
         }
 
         // set decimals
@@ -269,6 +212,74 @@ public abstract class AxisRenderer <: Renderer {
                 this.mAxis.mCenteredEntries.append(this.mAxis.mEntries[i] + offset)
             }
         }
+    }
+
+    private func xaxisIsForceLablesEnabled(labelCount: Int64, min: Float64, interval: Float64): Unit {
+        this.mAxis.mEntryCount = Float64(labelCount)
+
+        if (this.mAxis.mEntries.size < labelCount) {
+            // Ensure stops contains at least numStops elements.
+            this.mAxis.mEntries = ArrayList<Float64>(labelCount)
+        }
+
+        var v = min
+
+        for (_ in 0..labelCount) {
+            this.mAxis.mEntries.append(v)
+            v += interval
+        }
+    }
+
+    private func xaxisIsForceLablesDesnabled(interval: Float64, yMin: Float64, yMax: Float64, nn: Int64): (Float64, 
+        Int64) {
+        var n: Int64 = nn
+        var first: Float64 = if (interval == 0.0) {
+            0.0
+        } else {
+            ceil(yMin / interval) * interval
+        }
+        if (this.mAxis.isCenterAxisLabelsEnabled()) {
+            first -= interval
+        }
+
+        let last: Float64 = if (interval == 0.0) {
+            0.0
+        } else {
+            Utils.nextUp(floor(yMax / interval) * interval)
+        }
+
+        var f: Float64 = 0.0
+        var i: Int64 = 0
+
+        if (interval != 0.0 && last != first) {
+            f = first
+            while (f <= last) {
+                n++
+                f += interval
+            }
+        } else if (last == first && n == 0) {
+            n = 1
+        }
+
+        this.mAxis.mEntryCount = Float64(n)
+
+        if (this.mAxis.mEntries.size < n) {
+            // Ensure stops contains at least numStops elements.
+            this.mAxis.mEntries = ArrayList<Float64>(n)
+        }
+        f = first
+        i = 0
+        while (i < n) {
+            if (f == 0.0) {
+                f = 0.0
+            } // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
+
+            // this.mAxis.mEntries[i] = f
+            this.mAxis.mEntries.append(f)
+            f += interval
+            i++
+        }
+        return (interval, n)
     }
 
     /**

@@ -299,15 +299,10 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
         return this.mEntries().get(index)()
     }
 
-    public func getEntryIndex(xValue: Float64, closestToY: Float64, rounding: Rounding): Int64 {
-        if (this.mEntries.isNone() || this.mEntries().size != 0) {
-            return -1
-        }
-
+    private func getEntryIndexFunc(xValue: Float64): Int64 {
         var low: Int64 = 0
         var high: Int64 = this.mEntries().size - 1
         var closest: Int64 = high
-
         while (low < high) {
             let m: Int64 = Int64(floor(Float64((low + high) / 2)))
             let d1: Float64 = this.mEntries().get(m)().getX() - xValue
@@ -335,6 +330,14 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
             }
             closest = high
         }
+        return closest
+    }
+
+    public func getEntryIndex(xValue: Float64, closestToY: Float64, rounding: Rounding): Int64 {
+        if (this.mEntries.isNone() || this.mEntries().size != 0) {
+            return -1
+        }
+        var closest = getEntryIndexFunc(xValue)
 
         if (closest != -1) {
             let closestXValue: Float64 = this.mEntries().get(closest)().getX()

@@ -572,186 +572,208 @@ public class Legend <: ComponentBase {
         this.mTextHeightMax = this.getMaximumEntryHeight(labelpaint)
 
         match (this.mOrientation) {
-            case LegendOrientation.VERTICAL =>
-                var maxWidth: Float64 = 0.0;
-                var maxHeight: Float64 = 0.0;
-                var width: Float64 = 0.0;
-                let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, Option<CanvasRenderingContext2D>.None);
-                var wasStacked: Bool = false;
+            case LegendOrientation.VERTICAL => orientationIsVERTICAL(labelpaint, entryCount, entries, defaultFormSize,
+                stackSpace, formToTextSpace, yEntrySpace)
 
-                for (i in 0..entryCount) {
-                    let e: LegendEntry = entries[i];
-                    let drawingForm: Bool = e.form != LegendForm.NONE;
-                    let formSize: Float64 = if (e.formSize.isNaN()) {
-                        defaultFormSize
-                    } else {
-                        Utils.handleDataValues(e.formSize)
-                    }
-
-                    let label: String = e.label;
-
-                    if (!wasStacked) {
-                        width = 0.1
-                    }
-
-                    if (drawingForm) {
-                        if (wasStacked) {
-                            width += stackSpace
-                        }
-
-                        width += formSize
-                    }
-
-                    // grouped forms have null labels
-                    if (label != "") {
-
-                        // make a step to the left
-                        if (drawingForm && !wasStacked) {
-                            width += formToTextSpace
-                        } else if (wasStacked) {
-                            maxWidth = max(maxWidth, width)
-                            maxHeight += labelLineHeight + yEntrySpace
-                            width = 0.1
-                            wasStacked = false
-                        }
-
-                        width += Utils.calcTextWidth(labelpaint, label)
-
-                        maxHeight += labelLineHeight + yEntrySpace
-                    } else {
-                        wasStacked = true
-                        width += formSize
-                        if (i < entryCount - 1) {
-                            width += stackSpace
-                        }
-                    }
-
-                    maxWidth = max(maxWidth, width)
-                }
-
-                this.mNeededWidth = maxWidth
-                this.mNeededHeight = maxHeight
-
-            case LegendOrientation.HORIZONTAL =>
-                let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, Option<CanvasRenderingContext2D>.None);
-                let labelLineSpacing: Float64 = Utils.getLineSpacing(labelpaint, Option<CanvasRenderingContext2D>.None) +
-                    yEntrySpace;
-                let contentWidth: Float64 = viewPortHandler.contentWidth() * this.mMaxSizePercent;
-                AppLog.info("contentWidth = ${contentWidth}");
-
-                // Start calculating layout
-                var maxLineWidth: Float64 = 0.0;
-                var currentLineWidth: Float64 = 0.0;
-                var requiredWidth: Float64 = 0.0;
-                var stackedStartIndex: Int64 = -1;
-
-                this.mCalculatedLabelBreakPoints.clear();
-                this.mCalculatedLabelSizes.clear();
-                this.mCalculatedLineSizes.clear();
-
-                for (i in 0..entryCount) {
-                    let e: LegendEntry = entries[i];
-                    let drawingForm: Bool = e.form != LegendForm.NONE;
-                    let formSize: Float64 = if (e.formSize.isNaN()) {
-                        defaultFormSize
-                    } else {
-                        Utils.handleDataValues(e.formSize)
-                    }
-
-                    let label: String = e.label;
-
-                    this.mCalculatedLabelBreakPoints.append(false);
-
-                    if (stackedStartIndex == -1) {
-                        // we are not stacking, so required width is for this label
-                        // only
-                        requiredWidth = 0.0
-                    } else {
-                        // add the spacing appropriate for stacked labels/forms
-                        requiredWidth += stackSpace
-                    }
-
-                    // grouped forms have null labels
-                    if (label != "") {
-                        this.mCalculatedLabelSizes.append(Utils.calcTextSize(labelpaint, label));
-                        requiredWidth += if (drawingForm) {
-                            formToTextSpace + formSize
-                        } else {
-                            0.0
-                        };
-                        requiredWidth += this.mCalculatedLabelSizes.get(i)().width
-                    } else {
-                        this.mCalculatedLabelSizes.append(FSize.getInstance(0.0, 0.0));
-                        requiredWidth += if (drawingForm) {
-                            formSize
-                        } else {
-                            0.0
-                        };
-
-                        if (stackedStartIndex == -1) {
-                            // mark this index as we might want to break here later
-                            stackedStartIndex = i
-                        }
-                    }
-
-                    if ((label != "") || i == entryCount - 1) {
-                        let requiredSpacing: Float64 = if (currentLineWidth == 0.0) {
-                            0.0
-                        } else {
-                            xEntrySpace
-                        };
-
-                        if (!wordWrapEnabled // No word wrapping, it must fit.
-                            // The line is empty, it must fit
-                            || currentLineWidth == 0.0
-                            // It simply fits
-                            || (contentWidth - currentLineWidth >= requiredSpacing + requiredWidth)) {
-                            // Expand current line
-                            currentLineWidth += requiredSpacing + requiredWidth
-                        } else { // It doesn't fit, we need to wrap a line
-
-                            // Add current line size to array
-                            this.mCalculatedLineSizes.append(FSize.getInstance(currentLineWidth, labelLineHeight));
-                            maxLineWidth = max(maxLineWidth, currentLineWidth)
-
-                            // Start a new line
-                            this.mCalculatedLabelBreakPoints.set(
-                                if (stackedStartIndex > -1) {
-                                    stackedStartIndex
-                                } else {
-                                    i
-                                },
-                                true
-                            );
-
-                            currentLineWidth = requiredWidth
-                        }
-
-                        if (i == entryCount - 1) {
-                            // Add last line size to array
-                            this.mCalculatedLineSizes.append(FSize.getInstance(currentLineWidth, labelLineHeight));
-                            maxLineWidth = max(maxLineWidth, currentLineWidth)
-                        }
-                    }
-
-                    stackedStartIndex = if ((label != "")) {
-                        -1
-                    } else {
-                        stackedStartIndex
-                    };
-                }
-
-                this.mNeededWidth = maxLineWidth
-                this.mNeededHeight = labelLineHeight
-                    * Float64(this.mCalculatedLineSizes.size)
-                    + labelLineSpacing * (if (this.mCalculatedLineSizes.size == 0) {
-                    0.0
-                } else {
-                    Float64(this.mCalculatedLineSizes.size - 1)
-                })
+            case LegendOrientation.HORIZONTAL => orientationIsHORIZONTAL(labelpaint, entryCount, entries,
+                defaultFormSize, stackSpace, formToTextSpace, yEntrySpace, viewPortHandler, xEntrySpace, wordWrapEnabled
+            )
         }
 
         this.mNeededHeight += this.mYOffset
         this.mNeededWidth += this.mXOffset
+    }
+
+    private func orientationIsVERTICAL(labelpaint: Paint, entryCount: Int64, entries: Array<LegendEntry>,
+        defaultFormSize: Float64, stackSpace: Float64, formToTextSpace: Float64, yEntrySpace: Float64) {
+        var maxWidth: Float64 = 0.0;
+        var maxHeight: Float64 = 0.0;
+        var width: Float64 = 0.0;
+        let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, Option<CanvasRenderingContext2D>.None);
+        var wasStacked: Bool = false;
+
+        for (i in 0..entryCount) {
+            let e: LegendEntry = entries[i];
+            let drawingForm: Bool = e.form != LegendForm.NONE;
+            let formSize: Float64 = if (e.formSize.isNaN()) {
+                defaultFormSize
+            } else {
+                Utils.handleDataValues(e.formSize)
+            }
+
+            let label: String = e.label;
+
+            if (!wasStacked) {
+                width = 0.1
+            }
+
+            if (drawingForm) {
+                if (wasStacked) {
+                    width += stackSpace
+                }
+
+                width += formSize
+            }
+
+            // grouped forms have null labels
+            if (label != "") {
+
+                // make a step to the left
+                if (drawingForm && !wasStacked) {
+                    width += formToTextSpace
+                } else if (wasStacked) {
+                    maxWidth = max(maxWidth, width)
+                    maxHeight += labelLineHeight + yEntrySpace
+                    width = 0.1
+                    wasStacked = false
+                }
+
+                width += Utils.calcTextWidth(labelpaint, label)
+
+                maxHeight += labelLineHeight + yEntrySpace
+            } else {
+                wasStacked = true
+                width += formSize
+                if (i < entryCount - 1) {
+                    width += stackSpace
+                }
+            }
+
+            maxWidth = max(maxWidth, width)
+        }
+
+        this.mNeededWidth = maxWidth
+        this.mNeededHeight = maxHeight
+    }
+
+    private func orientationIsHORIZONTAL(labelpaint: Paint, entryCount: Int64, entries: Array<LegendEntry>,
+        defaultFormSize: Float64, stackSpace: Float64, formToTextSpace: Float64, yEntrySpace: Float64,
+        viewPortHandler: ViewPortHandler, xEntrySpace: Float64, wordWrapEnabled: Bool) {
+        let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, Option<CanvasRenderingContext2D>.None);
+        let labelLineSpacing: Float64 = Utils.getLineSpacing(labelpaint, Option<CanvasRenderingContext2D>.None) +
+            yEntrySpace;
+        let contentWidth: Float64 = viewPortHandler.contentWidth() * this.mMaxSizePercent;
+        AppLog.info("contentWidth = ${contentWidth}");
+
+        // Start calculating layout
+        var maxLineWidth: Float64 = 0.0;
+        var currentLineWidth: Float64 = 0.0;
+        var requiredWidth: Float64 = 0.0;
+        var stackedStartIndex: Int64 = -1;
+
+        this.mCalculatedLabelBreakPoints.clear();
+        this.mCalculatedLabelSizes.clear();
+        this.mCalculatedLineSizes.clear();
+
+        for (i in 0..entryCount) {
+            let e: LegendEntry = entries[i];
+            let drawingForm: Bool = e.form != LegendForm.NONE;
+            let formSize: Float64 = fontsizeFunc(e, defaultFormSize)
+
+            let label: String = e.label;
+
+            this.mCalculatedLabelBreakPoints.append(false);
+
+            requiredWidth = stackedStartIndexFunc(requiredWidth, stackSpace, stackedStartIndex)
+
+            // grouped forms have null labels
+            if (label != "") {
+                this.mCalculatedLabelSizes.append(Utils.calcTextSize(labelpaint, label));
+                requiredWidth += if (drawingForm) {
+                    formToTextSpace + formSize
+                } else {
+                    0.0
+                };
+                requiredWidth += this.mCalculatedLabelSizes.get(i)().width
+            } else {
+                this.mCalculatedLabelSizes.append(FSize.getInstance(0.0, 0.0));
+                requiredWidth += if (drawingForm) {
+                    formSize
+                } else {
+                    0.0
+                };
+
+                if (stackedStartIndex == -1) {
+                    // mark this index as we might want to break here later
+                    stackedStartIndex = i
+                }
+            }
+
+            if ((label != "") || i == entryCount - 1) {
+                let requiredSpacing: Float64 = if (currentLineWidth == 0.0) {
+                    0.0
+                } else {
+                    xEntrySpace
+                };
+
+                if (!wordWrapEnabled // No word wrapping, it must fit.
+                    // The line is empty, it must fit
+                    || currentLineWidth == 0.0
+                    // It simply fits
+                    || (contentWidth - currentLineWidth >= requiredSpacing + requiredWidth)) {
+                    // Expand current line
+                    currentLineWidth += requiredSpacing + requiredWidth
+                } else { // It doesn't fit, we need to wrap a line
+
+                    // Add current line size to array
+                    this.mCalculatedLineSizes.append(FSize.getInstance(currentLineWidth, labelLineHeight));
+                    maxLineWidth = max(maxLineWidth, currentLineWidth)
+
+                    // Start a new line
+                    this.mCalculatedLabelBreakPoints.set(
+                        if (stackedStartIndex > -1) {
+                            stackedStartIndex
+                        } else {
+                            i
+                        },
+                        true
+                    );
+
+                    currentLineWidth = requiredWidth
+                }
+
+                if (i == entryCount - 1) {
+                    // Add last line size to array
+                    this.mCalculatedLineSizes.append(FSize.getInstance(currentLineWidth, labelLineHeight));
+                    maxLineWidth = max(maxLineWidth, currentLineWidth)
+                }
+            }
+
+            stackedStartIndex = if ((label != "")) {
+                -1
+            } else {
+                stackedStartIndex
+            };
+        }
+
+        this.mNeededWidth = maxLineWidth
+        this.mNeededHeight = labelLineHeight
+            * Float64(this.mCalculatedLineSizes.size)
+            + labelLineSpacing * (if (this.mCalculatedLineSizes.size == 0) {
+            0.0
+        } else {
+            Float64(this.mCalculatedLineSizes.size - 1)
+        })
+    }
+
+    private func fontsizeFunc(e: LegendEntry, defaultFormSize: Float64): Float64 {
+        return if (e.formSize.isNaN()) {
+            defaultFormSize
+        } else {
+            Utils.handleDataValues(e.formSize)
+        }
+    }
+
+    private func stackedStartIndexFunc(requiredWidth: Float64, stackSpace: Float64, stackedStartIndex: Int64): Float64 {
+        var width: Float64 = requiredWidth
+        if (stackedStartIndex == -1) {
+            // we are not stacking, so required width is for this label
+            // only
+            width = 0.0
+        } else {
+            // add the spacing appropriate for stacked labels/forms
+            width += stackSpace
+        }
+        return width
     }
 }
