@@ -1609,9 +1609,6 @@ public enum LegendVerticalAlignment {
 }
 ```
 
-
-
-
 ### 1.7 饼图示例
 
 ```cangjie
@@ -1758,3 +1755,1957 @@ func render() {
     }
 }
 ```
+
+### 1.8 柱状图 BarChart
+
+#### 1.8.1 垂直柱状图
+
+##### 1.8.1.1 BarEntry Class API Description
+
+柱状图数据结构
+
+```cangjie
+public class BarEntry <: EntryOhos {
+    /*
+     * 构造 
+     * 
+     * 参数 x - x 值
+     * 参数 y - y 值
+     */
+    public init(x: Float64, y: Float64)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 x - x 值
+     * 参数 y - y 值集合
+     */
+    public init(x: Float64, y: Array<Float64>) 
+    
+    /*
+     * 构造 
+     * 
+     * 参数 x - x 值
+     * 参数 y - y 值
+     * 参数 data - 数据
+     */
+    public init(x: Float64, y: Float64, data: Any)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 x - x 值
+     * 参数 y - y 值集合
+     * 参数 data - 数据
+     */
+    public init(x: Float64, y: Array<Float64>, data: Any)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 x - x 值
+     * 参数 y - y 值
+     * 参数 icon - 图标
+     */
+    public init(x: Float64, y: Float64, icon: ChartPixelMap)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 x - x 值
+     * 参数 y - y 值集合
+     * 参数 icon - 图标
+     */
+    public init(x: Float64, y: Array<Float64>, icon: ChartPixelMap)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 x - x 值
+     * 参数 y - y 值
+     * 参数 icon - 图标
+     * 参数 data - 数据   
+     */
+    public init(x: Float64, y: Float64, icon: ChartPixelMap, data: Any)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 x - x 值
+     * 参数 y - y 值集合
+     * 参数 icon - 图标
+     * 参数 data - 数据   
+     */
+    public init(x: Float64, y: Array<Float64>, icon: ChartPixelMap, data: Any)
+}
+```
+##### 1.8.1.2 IBarDataSet interface API Description
+
+```cangjie
+public interface IBarDataSet <: IBarLineScatterCandleBubbleDataSet<BarEntry> {
+    public func getFills(): ?ArrayList<Fill>
+
+    public func getFill(index: Int64): Fill
+
+    /**
+     * 判断是否堆叠
+     *
+     * 返回 Bool
+     */
+    public func isStacked(): Bool
+
+    /**
+     * 获取堆叠数目
+     *
+     * 返回 Int64
+     */
+    public func getStackSize(): Int64
+
+    /**
+     * 获取条形背后阴影的颜色
+     *
+     * 返回 UInt32
+     */
+    public func getBarShadowColor(): UInt32
+
+    /**
+     * 获取条形图宽度
+     *
+     * 返回 Float64
+     */
+    public func getBarBorderWidth(): Float64
+
+    /**
+     * 获取条形图颜色
+     *
+     * 返回 UInt32
+     */
+    public func getBarBorderColor(): UInt32
+
+    /**
+     * 获取高亮透明度
+     *
+     * 返回 Float64
+     */
+    public func getHighLightAlpha(): Float64
+
+    /**
+     * 获取堆叠条目的标签
+     *
+     * 返回 Array<String>
+     */
+    public func getStackLabels(): Array<String>
+}
+
+```
+
+##### 1.8.1.3 BarDataSet Class API Description
+```cangjie
+public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBarDataSet {
+    
+    /*
+     * 构造 
+     * 
+     * 参数 yVals - BarEntry 集合
+     * 参数 label - 标签
+     */
+    public init (yVals: ArrayList<BarEntry>, label: String)
+    
+    /*
+     * 创建副本
+     * 
+     * 返回值 DataSet<BarEntry> - 
+     */
+    public func copy (): DataSet<BarEntry>
+    
+    /*
+     * 设置渐变色的开始和结束颜色
+     * 
+     * 参数 startColor - 开始颜色
+     * 参数 endColor - 结束颜色
+     * 返回值 Unit - 
+     */
+    public func setGradientColor (startColor: UInt32, endColor: UInt32): Unit
+    
+    /*
+     * 设置数据集条形图的填充
+     * 
+     * 参数 fills - 填充集合
+     * 返回值 Unit - 
+     */
+    public func setFills (fills: ArrayList<Fill>): Unit
+    
+    /*
+     * 设置条形图阴影颜色
+     * 
+     * 参数 color - 颜色
+     * 返回值 Unit - 
+     */
+    public func setBarShadowColor (color: UInt32): Unit
+    
+    /*
+     * 设置条形图边框宽度
+     * 
+     * 参数 width - 宽度
+     * 返回值 Unit - 
+     */
+    public func setBarBorderWidth (width: Float64): Unit
+    
+    /*
+     * 设置条形图边框颜色
+     * 
+     * 参数 color - 颜色
+     * 返回值 Unit - 
+     */
+    public func setBarBorderColor (color: UInt32): Unit
+    
+    /*
+     * 设置高亮透明度
+     * 
+     * 参数 alpha - 透明度
+     * 返回值 Unit - 
+     */
+    public func setHighLightAlpha (alpha: Float64): Unit
+    
+    /*
+     * 设置堆叠标签
+     * 
+     * 参数 labels - 标签
+     * 返回值 Unit - 
+     */
+    public func setStackLabels (labels: Array<String>): Unit
+}
+```
+
+##### 1.8.1.4  BarData Class API Description
+```cangjie
+public open class BarData<: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry> {
+    
+    /*
+     * 构造
+     */
+    public init ()
+    
+    /*
+     * 构造 
+     * 
+     * 参数 dataSets - 
+     */
+    public init (dataSets: Array<IBarDataSet>)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 dataSets - IBarDataSet 集合
+     */
+    public init (dataSets: ArrayList<IBarDataSet>)
+    
+    /*
+     * 设置每个条形图在坐标轴上的宽度，默认 0.85
+     * 
+     * 参数 mBarWidth - 宽度
+     * 返回值 Unit - 
+     */
+    public func setBarWidth (mBarWidth: Float64): Unit
+    
+    /*
+     * 获取每个条形图在坐标轴上的宽度
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getBarWidth (): Float64
+    
+    /*
+     * 设置顶部圆角半径
+     * 
+     * 参数 radius - 圆角半径
+     * 返回值 Unit - 
+     */
+    public func setTopRadius (radius: Float64): Unit
+    
+    /*
+     * 获取顶部圆角半径
+     * 
+     * 返回值 Float64 - 
+     */
+    public func getTopRadius (): Float64
+    
+    /*
+     * 将指定条目分组
+     * 
+     * 参数 fromX - x轴上分组的起始点
+     * 参数 groupSpace - 组之间的间距
+     * 参数 barSpace - 各条目之间的间距
+     * 返回值 Unit - 
+     */
+    public func groupBars (fromX: Float64, groupSpace: Float64, barSpace: Float64): Unit
+    
+    /*
+     * 获取单个条形组在x轴上的宽度
+     * 
+     * 参数 groupSpace - 组之间的间距
+     * 参数 barSpace - 各条目之间的间距
+     * 返回值 Float64 - 
+     */
+    public func getGroupWidth (groupSpace: Float64, barSpace: Float64): Float64
+}
+
+```
+
+##### 1.8.1.5 BarDataProvider interface API Description
+```cangjie
+public interface BarDataProvider <: BarLineScatterCandleBubbleDataProvider<IBarDataSet, BarEntry> {
+    func getBarData(): ?BarData
+
+    func isDrawBarShadowEnabled(): Bool
+
+    func isDrawValueAboveBarEnabled(): Bool
+
+    func isHighlightFullBarEnabled(): Bool
+}
+```
+##### 1.8.1.6  BarChartModel Class API Description
+```cangjie
+public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, BarEntry> & BarDataProvider {
+    
+    /*
+     * 创建 BarChartModel 示例
+     * 
+     * 返回值 BarChartModel - BarChartModel
+     */
+    public static func build (): BarChartModel
+    
+    /*
+     * 设置绘图工具
+     * 
+     * 参数 context2d - CanvasRenderingContext2D
+     */
+    public func setContext2D (context2d: CanvasRenderingContext2D)
+    
+    /*
+     * 图标尺寸改变
+     * 
+     * 参数 newWidth - 新宽
+     * 参数 newHeight - 新高
+     * 参数 oldWidth - 旧宽
+     * 参数 oldHeight - 旧高
+     */
+    public func onChartSizeChanged (newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64)
+    
+    /*
+     * 绘图
+     * 
+     * 参数 c - CanvasRenderingContext2D
+     * 返回值 Unit - 
+     */
+    public func onDraw (c: CanvasRenderingContext2D): Unit
+    
+    /*
+     * 获取接触点的高亮对象
+     * 
+     * 参数 x - x值
+     * 参数 y - y值
+     * 返回值 ?Highlight - 
+     */
+    public open func getHighlightByTouchPoint (x: Float64, y: Float64): ?Highlight
+    
+    
+    /*
+     * 设置值是否在条形图的上方绘制
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit - 
+     */
+    public func setDrawValueAboveBar (enabled: Bool): Unit
+    
+    /*
+     * 是否设置在每个条目后面设置阴影
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit - 
+     */
+    public func setDrawBarShadow (enabled: Bool): Unit
+    
+    /*
+     * 设置是否突出显示某个条目（堆叠柱状图）
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setHighlightFullBarEnabled (enabled: Bool): Unit
+    
+    /*
+     * 给定值处设置高亮
+     * 
+     * 参数 x - x值
+     * 参数 dataSetIndex - 条目索引
+     * 参数 stackIndex - 堆叠索引
+     * 返回值 Unit - 
+     */
+    public func highlightValue (x: Float64, dataSetIndex: Int64, stackIndex: Int64): Unit
+    
+    /*
+     * 获取柱状图条目
+     * 
+     * 返回值 ?BarData - 
+     */
+    public func getBarData (): ?BarData
+    
+    /*
+     * 是否在x轴范围的两侧各增加一半条形图宽度，以使条形图完全显示出来。
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setFitBars (enabled: Bool): Unit
+    
+    /*
+     * 将指定条目分组
+     * 
+     * 参数 fromX - x轴上分组的起始点
+     * 参数 groupSpace - 组之间的间距
+     * 参数 barSpace - 各条目之间的间距
+     * 返回值 Unit - 
+     */
+    public func groupBars (fromX: Float64, groupSpace: Float64, barSpace: Float64): Unit
+}
+```
+
+##### 1.8.1.6 BarChart Class API Description
+```cangjie
+@Component
+public class BarChart {}
+```
+##### 1.8.1.7 示例
+
+```cangjie
+@Entry
+@Component
+class BarChartMultiplePage {
+    private var title: String = "Negative"
+    private var model: BarChartModel = BarChartModel.build()
+    private var leftAxis: ?YAxis = Option<YAxis>.None
+    private var rightAxis: ?YAxis = Option<YAxis>.None
+    private var xAxis: ?XAxis = Option<XAxis>.None
+    private var barData: BarData = BarData()
+    private var normalMarker: MarkerView = MarkerView()
+
+    func aboutToAppear(): BarChartModel {
+        let description: Description = this.model.getDescription()
+        description.setEnabled(false)
+
+        let l: ?Legend = this.model.getLegend()
+        if (let Some(v) <- l) {
+            v.setEnabled(true)
+            v.setOrientation(LegendOrientation.VERTICAL)
+            v.setVerticalAlignment(LegendVerticalAlignment.TOP)
+            v.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
+            v.setDrawInside(true)
+        }
+
+        // if more than 40 entries are displayed in the this.model, no values will be drawn
+        this.model.setMaxVisibleValueCount(60)
+
+        // scaling can now only be done on x- and y-axis separately
+        this.model.setPinchZoom(false)
+
+        this.model.setDrawGridBackground(false)
+        this.model.setGridBackgroundColor(0x500000ff)
+        this.model.setDrawBarShadow(false)
+
+        this.model.setDrawValueAboveBar(true)
+        this.model.setHighlightFullBarEnabled(false)
+
+        this.leftAxis = this.model.getAxisLeft()
+        if (let Some(leftaxis) <- this.leftAxis) {
+            leftaxis.setAxisMinimum(0.0)
+            leftaxis.setDrawLimitLinesBehindData(false)
+            leftaxis.setSpaceTop(30.0)
+            leftaxis.enableGridDashedLine(10, 10, 0)
+        }
+
+        this.rightAxis = this.model.getAxisRight()
+        if (let Some(rightaxis) <- this.rightAxis) {
+            rightaxis.setEnabled(false)
+            rightaxis.setDrawGridLines(false)
+            rightaxis.setLabelCount(6, false)
+            rightaxis.setSpaceTop(11.0)
+        }
+
+        this.xAxis = this.model.getXAxis()
+        if (let Some(xaxis) <- this.xAxis) {
+            xaxis.setLabelCount(5, false)
+            xaxis.setPosition(XAxisPosition.BOTTOM)
+        }
+
+        this.normalMarker = MarkerView()
+        this.model.setMarker(this.normalMarker)
+
+        if (this.xAxis.isSome() && this.leftAxis.isSome()) {
+            this.setData(5, 110)
+        }
+
+        return this.model
+    }
+
+    private func setData(count: Int64, range: Int64): Unit {
+        let groupSpace: Float64 = 0.08
+        let barSpace: Float64 = 0.03
+        let barWidth: Float64 = 0.2
+
+        let startYear: Int64 = 1980
+        let endYear: Int64 = startYear + count
+
+        let values1: ArrayList<BarEntry> = ArrayList<BarEntry>()
+        let values2: ArrayList<BarEntry> = ArrayList<BarEntry>()
+        let values3: ArrayList<BarEntry> = ArrayList<BarEntry>()
+        let values4: ArrayList<BarEntry> = ArrayList<BarEntry>()
+
+        let randomMultiplier: Int64 = range
+
+        for (i in startYear..endYear) {
+            values1.append(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
+            values2.append(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
+            values3.append(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
+            values4.append(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
+        }
+
+        var set1: ?BarDataSet
+        var set2: ?BarDataSet
+        var set3: ?BarDataSet
+        var set4: ?BarDataSet
+
+        if (this.model.getBarData().isSome() && this.model.getBarData()().getDataSetCount() > 0) {
+            set1 = this.model.getBarData()().getDataSetByIndex(0) as BarDataSet
+            set2 = this.model.getBarData()().getDataSetByIndex(1) as BarDataSet
+            set3 = this.model.getBarData()().getDataSetByIndex(2) as BarDataSet
+            set4 = this.model.getBarData()().getDataSetByIndex(3) as BarDataSet
+            set1().setEntries(values1)
+            set2().setEntries(values2)
+            set3().setEntries(values3)
+            set4().setEntries(values4)
+            this.model.getBarData()().notifyDataChanged()
+            this.model.notifyDataSetChanged()
+        } else {
+            set1 = BarDataSet(values1, "Company A")
+            set1().setColorsByArr([UInt32(ChartColor.rgb(104, 241, 175))])
+            set2 = BarDataSet(values2, "Company B")
+            set2().setColorsByArr([UInt32(ChartColor.rgb(164, 228, 251))])
+            set3 = BarDataSet(values3, "Company C")
+            set3().setColorsByArr([UInt32(ChartColor.rgb(242, 247, 158))])
+            set4 = BarDataSet(values4, "Company D")
+            set4().setColorsByArr([UInt32(ChartColor.rgb(255, 102, 0))])
+
+            let dataSets: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
+            dataSets.append(set1())
+            dataSets.append(set2())
+            dataSets.append(set3())
+            dataSets.append(set4())
+
+            let data: BarData = BarData(dataSets)
+            this.model.setData(data)
+        }
+
+        this.model.getBarData()().setBarWidth(barWidth)
+        this.xAxis().setAxisMinimum(Float64(startYear))
+        this.xAxis().setAxisMaximum(
+            Float64(startYear) + this.model.getBarData()().getGroupWidth(groupSpace, barSpace) * Float64(count))
+        this.model.groupBars(Float64(startYear), groupSpace, barSpace)
+        this.model.invalidate()
+    }
+
+    func render() {
+        Column {
+            Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
+            BarChart(model: aboutToAppear())
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+    }
+}
+
+```
+
+#### 1.8.2 水平柱状图
+
+##### 1.8.2.1 HorizontalBarChartModel Class API Description
+
+```cangjie
+public class HorizontalBarChartModel<: BarChartModel {
+    
+    /*
+     * 初始化水平柱状图
+     * 
+     * 返回值 HorizontalBarChartModel - 
+     */
+    public static func build (): HorizontalBarChartModel
+    
+    /*
+     * 设置最大可见区域
+     * 
+     * 参数 maxXRange - 最大区域
+     * 返回值 Unit - 
+     */
+    public open func setVisibleXRangeMaximum (maxXRange: Float64): Unit
+    
+    /*
+     * 设置最大最小可见区域
+     * 
+     * 参数 minXRange - 最大区域
+     * 参数 maxXRange - 最小区域
+     * 返回值 Unit - 
+     */
+    public func setVisibleXRange (minXRange: Float64, maxXRange: Float64): Unit
+    
+    /*
+     * 设置Y轴最大区域大小
+     * 
+     * 参数 maxYRange - 最大区域大小
+     * 参数 axis - AxisDependency
+     * 返回值 Unit - 
+     */
+    public func setVisibleYRangeMaximum (maxYRange: Float64, axis: AxisDependency): Unit
+    
+    /*
+     * 设置Y轴最小区域大小
+     * 
+     * 参数 minYRange - 最小区域大小
+     * 参数 axis - AxisDependency
+     * 返回值 Unit - 
+     */
+    public func setVisibleYRangeMinimum (minYRange: Float64, axis: AxisDependency): Unit
+    
+    /*
+     * 设置缩放的y最大最小范围
+     * 
+     * 参数 minYRange - 最小范围
+     * 参数 maxYRange - 最大范围
+     * 参数 axis - AxisDependency
+     * 返回值 Unit - 
+     */
+    public func setVisibleYRange (minYRange: Float64, maxYRange: Float64, axis: AxisDependency): Unit
+}
+```
+##### 1.8.2.2 HorizontalBarChart Class API Description
+
+```cangjie
+@Component
+public class HorizontalBarChart {}
+```
+##### 1.8.2.3 示例
+
+```cangjie
+@Entry
+@Component
+class HorizontalBarChartPage {
+    private var title: String = "Horizontal"
+    private var model: HorizontalBarChartModel = HorizontalBarChartModel.build()
+    private var leftAxis: ?YAxis = Option<YAxis>.None
+    private var rightAxis: ?YAxis = Option<YAxis>.None
+    private var xAxis: ?XAxis = Option<XAxis>.None
+
+    func aboutToAppear(): HorizontalBarChartModel {
+        this.model = HorizontalBarChartModel.build()
+        this.model.animateX(1000, easing: "linear")
+
+        this.model.setDrawBarShadow(false)
+        this.model.setDrawValueAboveBar(true)
+
+        let description: Description = this.model.getDescription()
+
+        description.setEnabled(false)
+
+        this.model.setPinchZoom(false)
+        this.model.setDrawGridBackground(false)
+
+        let xAxis: ?XAxis = this.model.getXAxis()
+        if (let Some(xaxis) <- this.xAxis) {
+            xaxis.setPosition(XAxisPosition.BOTTOM)
+            xaxis.setDrawGridLines(false)
+            xaxis.setGranularity(1.0)
+            xaxis.setLabelCount(7, Option<Bool>.None)
+            xaxis.setDrawAxisLine(true)
+        }
+
+        let leftAxis: ?YAxis = this.model.getAxisLeft()
+        if (let Some(leftaxis) <- this.leftAxis) {
+            leftaxis.setLabelCount(8, false)
+            leftaxis.setPosition(YAxisLabelPosition.OUTSIDE_CHART)
+            leftaxis.setDrawAxisLine(true)
+        }
+
+        let rightAxis: ?YAxis = this.model.getAxisRight()
+        if (let Some(rightaxis) <- this.rightAxis) {
+            rightaxis.setLabelCount(8, false)
+            rightaxis.setDrawGridLines(false)
+            rightaxis.setDrawAxisLine(true)
+        }
+
+        let legend: ?Legend = this.model.getLegend()
+        if (let Some(l) <- legend) {
+            l.setEnabled(false)
+        }
+        this.model.setFitBars(true)
+        this.setData(10, 50)
+        return this.model
+    }
+
+    private func setData(count: Int64, range: Int64): Unit {
+        let startAxis: Int64 = 0
+        let endAxis: Int64 = startAxis + count
+
+        let values: ArrayList<BarEntry> = ArrayList<BarEntry>()
+        for (i in startAxis..endAxis) {
+            let val = Random().nextFloat64() * Float64(range)
+            values.append(BarEntry(Float64(i), val))
+        }
+
+        let dataSet: BarDataSet = BarDataSet(values, "DataSet")
+        dataSet.setHighLightColor(0x000000)
+        dataSet.setDrawIcons(false)
+
+        dataSet.setColorByColor(0x8CEAFF)
+
+        let dataSetList: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
+        dataSetList.append(dataSet)
+
+        let barData: BarData = BarData(dataSetList)
+        barData.setValueTextSize(10.0)
+        barData.setBarWidth(0.9)
+
+        this.model.setData(barData)
+    }
+
+    func render() {
+        Column {
+            Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
+            HorizontalBarChart(model: aboutToAppear())
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+    }
+}
+
+```
+
+#### 1.8.3  坐标轴
+
+##### 1.8.3.1 AxisBase  interface API Description
+
+```cangjie
+public abstract class AxisBase<: ComponentBase {
+    /*
+     * 构造 
+     * 
+     */
+    public init ()
+    
+    /*
+     * 设置轴上的最小标签数
+     * 
+     * 参数 labels - 
+     * 返回值 Unit - 
+     */
+    public func setAxisMinLabels (labels: Int64): Unit
+    
+    /*
+     * 设置轴上的最大标签数
+     * 
+     * 参数 labels - 
+     * 返回值 Unit - 
+     */
+    public func setAxisMaxLabels (labels: Int64): Unit
+    
+    /*
+     * 是否设置网格线
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setDrawGridLines (enabled: Bool): Unit
+    
+    /*
+     * 是否设置轴线
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setDrawAxisLine (enabled: Bool): Unit
+    
+    /*
+     * 设置轴标签是否居中显示
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setCenterAxisLabels (enabled: Bool): Unit
+    
+    /*
+     * 设置网格线颜色
+     * 
+     * 参数 color - 
+     * 返回值 Unit - 
+     */
+    public func setGridColor (color: Color): Unit
+    
+    /*
+     * 设置轴线宽度
+     * 
+     * 参数 width - 
+     * 返回值 Unit - 
+     */
+    public func setAxisLineWidth (width: Float64): Unit
+    
+    /*
+     * 设置网格线宽度
+     * 
+     * 参数 width - 
+     * 返回值 Unit - 
+     */
+    public func setGridLineWidth (width: Float64): Unit
+    
+    /*
+     * 设置轴线颜色
+     * 
+     * 参数 color - 
+     * 返回值 Unit - 
+     */
+    public func setAxisLineColor (color: Color): Unit
+    
+    /*
+     * 是否设置标签显示
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setDrawLabels (enabled: Bool): Unit
+    
+    /*
+     * 设置标签数量
+     * 
+     * 参数 count - 
+     * 参数 force - 
+     * 返回值 Unit - 
+     */
+    public func setLabelCount (count: Int64, force: ?Bool): Unit
+    
+    /*
+     * 是否设置轴上的粒度显示
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setGranularityEnabled (enabled: Bool): Unit
+    
+    /*
+     * 放大时设置轴上的最小间隔
+     * 
+     * 参数 granularity - 
+     * 返回值 Unit - 
+     */
+    public func setGranularity (granularity: Float64): Unit
+    
+    /*
+     * 添加先知先 
+     * 
+     * 参数 l - 
+     * 返回值 Unit - 
+     */
+    public func addLimitLine (l: LimitLine): Unit
+    
+    /*
+     * 添加网格线 
+     * 
+     * 参数 customLine - 
+     */
+    public func addGridLine (customLine: GridLineConfig)
+    
+    /*
+     * 移除限制线
+     * 
+     * 参数 l - 
+     * 返回值 Unit - 
+     */
+    public func removeLimitLine (l: LimitLine): Unit
+    
+    /*
+     * 移除所有限制线
+     * 
+     * 返回值 Unit - 
+     */
+    public func removeAllLimitLines (): Unit
+    
+    /*
+     * 如果设置为true，则在实际数据后面绘制LimitLines，否则在顶部绘制。默认值:false
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setDrawLimitLinesBehindData (enabled: Bool): Unit
+    
+    
+    /*
+     * 如果设置为false，网格线将绘制在实际数据的顶部，否则绘制在后面。默认值:true
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setDrawGridLinesBehindData (enabled: Bool): Unit
+    
+    /*
+     * 设置轴值的数据格式
+     * 
+     * 参数 f - 
+     * 返回值 Unit - 
+     */
+    public func setValueFormatter (f: IAxisValueFormatter): Unit
+    
+    /*
+     * 获取轴值的数据格式
+     * 
+     * 返回值 ?IAxisValueFormatter - 
+     */
+    public func getValueFormatter (): ?IAxisValueFormatter
+    
+    /*
+     * 使网格线以虚线模式绘制
+     * 
+     * 参数 lineLength - 长度
+     * 参数 spaceLength - 间隔
+     * 参数 phase - 偏移
+     * 返回值 Unit - 
+     */
+    public func enableGridDashedLine (lineLength: Int64, spaceLength: Int64, phase: Int64): Unit
+    
+    /*
+     * 设置网格线的形式
+     * 
+     * 参数 effect - DashPathEffect
+     * 返回值 Unit - 
+     */
+    public func setGridDashedLine (effect: DashPathEffect): Unit
+    
+    /*
+     * 禁用以虚线模式绘制的网格线。
+     * 
+     * 返回值 Unit - 
+     */
+    public func disableGridDashedLine (): Unit
+    
+    
+    /*
+     * 获取网格线的形式
+     * 
+     * 返回值 DashPathEffect - 
+     */
+    public func getGridDashPathEffect (): DashPathEffect
+    
+    /*
+     * 是否允许以虚线模式绘制轴线
+     * 
+     * 参数 lineLength - 线长
+     * 参数 spaceLength - 间隔
+     * 参数 phase - 偏移
+     * 返回值 Unit - 
+     */
+    public func enableAxisLineDashedLine (lineLength: Int64, spaceLength: Int64, phase: Int64): Unit
+    
+    /*
+     * 设置轴线为虚线
+     * 
+     * 参数 effect - 
+     * 返回值 Unit - 
+     */
+    public func setAxisLineDashedLine (effect: DashPathEffect): Unit
+    
+    /*
+     * 禁用以虚线模式绘制轴线
+     * 
+     * 返回值 Unit - 
+     */
+    public func disableAxisLineDashedLine (): Unit
+    
+    
+    /*
+     * 返回为轴线设置的DashPathEffect
+     * 
+     * 返回值 DashPathEffect - 
+     */
+    public func getAxisLineDashPathEffect (): DashPathEffect
+    
+    /*
+     * 重置轴线的最大值
+     * 
+     * 返回值 Unit - 
+     */
+    public func resetAxisMaximum (): Unit
+    
+    /*
+     * 重置轴线的最小值
+     * 
+     * 返回值 Unit - 
+     */
+    public func resetAxisMinimum (): Unit
+    
+    /*
+     * 设置轴线最小值
+     * 
+     * 参数 min - 
+     * 返回值 Unit - 
+     */
+    public func setAxisMinimum (min: Float64): Unit
+    
+    /*
+     * 设置轴线的最大值
+     * 
+     * 参数 max - 
+     * 返回值 Unit - 
+     */
+    public func setAxisMaximum (max: Float64): Unit
+    
+    /*
+     * 设置额外最小间距*
+     * 
+     * 参数 mSpaceMin - 
+     * 返回值 Unit - 
+     */
+    public func setSpaceMin (mSpaceMin: Float64): Unit
+    
+    /*
+     * 设置额外最大间距*
+     * 
+     * 参数 mSpaceMax - 
+     * 返回值 Unit - 
+     */
+    public func setSpaceMax (mSpaceMax: Float64): Unit
+}
+```
+
+##### 1.8.3.2 XAxis interface API Description
+X轴
+```cangjie
+public class XAxis<: AxisBase {
+    
+    /*
+     * 构造 
+     * 
+     */
+    public init ()
+    
+    /*
+     * 设置轴位置
+     * 
+     * 参数 pos - 
+     * 返回值 Unit - 
+     */
+    public func setPosition (pos: XAxisPosition): Unit
+    
+    /*
+     * 设置绘制X轴标签的角度
+     * 
+     * 参数 angle - 
+     * 返回值 Unit - 
+     */
+    public func setLabelRotationAngle (angle: Int64): Unit
+    
+    /*
+     * 如果设置为true，将避免图表中第一个和最后一个标签从图表边缘或屏幕上“剪切”
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setAvoidFirstLastClipping (enabled: Bool): Unit
+    
+    /*
+     * 设置标签偏移量
+     * 
+     * 参数 xOffset - 
+     * 返回值 Unit - 
+     */
+    public func setLabelXOffset (xOffset: Int64): Unit
+    
+    /*
+     * 设置x标签的位置
+     * 
+     * 参数 position - XAxisLabelPosition
+     * 返回值 Unit - 
+     */
+    public func setXAxisLabelPosition (position: XAxisLabelPosition): Unit
+    
+    /*
+     * 设置自定义标签数组
+     * 
+     * 参数 numbers - 
+     * 返回值 Unit - 
+     */
+    public func setCustomLabels (numbers: Array<Float64>): Unit
+    
+    /*
+     * 设置是否绘制自定义标签
+     * 
+     * 参数 flag - 
+     * 返回值 Unit - 
+     */
+    public func setDrawCustomLabels (flag: Bool): Unit
+}
+```
+##### 1.8.3.3 YAxis Class API Description
+Y轴
+```cangjie
+public class YAxis<: AxisBase {
+    
+    /*
+     * 构造 
+     * 
+     * 参数 position - y位置
+     */
+    public init (position: ?AxisDependency)
+    
+    /*
+     * 设置Y轴最小宽度
+     * 
+     * 参数 minWidth - 
+     * 返回值 Unit - 
+     */
+    public func setMinWidth (minWidth: Float64): Unit
+    
+    /*
+     * 设置Y轴最大宽度
+     * 
+     * 参数 maxWidth - 
+     * 返回值 Unit - 
+     */
+    public func setMaxWidth (maxWidth: Float64): Unit
+    
+    /*
+     * 设置Y轴位置
+     * 
+     * 参数 pos - 
+     * 返回值 Unit - 
+     */
+    public func setPosition (pos: YAxisLabelPosition): Unit
+    
+    /*
+     * 设置Y轴标签偏移量
+     * 
+     * 参数 xOffset - 
+     * 返回值 Unit - 
+     */
+    public func setLabelXOffset (xOffset: Float64): Unit
+    
+    /*
+     * 将此设置为true以启用绘制顶部y-label条目
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setDrawTopYLabelEntry (enabled: Bool): Unit
+    
+    /*
+     * 设置y轴反转
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setInverted (enabled: Bool): Unit
+    
+    /*
+     * 设置顶轴空间占整个范围的百分比。
+     * 
+     * 参数 percent - 
+     * 返回值 Unit - 
+     */
+    public func setSpaceTop (percent: Float64): Unit
+    
+    /*
+     * 设置底部轴空间占整个范围的百分比
+     * 
+     * 参数 percent - 
+     * 返回值 Unit - 
+     */
+    public func setSpaceBottom (percent: Float64): Unit
+    
+    /*
+     * 将此设置为true以绘制零线，而不管是否启用了其他网格线。默认值:false
+     * 
+     * 参数 mDrawZeroLine - 
+     * 返回值 Unit - 
+     */
+    public func setDrawZeroLine (mDrawZeroLine: Bool): Unit
+    
+    /*
+     * 设置零线颜色
+     * 
+     * 参数 color - 
+     * 返回值 Unit - 
+     */
+    public func setZeroLineColor (color: Color): Unit
+    
+    /*
+     * 设置零线宽度
+     * 
+     * 参数 width - 
+     * 返回值 Unit - 
+     */
+    public func setZeroLineWidth (width: Float64): Unit
+}
+```
+
+##### 1.8.3.4 LimitLine Class API Description
+限制线
+```cangjie
+public class LimitLine<: ComponentBase {
+    
+    /*
+     * 构造 
+     * 
+     * 参数 limit - 限制线
+     */
+    public init (limit: Float64)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 limit - 限制线
+     * 参数 label - 标签
+     */
+    public init (limit: Float64, label: String)
+    
+    /*
+     * 设置限制线的宽度
+     * 
+     * 参数 width - 
+     */
+    public func setLineWidth (width: Float64)
+    
+    /*
+     * 设置限制线的颜色
+     * 
+     * 参数 color - 颜色
+     */
+    public func setLineColor (color: Int64)
+    
+    /*
+     * 设置限制线位虚线
+     * 
+     * 参数 lineLength - 线长
+     * 参数 spaceLength - 虚线间隔
+     * 参数 phase - 偏移
+     */
+    public func enableDashedLine (lineLength: Int64, spaceLength: Int64, phase: Int64)
+    
+    /*
+     * 禁用虚线
+     * 
+     */
+    public func disableDashedLine ()
+    
+    /*
+     * 返回为此LimitLine设置的DashPathEffect
+     * 
+     * 返回值 ?DashPathEffect - 
+     */
+    public func getDashPathEffect (): ?DashPathEffect
+    
+    /*
+     * 设置文本样式
+     * 
+     * 参数 style - 
+     */
+    public func setTextStyle (style: Style)
+    
+    /*
+     * 设置标签位置
+     * 
+     * 参数 pos - 
+     */
+    public func setLabelPosition (pos: LimitLabelPosition)
+    
+    /*
+     * 设置标签内容
+     * 
+     * 参数 label - 
+     */
+    public func setLabel (label: String)
+}
+```
+
+##### 1.8.3.5 GridLineConfig Class API Description
+网格线
+```cangjie
+public class GridLineConfig {
+    /*
+     * 构造 
+     * 
+     * 参数 position - 位置
+     * 参数 lineColor - 颜色
+     * 参数 lineWidth - 宽度
+     * 参数 dashPathEffect - 是否虚线
+     */
+    public init(position: Float64, lineColor: Int64, lineWidth: Float64, dashPathEffect: ?DashPathEffectConfig)
+}
+```
+
+##### 1.8.3.6 ValueFormatter
+
+###### 1.8.3.6.1 IAxisValueFormatter
+```cangjie
+public interface IAxisValueFormatter {
+    func getFormattedValue(value: Float64, axis: AxisBase): String
+}
+```
+###### 1.8.3.6.2 DefaultAxisValueFormatter
+
+```cangjie
+public class DefaultAxisValueFormatter<: IAxisValueFormatter {
+    
+    /*
+     * 构造 
+     * 
+     * 参数 digits - 值格式化位数
+     */
+    public init (digits: Int64)
+    
+    /*
+     * 获取格式化后的值
+     * 
+     * 参数 value - 值
+     * 参数 axis - AxisBase
+     * 返回值 String - 
+     */
+    public func getFormattedValue (value: Float64, axis: AxisBase): String
+    
+    /*
+     * 获取小数位数
+     * 
+     * 返回值 Int64 - 
+     */
+    public func getDecimalDigits (): Int64
+}
+```
+
+
+#### 1.8.4 柱状图父类
+
+##### 1.8.4.1 IBarLineScatterCandleBubbleDataSet interface API Description
+
+```cangjie
+public interface  IBarLineScatterCandleBubbleDataSet<E> <: IDataSet<E> where E <: EntryOhos {
+    public func getHighLightColor(): UInt32
+}
+```
+##### 1.8.4.2 BarLineScatterCandleBubbleDataSet abstract API Description
+```cangjie
+public abstract class BarLineScatterCandleBubbleDataSet<E> <: DataSet<E> {
+    public init (yVals: ArrayList<E>, label: String)
+    
+    public func setHighLightColor (color: UInt32): Unit
+    
+    public func getHighLightColor (): UInt32
+}
+```
+
+##### 1.8.4.3  BarLineScatterCandleBubbleData abstract API Description
+```cangjie
+public abstract class BarLineScatterCandleBubbleData<(S, E)> <: ChartData<S,E> {
+    
+    public init ()
+    
+    public init (sets: Array<S>)
+    
+    public init (sets: ArrayList<S>)
+}
+```
+
+##### 1.8.4.4 BarLineScatterCandleBubbleDataProvider interface API Description
+```cangjie
+public interface BarLineScatterCandleBubbleDataProvider<S, E> <: ChartInterface<S, E> where S <: IBarLineScatterCandleBubbleDataSet<E>,
+    E <: EntryOhos {
+    func getTransformer(axis: AxisDependency): ?Transformer
+
+    func isInverted(axis: AxisDependency): Bool
+
+    func getLowestVisibleX(): Float64
+
+    func getHighestVisibleX(): Float64
+
+    func getData(): ?ChartData<S, E>
+}
+```
+
+##### 1.8.4.5 BarLineChartBaseModel abstract API Description
+```cangjie
+public abstract class BarLineChartBaseModel<(D, S, E)> <: ChartModel<D,S,E>&BarLineScatterCandleBubbleDataProvider<S,E> {
+    
+    /*
+     * 构造 
+     * 
+     */
+    public init ()
+    
+    /*
+     * 是否设置长按光标显示
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit - 
+     */
+    public func setLongPressCursorEnabled (enabled: Bool): Unit
+    
+    
+    /*
+     * 是否设置长按时间间隔
+     * 
+     * 参数 duration - 时间
+     * 返回值 Unit - 
+     */
+    public func setLongPressDuration (duration: Int64): Unit
+    
+    /*
+     * 是否设置y坐标轴延长线
+     * 
+     * 参数 opt - true/false
+     */
+    public func setYAxisExtensionLine (opt: Bool)
+    
+    /*
+     * 绘制图表
+     * 
+     * 参数 context2D - onDraw
+     * 返回值 Unit - 
+     */
+    public open func onDraw (context2D: CanvasRenderingContext2D): Unit
+    
+    /*
+     * 设置可缩放的最小比例
+     * 
+     * 参数 scaleX - x 缩放因子
+     * 参数 scaleY - y 缩放因子
+     * 返回值 Unit - 
+     */
+    public func setScaleMinima (scaleX: Float64, scaleY: Float64): Unit
+    
+    /*
+     * 设置最大可见区域
+     * 
+     * 参数 maxXRange - 最大区域
+     * 返回值 Unit - 
+     */
+    public open func setVisibleXRangeMaximum (maxXRange: Float64): Unit
+    
+    /*
+     * 设置最小可见区域
+     * 
+     * 参数 minXRange - 最小区域
+     * 返回值 Unit - 
+     */
+    public func setVisibleXRangeMinimum (minXRange: Float64): Unit
+    
+    /*
+     * 设置最大最小可见区域
+     * 
+     * 参数 minXRange - 最大区域
+     * 参数 maxXRange - 最小区域
+     * 返回值 Unit - 
+     */
+    public open func setVisibleXRange (minXRange: Float64, maxXRange: Float64): Unit
+    
+    /*
+     * 设置Y轴最大区域大小
+     * 
+     * 参数 maxYRange - 最大区域大小
+     * 参数 axis - AxisDependency
+     * 返回值 Unit - 
+     */
+    public open func setVisibleYRangeMaximum (maxYRange: Float64, axis: AxisDependency): Unit
+    
+    /*
+     * 设置Y轴最小区域大小
+     * 
+     * 参数 minYRange - 最小区域大小
+     * 参数 axis - AxisDependency
+     * 返回值 Unit - 
+     */
+    public open func setVisibleYRangeMinimum (minYRange: Float64, axis: AxisDependency): Unit
+    
+    /*
+     * 设置缩放的y最大最小范围
+     * 
+     * 参数 minYRange - 最小范围
+     * 参数 maxYRange - 最大范围
+     * 参数 axis - AxisDependency
+     * 返回值 Unit - 
+     */
+    public open func setVisibleYRange (minYRange: Float64, maxYRange: Float64, axis: AxisDependency): Unit
+    
+    /*
+     * 将当前左侧视口移动到指定的x位置
+     * 
+     * 参数 xValue - x轴上的指定位置
+     * 返回值 Unit - 
+     */
+    public func moveViewToX (xValue: Float64): Unit
+    
+    /*
+     * 将使当前视图的左侧移动到x轴上的指定位置，并将视图中心移动到y轴的指定位置。
+     * 
+     * 参数 xValue - x轴上的指定位置
+     * 参数 yValue - y轴上的指定位置
+     * 参数 axis - AxisDependency
+     * 返回值 Unit - 
+     */
+    public func moveViewTo (xValue: Float64, yValue: Float64, axis: AxisDependency): Unit
+    
+    /*
+     * 将使当前视图的左侧移动到x轴上的指定位置，并将视图中心移动到y轴的指定位置,启动动画效果*
+     * 
+     * 参数 xValue - x轴上的指定位置
+     * 参数 yValue - y轴上的指定位置
+     * 参数 axis - AxisDependency
+     * 参数 duration - 动画间隔
+     * 返回值 Unit - 
+     */
+    public func moveViewToAnimated (xValue: Float64, yValue: Float64, axis: AxisDependency, duration: Float64): Unit
+    
+    /*
+     * 将视口的设置为Y轴指定位置
+     * 
+     * 参数 yValue - Y轴指定位置
+     * 参数 axis - AxisDependency
+     * 返回值 Unit - 
+     */
+    public func centerViewToY (yValue: Float64, axis: AxisDependency): Unit
+    
+    /*
+     * 将视口的设置指定位置
+     * 
+     * 参数 xValue - X轴指定位置
+     * 参数 yValue - Y轴指定位置
+     * 参数 axis - AxisDependency
+     * 返回值 Unit - 
+     */
+    public func centerViewTo (xValue: Float64, yValue: Float64, axis: AxisDependency): Unit
+    
+    /*
+     * 将视口的设置指定位置，启动动画
+     * 
+     * 参数 xValue - X轴指定位置
+     * 参数 yValue - Y轴指定位置
+     * 参数 axis - AxisDependency
+     * 参数 duration - 动画间隔
+     * 返回值 Unit - 
+     */
+    public func centerViewToAnimated (xValue: Float64, yValue: Float64, axis: AxisDependency, duration: Float64): Unit
+    
+    /*
+     * 设置当前视口的偏移量
+     * 
+     * 参数 left - 左
+     * 参数 top - 上
+     * 参数 right - 右
+     * 参数 bottom - 下
+     * 返回值 Unit - 
+     */
+    public func setViewPortOffsets (left: Float64, top: Float64, right: Float64, bottom: Float64): Unit
+    
+    /*
+     * 重置视口偏移量
+     * 
+     * 返回值 Unit - 
+     */
+    public func resetViewPortOffsets (): Unit
+    
+    /*
+     * 设置绘图监听事件
+     * 
+     * 参数 drawListener - OnDrawListener
+     * 返回值 Unit - 
+     */
+    public func setOnDrawListener (drawListener: OnDrawListener): Unit
+    
+    /*
+     * 获取绘图监听事件
+     * 
+     * 返回值 ?OnDrawListener - 
+     */
+    public func getDrawListener (): ?OnDrawListener
+    
+    /*
+     * 设置图表可绘制的最大数量
+     * 
+     * 参数 count - 
+     * 返回值 Unit - 
+     */
+    public func setMaxVisibleValueCount (count: Int64): Unit
+    
+    /*
+     * 设置图表可绘制的最大数量
+     * 
+     * 返回值 Int64 - 
+     */
+    public func getMaxVisibleCount (): Int64
+    
+    /*
+     * 设置拖动图表时是否高亮显示
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit - 
+     */
+    public func setHighlightPerDragEnabled (enabled: Bool): Unit
+
+    
+    /*
+     * 设置网格线背景颜色
+     * 
+     * 参数 color - 颜色
+     * 返回值 Unit - 
+     */
+    public func setGridBackgroundColor (color: UInt32): Unit
+    
+    /*
+     * 设置是否启用图表拖动效果
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setDragEnabled (enabled: Bool): Unit
+    
+    /*
+     * 设置是否启用X轴上的拖动效果
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setDragXEnabled (enabled: Bool): Unit
+    
+    
+    /*
+     * 设置 DragYEnab
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setDragYEnabled (enabled: Bool): Unit
+    
+    /*
+     * 设置是否启用Y轴上的拖动效果 
+     * 
+     * 返回值 Bool - 
+     */
+    public func isDragYEnabled (): Bool
+    
+    /*
+     * 设置是否启用缩放功能
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit - 
+     */
+    public func setScaleEnabled (enabled: Bool): Unit
+    
+    /*
+     * 设置是否启用x轴缩放功能*
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit - 
+     */
+    public func setScaleXEnabled (enabled: Bool): Unit
+    
+    /*
+     * 设置是否启用y轴缩放功能*
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit - 
+     */
+    public func setScaleYEnabled (enabled: Bool): Unit
+    
+    /*
+     * 是否设置双击图表放大
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit - 
+     */
+    public func setDoubleTapToZoomEnabled (enabled: Bool): Unit
+    
+    /*
+     * 是否设置网格背景颜色
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setDrawGridBackground (enabled: Bool): Unit
+    
+    /*
+     * 是否设置边框线
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setDrawBorders (enabled: Bool): Unit
+    
+    /*
+     * 设置值是否在矩阵中*
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setClipValuesToContent (enabled: Bool): Unit
+    
+    /*
+     * 设置数据是否在矩阵中
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setClipDataToContent (enabled: Bool): Unit
+    
+    /*
+     * 设置边框线的宽度
+     * 
+     * 参数 width - 
+     * 返回值 Unit - 
+     */
+    public func setBorderWidth (width: Float64): Unit
+    
+    /*
+     * 设置边框线的颜色
+     * 
+     * 参数 color - 
+     * 返回值 Unit - 
+     */
+    public func setBorderColor (color: UInt32): Unit
+    
+    /*
+     * 设置图表最小偏移量
+     * 
+     * 参数 minOffset - 
+     * 返回值 Unit - 
+     */
+    public func setMinOffset (minOffset: Float64): Unit
+    
+    
+    /*
+     * 设置图表旋转后是否保持原位置
+     * 
+     * 参数 keepPositionOnRotation - 
+     * 返回值 Unit - 
+     */
+    public func setKeepPositionOnRotation (keepPositionOnRotation: Bool): Unit
+    
+    *
+     * 获取左侧Y轴
+     * 
+     * 返回值 ?YAxis - 
+     */
+    public func getAxisLeft (): ?YAxis
+    
+    /*
+     * 获取右侧Y轴
+     * 
+     * 返回值 ?YAxis - 
+     */
+    public func getAxisRight (): ?YAxis
+    
+    /*
+     * 获取X轴
+     * 
+     * 参数 axis - AxisDependency
+     * 返回值 ?YAxis - 
+     */
+    public func getAxis (axis: AxisDependency): ?YAxis
+    
+    /*
+     * 如果设置为真，可以用2个手指同时缩放x和y轴
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setPinchZoom (enabled: Bool): Unit
+    
+    /*
+     * 设置x拖动偏移量
+     * 
+     * 参数 offset - 
+     * 返回值 Unit - 
+     */
+    public func setDragOffsetX (offset: Float64): Unit
+    
+    /*
+     * 设置y拖动偏移量
+     * 
+     * 参数 offset - 
+     * 返回值 Unit - 
+     */
+    public func setDragOffsetY (offset: Float64): Unit
+    
+    /*
+     * 获取X坐标轴渲染
+     * 
+     * 返回值 ?XAxisRenderer - 
+     */
+    public func getRendererXAxis (): ?XAxisRenderer
+    
+    /*
+     * 设置X坐标轴渲染
+     * 
+     * 参数 xAxisRenderer - 
+     * 返回值 Unit - 
+     */
+    public func setXAxisRenderer (xAxisRenderer: XAxisRenderer): Unit
+    
+    /*
+     * 获取左边Y轴渲染器
+     * 
+     * 返回值 ?YAxisRenderer - 
+     */
+    public func getRendererLeftYAxis (): ?YAxisRenderer
+    
+    /*
+     * 设置左边Y轴渲染器
+     * 
+     * 参数 rendererLeftYAxis - 
+     * 返回值 Unit - 
+     */
+    public func setRendererLeftYAxis (rendererLeftYAxis: YAxisRenderer): Unit
+    
+    /*
+     * 获取右边Y轴渲染器
+     * 
+     * 返回值 ?YAxisRenderer - 
+     */
+    public func getRendererRightYAxis (): ?YAxisRenderer
+    
+    /*
+     * 设置右边Y轴渲染器
+     * 
+     * 参数 rendererRightYAxis - 
+     * 返回值 Unit - 
+     */
+    public func setRendererRightYAxis (rendererRightYAxis: YAxisRenderer): Unit
+    
+    
+    /*
+     * 设置是否可在y轴上设置缩放
+     * 
+     * 参数 enabled - 
+     * 返回值 Unit - 
+     */
+    public func setAutoScaleMinMaxEnabled (enabled: Bool): Unit
+    
+    /*
+     * 设置绘制网格背景*
+     * 
+     * 参数 p - Paint
+     * 参数 which - 
+     * 返回值 Unit - 
+     */
+    public func setPaint (p: Paint, which: Float64): Unit
+    
+    /*
+     * 获取网格背景*
+     * 
+     * 参数 which - 
+     * 返回值 ?Paint - 
+     */
+    public func getPaint (which: Float64): ?Paint
+    
+    /*
+     * 图表尺寸改变
+     * 
+     * 参数 w - 新宽
+     * 参数 h - 新高
+     * 参数 oldw - 旧宽
+     * 参数 oldh - 旧高
+     * 返回值 Unit - 
+     */
+    public func onSizeChanged (w: Float64, h: Float64, oldw: Float64, oldh: Float64): Unit
+}
+```
+
+#### 1.8.5 其他
+
+##### 1.8.5.1 LimitLabelPosition
+限制线标签位置
+
+```cangjie
+public enum LimitLabelPosition <: Equatable<LimitLabelPosition> {
+    | LEFT_TOP
+    | LEFT_BOTTOM
+    | RIGHT_TOP
+    | RIGHT_BOTTOM
+
+    public operator func ==(b: LimitLabelPosition): Bool
+
+    public operator func !=(b: LimitLabelPosition): Bool
+}
+```
+
+##### 1.8.5.2 Style
+
+限制线文本样式
+
+```cangjie
+public enum Style <: Equatable<Style> {
+    | FILL
+    | STROKE
+    | FILL_AND_STROKE
+
+    public operator func ==(b: Style): Bool
+
+    public operator func !=(b: Style): Bool
+}
+```
+
+##### 1.8.5.3 XAxisLabelPosition
+
+x轴标签位置
+
+```cangjie
+public enum XAxisLabelPosition {
+    | LEFT
+    | CENTER
+    | RIGHT
+
+    public func toString(): String
+}
+```
+
+##### 1.8.5.4 XAxisPosition
+
+x轴位置
+
+```cangjie
+public enum XAxisPosition <: Equatable<XAxisPosition> {
+    | TOP
+    | BOTTOM
+    | BOTH_SIDED
+    | TOP_INSIDE
+    | BOTTOM_INSIDE
+
+    public operator func ==(b: XAxisPosition): Bool
+    public operator func !=(b: XAxisPosition): Bool
+}
+```
+
+##### 1.8.5.5 DashPathEffect
+
+```cangjie
+public class DashPathEffect {
+    public init(dash: Array<Int64>, offset: Int64)
+}
+```
+##### 1.8.5.6 DashPathEffectConfig
+
+```cangjie
+public class DashPathEffectConfig {
+    public init(lineLength: Int64, spaceLength: Int64, phase: Int64)
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
