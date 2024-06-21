@@ -42,10 +42,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
         this.mBarBorderPaint.setColor(Color(dataSet.getBarBorderColor()))
         this.mBarBorderPaint.setStrokeWidth(Utils.handleDataValues(dataSet.getBarBorderWidth()))
 
-        var drawBorder: Bool = dataSet.getBarBorderWidth() > 0.0
-
         let phaseX = this.mAnimator().getPhaseX()
-        let phaseY = this.mAnimator().getPhaseY()
 
         // draw the bar shadow before the values
         if (this.mChart.isDrawBarShadowEnabled()) {
@@ -88,7 +85,13 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                 c.closePath()
             }
         }
+        drawDataSetFunc(index, phaseX, dataSet, trans, c)
+    }
 
+    private func drawDataSetFunc(index: Int64, phaseX: Float64, dataSet: IBarDataSet, trans: ?Transformer,
+        c: CanvasRenderingContext2D): Unit {
+        let phaseY = this.mAnimator().getPhaseY()
+        let drawBorder: Bool = dataSet.getBarBorderWidth() > 0.0
         let buffer: BarBuffer = this.horizontalBarBuffer[index]
         buffer.setPhases(phaseX, phaseY)
         buffer.setDataSet(index)

@@ -73,75 +73,15 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
     protected var mBarShadowRectBuffer: MyRect = MyRect()
 
-    protected open func drawDataSet(c: CanvasRenderingContext2D, dataSet: IBarDataSet, index: Int64): Unit {
-        let trans: ?Transformer = this.mChart.getTransformer(dataSet.getAxisDependency())
-
-        this.mBarBorderPaint.setColor(Color(dataSet.getBarBorderColor()))
-        this.mBarBorderPaint.setStrokeWidth(Utils.handleDataValues(dataSet.getBarBorderWidth()))
-
-        let drawBorder: Bool = dataSet.getBarBorderWidth() > 0.0
-
-        var phaseX: Float64 = 1.0
-        var phaseY: Float64 = 1.0
-        if (let Some(m) <- this.mAnimator) {
-            phaseX = m.getPhaseX()
-            phaseY = m.getPhaseY()
-        }
-
-        // draw the bar shadow before the values
-        if (this.mChart.isDrawBarShadowEnabled()) {
-            this.mShadowPaint.setColor(Color(dataSet.getBarShadowColor()))
-
-            let barData: ?BarData = this.mChart.getBarData()
-
-            var radius = barData().getTopRadius()
-            var barWidth: Float64 = barData().getBarWidth()
-            var barWidthHalf: Float64 = barWidth / 2.0
-            var x: Float64 = 0.0
-            let count = min(Int64(ceil(Float64(dataSet.getEntryCount()) * phaseX)), dataSet.getEntryCount())
-            for (i in 0..count) {
-                let e: BarEntry = dataSet.getEntryForIndex(i)
-
-                x = e.getX()
-
-                this.mBarShadowRectBuffer.left = x - barWidthHalf
-                this.mBarShadowRectBuffer.right = x + barWidthHalf
-
-                trans().rectValueToPixel(this.mBarShadowRectBuffer)
-
-                if (!this.mViewPortHandler().isInBoundsLeft(this.mBarShadowRectBuffer.right)) {
-                    continue
-                }
-
-                if (!this.mViewPortHandler().isInBoundsRight(this.mBarShadowRectBuffer.left)) {
-                    break
-                }
-
-                this.mBarShadowRectBuffer.top = this.mViewPortHandler().contentTop()
-                this.mBarShadowRectBuffer.bottom = this.mViewPortHandler().contentBottom()
-
-                match (this.mShadowPaint.getStyle()) {
-                    case Style.STROKE => Utils.drawStrokeRect(radius > 0.0, c, this.mShadowPaint,
-                        this.mBarShadowRectBuffer.left, this.mBarShadowRectBuffer.top, this.mBarShadowRectBuffer.right,
-                        this.mBarShadowRectBuffer.bottom, radius, RoundCornerType.both) // 阴影上下圆角都绘制比较好
-
-                    case Style.FILL => ()
-                    case Style.FILL_AND_STROKE => ()
-                    case _ => Utils.drawFillRect(radius > 0.0, c, this.mShadowPaint, this.mBarShadowRectBuffer.left,
-                        this.mBarShadowRectBuffer.top, this.mBarShadowRectBuffer.right, this.mBarShadowRectBuffer.bottom,
-                        radius, RoundCornerType.both) // 阴影上下圆角都绘制比较好
-
-                }
-            }
-        }
-
+    private func drawDataSetFunc(index: Int64, phaseX: Float64, phaseY: Float64, dataSet: IBarDataSet,
+        c: CanvasRenderingContext2D, trans: ?Transformer): Unit {
         // initialize the buffer
         let buffer: BarBuffer = this.mBarBuffers[index]
         buffer.setPhases(phaseX, phaseY)
         buffer.setDataSet(index)
         buffer.setInverted(this.mChart.isInverted(dataSet.getAxisDependency()))
         let barData: ?BarData = this.mChart.getBarData()
-
+        let drawBorder: Bool = dataSet.getBarBorderWidth() > 0.0
         buffer.setBarWidth(barData().getBarWidth())
 
         buffer.feed(dataSet)
@@ -219,8 +159,71 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
             pos++
         }
     }
+    protected open func drawDataSet(c: CanvasRenderingContext2D, dataSet: IBarDataSet, index: Int64): Unit {
+        let trans: ?Transformer = this.mChart.getTransformer(dataSet.getAxisDependency())
 
-    protected open func prepareBarHighlight(x: Float64, y1: Float64, y2: Float64, barWidthHalf: Float64, trans: Transformer): Unit {
+        this.mBarBorderPaint.setColor(Color(dataSet.getBarBorderColor()))
+        this.mBarBorderPaint.setStrokeWidth(Utils.handleDataValues(dataSet.getBarBorderWidth()))
+
+        var phaseX: Float64 = 1.0
+        var phaseY: Float64 = 1.0
+        if (let Some(m) <- this.mAnimator) {
+            phaseX = m.getPhaseX()
+            phaseY = m.getPhaseY()
+        }
+
+        // draw the bar shadow before the values
+        if (this.mChart.isDrawBarShadowEnabled()) {
+            this.mShadowPaint.setColor(Color(dataSet.getBarShadowColor()))
+
+            let barData: ?BarData = this.mChart.getBarData()
+
+            var radius = barData().getTopRadius()
+            var barWidth: Float64 = barData().getBarWidth()
+            var barWidthHalf: Float64 = barWidth / 2.0
+            var x: Float64 = 0.0
+            let count = min(Int64(ceil(Float64(dataSet.getEntryCount()) * phaseX)), dataSet.getEntryCount())
+            for (i in 0..count) {
+                let e: BarEntry = dataSet.getEntryForIndex(i)
+
+                x = e.getX()
+
+                this.mBarShadowRectBuffer.left = x - barWidthHalf
+                this.mBarShadowRectBuffer.right = x + barWidthHalf
+
+                trans().rectValueToPixel(this.mBarShadowRectBuffer)
+
+                if (!this.mViewPortHandler().isInBoundsLeft(this.mBarShadowRectBuffer.right)) {
+                    continue
+                }
+
+                if (!this.mViewPortHandler().isInBoundsRight(this.mBarShadowRectBuffer.left)) {
+                    break
+                }
+
+                this.mBarShadowRectBuffer.top = this.mViewPortHandler().contentTop()
+                this.mBarShadowRectBuffer.bottom = this.mViewPortHandler().contentBottom()
+
+                match (this.mShadowPaint.getStyle()) {
+                    case Style.STROKE => Utils.drawStrokeRect(radius > 0.0, c, this.mShadowPaint,
+                        this.mBarShadowRectBuffer.left, this.mBarShadowRectBuffer.top, this.mBarShadowRectBuffer.right,
+                        this.mBarShadowRectBuffer.bottom, radius, RoundCornerType.both) // 阴影上下圆角都绘制比较好
+
+                    case Style.FILL => ()
+                    case Style.FILL_AND_STROKE => ()
+                    case _ => Utils.drawFillRect(radius > 0.0, c, this.mShadowPaint, this.mBarShadowRectBuffer.left,
+                        this.mBarShadowRectBuffer.top, this.mBarShadowRectBuffer.right, this.mBarShadowRectBuffer.bottom,
+                        radius, RoundCornerType.both) // 阴影上下圆角都绘制比较好
+
+                }
+            }
+        }
+
+        drawDataSetFunc(index, phaseX, phaseY, dataSet, c, trans)
+    }
+
+    protected open func prepareBarHighlight(x: Float64, y1: Float64, y2: Float64, barWidthHalf: Float64,
+        trans: Transformer): Unit {
         let left: Float64 = x - barWidthHalf
         let right: Float64 = x + barWidthHalf
         let top: Float64 = y1
@@ -228,11 +231,14 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
         this.mBarRect.set(left, top, right, bottom)
 
-        trans.rectToPixelPhase(this.mBarRect, if (let Some(animator) <- this.mAnimator) {
-            animator.getPhaseY()
-        } else {
-            1.0
-        })
+        trans.rectToPixelPhase(
+            this.mBarRect,
+            if (let Some(animator) <- this.mAnimator) {
+                animator.getPhaseY()
+            } else {
+                1.0
+            }
+        )
     }
 
     public func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool = false): Unit {
@@ -297,7 +303,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 // if only single values are drawn (sum)
                 if (!dataSet.isStacked()) {
                     var j: Int64 = 0
-                    while (j < buffer.buffer.size * Int64(if ( let Some(animator) <- this.mAnimator) {
+                    while (j < buffer.buffer.size * Int64(if (let Some(animator) <- this.mAnimator) {
                                 animator.getPhaseX()
                             } else {
                                 1.0
@@ -504,6 +510,44 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         }
     }
 
+    private func drawHighlighted(high: Highlight, e: ?BarEntry, barData: ?BarData): (Float64, Float64, Bool) {
+        let isStack: Bool = if ((high.getStackIndex() >= 0 && e().isStacked())) {
+            true
+        } else {
+            false
+        }
+
+        var y1: Float64 = 0.0
+        var y2: Float64 = 0.0
+
+        var drawRadius: Bool = false
+        let radius = barData().getTopRadius()
+        if (isStack) {
+            if (this.mChart.isHighlightFullBarEnabled()) {
+                y1 = e().getPositiveSum()
+                y2 = -e().getNegativeSum()
+            } else {
+                let dataRanges: ?Array<RangeChart> = e().getRanges()
+                if (let Some(ranges) <- dataRanges) {
+                    let range: RangeChart = ranges[high.getStackIndex()]
+                    //堆叠柱状图顶部的柱形绘制圆角
+                    if (radius != 0.0 && high.getStackIndex() == ranges.size - 1) {
+                        drawRadius = true
+                    }
+                    y1 = range.myfrom
+                    y2 = range.to
+                }
+            }
+        } else {
+            if (radius != 0.0) {
+                drawRadius = true
+            }
+            y1 = e().getY()
+            y2 = 0.0
+        }
+        return (y1, y2, drawRadius)
+    }
+
     public func drawHighlighted(c: CanvasRenderingContext2D, indices: Array<Highlight>): Unit {
         let barData: ?BarData = this.mChart.getBarData()
 
@@ -531,41 +575,12 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
             this.mHighlightPaint.setColor(Color(highLightColor))
             this.mHighlightPaint.setGlobalAlpha(set().getHighLightAlpha() / 255.0)
 
-            let isStack: Bool = if ((high.getStackIndex() >= 0 && e().isStacked())) {
-                true
-            } else {
-                false
-            }
+            let y1: Float64 = drawHighlighted(high, e(), barData)[0]
+            let y2: Float64 = drawHighlighted(high, e(), barData)[1]
+            let drawRadius: Bool = drawHighlighted(high, e(), barData)[2]
 
-            var y1: Float64 = 0.0
-            var y2: Float64 = 0.0
-
-            var drawRadius: Bool = false
             let radius = barData().getTopRadius()
 
-            if (isStack) {
-                if (this.mChart.isHighlightFullBarEnabled()) {
-                    y1 = e().getPositiveSum()
-                    y2 = -e().getNegativeSum()
-                } else {
-                    let dataRanges: ?Array<RangeChart> = e().getRanges()
-                    if (let Some(ranges) <- dataRanges) {
-                        let range: RangeChart = ranges[high.getStackIndex()]
-                        //堆叠柱状图顶部的柱形绘制圆角
-                        if (radius != 0.0 && high.getStackIndex() == ranges.size - 1) {
-                            drawRadius = true
-                        }
-                        y1 = range.myfrom
-                        y2 = range.to
-                    }
-                }
-            } else {
-                if (radius != 0.0) {
-                    drawRadius = true
-                }
-                y1 = e().getY()
-                y2 = 0.0
-            }
             if (let Some(tran) <- trans) {
                 this.prepareBarHighlight(e().getX(), y1, y2, barData().getBarWidth() / 2.0, tran)
             }

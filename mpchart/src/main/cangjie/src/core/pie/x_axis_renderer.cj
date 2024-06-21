@@ -197,7 +197,8 @@ public open class XAxisRenderer <: AxisRenderer {
 
             // if (this.mViewPortHandler && this.mViewPortHandler.isInBoundsX(this.getXRelativeValue(x)/this.getAxisPercent())) {
             if (this.mViewPortHandler().isInBoundsX(x)) {
-                let label = this.mXAxis.getValueFormatter()().getFormattedValue(this.mXAxis.mEntries[i / 2], this.mXAxis)
+                let label = this.mXAxis.getValueFormatter()().getFormattedValue(this.mXAxis.mEntries[i / 2], this.mXAxis
+                )
 
                 if (this.mXAxis.isAvoidFirstLastClippingEnabled()) {
 
@@ -398,6 +399,128 @@ public open class XAxisRenderer <: AxisRenderer {
         c.closePath()
     }
 
+    private func lablePositionIsRIGHT_TOP(limitLine: LimitLine, c: CanvasRenderingContext2D, label: String,
+        position: Array<Float64>, yOffset: Float64, paintStyle: Style, xOffset: Float64): Unit {
+        let labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label)
+        this.mLimitLinePaint.setTextAlign(TextAlignStyle.Left)
+
+        Utils.resetContext2DStyle(c, this.mLimitLinePaint)
+        match (paintStyle) {
+            case Style.STROKE =>
+                c.beginPath()
+                c.strokeText(label, position[0] + xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentTop()
+                } else {
+                    0.0
+                } + yOffset + labelLineHeight)
+                c.closePath()
+
+            case Style.FILL => ()
+            case Style.FILL_AND_STROKE => ()
+            case _ =>
+                c.beginPath()
+                c.fillText(label, position[0] + xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentTop()
+                } else {
+                    0.0
+                } + yOffset + labelLineHeight)
+                c.closePath()
+        }
+    }
+
+    private func lablePositionIsRIGHT_BOTTOM(limitLine: LimitLine, c: CanvasRenderingContext2D, label: String,
+        position: Array<Float64>, yOffset: Float64, paintStyle: Style, xOffset: Float64): Unit {
+        this.mLimitLinePaint.setTextAlign(TextAlignStyle.Left)
+
+        Utils.resetContext2DStyle(c, this.mLimitLinePaint)
+        match (paintStyle) {
+            case Style.STROKE =>
+                c.beginPath()
+                c.strokeText(label, position[0] + xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentBottom()
+                } else {
+                    0.0
+                } - yOffset)
+                c.closePath()
+
+            case Style.FILL => ()
+            case Style.FILL_AND_STROKE =>
+                ()
+
+                c.beginPath()
+                c.fillText(label, position[0] + xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentBottom()
+                } else {
+                    0.0
+                } - yOffset)
+                c.closePath()
+        }
+    }
+
+    private func lablePositionIsLEFT_TOP(limitLine: LimitLine, c: CanvasRenderingContext2D, label: String,
+        position: Array<Float64>, yOffset: Float64, paintStyle: Style, xOffset: Float64): Unit {
+        this.mLimitLinePaint.setTextAlign(TextAlignStyle.Right)
+        let labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label)
+
+        Utils.resetContext2DStyle(c, this.mLimitLinePaint)
+        match (paintStyle) {
+            case Style.STROKE =>
+                c.beginPath()
+                c.strokeText(label, position[0] - xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentTop()
+                } else {
+                    0.0
+                } + yOffset + labelLineHeight)
+                c.closePath()
+
+            case Style.FILL => ()
+            case Style.FILL_AND_STROKE =>
+                ()
+
+                c.beginPath()
+                c.fillText(label, position[0] - xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentTop()
+                } else {
+                    0.0
+                } + yOffset + labelLineHeight)
+                c.closePath()
+        }
+    }
+
+    private func lablePositionIsOther(limitLine: LimitLine, c: CanvasRenderingContext2D, label: String,
+        position: Array<Float64>, yOffset: Float64, paintStyle: Style, xOffset: Float64): Unit {
+        this.mLimitLinePaint.setTextAlign(TextAlignStyle.Right)
+        Utils.resetContext2DStyle(c, this.mLimitLinePaint)
+        match (paintStyle) {
+            case Style.STROKE =>
+                c.beginPath()
+                c.strokeText(label, position[0] - xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentBottom()
+                } else {
+                    0.0
+                } - yOffset)
+                c.closePath()
+
+            case Style.FILL => ()
+            case Style.FILL_AND_STROKE => ()
+            case _ =>
+                c.beginPath()
+                c.fillText(label, position[0] - xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentBottom()
+                } else {
+                    0.0
+                } - yOffset)
+                c.closePath()
+        }
+    }
     public func renderLimitLineLabel(c: CanvasRenderingContext2D, limitLine: LimitLine, position: Array<Float64>,
         yOffset: Float64): Unit {
         let label: String = limitLine.getLabel()
@@ -416,116 +539,13 @@ public open class XAxisRenderer <: AxisRenderer {
             let paintStyle = this.mLimitLinePaint.getStyle()
 
             if (labelPosition == LimitLabelPosition.RIGHT_TOP) {
-                let labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label)
-                this.mLimitLinePaint.setTextAlign(TextAlignStyle.Left)
-
-                Utils.resetContext2DStyle(c, this.mLimitLinePaint)
-                match (paintStyle) {
-                    case Style.STROKE =>
-                        c.beginPath()
-                        c.strokeText(label, position[0] + xOffset,
-                            if (this.mViewPortHandler.isSome()) {
-                            this.mViewPortHandler().contentTop()
-                        } else {
-                            0.0
-                        } + yOffset + labelLineHeight)
-                        c.closePath()
-
-                    case Style.FILL => ()
-                    case Style.FILL_AND_STROKE => ()
-                    case _ =>
-                        c.beginPath()
-                        c.fillText(label, position[0] + xOffset,
-                            if (this.mViewPortHandler.isSome()) {
-                            this.mViewPortHandler().contentTop()
-                        } else {
-                            0.0
-                        } + yOffset + labelLineHeight)
-                        c.closePath()
-                }
+                lablePositionIsRIGHT_TOP(limitLine, c, label, position, yOffset, paintStyle, xOffset)
             } else if (labelPosition == LimitLabelPosition.RIGHT_BOTTOM) {
-                this.mLimitLinePaint.setTextAlign(TextAlignStyle.Left)
-
-                Utils.resetContext2DStyle(c, this.mLimitLinePaint)
-                match (paintStyle) {
-                    case Style.STROKE =>
-                        c.beginPath()
-                        c.strokeText(label, position[0] + xOffset,
-                            if (this.mViewPortHandler.isSome()) {
-                            this.mViewPortHandler().contentBottom()
-                        } else {
-                            0.0
-                        } - yOffset)
-                        c.closePath()
-
-                    case Style.FILL => ()
-                    case Style.FILL_AND_STROKE =>
-                        ()
-
-                        c.beginPath()
-                        c.fillText(label, position[0] + xOffset,
-                            if (this.mViewPortHandler.isSome()) {
-                            this.mViewPortHandler().contentBottom()
-                        } else {
-                            0.0
-                        } - yOffset)
-                        c.closePath()
-                }
+                lablePositionIsRIGHT_BOTTOM(limitLine, c, label, position, yOffset, paintStyle, xOffset)
             } else if (labelPosition == LimitLabelPosition.LEFT_TOP) {
-                this.mLimitLinePaint.setTextAlign(TextAlignStyle.Right)
-                let labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label)
-
-                Utils.resetContext2DStyle(c, this.mLimitLinePaint)
-                match (paintStyle) {
-                    case Style.STROKE =>
-                        c.beginPath()
-                        c.strokeText(label, position[0] - xOffset,
-                            if (this.mViewPortHandler.isSome()) {
-                            this.mViewPortHandler().contentTop()
-                        } else {
-                            0.0
-                        } + yOffset + labelLineHeight)
-                        c.closePath()
-
-                    case Style.FILL => ()
-                    case Style.FILL_AND_STROKE =>
-                        ()
-
-                        c.beginPath()
-                        c.fillText(label, position[0] - xOffset,
-                            if (this.mViewPortHandler.isSome()) {
-                            this.mViewPortHandler().contentTop()
-                        } else {
-                            0.0
-                        } + yOffset + labelLineHeight)
-                        c.closePath()
-                }
+                lablePositionIsLEFT_TOP(limitLine, c, label, position, yOffset, paintStyle, xOffset)
             } else {
-                this.mLimitLinePaint.setTextAlign(TextAlignStyle.Right)
-                Utils.resetContext2DStyle(c, this.mLimitLinePaint)
-                match (paintStyle) {
-                    case Style.STROKE =>
-                        c.beginPath()
-                        c.strokeText(label, position[0] - xOffset,
-                            if (this.mViewPortHandler.isSome()) {
-                            this.mViewPortHandler().contentBottom()
-                        } else {
-                            0.0
-                        } - yOffset)
-                        c.closePath()
-
-                    case Style.FILL => ()
-                    case Style.FILL_AND_STROKE => ()
-                    case _ =>
-                        c.beginPath()
-                        c.fillText(label, position[0] - xOffset,
-                            if (this.mViewPortHandler.isSome()) {
-                            this.mViewPortHandler().contentBottom()
-                        } else {
-                            0.0
-                        } - yOffset)
-                        c.closePath()
-                }
+                lablePositionIsOther(limitLine, c, label, position, yOffset, paintStyle, xOffset)
             }
         }
     }

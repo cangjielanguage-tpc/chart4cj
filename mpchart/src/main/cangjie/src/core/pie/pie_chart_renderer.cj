@@ -236,11 +236,7 @@ public class PieChartRenderer <: DataRenderer {
             this.mRenderPaint.setColor(Color(dataSet.getColor(j))) // 设置画笔颜色
 
             // 计算外部扇形的起始角度和扫过的角度
-            let sliceSpaceAngleOuter: Float64 = if (visibleAngleCount == 1) {
-                0.0
-            } else {
-                sliceSpace / (Utils.FDEG2RAD * radius)
-            }
+            let sliceSpaceAngleOuter: Float64 = sliceSpaceAngleOuterFunc(visibleAngleCount, sliceSpace, radius)
 
             let startAngleOuter: Float64 = rotationAngle + (angle + sliceSpaceAngleOuter / 2.0) * phaseY
             var sweepAngleOuter: Float64 = (sliceAngle - sliceSpaceAngleOuter) * phaseY
@@ -286,90 +282,12 @@ public class PieChartRenderer <: DataRenderer {
             )
 
             if (drawInnerArc && (innerRadius > 0.0 || accountForSliceSpacing)) {
-                if (accountForSliceSpacing) {
-                    var minSpacedRadius: Float64 = this.calculateMinimumRadiusForSpacedSlice(center, radius,
-                        sliceAngle * phaseY, arcStartPointX, arcStartPointY, startAngleOuter, sweepAngleOuter)
-
-                    if (minSpacedRadius < 0.0) {
-                        minSpacedRadius = -minSpacedRadius
-                    }
-
-                    innerRadius = max(innerRadius, minSpacedRadius)
-                }
-
-                let sliceSpaceAngleInner: Float64 = if (visibleAngleCount == 1 || innerRadius == 0.0) {
-                    0.0
-                } else {
-                    sliceSpace / (Utils.FDEG2RAD * innerRadius)
-                }
-
-                let startAngleInner: Float64 = rotationAngle + (angle + sliceSpaceAngleInner / 2.0) * phaseY
-                var sweepAngleInner: Float64 = (sliceAngle - sliceSpaceAngleInner) * phaseY
-                if (sweepAngleInner < 0.0) {
-                    sweepAngleInner = 0.0
-                }
-                let endAngleInner: Float64 = startAngleInner + sweepAngleInner
-
-                if (sweepAngleOuter >= 360.0 && Float64(Int64(sweepAngleOuter) % 360) <= Utils.FLOAT_EPSILON) {
-                    // ohos is doing "mod 360"
-                    this.mPathBuffer.arc(center.x, center.y, innerRadius, 0.0, 2.0 * Float64.PI, anticlockwise: true)
-                } else {
-                    if (drawRoundedSlices) {
-                        let x: Float64 = center.x + (radius - roundedRadius) * /*(float)*/
-                            cos(endAngleInner * Utils.FDEG2RAD)
-                        let y: Float64 = center.y + (radius - roundedRadius) * /*(float) */
-                            sin(endAngleInner * Utils.FDEG2RAD)
-                        roundedCircleBox.set(x - roundedRadius, y - roundedRadius, x + roundedRadius, y + roundedRadius)
-                        // this.mPathBuffer.arcTo(roundedCircleBox.left, roundedCircleBox.top,roundedCircleBox.right,roundedCircleBox.bottom,endAngleInner/*, 180*/)
-                        this.arcTo(this.mPathBuffer, roundedCircleBox, endAngleInner, 180.0)
-                    } else {
-                        this.mPathBuffer.lineTo(
-                            center.x + innerRadius * cos(endAngleInner * Utils.FDEG2RAD),
-                            center.y + innerRadius * sin(endAngleInner * Utils.FDEG2RAD)
-                        )
-                    }
-
-                    this.arcTo(
-                        this.mPathBuffer,
-                        this.mInnerRectBuffer,
-                        endAngleInner,
-                        -sweepAngleInner
-                    )
-                }
+                drawInnerArcFunc(accountForSliceSpacing, center, radius, sliceAngle, phaseY, arcStartPointX,
+                    arcStartPointY, startAngleOuter, sweepAngleOuter, innerRadius, visibleAngleCount, sliceSpace,
+                    drawRoundedSlices, rotationAngle, angle, roundedRadius, roundedCircleBox)
             } else {
-                if (Float64(Int64(sweepAngleOuter) % 360) > Utils.FLOAT_EPSILON) {
-                    if (accountForSliceSpacing) {
-
-                        // 计算扇形中心的角度
-                        let angleMiddle: Float64 = startAngleOuter + sweepAngleOuter / 2.0
-
-                        // 计算间隔偏移
-                        let sliceSpaceOffset: Float64 = this.calculateMinimumRadiusForSpacedSlice(
-                            center,
-                            radius,
-                            sliceAngle * phaseY,
-                            arcStartPointX,
-                            arcStartPointY,
-                            startAngleOuter,
-                            sweepAngleOuter
-                        )
-
-                        let arcEndPointX: Float64 = center.x + sliceSpaceOffset * /*(float)*/
-                            cos(angleMiddle * Utils.FDEG2RAD)
-                        let arcEndPointY: Float64 = center.y + sliceSpaceOffset * /*(float)*/
-                            sin(angleMiddle * Utils.FDEG2RAD)
-
-                        this.mPathBuffer.lineTo(
-                            arcEndPointX,
-                            arcEndPointY
-                        )
-                    } else {
-                        this.mPathBuffer.lineTo(
-                            center.x,
-                            center.y
-                        )
-                    }
-                }
+                drawOutterArcFunc(sweepAngleOuter, accountForSliceSpacing, startAngleOuter, center, radius, sliceAngle,
+                    phaseY, sliceSpace, arcStartPointX, arcStartPointY)
             }
 
             this.mPathBuffer.closePath() // 封闭路径
@@ -377,15 +295,119 @@ public class PieChartRenderer <: DataRenderer {
             // this.mBitmapCanvas.drawPath(mPathBuffer, mRenderPaint)
             // 绘制路径
             Utils.resetContext2DStyle(c, this.mRenderPaint)
-             c.stroke(this.mPathBuffer)
+            c.stroke(this.mPathBuffer)
             //这里未实现c.fill(this.mPathBuffer) 可能有问题
             //c.fill(this.mPathBuffer)
-//            c.fill()
+            //            c.fill()
 
             angle += sliceAngle * phaseX // 更新角度
         }
 
         MPPointF.recycleInstance(center) // 释放中心点实例
+    }
+
+    private func sliceSpaceAngleOuterFunc(visibleAngleCount: Int64, sliceSpace: Float64, radius: Float64): Float64 {
+        if (visibleAngleCount == 1) {
+            return 0.0
+        } else {
+            return sliceSpace / (Utils.FDEG2RAD * radius)
+        }
+    }
+
+    private func drawInnerArcFunc(accountForSliceSpacing: Bool, center: MPPointF, radius: Float64, sliceAngle: Float64,
+        phaseY: Float64, arcStartPointX: Float64, arcStartPointY: Float64, startAngleOuter: Float64,
+        sweepAngleOuter: Float64, innerRadiuss: Float64, visibleAngleCount: Int64, sliceSpace: Float64,
+        drawRoundedSlices: Bool, rotationAngle: Float64, angle: Float64, roundedRadius: Float64,
+        roundedCircleBox: MyRect) {
+        var innerRadius: Float64 = innerRadiuss
+        if (accountForSliceSpacing) {
+            var minSpacedRadius: Float64 = this.calculateMinimumRadiusForSpacedSlice(center, radius, sliceAngle * phaseY,
+                arcStartPointX, arcStartPointY, startAngleOuter, sweepAngleOuter)
+
+            if (minSpacedRadius < 0.0) {
+                minSpacedRadius = -minSpacedRadius
+            }
+
+            innerRadius = max(innerRadius, minSpacedRadius)
+        }
+
+        let sliceSpaceAngleInner: Float64 = if (visibleAngleCount == 1 || innerRadius == 0.0) {
+            0.0
+        } else {
+            sliceSpace / (Utils.FDEG2RAD * innerRadius)
+        }
+
+        let startAngleInner: Float64 = rotationAngle + (angle + sliceSpaceAngleInner / 2.0) * phaseY
+        var sweepAngleInner: Float64 = (sliceAngle - sliceSpaceAngleInner) * phaseY
+        if (sweepAngleInner < 0.0) {
+            sweepAngleInner = 0.0
+        }
+        let endAngleInner: Float64 = startAngleInner + sweepAngleInner
+
+        if (sweepAngleOuter >= 360.0 && Float64(Int64(sweepAngleOuter) % 360) <= Utils.FLOAT_EPSILON) {
+            // ohos is doing "mod 360"
+            this.mPathBuffer.arc(center.x, center.y, innerRadius, 0.0, 2.0 * Float64.PI, anticlockwise: true)
+        } else {
+            if (drawRoundedSlices) {
+                let x: Float64 = center.x + (radius - roundedRadius) * /*(float)*/
+                    cos(endAngleInner * Utils.FDEG2RAD)
+                let y: Float64 = center.y + (radius - roundedRadius) * /*(float) */
+                    sin(endAngleInner * Utils.FDEG2RAD)
+                roundedCircleBox.set(x - roundedRadius, y - roundedRadius, x + roundedRadius, y + roundedRadius)
+                // this.mPathBuffer.arcTo(roundedCircleBox.left, roundedCircleBox.top,roundedCircleBox.right,roundedCircleBox.bottom,endAngleInner/*, 180*/)
+                this.arcTo(this.mPathBuffer, roundedCircleBox, endAngleInner, 180.0)
+            } else {
+                this.mPathBuffer.lineTo(
+                    center.x + innerRadius * cos(endAngleInner * Utils.FDEG2RAD),
+                    center.y + innerRadius * sin(endAngleInner * Utils.FDEG2RAD)
+                )
+            }
+
+            this.arcTo(
+                this.mPathBuffer,
+                this.mInnerRectBuffer,
+                endAngleInner,
+                -sweepAngleInner
+            )
+        }
+    }
+
+    private func drawOutterArcFunc(sweepAngleOuter: Float64, accountForSliceSpacing: Bool, startAngleOuter: Float64,
+        center: MPPointF, radius: Float64, sliceAngle: Float64, phaseY: Float64, sliceSpace: Float64,
+        arcStartPointX: Float64, arcStartPointY: Float64) {
+        if (Float64(Int64(sweepAngleOuter) % 360) > Utils.FLOAT_EPSILON) {
+            if (accountForSliceSpacing) {
+
+                // 计算扇形中心的角度
+                let angleMiddle: Float64 = startAngleOuter + sweepAngleOuter / 2.0
+
+                // 计算间隔偏移
+                let sliceSpaceOffset: Float64 = this.calculateMinimumRadiusForSpacedSlice(
+                    center,
+                    radius,
+                    sliceAngle * phaseY,
+                    arcStartPointX,
+                    arcStartPointY,
+                    startAngleOuter,
+                    sweepAngleOuter
+                )
+
+                let arcEndPointX: Float64 = center.x + sliceSpaceOffset * /*(float)*/
+                    cos(angleMiddle * Utils.FDEG2RAD)
+                let arcEndPointY: Float64 = center.y + sliceSpaceOffset * /*(float)*/
+                    sin(angleMiddle * Utils.FDEG2RAD)
+
+                this.mPathBuffer.lineTo(
+                    arcEndPointX,
+                    arcEndPointY
+                )
+            } else {
+                this.mPathBuffer.lineTo(
+                    center.x,
+                    center.y
+                )
+            }
+        }
     }
 
     public func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool = false): Unit {
@@ -449,9 +471,9 @@ public class PieChartRenderer <: DataRenderer {
             let yValuePosition: ValuePosition = dataSet.getYValuePosition()
 
             // apply the text-styling defined by the DataSet
-//            this.applyValueTextStyle((dataSet as IDataSet<EntryOhos>)())
+            //            this.applyValueTextStyle((dataSet as IDataSet<EntryOhos>)())
 
-//            let lineHeight: Float64 = Utils.calcTextHeight(this.mValuePaint, "Q") + Utils.handleDataValues(4.0)
+            //            let lineHeight: Float64 = Utils.calcTextHeight(this.mValuePaint, "Q") + Utils.handleDataValues(4.0)
             let lineHeight: Float64 = 20.0
             let formatter: ?IValueFormatter = dataSet.getValueFormatter()
 
@@ -673,7 +695,7 @@ public class PieChartRenderer <: DataRenderer {
 
     public func drawExtras(c: CanvasRenderingContext2D): Unit {
         this.drawHole(c)
-//        this.drawCenterText(c)
+        //        this.drawCenterText(c)
     }
 
     private var mHoleCirclePath: Path2D = Path2D()
@@ -787,7 +809,7 @@ public class PieChartRenderer <: DataRenderer {
     }
 
     protected var mDrawHighlightedRectF: MyRect = MyRect()
-    
+
     public func drawHighlighted(c: CanvasRenderingContext2D, indices: Array<Highlight>): Unit {
 
         /* Skip entirely if using rounded circle slices, because it doesn't make sense to highlight

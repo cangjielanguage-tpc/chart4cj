@@ -105,6 +105,42 @@ public class Fill {
         }
     }
 
+    private func FillTypeIsLINEAR_GRADIENT(c: CanvasRenderingContext2D, gradientDirection: FillDirection, left: Float64,
+        top: Float64, right: Float64, bottom: Float64): CanvasGradient {
+        let x0: Float64 = if (gradientDirection == FillDirection.RIGHT) {
+            floor(right)
+        } else if (gradientDirection == FillDirection.LEFT) {
+            floor(left)
+        } else {
+            floor(left)
+        }
+
+        let y0: Float64 = if (gradientDirection == FillDirection.UP) {
+            floor(bottom)
+        } else if (gradientDirection == FillDirection.DOWN) {
+            floor(top)
+        } else {
+            floor(top)
+        }
+
+        let x1: Float64 = if (gradientDirection == FillDirection.RIGHT) {
+            floor(left)
+        } else if (gradientDirection == FillDirection.LEFT) {
+            floor(right)
+        } else {
+            floor(left)
+        }
+        let y1: Float64 = if (gradientDirection == FillDirection.UP) {
+            floor(top)
+        } else if (gradientDirection == FillDirection.DOWN) {
+            floor(bottom)
+        } else {
+            floor(top)
+        }
+
+        let gradient: CanvasGradient = c.createLinearGradient(x0, y0, x1, y1)
+        return gradient
+    }
     public func fillRect(c: CanvasRenderingContext2D, paint: Paint, left: Float64, top: Float64, right: Float64,
         bottom: Float64, gradientDirection: FillDirection, radius!: Float64 = 0.0,
         cornerType!: RoundCornerType = RoundCornerType.UP): Unit {
@@ -144,39 +180,7 @@ public class Fill {
             }
 
             case FillType.LINEAR_GRADIENT =>
-                let x0: Float64 = if (gradientDirection == FillDirection.RIGHT) {
-                    floor(right)
-                } else if (gradientDirection == FillDirection.LEFT) {
-                    floor(left)
-                } else {
-                    floor(left)
-                }
-
-                let y0: Float64 = if (gradientDirection == FillDirection.UP) {
-                    floor(bottom)
-                } else if (gradientDirection == FillDirection.DOWN) {
-                    floor(top)
-                } else {
-                    floor(top)
-                }
-
-                let x1: Float64 = if (gradientDirection == FillDirection.RIGHT) {
-                    floor(left)
-                } else if (gradientDirection == FillDirection.LEFT) {
-                    floor(right)
-                } else {
-                    floor(left)
-                }
-                let y1: Float64 = if (gradientDirection == FillDirection.UP) {
-                    floor(top)
-                } else if (gradientDirection == FillDirection.DOWN) {
-                    floor(bottom)
-                } else {
-                    floor(top)
-                }
-
-                let gradient = c.createLinearGradient(x0, y0, x1, y1)
-
+                let gradient: CanvasGradient = FillTypeIsLINEAR_GRADIENT(c, gradientDirection, left, top, right, bottom)
                 if (this.mGradientColors.isSome() && this.mGradientColors().size == 2) {
                     for (i in 0..this.mGradientColors().size) {
                         gradient.addColorStop(i, this.mGradientColors()[i])
