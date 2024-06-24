@@ -439,19 +439,19 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         if (this.mData.isNone()) {
             return
         }
-        if (this.mXAxis.isNone()) {
-            this.mXAxis().calculate(this.mData().getXMin(), this.mData().getXMax())
+        if (let Some(axis) <- this.mXAxis) {
+            axis.calculate(this.mData().getXMin(), this.mData().getXMax())
         }
 
         // calculate axis range (min / max) according to provided data
-        if (this.mAxisLeft.isNone()) {
-            this.mAxisLeft().calculate(
+        if (let Some(axis) <- this.mAxisLeft) {
+            axis.calculate(
                 this.mData().getYMin(AxisDependency.LEFT),
                 this.mData().getYMax(AxisDependency.LEFT)
             )
         }
-        if (this.mAxisRight.isNone()) {
-            this.mAxisRight().calculate(
+        if (let Some(axis) <- this.mAxisRight) {
+            axis.calculate(
                 this.mData().getYMin(AxisDependency.RIGHT),
                 this.mData().getYMax(AxisDependency.RIGHT)
             )

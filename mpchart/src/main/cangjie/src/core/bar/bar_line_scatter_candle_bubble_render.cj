@@ -80,7 +80,7 @@ public abstract class BarLineScatterCandleBubbleRenderer <: DataRenderer {
      * @param set
      * @return
      */
-    protected func shouldDrawValues(dataSet: IDataSet<EntryOhos>): Bool {
+    protected func shouldDrawValues<S, E>(dataSet: S): Bool where S <: IDataSet<E>, E <: EntryOhos {
         return dataSet.isVisible() && (dataSet.isDrawValuesEnabled() || dataSet.isDrawIconsEnabled())
     }
 

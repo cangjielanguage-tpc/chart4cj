@@ -520,12 +520,12 @@ public abstract class AxisBase <: ComponentBase {
      *
      * @param f
      */
-    public func setValueFormatter(f: IAxisValueFormatter): Unit {
-
-        //    if (!f || f == null)
-        //      this.mAxisValueFormatter = new DefaultAxisValueFormatter(this.mDecimals)
-        //    else
-        //      this.mAxisValueFormatter = f
+    public func setValueFormatter(f: ?IAxisValueFormatter): Unit {
+        if(let Some(ff) <- f) {
+            this.mAxisValueFormatter = ff
+        } else {
+            this.mAxisValueFormatter = DefaultAxisValueFormatter(this.mDecimals)
+        }
     }
 
     /**
@@ -534,6 +534,9 @@ public abstract class AxisBase <: ComponentBase {
      * @return
      */
     public func getValueFormatter(): ?IAxisValueFormatter {
+        if(this.mAxisValueFormatter.isNone()) {
+            this.mAxisValueFormatter = DefaultAxisValueFormatter(this.mDecimals)
+        }
         if (let Some(f: DefaultAxisValueFormatter) <- this.mAxisValueFormatter) {
             if ((f.getDecimalDigits() != this.
                 mDecimals)) {
@@ -595,8 +598,12 @@ public abstract class AxisBase <: ComponentBase {
      *
      * @return
      */
-    public func getGridDashPathEffect(): DashPathEffect {
-        return this.mGridDashPathEffect()
+    public func getGridDashPathEffect(): ?DashPathEffect {
+        if (let Some(value) <- this.mGridDashPathEffect) {
+        	return value
+        } else {
+        	return Option<DashPathEffect>.None
+        }
     }
 
     /**
@@ -648,8 +655,12 @@ public abstract class AxisBase <: ComponentBase {
      *
      * @return
      */
-    public func getAxisLineDashPathEffect(): DashPathEffect {
-        return this.mAxisLineDashPathEffect()
+    public func getAxisLineDashPathEffect(): ?DashPathEffect {
+        if(let Some(value) <- this.mAxisLineDashPathEffect) {
+            return value
+        } else {
+            return Option<DashPathEffect>.None
+        }
     }
 
     /**

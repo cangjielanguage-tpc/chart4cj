@@ -34,7 +34,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         let barData: ?BarData = this.mChart.getBarData()
         match (barData) {
             case Some(bardata) =>
-                var barBuffers = ArrayList<BarBuffer>(bardata.getDataSetCount())
+                mBarBuffers = Array<BarBuffer>(bardata.getDataSetCount(), item: BarBuffer(0, 0, false))
                 for (i in 0..this.mBarBuffers.size) {
                     let dataSet: ?IBarDataSet = bardata.getDataSetByIndex(i)
                     match (dataSet) {
@@ -44,13 +44,12 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                             } else {
                                 1
                             }
-                            barBuffers.append(
+                            mBarBuffers[i] =
                                 BarBuffer(dataset.getEntryCount() * 4 * size, bardata.getDataSetCount(),
-                                dataset.isStacked()))
+                                dataset.isStacked())
                         case _ => ()
                     }
                 }
-                this.mBarBuffers = barBuffers.toArray()
             case _ => ()
         }
     }
@@ -85,10 +84,11 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         buffer.setBarWidth(barData().getBarWidth())
 
         buffer.feed(dataSet)
-        trans().pointValuesToPixel(buffer.buffer)
+        let tempArray: Array<Float64> = buffer.buffer.toArray()
+        trans().pointValuesToPixel(tempArray)
 
-        let fills: ArrayList<Fill> = dataSet.getFills()()
-        let isCustomFill: Bool = !fills.isEmpty()
+        let fills: ?ArrayList<Fill> = dataSet.getFills()()
+        let isCustomFill: Bool = fills.isSome() && fills().size > 0
         let isSingleColor: Bool = dataSet.getColors().size == 1
         let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
 
@@ -176,10 +176,13 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         if (this.mChart.isDrawBarShadowEnabled()) {
             this.mShadowPaint.setColor(Color(dataSet.getBarShadowColor()))
 
-            let barData: ?BarData = this.mChart.getBarData()
+            let barData: BarData = match (this.mChart.getBarData()) {
+            	case Some(bardata: BarData) => bardata
+                case None => return
+            }
 
-            var radius = barData().getTopRadius()
-            var barWidth: Float64 = barData().getBarWidth()
+            var radius = barData.getTopRadius()
+            var barWidth: Float64 = barData.getBarWidth()
             var barWidthHalf: Float64 = barWidth / 2.0
             var x: Float64 = 0.0
             let count = min(Int64(ceil(Float64(dataSet.getEntryCount()) * phaseX)), dataSet.getEntryCount())
@@ -190,8 +193,9 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                 this.mBarShadowRectBuffer.left = x - barWidthHalf
                 this.mBarShadowRectBuffer.right = x + barWidthHalf
-
-                trans().rectValueToPixel(this.mBarShadowRectBuffer)
+                if(let Some(t) <- trans) {
+                    t.rectValueToPixel(this.mBarShadowRectBuffer)
+                }
 
                 if (!this.mViewPortHandler().isInBoundsLeft(this.mBarShadowRectBuffer.right)) {
                     continue
@@ -246,7 +250,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
             return
         }
         // if values are drawn
-        if (this.isDrawingValuesAllowed((this.mChart as ChartInterface<IDataSet<EntryOhos>, EntryOhos>)())) {
+        if (this.isDrawingValuesAllowed(this.mChart)) {
             let barData: ?BarData = this.mChart.getBarData()
 
             let dataSets: ArrayList<IBarDataSet> = barData().getDataSets()
@@ -259,7 +263,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
             for (i in 0..barData().getDataSetCount()) {
                 let dataSet: IBarDataSet = dataSets[i]
 
-                if (!this.shouldDrawValues((dataSet as IDataSet<EntryOhos>)())) {
+                if (!this.shouldDrawValues(dataSet)) {
                     continue
                 }
 
@@ -310,7 +314,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                             })) {
                         let x: Float64 = (buffer.buffer[j] + buffer.buffer[j + 2]) / 2.0
 
-                        if (this.mViewPortHandler().isInBoundsRight(x)) {
+                        if (!this.mViewPortHandler().isInBoundsRight(x)) {
                             break
                         }
 

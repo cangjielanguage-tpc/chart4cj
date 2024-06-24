@@ -320,8 +320,8 @@ public open class ViewPortHandler {
      * @param newMatrix
      * @return
      */
-    public func refresh(newMatrix: Matrix,
-        chart: ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>, invalidate: Bool): Matrix {
+    public func refresh<D, S, E>(newMatrix: Matrix,
+        chart: ChartModel<D, S, E>, invalidate: Bool): Matrix where D <: ChartData<S, E>, S <: IDataSet<E>, E <: EntryOhos {
         this.mMatrixTouch.set(newMatrix)
 
         // make sure scale and translation are within their bounds

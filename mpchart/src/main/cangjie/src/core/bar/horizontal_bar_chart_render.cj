@@ -99,8 +99,8 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
         buffer.setBarWidth(this.mChart.getBarData()().getBarWidth())
 
         buffer.feed(dataSet)
-
-        trans?.pointValuesToPixel(buffer.buffer)
+        let tempArray: Array<Float64> = buffer.buffer.toArray()
+        trans?.pointValuesToPixel(tempArray)
 
         let isCustomFill: Bool = !dataSet.getFills()().isEmpty()
         let isSingleColor: Bool = dataSet.getColors().size == 1

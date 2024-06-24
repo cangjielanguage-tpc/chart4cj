@@ -48,11 +48,13 @@ public abstract class DataRenderer <: Renderer {
         this.mHighlightPaint.setColor("#FFBB73")
     }
 
-    protected open func isDrawingValuesAllowed(chart: ChartInterface<IDataSet<EntryOhos>, EntryOhos>): Bool {
+    protected func isDrawingValuesAllowed<S, E>(chart: ChartInterface<S, E>): Bool where S <: IDataSet<E>,
+        E <: EntryOhos {
         let chartData = chart.getData()
-            if (this.mViewPortHandler.isSome() && chartData.isSome()) {
-                return Float64(chartData().getEntryCount()) < Float64(chart.getMaxVisibleCount()) * this.mViewPortHandler().getScaleX()
-            }
+        if (this.mViewPortHandler.isSome() && chartData.isSome()) {
+            return Float64(chartData().getEntryCount()) < Float64(chart.getMaxVisibleCount()) *
+                this.mViewPortHandler().getScaleX()
+        }
         return false
     }
 
@@ -95,7 +97,7 @@ public abstract class DataRenderer <: Renderer {
      *
      * @param set
      */
-    protected func applyValueTextStyle(dateSet: IDataSet<EntryOhos>) {
+    protected func applyValueTextStyle<S, E>(dateSet: S) where S <: IDataSet<E>, E <: EntryOhos {
         this.mValuePaint.setFontFamily(dateSet.getValueTypeface())
         this.mValuePaint.setTextSize(dateSet.getValueTextSize())
     }
@@ -141,41 +143,31 @@ public abstract class DataRenderer <: Renderer {
         }
         this.mValuePaint.setColor(color)
         Utils.resetContext2DStyle(c, this.mValuePaint)
-        if(this.mValuePaint.getStyle() != Style.STROKE) {
-            c.beginPath();
-            if (let Some(handle) <- this.mViewPortHandler) {
-              c.fillText(formatter.getFormattedValue(value, entry, dataSetIndex, handle), x, y);
-            }
-            c.closePath();
-        }
+
         match (this.mValuePaint.getStyle()) {
             case Style.STROKE =>
                 c.beginPath()
                 if (let Some(handle) <- this.mViewPortHandler) {
                     if (isHorizontalFlip) {
-                        c.strokeText(formatter.getFormattedValue(value, entry, dataSetIndex, handle),
-                            -x, y)
+                        c.strokeText(formatter.getFormattedValue(value, entry, dataSetIndex, handle), -x, y)
                     } else {
-                        c.strokeText(formatter.getFormattedValue(value, entry, dataSetIndex, handle), x,
-                            y)
+                        c.strokeText(formatter.getFormattedValue(value, entry, dataSetIndex, handle), x, y)
                     }
                 }
                 c.closePath()
-            case Style.FILL => ()
-            case Style.FILL_AND_STROKE => ()
+            case Style.FILL =>
+                c.beginPath();
+                if (let Some(handle) <- this.mViewPortHandler) {
+                    c.fillText(formatter.getFormattedValue(value, entry, dataSetIndex, handle), x, y);
+                }
+                c.closePath();
+            case Style.FILL_AND_STROKE =>
+                c.beginPath();
+                if (let Some(handle) <- this.mViewPortHandler) {
+                    c.fillText(formatter.getFormattedValue(value, entry, dataSetIndex, handle), x, y);
+                }
+                c.closePath();
         }
-//        if (isHorizontalFlip) {
-//            c.restore()
-//        }
-        // this.mValuePaint.setColor(color);
-        // let textPaint = new TextPaint();
-        // textPaint.set(this.mValuePaint);
-        // if (this.mViewPortHandler) {
-        //   textPaint.setText(formatter.getFormattedValue(value, entry, dataSetIndex, this.mViewPortHandler));
-        // }
-        // textPaint.setX(x)
-        // textPaint.setY(y)
-        // return [textPaint]
     }
 
     /**
