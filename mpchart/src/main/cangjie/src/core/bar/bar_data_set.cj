@@ -77,7 +77,11 @@ public open class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IB
     }
 
     public func getFills(): ?ArrayList<Fill> {
-        return this.mFills
+        if (let Some(val) <- this.mFills) {
+            return val
+        } else {
+            return None
+        }
     }
 
     public func getFill(index: Int64): Fill {

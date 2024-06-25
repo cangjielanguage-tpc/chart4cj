@@ -156,10 +156,12 @@ public class Matrix {
 
     private func checkValue() {
         for (i in 0..this.data.size) {
-            if (i == Matrix.MSCALE_X || i == Matrix.MSCALE_Y || i == Matrix.MPERSP_2) {
-                this.data[i] = 1.0
-            } else {
-                this.data[i] = 0.0
+            if (this.data[i].isNaN()) {
+                if (i == Matrix.MSCALE_X || i == Matrix.MSCALE_Y || i == Matrix.MPERSP_2) {
+                    this.data[i] = 1.0
+                } else {
+                    this.data[i] = 0.0
+                }
             }
         }
     }

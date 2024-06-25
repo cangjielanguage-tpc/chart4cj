@@ -50,10 +50,9 @@ public open class XAxisRenderer <: AxisRenderer {
             MPPointD.recycleInstance(p2)
         }
 
-        this.computeAxisValues(min, max)
+        this.computeAxisValues(mins, maxs)
     }
-
-    //     @Override
+    
     protected func computeAxisValues(min: Float64, max: Float64) {
         if (this.mXAxis.isDrawCustomLabels()) {
             let labels = (this.mXAxis as XAxis)().getCustomLabels()

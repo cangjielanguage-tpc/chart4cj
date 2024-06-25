@@ -62,6 +62,11 @@ public abstract class Utils {
         return 20.0
     }
 
+    public static func calcTextHeight(c: CanvasRenderingContext2D, paint: Paint, demoText: String): Float64 {
+        let textMetrics: TextMetrics = c.measureText(demoText)
+        return textMetrics.height
+    }
+
     public static func getLineHeight(paint: Paint, c: ?CanvasRenderingContext2D): Float64 {
         var canvasRenderingContext2D: ?CanvasRenderingContext2D = c
         if (canvasRenderingContext2D.isNone()) {
@@ -121,7 +126,7 @@ public abstract class Utils {
             ilog10 = log10(number)
         }
 
-        let d: Float64 =  ceil(ilog10)
+        let d: Float64 = ceil(ilog10)
         let pw: Float64 = 1.0 - floor(d)
         let magnitude: Float64 = pow(10.0, pw)
         let shifted: Float64 = round(number * magnitude)
@@ -205,7 +210,7 @@ public abstract class Utils {
     }
 
     //    private static Rect mDrawTextRectBuffer = new Rect()
-    private static var mFontMetricsBuffer: ?TextMetrics = Option<TextMetrics>.None
+    private static var mFontMetricsBuffer: TextMetrics = TextMetrics()
 
     public static func drawXAxisValue(c: CanvasRenderingContext2D, text: String, x: Float64, y: Float64, paint: Paint,
         anchor: MPPointF, angleDegrees: Float64, labelPosition: XAxisLabelPosition): Unit {
@@ -217,90 +222,100 @@ public abstract class Utils {
         // 防止计算出来的宽度，高度等数据不准确
         Utils.resetContext2DStyle(c, paint)
         Utils.mFontMetricsBuffer = c.measureText(text)
-        if (Utils.mFontMetricsBuffer.isSome()) {
-            let lineHeight = Utils.mFontMetricsBuffer().height
+        let lineHeight = Utils.mFontMetricsBuffer.height
 
-            // To have a consistent point of reference, we always draw left-aligned
-            let originalTextAlign: TextAlignStyle = paint.getTextAlign()
-            let originalTextBaseLine: TextBaseline = paint.getTextBaseline()
+        // To have a consistent point of reference, we always draw left-aligned
+        let originalTextAlign: TextAlignStyle = paint.getTextAlign()
+        let originalTextBaseLine: TextBaseline = paint.getTextBaseline()
 
-            paint.setTextAlign(TextAlignStyle.Left)
-            paint.setTextBaseline(TextBaseline.Top)
-            Utils.resetContext2DStyle(c, paint)
-            if (angleDegrees != 0.0) {
+        paint.setTextAlign(TextAlignStyle.Left)
+        paint.setTextBaseline(TextBaseline.Top)
+        Utils.resetContext2DStyle(c, paint)
+        if (angleDegrees != 0.0) {
 
-                // Move the text drawing rect in a way that it always rotates around its center
-                drawOffsetX -= Utils.mFontMetricsBuffer().width * 0.5
-                drawOffsetY -= lineHeight * 0.5
+            // Move the text drawing rect in a way that it always rotates around its center
+            drawOffsetX -= Utils.mFontMetricsBuffer.width * 0.5
+            drawOffsetY -= lineHeight * 0.5
 
-                var translateX: Float64 = x
-                var translateY: Float64 = y
+            var translateX: Float64 = x
+            var translateY: Float64 = y
 
-                // Move the "outer" rect relative to the anchor, assuming its centered
-                if (anchor.x != 0.5 || anchor.y != 0.5) {
-                    let rotatedSize: FSize = Utils.getSizeOfRotatedRectangleByDegrees(
-                        Utils.mFontMetricsBuffer().width,
-                        lineHeight,
-                        angleDegrees
-                    )
+            // Move the "outer" rect relative to the anchor, assuming its centered
+            if (anchor.x != 0.5 || anchor.y != 0.5) {
+                let rotatedSize: FSize = Utils.getSizeOfRotatedRectangleByDegrees(
+                    Utils.mFontMetricsBuffer.width,
+                    lineHeight,
+                    angleDegrees
+                )
 
-                    translateX -= rotatedSize.width * (anchor.x - 0.5)
-                    if (labelPosition.toString() == XAxisLabelPosition.RIGHT.toString()) {
-                        translateX += rotatedSize.width * 0.5
-                    } else if (labelPosition.toString() == XAxisLabelPosition.LEFT.toString()) {
-                        translateX -= rotatedSize.width * 0.5
-                    }
-                    translateY -= rotatedSize.height * (anchor.y - 0.5)
-                    FSize.recycleInstance(rotatedSize)
-                }
-
-                c.save()
-                c.translate(translateX, translateY)
-                c.rotate(angleDegrees * Float64.PI / 180.0)
-
-                match (paint.getStyle()) {
-                    case Style.STROKE =>
-                        c.beginPath()
-                        c.strokeText(text, drawOffsetX, drawOffsetY)
-                        c.closePath()
-                    case Style.FILL_AND_STROKE => ()
-                    case Style.FILL => ()
-                    case _ =>
-                        c.beginPath()
-                        c.fillText(text, drawOffsetX, drawOffsetY)
-                        c.closePath()
-                }
-                c.restore()
-            } else {
-                if (anchor.x != 0.0 || anchor.y != 0.0) {
-                    drawOffsetX -= Utils.mFontMetricsBuffer().width * anchor.x
-                    drawOffsetY -= lineHeight * anchor.y
-                }
-
-                drawOffsetX += x
+                translateX -= rotatedSize.width * (anchor.x - 0.5)
                 if (labelPosition.toString() == XAxisLabelPosition.RIGHT.toString()) {
-                    drawOffsetX += Utils.mFontMetricsBuffer().width * 0.5
+                    translateX += rotatedSize.width * 0.5
                 } else if (labelPosition.toString() == XAxisLabelPosition.LEFT.toString()) {
-                    drawOffsetX -= Utils.mFontMetricsBuffer().width * 0.5
+                    translateX -= rotatedSize.width * 0.5
                 }
-                drawOffsetY += y
-
-                match (paint.getStyle()) {
-                    case Style.STROKE =>
-                        c.beginPath()
-                        c.strokeText(text, drawOffsetX, drawOffsetY)
-                        c.closePath()
-                    case Style.FILL_AND_STROKE => ()
-                    case Style.FILL => ()
-                    case _ =>
-                        c.beginPath()
-                        c.fillText(text, drawOffsetX, drawOffsetY)
-                        c.closePath()
-                }
+                translateY -= rotatedSize.height * (anchor.y - 0.5)
+                FSize.recycleInstance(rotatedSize)
             }
-            paint.setTextAlign(originalTextAlign)
-            paint.setTextBaseline(originalTextBaseLine)
+
+            c.save()
+            c.translate(translateX, translateY)
+            c.rotate(angleDegrees * Float64.PI / 180.0)
+
+            match (paint.getStyle()) {
+                case Style.STROKE =>
+                    c.beginPath()
+                    c.strokeText(text, drawOffsetX, drawOffsetY)
+                    c.closePath()
+                case Style.FILL_AND_STROKE =>
+                    c.beginPath()
+                    c.fillText(text, drawOffsetX, drawOffsetY)
+                    c.closePath()
+                case Style.FILL =>
+                    c.beginPath()
+                    c.fillText(text, drawOffsetX, drawOffsetY)
+                    c.closePath()
+                case _ =>
+                    c.beginPath()
+                    c.fillText(text, drawOffsetX, drawOffsetY)
+                    c.closePath()
+            }
+            c.restore()
+        } else {
+            if (anchor.x != 0.0 || anchor.y != 0.0) {
+                drawOffsetX -= Utils.mFontMetricsBuffer.width * anchor.x
+                drawOffsetY -= lineHeight * anchor.y
+            }
+
+            drawOffsetX += x
+            if (labelPosition.toString() == XAxisLabelPosition.RIGHT.toString()) {
+                drawOffsetX += Utils.mFontMetricsBuffer.width * 0.5
+            } else if (labelPosition.toString() == XAxisLabelPosition.LEFT.toString()) {
+                drawOffsetX -= Utils.mFontMetricsBuffer.width * 0.5
+            }
+            drawOffsetY += y
+
+            match (paint.getStyle()) {
+                case Style.STROKE =>
+                    c.beginPath()
+                    c.strokeText(text, drawOffsetX, drawOffsetY)
+                    c.closePath()
+                case Style.FILL_AND_STROKE =>
+                    c.beginPath()
+                    c.fillText(text, drawOffsetX, drawOffsetY)
+                    c.closePath()
+                case Style.FILL =>
+                    c.beginPath()
+                    c.fillText(text, drawOffsetX, drawOffsetY)
+                    c.closePath()
+                case _ =>
+                    c.beginPath()
+                    c.fillText(text, drawOffsetX, drawOffsetY)
+                    c.closePath()
+            }
         }
+        paint.setTextAlign(originalTextAlign)
+        paint.setTextBaseline(originalTextBaseLine)
     }
 
     public static func getSizeOfRotatedRectangleByDegrees(rectangleWidth: Float64, rectangleHeight: Float64,

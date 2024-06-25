@@ -26,6 +26,7 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
 
     public static func build(): BarChartModel {
         let model: BarChartModel = BarChartModel()
+        var mAnimator: ChartAnimator = ChartAnimator(model)
         model.mRenderer = BarChartRenderer(model, model.mAnimator(), model.mViewPortHandler)
 
         model.setHighlighter(
@@ -246,7 +247,10 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
     }
 
     public func getBarData(): ?BarData {
-        return this.mData as BarData
+        return match (this.mData) {
+            case Some(d: BarData) => d
+            case _ => None
+        }
     }
 
     /**

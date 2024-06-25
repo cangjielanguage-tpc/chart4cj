@@ -138,7 +138,8 @@ public class ObjectPool<T> where T <: Poolable {
     private func resizePool(): Unit {
         let oldCapacity: Int64 = this.desiredCapacity
         this.desiredCapacity *= 2
-        var temp: ArrayList<Any> = ArrayList<Any>()
+        var item: Array<Any> = Array<Any>(this.desiredCapacity, item: this.modelObject)
+        var temp: ArrayList<Any> = ArrayList<Any>(item)
         for (i in 0..oldCapacity) {
             temp[i] = this.objects[i]
         }

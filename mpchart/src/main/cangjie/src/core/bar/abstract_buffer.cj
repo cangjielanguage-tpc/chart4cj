@@ -7,7 +7,7 @@ public abstract class AbstractBuffer<T> {
     /** index in the buffer */
     protected var index: Int64 = 0
     /** float-buffer that holds the data points to draw, order: x,y,x,y,... */
-    public var buffer: Array<Float64> = []
+    public var buffer: ArrayList<Float64>
     /** animation phase x-axis */
     protected var phaseX: Float64 = 1.0
     /** animation phase y-axis */
@@ -24,7 +24,7 @@ public abstract class AbstractBuffer<T> {
      */
     public init(size: Int64) {
         this.index = 0
-        this.buffer = Array<Float64>(size, item: 0.0)
+        this.buffer = ArrayList<Float64>()
     }
 
     /** limits the drawing on the x-axis */

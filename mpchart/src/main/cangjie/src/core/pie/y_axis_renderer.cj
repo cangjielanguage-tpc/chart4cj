@@ -125,8 +125,16 @@ public open class YAxisRenderer <: AxisRenderer {
                         positions[i * 2 + 1] + offset - Utils.calcTextHeight(this.mAxisLabelPaint, text))
                     c.closePath()
 
-                case Style.FILL_AND_STROKE => ()
-                case Style.FILL => ()
+                case Style.FILL_AND_STROKE =>
+                    c.beginPath()
+                    c.fillText(text, fixedPosition + xOffset,
+                        positions[i * 2 + 1] + offset - Utils.calcTextHeight(this.mAxisLabelPaint, text))
+                    c.closePath()
+                case Style.FILL =>
+                    c.beginPath()
+                    c.fillText(text, fixedPosition + xOffset,
+                        positions[i * 2 + 1] + offset - Utils.calcTextHeight(this.mAxisLabelPaint, text))
+                    c.closePath()
                 case _ =>
                     c.beginPath()
                     c.fillText(text, fixedPosition + xOffset,
