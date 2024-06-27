@@ -695,7 +695,7 @@ public class PieChartRenderer <: DataRenderer {
 
     public func drawExtras(c: CanvasRenderingContext2D): Unit {
         this.drawHole(c)
-        //        this.drawCenterText(c)
+        this.drawCenterText(c)
     }
 
     private var mHoleCirclePath: Path2D = Path2D()
@@ -709,7 +709,6 @@ public class PieChartRenderer <: DataRenderer {
             let radius: Float64 = this.mChart.getRadius()
             let holeRadius: Float64 = radius * (this.mChart.getHoleRadius() / 100.0)
             let center: MPPointF = this.mChart.getCenterCircleBox()
-
             Utils.resetContext2DStyle(c, this.mHolePaint)
             c.beginPath()
             c.arc(center.x, center.y, holeRadius, 0.0, 2.0 * Float64.PI)
@@ -720,15 +719,16 @@ public class PieChartRenderer <: DataRenderer {
             // if (MyColor.alpha(Number(this.mTransparentCirclePaint.getColor())) > 0 &&
             //   this.mChart.getTransparentCircleRadius() > this.mChart.getHoleRadius()) {
 
-            let alpha: Float64 = this.mTransparentCirclePaint.getGlobalAlpha()
+            let alpha: ?Float64 = this.mTransparentCirclePaint.getGlobalAlpha()
+
             let secondHoleRadius: Float64 = radius * (this.mChart.getTransparentCircleRadius() / 100.0)
             if (this.mAnimator.isNone()) {
                 return
             }
-
-            this.mTransparentCirclePaint.setGlobalAlpha( /*(int)*/
-                ( /*(float) */
-                    alpha * this.mAnimator().getPhaseX() * this.mAnimator().getPhaseY()))
+            if (let Some(globalAlpha) <- alpha) {
+                this.mTransparentCirclePaint.setGlobalAlpha(
+                    (globalAlpha * this.mAnimator().getPhaseX() * this.mAnimator().getPhaseY()))
+            }
 
             c.save()
             Utils.resetContext2DStyle(c, this.mTransparentCirclePaint)
@@ -741,8 +741,9 @@ public class PieChartRenderer <: DataRenderer {
             c.restore()
 
             // reset alpha
-
-            this.mTransparentCirclePaint.setGlobalAlpha(alpha)
+            if (let Some(globalAlpha) <- alpha) {
+                this.mTransparentCirclePaint.setGlobalAlpha(globalAlpha)
+            }
 
             MPPointF.recycleInstance(center)
         }
@@ -756,11 +757,9 @@ public class PieChartRenderer <: DataRenderer {
      */
     protected func drawCenterText(c: CanvasRenderingContext2D): Unit {
         let centerText: String = this.mChart.getCenterText()
-
         if (this.mChart.isDrawCenterTextEnabled()) {
             let center: MPPointF = this.mChart.getCenterCircleBox()
             let offset: MPPointF = this.mChart.getCenterTextOffset()
-
             let x: Float64 = center.x + offset.x
             let y: Float64 = center.y + offset.y
 
@@ -789,7 +788,7 @@ public class PieChartRenderer <: DataRenderer {
                 )
             }
 
-            if (centerText != this.mCenterTextLastValue /*|| !(boundingRect is this.mCenterTextLastBounds)*/ ) {
+            if (centerText != this.mCenterTextLastValue || !boundingRect.equals(this.mCenterTextLastBounds)) {
 
                 // Next time we won't recalculate StaticLayout...
                 this.mCenterTextLastBounds.set(boundingRect.left, boundingRect.top, boundingRect.right,
@@ -797,10 +796,11 @@ public class PieChartRenderer <: DataRenderer {
                 this.mCenterTextLastValue = centerText
             }
 
-            let textHeight: Float64 = Utils.calcTextHeight(this.mCenterTextPaint, centerText)
-            let textWidth: Float64 = Utils.calcTextWidth(this.mCenterTextPaint, centerText)
+            let textHeight: Float64 = Utils.calcTextHeight(c, this.mCenterTextPaint, centerText)
+            let textWidth: Float64 = Utils.calcTextWidth(c, this.mCenterTextPaint, centerText)
             c.save()
             Utils.resetContext2DStyle(c, this.mCenterTextPaint)
+
             c.fillText(centerText, x - textWidth / 2.0, y)
             c.restore()
             MPPointF.recycleInstance(center)

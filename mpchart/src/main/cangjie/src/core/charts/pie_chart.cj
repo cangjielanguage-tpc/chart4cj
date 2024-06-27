@@ -13,7 +13,7 @@ public class PieChart {
                 {
                 oldArea: Area, newArea: Area => if (((newArea.width != oldArea.width) || (newArea.height != oldArea.
                     height))) {
-                    this.model.onChartSizeChanged(newArea.width, newArea.height, oldArea.width, oldArea.height)
+                    this.model.onChartSizeChanged(400.0, 400.0, oldArea.width, oldArea.height)
                     this.model.onDraw(this.context2D)
                     let jobs = this.model.mJobs
                     let length = jobs.size

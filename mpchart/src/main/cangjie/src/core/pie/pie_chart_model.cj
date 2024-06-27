@@ -392,8 +392,9 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * @param color
      */
     public func setHoleColor(color: UInt32): Unit {
-        ( /*(PieChartRenderer)*/
-            this.mRenderer() as PieChartRenderer)?.getPaintHole().setColor(Color(color))
+        if (let Some(render: PieChartRenderer) <- this.mRenderer) {
+            render.getPaintHole().setColor(Color(color))
+        }
     }
 
     /**
@@ -597,10 +598,12 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
             return
         }
         let p: Paint = (this.mRenderer() as PieChartRenderer)().getPaintTransparentCircle()
-        let alpha: Float64 = p.getGlobalAlpha()
+        let alpha: ?Float64 = p.getGlobalAlpha()
         p.setColor(Color(color))
+        if (let Some(globalAlpha) <- alpha) {
+            p.setGlobalAlpha(globalAlpha)
+        }
 
-        p.setGlobalAlpha(alpha)
     }
 
     /**
