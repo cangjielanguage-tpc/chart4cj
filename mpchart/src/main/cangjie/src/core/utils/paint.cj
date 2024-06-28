@@ -5,7 +5,7 @@ package core.utils
 
 public open class Paint {
     public var styleType: Style = Style.FILL_AND_STROKE
-    public var globalAlpha: Float64 = 0.0
+    public var globalAlpha: ?Float64 = Option<Float64>.None
     var globalCompositeOperation: String = "source-over"
 
     var fillStyle: Color = Color.WHITE
@@ -132,7 +132,7 @@ public open class Paint {
         this.globalAlpha = alpha
     }
 
-    public func getGlobalAlpha() {
+    public func getGlobalAlpha(): ?Float64 {
         return this.globalAlpha
     }
 
@@ -140,7 +140,7 @@ public open class Paint {
         this.globalCompositeOperation = composite
     }
 
-    public func getGlobalCompositeOperation() {
+    public func getGlobalCompositeOperation(): String {
         return this.globalCompositeOperation
     }
 
@@ -449,4 +449,19 @@ public class DashPathEffect {
         this.offset = offset
     }
 
+    public func setDash(dash: Array<Int64>) {
+        this.dash = dash
+    }
+
+    public func getDash(): Array<Int64> {
+        return this.dash
+    }
+
+    public func setOffset(offset: Int64) {
+        this.offset = offset
+    }
+
+    public func getOffset(): Int64 {
+        return this.offset
+    }
 }

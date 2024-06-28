@@ -125,7 +125,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
             if (isInverted) {
                 cornerType = if (dataSet.getEntryForIndex(pos).getY() > 0.0) {
-                    RoundCornerType.down
+                    RoundCornerType.DOWN
                 } else {
                     RoundCornerType.UP
                 }
@@ -133,7 +133,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 cornerType = if (dataSet.getEntryForIndex(pos).getY() > 0.0) {
                     RoundCornerType.UP
                 } else {
-                    RoundCornerType.down
+                    RoundCornerType.DOWN
                 }
             }
 
@@ -211,13 +211,13 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 match (this.mShadowPaint.getStyle()) {
                     case Style.STROKE => Utils.drawStrokeRect(radius > 0.0, c, this.mShadowPaint,
                         this.mBarShadowRectBuffer.left, this.mBarShadowRectBuffer.top, this.mBarShadowRectBuffer.right,
-                        this.mBarShadowRectBuffer.bottom, radius, RoundCornerType.both) // 阴影上下圆角都绘制比较好
+                        this.mBarShadowRectBuffer.bottom, radius, RoundCornerType.BOTH) // 阴影上下圆角都绘制比较好
 
                     case Style.FILL => ()
                     case Style.FILL_AND_STROKE => ()
                     case _ => Utils.drawFillRect(radius > 0.0, c, this.mShadowPaint, this.mBarShadowRectBuffer.left,
                         this.mBarShadowRectBuffer.top, this.mBarShadowRectBuffer.right, this.mBarShadowRectBuffer.bottom,
-                        radius, RoundCornerType.both) // 阴影上下圆角都绘制比较好
+                        radius, RoundCornerType.BOTH) // 阴影上下圆角都绘制比较好
 
                 }
             }
@@ -596,7 +596,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
             if (isInverted) {
                 cornerType = if (e().getY() > 0.0) {
-                    RoundCornerType.down
+                    RoundCornerType.DOWN
                 } else {
                     RoundCornerType.UP
                 }
@@ -604,7 +604,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 cornerType = if (e().getY() > 0.0) {
                     RoundCornerType.UP
                 } else {
-                    RoundCornerType.down
+                    RoundCornerType.DOWN
                 }
             }
 

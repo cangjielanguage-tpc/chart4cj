@@ -120,8 +120,8 @@ public enum FontFamily {
  */
 public enum RoundCornerType {
     | UP
-    | down
-    | both
+    | DOWN
+    | BOTH
 }
 
 public enum PanActionType {

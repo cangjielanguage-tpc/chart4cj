@@ -12,7 +12,6 @@ public abstract class Utils {
     public static let DOUBLE_EPSILON: Float64 = 4.9E-324
     public static let FLOAT_EPSILON: Float64 = 1.4E-45
     public static let ontextSettings: RenderingContextSettings = RenderingContextSettings(antialias: true)
-    //    public static let offCanvasContext2d: OffscreenCanvasRenderingContext2D = OffscreenCanvasRenderingContext2D(500, 500, contextSettings)
     public static let canvasContext2d: CanvasRenderingContext2D = CanvasRenderingContext2D(ontextSettings)
     /**
      * initialize method, called inside the Chart.init() method.
@@ -40,9 +39,13 @@ public abstract class Utils {
      */
     public static func calcTextWidth(paint: Paint, demoText: String): Float64 {
         Utils.resetContext2DStyle(Utils.canvasContext2d, paint)
-//        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
-//        return textMetrics.width
-        return 20.0
+        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
+        return textMetrics.width
+    }
+
+    public static func calcTextWidth(c: CanvasRenderingContext2D, paint: Paint, demoText: String): Float64 {
+        let textMetrics: TextMetrics = c.measureText(demoText)
+        return textMetrics.width
     }
 
     private static var mCalcTextHeightRect: MyRect = MyRect()
@@ -57,9 +60,8 @@ public abstract class Utils {
      */
     public static func calcTextHeight(paint: Paint, demoText: String): Float64 {
         Utils.resetContext2DStyle(Utils.canvasContext2d, paint)
-//        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
-//        return textMetrics.height
-        return 20.0
+        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
+        return textMetrics.height
     }
 
     public static func calcTextHeight(c: CanvasRenderingContext2D, paint: Paint, demoText: String): Float64 {
@@ -73,9 +75,8 @@ public abstract class Utils {
             canvasRenderingContext2D = Utils.canvasContext2d
         }
         Utils.resetContext2DStyle(canvasRenderingContext2D(), paint)
-//        let textMetrics: TextMetrics = canvasRenderingContext2D().measureText("Test")
-//        return textMetrics.height
-        return 20.0
+        let textMetrics: TextMetrics = canvasRenderingContext2D().measureText("Test")
+        return textMetrics.height
     }
 
     public static func getLineSpacing(paint: Paint, c: ?CanvasRenderingContext2D): Float64 {
@@ -84,17 +85,16 @@ public abstract class Utils {
             canvasRenderingContext2D = Utils.canvasContext2d
         }
         Utils.resetContext2DStyle(canvasRenderingContext2D(), paint)
-//        let textMetrics: TextMetrics = canvasRenderingContext2D().measureText("Test")
-//        return textMetrics.height * 0.3
-        return 20.0
+        let textMetrics: TextMetrics = canvasRenderingContext2D().measureText("Test")
+        return textMetrics.height * 0.3
     }
 
     public static func calcTextSize(paint: Paint, demoText: String): FSize {
         Utils.resetContext2DStyle(Utils.canvasContext2d, paint)
-//        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
-//        let width: Float64 = textMetrics.width
-//        let height: Float64 = textMetrics.height
-        let fsize: FSize = FSize(20.0, 20.0)
+        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
+        let width: Float64 = textMetrics.width
+        let height: Float64 = textMetrics.height
+        let fsize: FSize = FSize(width, height)
         return fsize
     }
 
@@ -197,7 +197,7 @@ public abstract class Utils {
             anglee += 360.0
         }
 
-        return anglee - floor(anglee / 360.0) * 360.0 // float result = 5.7f - Math.floor(5.7f / 2.3f) * 2.3f
+        return anglee - floor(anglee / 360.0) * 360.0
     }
 
     private static var mDrawableBoundsCache: MyRect = MyRect()
@@ -209,7 +209,6 @@ public abstract class Utils {
         }
     }
 
-    //    private static Rect mDrawTextRectBuffer = new Rect()
     private static var mFontMetricsBuffer: TextMetrics = TextMetrics()
 
     public static func drawXAxisValue(c: CanvasRenderingContext2D, text: String, x: Float64, y: Float64, paint: Paint,
@@ -337,6 +336,31 @@ public abstract class Utils {
     }
 
     public static func resetContext2DStyle(context2D: CanvasRenderingContext2D, paint: Paint) {
+            match (paint.getStyle()) {
+              case Style.FILL =>
+                let c: Color = paint.getFillStyle()
+                context2D.fillStyle(paint.getFillStyle())
+              case Style.STROKE =>
+                context2D.strokeStyle(paint.getStrokeStyle())
+              case Style.FILL_AND_STROKE =>
+                context2D.fillStyle(paint.getFillStyle())
+                context2D.strokeStyle(paint.getStrokeStyle())
+              case _ =>
+                context2D.fillStyle(paint.getFillStyle())
+                context2D.strokeStyle(paint.getStrokeStyle())
+            }
+            if (let Some(globalAlpha) <- paint.getGlobalAlpha()) {
+                context2D.globalAlpha(globalAlpha)
+            }
+
+            context2D.lineWidth(paint.getStrokeWidth())
+            context2D.textAlign(paint.getTextAlign())
+            context2D.textBaseline(paint.getTextBaseline())
+            let dashEffect: ?DashPathEffect = paint.getDashPathEffect()
+            if (let Some(dashE) <- dashEffect) {
+                context2D.lineDash(dashE.getDash())
+                context2D.lineDashOffset(dashE.getOffset())
+            }
     }
 
     public static func parseInt(num: Float64): Float64 {
@@ -372,6 +396,38 @@ public abstract class Utils {
      */
     public static func fillRoundedRect(c: CanvasRenderingContext2D, left: Float64, top: Float64, width: Float64,
         height: Float64, radius: Float64, cornerType: RoundCornerType) {
+            let min: Float64 = min(width, height)
+        var newRadius: Float64 = radius
+        if (newRadius > min / 2.0) {
+          newRadius = min / 2.0
+        }
+
+        match (cornerType) {
+          case RoundCornerType.DOWN =>
+            c.moveTo(left, top)
+            c.lineTo(left + width, top)
+            c.arcTo(left + width, top + height, left, top + height, newRadius)
+            c.lineTo(left + newRadius, top + height)
+            c.arcTo(left, top + height, left, top, newRadius)
+          case RoundCornerType.BOTH =>
+            c.moveTo(left + newRadius, top)
+            c.arcTo(left + width, top, left + width, top + height, newRadius)
+            c.arcTo(left + width, top + height, left, top + height, newRadius)
+            c.arcTo(left, top + height, left, top, newRadius)
+            c.arcTo(left, top, left + newRadius, top, newRadius)
+          case RoundCornerType.UP =>
+            c.moveTo(left + newRadius, top)
+            c.arcTo(left + width, top, left + width, top + height, newRadius)
+            c.lineTo(left + width, top + height)
+            c.lineTo(left, top + height)
+            c.arcTo(left, top, left + width, top, newRadius)
+          case _ =>
+            c.moveTo(left + newRadius, top)
+            c.arcTo(left + width, top, left + width, top + height, newRadius)
+            c.lineTo(left + width, top + height)
+            c.lineTo(left, top + height)
+            c.arcTo(left, top, left + width, top, newRadius)
+        }
     }
 
     public static func drawFillRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: Paint, left: Float64,
@@ -386,7 +442,7 @@ public abstract class Utils {
 
     private static func drawRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: Paint, left: Float64,
         top: Float64, right: Float64, bottom: Float64, radius: Float64, isFill: Bool, cornerType: RoundCornerType): Unit {
-        //    Utils.resetContext2DStyle(c, paint)
+        Utils.resetContext2DStyle(c, paint)
         c.beginPath()
         if (isDrawRounded && radius != 0.0) {
             Utils.fillRoundedRect(c, left, top, right - left, bottom - top, radius, cornerType)

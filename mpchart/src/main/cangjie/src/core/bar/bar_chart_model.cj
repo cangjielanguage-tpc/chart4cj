@@ -94,7 +94,6 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
      */
     public open func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {
         if (this.mData.isNone()) {
-            AppLog.error("mpchart: Can't select by touch. No data set.")
             return None
         } else {
             let highLighter: ?IHighlighter = this.getHighlighter()

@@ -11,7 +11,6 @@ from std import format.{Formatter}
 from std import math.*
 from ohos import component.*
 from ohos import base.*
-from std import reflect.{TypeInfo}
 from ohos import device_info.*
 from ohos import animator.*
 from std import unicode.{UnicodeExtension}

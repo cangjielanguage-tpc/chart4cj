@@ -578,7 +578,6 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      */
     public open func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {
         if (this.mData.isNone()) {
-            AppLog.error(LOG_TAG + ":Can't select by touch. No data set.")
             return Option<Highlight>.None
         } else {
             let hghLighter = this.getHighlighter()
