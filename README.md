@@ -351,7 +351,9 @@ class BarChartMultiplePage {
 
 在下述版本验证通过：
 
-DevEco Studio: 5.0.3.300, cangjie SDK 0.4.5
+    DevEco Studio: 5.0.3.400 
+    cangjie SDK: 0.5.5
+    Cangjie support Plugin: 0.5.5
 
 ## 开源协议
 
