@@ -52,7 +52,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
         this.mAxisLabelPaint.setTextAlign(TextAlignStyle.Center)
 
         let baseYOffset = Utils.handleDataValues(2.5)
-        let textHeight = Utils.calcTextHeight(this.mAxisLabelPaint, "Q")
+        let textHeight = Utils.calcTextHeight(c, this.mAxisLabelPaint, "Q")
 
         let dependency: AxisDependency = this.mYAxis.getAxisDependency()
         let labelPosition: YAxisLabelPosition = this.mYAxis.getLabelPosition()
@@ -301,7 +301,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
 
                 c.beginPath()
                 if (position == LimitLabelPosition.RIGHT_TOP) {
-                    let labelLineHeight: Float64 = Utils.calcTextHeight(this.mLimitLinePaint, label)
+                    let labelLineHeight: Float64 = Utils.calcTextHeight(c, this.mLimitLinePaint, label)
                     this.mLimitLinePaint.setTextAlign(TextAlignStyle.Left)
                     Utils.resetContext2DStyle(c, this.mLimitLinePaint)
                     c.strokeText(label, pts[0] + xOffset, this.mViewPortHandler().contentTop() + yOffset +
@@ -312,7 +312,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
                     c.strokeText(label, pts[0] + xOffset, this.mViewPortHandler().contentBottom() - yOffset)
                 } else if (position == LimitLabelPosition.LEFT_TOP) {
                     this.mLimitLinePaint.setTextAlign(TextAlignStyle.Right)
-                    let labelLineHeight: Float64 = Utils.calcTextHeight(this.mLimitLinePaint, label)
+                    let labelLineHeight: Float64 = Utils.calcTextHeight(c, this.mLimitLinePaint, label)
                     c.strokeText(label, pts[0] - xOffset, this.mViewPortHandler().contentTop() + yOffset +
                         labelLineHeight)
                 } else {

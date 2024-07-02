@@ -163,7 +163,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             this.mAxisRendererRight().computeAxis(this.mAxisRight().mAxisMinimum, this.mAxisRight().mAxisMaximum,
                 this.mAxisRight().isInverted())
         }
-
         if (this.mXAxisRenderer.isSome() && this.mXAxis.isSome() && this.mXAxis().isEnabled()) {
             this.mXAxisRenderer().computeAxis(this.mXAxis().mAxisMinimum, this.mXAxis().mAxisMaximum, false)
         }
@@ -243,7 +242,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         if (this.mXAxisRenderer.isSome() && this.mXAxis.isSome() && !this.mXAxis().isDrawGridLinesBehindDataEnabled()) {
             this.mXAxisRenderer().renderGridLines(context2D)
         }
-
         if (this.mAxisRendererLeft.isSome() && this.mAxisLeft.isSome() &&
             !this.mAxisLeft().isDrawGridLinesBehindDataEnabled()) {
             this.mAxisRendererLeft().renderGridLines(context2D)
@@ -253,7 +251,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             !this.mAxisRight().isDrawGridLinesBehindDataEnabled()) {
             this.mAxisRendererRight().renderGridLines(context2D)
         }
-
         // if highlighting is enabled
         if (this.valuesToHighlight() && this.mIndicesToHighlight.isSome()) {
             this.mRenderer().drawHighlighted(context2D, this.mIndicesToHighlight())
@@ -261,7 +258,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
 
         // Removes clipping rectangle
         context2D.restore()
-
         if (this.mRenderer.isSome()) {
             this.mRenderer().drawExtras(context2D)
         }
@@ -319,7 +315,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         if (render.isSome()) {
             if (this.mXAxis.isSome()) {
                 extensionLength = Int64(this.mXAxis().getYOffset()) + this.mXAxis().mLabelRotatedHeight / 2 + Int64(Utils.
-                        calcTextHeight(render().getPaintAxisLine(), "0"))
+                        calcTextHeight(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), render().getPaintAxisLine(), "0"))
             }
         }
         return extensionLength
@@ -1753,7 +1749,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             )
         } else {
             this.mViewPortHandler.refresh(this.mViewPortHandler.getMatrixTouch(),
-                (this as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(), true)
+                this, true)
         }
     }
 

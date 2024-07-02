@@ -11,8 +11,7 @@ public abstract class Utils {
     public static let FDEG2RAD: Float64 = (Float64.PI / 180.0)
     public static let DOUBLE_EPSILON: Float64 = 4.9E-324
     public static let FLOAT_EPSILON: Float64 = 1.4E-45
-    public static let ontextSettings: RenderingContextSettings = RenderingContextSettings(antialias: true)
-    public static let canvasContext2d: CanvasRenderingContext2D = CanvasRenderingContext2D(ontextSettings)
+
     /**
      * initialize method, called inside the Chart.init() method.
      *
@@ -37,12 +36,6 @@ public abstract class Utils {
      * @param demoText
      * @return
      */
-    public static func calcTextWidth(paint: Paint, demoText: String): Float64 {
-        Utils.resetContext2DStyle(Utils.canvasContext2d, paint)
-        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
-        return textMetrics.width
-    }
-
     public static func calcTextWidth(c: CanvasRenderingContext2D, paint: Paint, demoText: String): Float64 {
         let textMetrics: TextMetrics = c.measureText(demoText)
         return textMetrics.width
@@ -58,40 +51,26 @@ public abstract class Utils {
      * @param demoText
      * @return
      */
-    public static func calcTextHeight(paint: Paint, demoText: String): Float64 {
-        Utils.resetContext2DStyle(Utils.canvasContext2d, paint)
-        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
-        return textMetrics.height
-    }
-
     public static func calcTextHeight(c: CanvasRenderingContext2D, paint: Paint, demoText: String): Float64 {
         let textMetrics: TextMetrics = c.measureText(demoText)
         return textMetrics.height
     }
 
-    public static func getLineHeight(paint: Paint, c: ?CanvasRenderingContext2D): Float64 {
-        var canvasRenderingContext2D: ?CanvasRenderingContext2D = c
-        if (canvasRenderingContext2D.isNone()) {
-            canvasRenderingContext2D = Utils.canvasContext2d
-        }
-        Utils.resetContext2DStyle(canvasRenderingContext2D(), paint)
-        let textMetrics: TextMetrics = canvasRenderingContext2D().measureText("Test")
+    public static func getLineHeight(paint: Paint, c: CanvasRenderingContext2D): Float64 {
+        Utils.resetContext2DStyle(c, paint)
+        let textMetrics: TextMetrics = c.measureText("Test")
         return textMetrics.height
     }
 
-    public static func getLineSpacing(paint: Paint, c: ?CanvasRenderingContext2D): Float64 {
-        var canvasRenderingContext2D: ?CanvasRenderingContext2D = c
-        if (canvasRenderingContext2D.isNone()) {
-            canvasRenderingContext2D = Utils.canvasContext2d
-        }
-        Utils.resetContext2DStyle(canvasRenderingContext2D(), paint)
-        let textMetrics: TextMetrics = canvasRenderingContext2D().measureText("Test")
+    public static func getLineSpacing(paint: Paint, c: CanvasRenderingContext2D): Float64 {
+        Utils.resetContext2DStyle(c, paint)
+        let textMetrics: TextMetrics = c.measureText("Test")
         return textMetrics.height * 0.3
     }
 
-    public static func calcTextSize(paint: Paint, demoText: String): FSize {
-        Utils.resetContext2DStyle(Utils.canvasContext2d, paint)
-        let textMetrics: TextMetrics = Utils.canvasContext2d.measureText(demoText)
+    public static func calcTextSize(c: CanvasRenderingContext2D, paint: Paint, demoText: String): FSize {
+        Utils.resetContext2DStyle(c, paint)
+        let textMetrics: TextMetrics = c.measureText(demoText)
         let width: Float64 = textMetrics.width
         let height: Float64 = textMetrics.height
         let fsize: FSize = FSize(width, height)
@@ -352,10 +331,10 @@ public abstract class Utils {
             if (let Some(globalAlpha) <- paint.getGlobalAlpha()) {
                 context2D.globalAlpha(globalAlpha)
             }
-
             context2D.lineWidth(paint.getStrokeWidth())
             context2D.textAlign(paint.getTextAlign())
             context2D.textBaseline(paint.getTextBaseline())
+
             let dashEffect: ?DashPathEffect = paint.getDashPathEffect()
             if (let Some(dashE) <- dashEffect) {
                 context2D.lineDash(dashE.getDash())

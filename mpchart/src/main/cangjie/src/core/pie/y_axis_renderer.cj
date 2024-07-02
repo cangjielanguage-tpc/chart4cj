@@ -35,7 +35,7 @@ public open class YAxisRenderer <: AxisRenderer {
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor())
 
         let xOffset = this.mYAxis.getXOffset()
-        let yOffset = Utils.calcTextHeight(this.mAxisLabelPaint, "A") + this.mYAxis.getYOffset()
+        let yOffset = Utils.calcTextHeight(c, this.mAxisLabelPaint, "A") + this.mYAxis.getYOffset()
         let dependency: AxisDependency = this.mYAxis.getAxisDependency()
         let labelPosition: YAxisLabelPosition = this.mYAxis.getLabelPosition()
 
@@ -122,23 +122,23 @@ public open class YAxisRenderer <: AxisRenderer {
                 case Style.STROKE =>
                     c.beginPath()
                     c.strokeText(text, fixedPosition + xOffset,
-                        positions[i * 2 + 1] + offset - Utils.calcTextHeight(this.mAxisLabelPaint, text))
+                        positions[i * 2 + 1] + offset - Utils.calcTextHeight(c, this.mAxisLabelPaint, text))
                     c.closePath()
 
                 case Style.FILL_AND_STROKE =>
                     c.beginPath()
                     c.fillText(text, fixedPosition + xOffset,
-                        positions[i * 2 + 1] + offset - Utils.calcTextHeight(this.mAxisLabelPaint, text))
+                        positions[i * 2 + 1] + offset - Utils.calcTextHeight(c, this.mAxisLabelPaint, text))
                     c.closePath()
                 case Style.FILL =>
                     c.beginPath()
                     c.fillText(text, fixedPosition + xOffset,
-                        positions[i * 2 + 1] + offset - Utils.calcTextHeight(this.mAxisLabelPaint, text))
+                        positions[i * 2 + 1] + offset - Utils.calcTextHeight(c, this.mAxisLabelPaint, text))
                     c.closePath()
                 case _ =>
                     c.beginPath()
                     c.fillText(text, fixedPosition + xOffset,
-                        positions[i * 2 + 1] + offset - Utils.calcTextHeight(this.mAxisLabelPaint, text))
+                        positions[i * 2 + 1] + offset - Utils.calcTextHeight(c, this.mAxisLabelPaint, text))
                     c.closePath()
             }
             this.mAxisLabelPaint.setTextBaseline(originTextBaseLine)
@@ -362,7 +362,7 @@ public open class YAxisRenderer <: AxisRenderer {
                 this.mLimitLinePaint.setStrokeWidth(0.5)
                 this.mLimitLinePaint.setTextSize(l.getTextSize())
 
-                let labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label)
+                let labelLineHeight = Utils.calcTextHeight(c, this.mLimitLinePaint, label)
                 let xOffset = 4.0 + l.getXOffset()
                 let yOffset = l.getLineWidth() + labelLineHeight + l.getYOffset()
 
@@ -395,7 +395,7 @@ public open class YAxisRenderer <: AxisRenderer {
                         case Style.STROKE =>
                             c.beginPath()
                             c.strokeText(label, this.mViewPortHandler().contentRight() - xOffset,
-                                pts[1] + yOffset - Utils.calcTextHeight(this.mLimitLinePaint, label) / 2.0)
+                                pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
                             c.closePath()
 
                         case Style.FILL => ()
@@ -403,7 +403,7 @@ public open class YAxisRenderer <: AxisRenderer {
                         case _ =>
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentRight() - xOffset,
-                                pts[1] + yOffset - Utils.calcTextHeight(this.mLimitLinePaint, label) / 2.0)
+                                pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
                             c.closePath()
                     }
                 } else if (position == LimitLabelPosition.LEFT_TOP) {
@@ -431,7 +431,7 @@ public open class YAxisRenderer <: AxisRenderer {
                         case Style.STROKE =>
                             c.beginPath()
                             c.strokeText(label, this.mViewPortHandler().contentLeft() + xOffset,
-                                pts[1] + yOffset - Utils.calcTextHeight(this.mLimitLinePaint, label) / 2.0)
+                                pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
                             c.closePath()
 
                         case Style.FILL => ()
@@ -439,7 +439,7 @@ public open class YAxisRenderer <: AxisRenderer {
                         case _ =>
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentLeft() + xOffset,
-                                pts[1] + yOffset - Utils.calcTextHeight(this.mLimitLinePaint, label) / 2.0)
+                                pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
                             c.closePath()
                     }
                 }

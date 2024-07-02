@@ -27,7 +27,7 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
     public static func build(): BarChartModel {
         let model: BarChartModel = BarChartModel()
         var mAnimator: ChartAnimator = ChartAnimator(model)
-        model.mRenderer = BarChartRenderer(model, model.mAnimator(), model.mViewPortHandler)
+        model.mRenderer = BarChartRenderer(model, mAnimator, model.mViewPortHandler)
 
         model.setHighlighter(
             (BarHighlighter(model) as ChartHighlighter<BarLineScatterCandleBubbleDataProvider<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
