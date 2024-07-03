@@ -3,7 +3,7 @@
  */
 package core.bar
 
-public open class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IBarDataSet {
+public class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IBarDataSet {
     /**
      * the maximum number of bars that are stacked upon each other, this value
      * is calculated from the Entries that are added to the DataSet
@@ -32,24 +32,16 @@ public open class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IB
     public init(yVals: ArrayList<BarEntry>, label: String) {
         super(yVals, label)
         this.mHighLightColor = 0x000000
+        this.calcStackSize(yVals)
+        this.calcEntryCountIncludingStacks(yVals)
+    }
+
+    private func calcStackSize(yVals: ArrayList<BarEntry>): Unit {
         for (i in 0..yVals.size) {
-            let vals: ?Array<Float64> = yVals[i].getYVals()
+            let vals: Array<Float64> = yVals[i].getYVals();
 
-            if (let Some(v) <- vals) {
-                if (v.size > this.mStackSize) {
-                    this.mStackSize = v.size
-                }
-            }
-        }
-        this.mEntryCountStacks = 0
-
-        for (i in 0..yVals.size) {
-            let vals: ?Array<Float64> = yVals[i].getYVals()
-
-            if (let Some(v) <- vals) {
-                this.mEntryCountStacks += v.size
-            } else {
-                this.mEntryCountStacks++
+            if (vals.size > this.mStackSize) {
+                this.mStackSize = vals.size
             }
         }
     }
@@ -92,24 +84,6 @@ public open class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IB
     }
 
     /**
-     * This method is deprecated.
-     * Use getFills() instead.
-     */
-    public func getGradients(): ?ArrayList<Fill> {
-        return this.mFills
-    }
-
-    /**
-     * This method is deprecated.
-     * Use getFill(...) instead.
-     *
-     * @param index
-     */
-    public func getGradient(index: Int64): Fill {
-        return this.getFill(index)
-    }
-
-    /**
      * Sets the start and end color for gradient color, ONLY color that should be used for this DataSet.
      *
      * @param startColor
@@ -149,28 +123,12 @@ public open class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IB
         this.mEntryCountStacks = 0
 
         for (i in 0..yVals.size) {
-            let vals: ?Array<Float64> = yVals[i].getYVals()
+            let vals: Array<Float64> = yVals[i].getYVals()
 
-            if (let Some(v) <- vals) {
-                this.mEntryCountStacks += v.size
+            if (vals.size > 0) {
+                this.mEntryCountStacks += vals.size
             } else {
                 this.mEntryCountStacks++
-            }
-        }
-    }
-
-    /**
-     * calculates the maximum stacksize that occurs in the Entries array of this
-     * DataSet
-     */
-    private func calcStackSize(yVals: ArrayList<BarEntry>): Unit {
-        for (i in 0..yVals.size) {
-            let vals: ?Array<Float64> = yVals[i].getYVals()
-
-            if (let Some(v) <- vals) {
-                if (v.size > this.mStackSize) {
-                    this.mStackSize = v.size
-                }
             }
         }
     }
@@ -178,7 +136,7 @@ public open class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IB
     public func myBarCalcMinMax(e: ?BarEntry): Unit {
         if (let Some(ee) <- e) {
             if (!ee.getY().isNaN()) {
-                if (let Some(v) <- ee.getYVals()) {
+                if (ee.getYVals().size > 0) {
                     if (ee.getY() < this.mYMin) {
                         this.mYMin = ee.getY()
                     }

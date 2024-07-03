@@ -9,21 +9,7 @@ public abstract class BaseEntry {
     /** optional icon image */
     private var mIcon: ?ChartPixelMap = Option<ChartPixelMap>.None
 
-    public init(y: Float64) {
-        this.y = y
-    }
-
-    public init(y: Float64, icon: ChartPixelMap) {
-        this.y = y
-        this.mIcon = icon
-    }
-
-    public init(y: Float64, data: Any) {
-        this.y = y
-        this.mData = data
-    }
-
-    public init(y: Float64, icon: ChartPixelMap, data: Any) {
+    public init(y: Float64, icon: ?ChartPixelMap, data: Any) {
         this.y = y
         this.mIcon = icon
         this.mData = data

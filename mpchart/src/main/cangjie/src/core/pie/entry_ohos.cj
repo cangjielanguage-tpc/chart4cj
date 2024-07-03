@@ -6,26 +6,10 @@ package core.pie
 public open class EntryOhos <: BaseEntry {
     private var x: Float64 = 0.0
 
-    public init(x: Float64, y: Float64) {
-        super(y)
+    public init (x: Float64, y: Float64, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: Any = 0.0) {
+        super(y, icon, data);
         this.x = x
     }
-
-    public init(x: Float64, y: Float64, data: Any) {
-        super(y, data)
-        this.x = x
-    }
-
-    public init(x: Float64, y: Float64, icon: ChartPixelMap) {
-        super(y, icon)
-        this.x = x
-    }
-
-    public init(x: Float64, y: Float64, icon: ChartPixelMap, data: Any) {
-        super(y, icon, data)
-        this.x = x
-    }
-
     public func getX(): Float64 {
         return this.x
     }
@@ -46,11 +30,9 @@ public open class EntryOhos <: BaseEntry {
      */
     public open func copy(): EntryOhos {
         let data: ?Any = this.getData()
-        if (data.isNone()) {
-            return EntryOhos(this.x, this.getY())
-        } else {
-            return EntryOhos(this.x, this.getY(), data)
-        }
+
+        return EntryOhos(this.x, this.getY(), data: data)
+
     }
 
     /**

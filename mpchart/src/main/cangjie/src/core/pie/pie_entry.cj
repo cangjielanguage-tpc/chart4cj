@@ -6,33 +6,8 @@ package core.pie
 public class PiEntry <: EntryOhos {
     public var label: String = ""
 
-    public init(yValue: Float64) {
-        super(0.0, yValue)
-    }
-    public init(yValue: Float64, data: Any) {
-        super(0.0, yValue, data)
-    }
-    public init(yValue: Float64, icon: ChartPixelMap) {
-        super(0.0, yValue, icon)
-    }
-    public init(yValue: Float64, icon: ChartPixelMap, data: Any) {
-        super(0.0, yValue, icon, data)
-    }
-    public init(yValue: Float64, label: String) {
-        super(0.0, yValue)
-        this.label = label
-    }
-    public init(yValue: Float64, label: String, data: Any) {
-        super(0.0, yValue, data)
-        this.label = label
-    }
-    public init(yValue: Float64, label: String, icon: ChartPixelMap) {
-        super(0.0, yValue, icon)
-        this.label = label
-    }
-
-    public init(yValue: Float64, label: String, icon: ChartPixelMap, data: Any) {
-        super(0.0, yValue, icon, data)
+    public init(yValue: Float64, label: String, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: Any = 0.0) {
+        super(0.0, yValue, icon: icon, data: data);
         this.label = label
     }
 
@@ -55,7 +30,7 @@ public class PiEntry <: EntryOhos {
 
     public func copy(): PiEntry {
         let data = this.getData()
-        let e: PiEntry = PiEntry(this.getY(), this.label, getData())
+        let e: PiEntry = PiEntry(this.getY(), this.label, data: getData())
         return e
     }
 }

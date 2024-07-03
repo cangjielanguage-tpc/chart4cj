@@ -175,7 +175,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
         if (chartData.isNone()) {
             return
         }
-        if (this.isDrawingValuesAllowed((this.mChart as ChartInterface<IDataSet<EntryOhos>, EntryOhos>)())) {
+        if (this.isDrawingValuesAllowed(this.mChart)) {
             let dataSets: ArrayList<IBarDataSet> = chartData().getDataSets()
 
             let valueOffsetPlus: Float64 = Utils.handleDataValues(5.0)
@@ -186,14 +186,14 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
             for (i in 0..chartData().getDataSetCount()) {
                 let dataSet: IBarDataSet = dataSets[i]
 
-                if (!this.shouldDrawValues((dataSet as IDataSet<EntryOhos>)())) {
+                if (!this.shouldDrawValues(dataSet)) {
                     continue
                 }
 
                 let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
 
                 // apply the text-styling defined by the DataSet
-                this.applyValueTextStyle((dataSet as IDataSet<EntryOhos>)())
+                this.applyValueTextStyle(dataSet)
                 let halfTextHeight: Float64 = Utils.calcTextHeight(c, this.mValuePaint, "10") / 2.0
 
                 let formatter: ?IValueFormatter = dataSet.getValueFormatter()
@@ -506,8 +506,8 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
         high.setDraw(bar.centerY(), bar.right)
     }
 
-    public func isDrawingValuesAllowed(chart: ChartInterface<IDataSet<EntryOhos>, EntryOhos>) {
-        let chartData: ?ChartData<IDataSet<EntryOhos>, EntryOhos> = chart.getData()
+    public func isDrawingValuesAllowed(chart: BarDataProvider) {
+        let chartData: ?BarData = chart.getData()
         if (chartData.isSome() && this.mViewPortHandler.isSome()) {
             return chartData().getEntryCount() < chart.getMaxVisibleCount()
                 * Int64(this.mViewPortHandler().getScaleY())

@@ -24,6 +24,7 @@ from mpchart import core.pie.*
 from mpchart import core.utils.*
 from mpchart import core.components.*
 from mpchart import core.bar.*
+from mpchart import core.bubble.*
 
 
 extend Option<T> {
