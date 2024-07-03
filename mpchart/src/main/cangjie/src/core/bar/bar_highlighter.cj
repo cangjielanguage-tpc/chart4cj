@@ -3,7 +3,7 @@
  */
 package core.bar
 
-public open class BarHighlighter <: ChartHighlighter<BarDataProvider, IBarDataSet, BarEntry> {
+public open class BarHighlighter <: ChartHighlighter<BarDataProvider, BarData, IBarDataSet, BarEntry> {
     public init(chart: BarDataProvider) {
         super(chart)
     }
@@ -45,7 +45,7 @@ public open class BarHighlighter <: ChartHighlighter<BarDataProvider, IBarDataSe
     public func getStackedHighlight(high: Highlight, set: IBarDataSet, xVal: Float64, yVal: Float64): ?Highlight {
         let entry: ?BarEntry = set.getEntryForXValue(xVal, yVal, rounding: Rounding.CLOSEST)
         if (let Some(e) <- entry) {
-            if (e.getYVals().isNone()) {
+            if (e.getYVals().size < 0) {
                 return high
             } else {
                 let ranges: ?Array<RangeChart> = e.getRanges()

@@ -115,31 +115,31 @@ public open class Transformer {
      * @param data
      * @return
      */
-    //    public func generateTransformedValuesBubble(data: IBubbleDataSet, phaseY: Float64, froms: Int64, tos: Int64): Array<Float64> {
-    //        let count = (tos - froms + 1) * 2
-    //
-    //        if (this.valuePointsForGenerateTransformedValuesBubble.size != count) {
-    //            this.valuePointsForGenerateTransformedValuesBubble = Array<Float64>(count, item: 0.0)
-    //        }
-    //        let valuePoints: Array<Float64> = this.valuePointsForGenerateTransformedValuesBubble
-    //
-    //        for (j in 0..count : 2) {
-    //            let e: ?EntryOhos = data.getEntryForIndex(j / 2 + froms)
-    //
-    //            match (e) {
-    //                case Some(entryOhos) =>
-    //                    valuePoints[j] = entryOhos.getX()
-    //                    valuePoints[j + 1] = entryOhos.getY() * phaseY
-    //                case None =>
-    //                    valuePoints[j] = 0.0
-    //                    valuePoints[j + 1] = 0.0
-    //            }
-    //        }
-    //
-    //        this.getValueToPixelMatrix().mapPoints(valuePoints);
-    //
-    //        return valuePoints;
-    //    }
+        public func generateTransformedValuesBubble(data: IBubbleDataSet, phaseY: Float64, froms: Int64, tos: Int64): Array<Float64> {
+            let count = (tos - froms + 1) * 2
+
+            if (this.valuePointsForGenerateTransformedValuesBubble.size != count) {
+                this.valuePointsForGenerateTransformedValuesBubble = Array<Float64>(count, item: 0.0)
+            }
+            let valuePoints: Array<Float64> = this.valuePointsForGenerateTransformedValuesBubble
+
+            for (j in 0..count : 2) {
+                let e: ?EntryOhos = data.getEntryForIndex(j / 2 + froms)
+
+                match (e) {
+                    case Some(entryOhos) =>
+                        valuePoints[j] = entryOhos.getX()
+                        valuePoints[j + 1] = entryOhos.getY() * phaseY
+                    case None =>
+                        valuePoints[j] = 0.0
+                        valuePoints[j + 1] = 0.0
+                }
+            }
+
+            this.getValueToPixelMatrix().mapPoints(valuePoints);
+
+            return valuePoints;
+        }
 
     protected var valuePointsForGenerateTransformedValuesLine: Array<Float64> = Array<Float64>(1, item: 0.0)
 

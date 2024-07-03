@@ -3,7 +3,7 @@
  */
 package core.bar
 
-public interface BarDataProvider <: BarLineScatterCandleBubbleDataProvider<IBarDataSet, BarEntry> {
+public interface BarDataProvider <: BarLineScatterCandleBubbleDataProvider<BarData, IBarDataSet, BarEntry> {
     func getBarData(): ?BarData
 
     func isDrawBarShadowEnabled(): Bool

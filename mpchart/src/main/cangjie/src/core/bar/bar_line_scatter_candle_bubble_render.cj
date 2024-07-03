@@ -28,10 +28,10 @@ public class XBounds {
      * @param chart
      * @param dataSet
      */
-    public func set(
-        chart: BarLineScatterCandleBubbleDataProvider<IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>,
-        dataSet: IBarLineScatterCandleBubbleDataSet<EntryOhos>
-    ): Unit {
+    public func set<D,S,E>(
+        chart: BarLineScatterCandleBubbleDataProvider<D,S,E>,
+        dataSet: S
+    ): Unit where D <: ChartData<S, E>, S <: IDataSet<E>, E <: EntryOhos{
         let getPhaseX: Float64 = if (let Some(m) <- this.mAnimator) {
             m.getPhaseX()
         } else {
@@ -42,8 +42,8 @@ public class XBounds {
         let low: Float64 = chart.getLowestVisibleX()
         let high: Float64 = chart.getHighestVisibleX()
 
-        let entryFrom: ?EntryOhos = dataSet.getEntryForXValue(low, Float64.NaN, rounding: Rounding.DOWN)
-        let entryTo: ?EntryOhos = dataSet.getEntryForXValue(high, Float64.NaN, rounding: Rounding.UP)
+        let entryFrom: ?E = dataSet.getEntryForXValue(low, Float64.NaN, rounding: Rounding.DOWN)
+        let entryTo: ?E = dataSet.getEntryForXValue(high, Float64.NaN, rounding: Rounding.UP)
 
         if (entryFrom.isSome() && entryTo.isSome()) {
             this.mins = if (let Some(ef) <- entryFrom) {
@@ -91,7 +91,7 @@ public abstract class BarLineScatterCandleBubbleRenderer <: DataRenderer {
      * @param set
      * @return
      */
-    protected func isInBoundsX(e: ?EntryOhos, dataSet: IBarLineScatterCandleBubbleDataSet<EntryOhos>): Bool {
+    protected func isInBoundsX<E>(e: ?E, dataSet: IBarLineScatterCandleBubbleDataSet<E>): Bool where E <: EntryOhos {
         if (let Some(entry) <- e) {
             let entryIndex = dataSet.getEntryIndexByEntry(entry)
             if (entryIndex >= dataSet.getEntryCount() * (if (let Some(m) <- this.mAnimator) {

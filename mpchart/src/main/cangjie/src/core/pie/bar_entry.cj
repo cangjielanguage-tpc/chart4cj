@@ -4,57 +4,25 @@
 package core.pie
 
 public class BarEntry <: EntryOhos {
-    private var mYVals: Array<Float64> = Array<Float64>()
+    private var mYVals: Array<Float64> = []
     private var mRanges: ?Array<RangeChart> = None
     private var mNegativeSum: Float64 = 0.0
     private var mPositiveSum: Float64 = 0.0
 
-    public init(x: Float64, y: Float64) {
-        super(x, y)
+    public init(x: Float64, y: Float64, icon!: ChartPixelMap = ChartPixelMap(), data!: Any = 0.0) {
+        super(x, y, icon: icon, data: data);
     }
-
-    public init(x: Float64, y: Array<Float64>) {
-        super(x, BarEntry.calcSum(y))
+    public init(x: Float64, y: Array<Float64>, icon!: ChartPixelMap = ChartPixelMap(), data!: Any = 0.0) {
+        super(x, BarEntry.calcSum(y), icon: icon, data: data);
         this.mYVals = y
-        this.calcPosNegSum()
-        this.calcRanges()
-    }
-
-    public init(x: Float64, y: Float64, data: Any) {
-        super(x, y, data)
-    }
-
-    public init(x: Float64, y: Array<Float64>, data: Any) {
-        super(x, BarEntry.calcSum(y), data)
-        this.mYVals = y
-        this.calcPosNegSum()
-        this.calcRanges()
-    }
-
-    public init(x: Float64, y: Float64, icon: ChartPixelMap) {
-        super(x, y, icon)
-    }
-    public init(x: Float64, y: Array<Float64>, icon: ChartPixelMap) {
-        super(x, BarEntry.calcSum(y), icon)
-        this.mYVals = y
-        this.calcPosNegSum()
-        this.calcRanges()
-    }
-
-    public init(x: Float64, y: Float64, icon: ChartPixelMap, data: Any) {
-        super(x, y, icon, data)
-    }
-    public init(x: Float64, y: Array<Float64>, icon: ChartPixelMap, data: Any) {
-        super(x, BarEntry.calcSum(y), icon, data)
-        this.mYVals = y
-        this.calcPosNegSum()
-        this.calcRanges()
+        this.calcPosNegSum();
+        this.calcRanges();
     }
 
     public func copy(): BarEntry {
         let data: ?Any = this.getData()
         if (let Some(d) <- data) {
-            let copied = BarEntry(this.getX(), this.getY(), d)
+            let copied = BarEntry(this.getX(), this.getY(), data: d)
             copied.setVals(this.mYVals)
             return copied
         } else {
@@ -64,7 +32,7 @@ public class BarEntry <: EntryOhos {
         }
     }
 
-    public func getYVals(): ?Array<Float64> {
+    public func getYVals(): Array<Float64> {
         return this.mYVals
     }
 

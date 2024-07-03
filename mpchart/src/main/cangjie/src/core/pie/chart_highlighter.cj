@@ -3,8 +3,7 @@
  */
 package core.pie
 
-public open class ChartHighlighter<P, S, E> <: IHighlighter where P <: BarLineScatterCandleBubbleDataProvider<S, E>,
-    S <: IDataSet<E>, E <: EntryOhos {
+public open class ChartHighlighter<P, D, S, E> <: IHighlighter where P <: BarLineScatterCandleBubbleDataProvider<D, S, E> ,D <: ChartData<S, E>, S <: IDataSet<E>, E<: EntryOhos {
     /**
      * instance of the data-provider
      */

@@ -3,7 +3,7 @@
  */
 package core.pie
 
-public interface ChartInterface<S, E> where S <: IDataSet<E>, E <: EntryOhos {
+public interface ChartInterface<D, S, E> where D <: ChartData<S, E>, S <: IDataSet<E>, E <: EntryOhos {
     func getXChartMin(): Float64
 
     /**
@@ -48,7 +48,7 @@ public interface ChartInterface<S, E> where S <: IDataSet<E>, E <: EntryOhos {
 
     func getDefaultValueFormatter(): IValueFormatter
 
-    func getData(): ?ChartData<S, E>
+    func getData(): ?D
 
     func getMaxVisibleCount(): Int64
 }

@@ -1,6 +1,6 @@
 package core.pie
 
-public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpdateListener where D <: ChartData<S, E>,
+public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorUpdateListener where D <: ChartData<S, E>,
     S <: IDataSet<E>, E <: EntryOhos {
     public var mJobs: ArrayList<MoveViewJob> = ArrayList<MoveViewJob>()
     public static let LOG_TAG: String = "mpchart: "
@@ -12,7 +12,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      * object that holds all data that was originally set for the chart, before
      * it was modified or any filtering algorithms had been applied
      */
-    protected var mData: ?ChartData<S, E> = None
+    protected var mData: ?D = None
     /**
      * Flag that indicates if highlighting per tap (touch) is enabled
      */
@@ -128,7 +128,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
         }
     }
 
-    public func setData(data: ?ChartData<S, E>): Unit {
+    public func setData(data: ?D): Unit {
         this.mData = data
         this.mOffsetsCalculated = false
 
@@ -578,6 +578,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      */
     public open func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {
         if (this.mData.isNone()) {
+            AppLog.error(LOG_TAG + ":Can't select by touch. No data set.")
             return Option<Highlight>.None
         } else {
             let hghLighter = this.getHighlighter()
@@ -1297,7 +1298,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      *
      * @return
      */
-    public func getData(): ?ChartData<S, E> {
+    public func getData(): ?D {
         return this.mData
     }
 
@@ -1341,9 +1342,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<S, E> & AnimatorUpda
      *
      * @param highlighter
      */
-    public func setHighlighter(
-        highlighter: ChartHighlighter<BarLineScatterCandleBubbleDataProvider<IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>, IBarLineScatterCandleBubbleDataSet<EntryOhos>,
-            EntryOhos>) {
+    public func setHighlighter<P, D, S, E>(highlighter: ChartHighlighter<P, D, S, E>) where P <: BarLineScatterCandleBubbleDataProvider<D, S, E> {
         this.mHighlighter = highlighter
     }
 

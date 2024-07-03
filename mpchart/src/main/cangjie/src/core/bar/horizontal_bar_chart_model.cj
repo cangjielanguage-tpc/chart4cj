@@ -15,9 +15,7 @@ public class HorizontalBarChartModel <: BarChartModel {
             this.mRenderer = HorizontalBarChartRenderer(this, animator, this.mViewPortHandler)
         }
 
-        this.setHighlighter(
-            (HorizontalBarHighlighter(this) as ChartHighlighter<BarLineScatterCandleBubbleDataProvider<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
-            EntryOhos>, IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>)())
+        this.setHighlighter(HorizontalBarHighlighter(this))
 
         if (let Some(axisLeft) <- this.mAxisLeft) {
             this.mAxisRendererLeft = YAxisRendererHorizontalBarChart(this.mViewPortHandler, axisLeft,

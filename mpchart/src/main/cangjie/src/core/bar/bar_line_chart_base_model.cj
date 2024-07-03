@@ -3,7 +3,7 @@
  */
 package core.bar
 
-public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & BarLineScatterCandleBubbleDataProvider<S, E> where D <: BarLineScatterCandleBubbleData<S,
+public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & BarLineScatterCandleBubbleDataProvider<D, S, E> where D <: BarLineScatterCandleBubbleData<S,
     E>, S <: IBarLineScatterCandleBubbleDataSet<E>, E <: EntryOhos {
     protected var mMaxVisibleCount: Int64 = 100
     /**
@@ -719,8 +719,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         let center: MPPointF = this.mViewPortHandler.getContentCenter()
 
         this.mViewPortHandler.zoomIn(center.x, -center.y, this.mZoomMatrixBuffer)
-        this.mViewPortHandler.refresh(this.mZoomMatrixBuffer,
-            (this as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(), false)
+        this.mViewPortHandler.refresh(this.mZoomMatrixBuffer, this, false)
 
         MPPointF.recycleInstance(center)
 
@@ -738,8 +737,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         let center: MPPointF = this.mViewPortHandler.getContentCenter()
 
         this.mViewPortHandler.zoomOut(center.x, -center.y, this.mZoomMatrixBuffer)
-        this.mViewPortHandler.refresh(this.mZoomMatrixBuffer,
-            (this as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(), false)
+        this.mViewPortHandler.refresh(this.mZoomMatrixBuffer, this, false)
 
         MPPointF.recycleInstance(center)
 
@@ -752,8 +750,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      */
     public func resetZoom(): Unit {
         this.mViewPortHandler.resetZoom(this.mZoomMatrixBuffer)
-        this.mViewPortHandler.refresh(this.mZoomMatrixBuffer,
-            (this as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(), false)
+        this.mViewPortHandler.refresh(this.mZoomMatrixBuffer, this, false)
 
         this.calculateOffsets()
         this.invalidate()
@@ -772,8 +769,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func zoom(scaleX: Float64, scaleY: Float64, xValue: Float64, yValue: Float64, axis: ?AxisDependency): Unit {
         if (axis.isNone()) {
             this.mViewPortHandler.zoom(scaleX, scaleY, xValue, -yValue, this.mZoomMatrixBuffer)
-            this.mViewPortHandler.refresh(this.mZoomMatrixBuffer,
-                (this as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(), false
+            this.mViewPortHandler.refresh(this.mZoomMatrixBuffer, this, false
             )
 
             this.calculateOffsets()
@@ -792,8 +788,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         let save: Matrix = this.mZoomMatrixBuffer
         if (center.isSome()) {
             this.mViewPortHandler.zoom(scaleX, scaleY, center().x, -center().y, save)
-            this.mViewPortHandler.refresh(save,
-                (this as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(), false
+            this.mViewPortHandler.refresh(save, this, false
             )
         }
     }
@@ -825,8 +820,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func fitScreen(): Unit {
         let save: Matrix = this.mFitScreenMatrixBuffer
         this.mViewPortHandler.fitScreen(save)
-        this.mViewPortHandler.refresh(save,
-            (this as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(), false)
+        this.mViewPortHandler.refresh(save, this, false)
         this.calculateOffsets()
         this.invalidate()
     }
@@ -1748,8 +1742,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
                 (this as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)()
             )
         } else {
-            this.mViewPortHandler.refresh(this.mViewPortHandler.getMatrixTouch(),
-                this, true)
+            this.mViewPortHandler.refresh(this.mViewPortHandler.getMatrixTouch(), this, true)
         }
     }
 
