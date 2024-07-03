@@ -71,10 +71,10 @@ public open class XAxisRenderer <: AxisRenderer {
         this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface())
         this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize())
 
-        let labelSize: FSize = Utils.calcTextSize(this.mAxisLabelPaint, longest)
+        let labelSize: FSize = Utils.calcTextSize(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), this.mAxisLabelPaint, longest)
 
         let labelWidth = labelSize.width
-        let labelHeight = Utils.calcTextHeight(this.mAxisLabelPaint, "Q")
+        let labelHeight = Utils.calcTextHeight(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), this.mAxisLabelPaint, "Q")
 
         let labelRotatedSize: FSize = Utils.getSizeOfRotatedRectangleByDegrees(
             labelWidth,
@@ -203,7 +203,7 @@ public open class XAxisRenderer <: AxisRenderer {
 
                     // avoid clipping of the last
                     if (Float64(i / 2) == this.mXAxis.mEntryCount - 1.0 && this.mXAxis.mEntryCount > 1.0) {
-                        let width = Utils.calcTextWidth(this.mAxisLabelPaint, label)
+                        let width = Utils.calcTextWidth(c, this.mAxisLabelPaint, label)
 
                         if (width > this.mViewPortHandler().offsetRight() * 2.0 && x + width >
                             this.mViewPortHandler().getChartWidth()) {
@@ -212,7 +212,7 @@ public open class XAxisRenderer <: AxisRenderer {
 
                     // avoid clipping of the first
                     } else if (i == 0) {
-                        let width = Utils.calcTextWidth(this.mAxisLabelPaint, label)
+                        let width = Utils.calcTextWidth(c, this.mAxisLabelPaint, label)
                         x += width / 2.0
                     }
                 }
@@ -400,7 +400,7 @@ public open class XAxisRenderer <: AxisRenderer {
 
     private func lablePositionIsRIGHT_TOP(limitLine: LimitLine, c: CanvasRenderingContext2D, label: String,
         position: Array<Float64>, yOffset: Float64, paintStyle: Style, xOffset: Float64): Unit {
-        let labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label)
+        let labelLineHeight = Utils.calcTextHeight(c, this.mLimitLinePaint, label)
         this.mLimitLinePaint.setTextAlign(TextAlignStyle.Left)
 
         Utils.resetContext2DStyle(c, this.mLimitLinePaint)
@@ -463,7 +463,7 @@ public open class XAxisRenderer <: AxisRenderer {
     private func lablePositionIsLEFT_TOP(limitLine: LimitLine, c: CanvasRenderingContext2D, label: String,
         position: Array<Float64>, yOffset: Float64, paintStyle: Style, xOffset: Float64): Unit {
         this.mLimitLinePaint.setTextAlign(TextAlignStyle.Right)
-        let labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label)
+        let labelLineHeight = Utils.calcTextHeight(c, this.mLimitLinePaint, label)
 
         Utils.resetContext2DStyle(c, this.mLimitLinePaint)
         match (paintStyle) {

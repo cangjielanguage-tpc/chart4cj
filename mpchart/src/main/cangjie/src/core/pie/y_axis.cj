@@ -279,7 +279,7 @@ public class YAxis <: AxisBase {
         p.setTextSize(this.mTextSize)
 
         var label: String = super.getLongestLabel()
-        var width: Float64 = Utils.calcTextWidth(p, label) + super.getXOffset() * 2.0
+        var width: Float64 = Utils.calcTextWidth(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), p, label) + super.getXOffset() * 2.0
 
         var minWidth: Float64 = this.getMinWidth()
         var maxWidth: Float64 = this.getMaxWidth()
@@ -313,7 +313,7 @@ public class YAxis <: AxisBase {
         p.setTextSize(this.mTextSize)
 
         let label: String = super.getLongestLabel()
-        return Utils.calcTextHeight(p, label) + super.getYOffset() * 2.0
+        return Utils.calcTextHeight(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), p, label) + super.getYOffset() * 2.0
     }
 
     /**

@@ -47,7 +47,7 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
 
         let longest: String = this.mXAxis.getLongestLabel()
 
-        let labelSize: FSize = Utils.calcTextSize(this.mAxisLabelPaint, longest)
+        let labelSize: FSize = Utils.calcTextSize(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), this.mAxisLabelPaint, longest)
 
         let labelWidth: Float64 = round(labelSize.width + this.mXAxis.getXOffset() * 3.5)
         let labelHeight: Float64 = labelSize.height
@@ -257,7 +257,7 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
                 this.mLimitLinePaint.setStrokeWidth(0.5)
                 this.mLimitLinePaint.setTextSize(l.getTextSize())
 
-                let labelLineHeight: Float64 = Utils.calcTextHeight(this.mLimitLinePaint, label)
+                let labelLineHeight: Float64 = Utils.calcTextHeight(c, this.mLimitLinePaint, label)
                 let xOffset: Float64 = Utils.handleDataValues(4.0) + l.getXOffset()
                 let yOffset: Float64 = l.getLineWidth() + labelLineHeight + l.getYOffset()
 

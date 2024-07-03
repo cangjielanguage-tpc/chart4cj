@@ -760,6 +760,7 @@ public class PieChartRenderer <: DataRenderer {
         if (this.mChart.isDrawCenterTextEnabled()) {
             let center: MPPointF = this.mChart.getCenterCircleBox()
             let offset: MPPointF = this.mChart.getCenterTextOffset()
+
             let x: Float64 = center.x + offset.x
             let y: Float64 = center.y + offset.y
 

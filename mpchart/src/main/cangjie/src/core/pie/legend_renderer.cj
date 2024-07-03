@@ -224,15 +224,14 @@ public class LegendRenderer <: Renderer {
         this.mLegendLabelPaint.setColor(this.mLegend().getTextColor())
 
         // 计算标签行高
+
         let labelLineHeight: Float64 = Utils.getLineHeight(this.mLegendLabelPaint, c)
 
         // 计算标签行间距，包括额外的垂直空间
         let labelLineSpacing: Float64 = Utils.getLineSpacing(this.mLegendLabelPaint, c)
             + Utils.handleDataValues(this.mLegend().getYEntrySpace())
-
         // 计算形状偏移以使其与文本垂直居中
-        let formYOffset: Float64 = labelLineHeight - Utils.calcTextHeight(this.mLegendLabelPaint, "ABC") / 2.0
-
+        let formYOffset: Float64 = labelLineHeight - Utils.calcTextHeight(c, this.mLegendLabelPaint, "ABC") / 2.0
         // 获取图例条目
         let entries: Array<LegendEntry> = this.mLegend().getEntries()
 
@@ -244,7 +243,6 @@ public class LegendRenderer <: Renderer {
 
         // 获取图例方向
         let orientation: LegendOrientation = this.mLegend().getOrientation()
-
         // 获取图例水平对齐方式
         let horizontalAlignment: LegendHorizontalAlignment = this.mLegend().getHorizontalAlignment()
 
@@ -259,7 +257,6 @@ public class LegendRenderer <: Renderer {
 
         // 条目之间的空间
         let stackSpace: Float64 = Utils.handleDataValues(this.mLegend().getStackSpace())
-
         // 获取垂直偏移量
         let yoffset: Float64 = this.mLegend().getYOffset()
 
@@ -423,7 +420,7 @@ public class LegendRenderer <: Renderer {
 
                         if (direction == LegendDirection.LEFT_TO_RIGHT) {
                             AppLog.info(
-                                "3.5 i(${i}) posX(${posX})+=calcTextWidth(${Utils.calcTextWidth(this.mLegendLabelPaint, e.label)})"
+                                "3.5 i(${i}) posX(${posX})+=calcTextWidth(${Utils.calcTextWidth(c, this.mLegendLabelPaint, e.label)})"
                             )
                             posX += calculatedLabelSizes.get(i)().width
                         }
@@ -521,7 +518,7 @@ public class LegendRenderer <: Renderer {
                         }
 
                         if (direction == LegendDirection.RIGHT_TO_LEFT) {
-                            posX -= Utils.calcTextWidth(this.mLegendLabelPaint, e.label)
+                            posX -= Utils.calcTextWidth(c, this.mLegendLabelPaint, e.label)
                         }
 
                         if (!wasStacked) {

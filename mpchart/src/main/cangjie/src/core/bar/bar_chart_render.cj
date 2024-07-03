@@ -80,14 +80,20 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         buffer.setDataSet(index)
         buffer.setInverted(this.mChart.isInverted(dataSet.getAxisDependency()))
         let barData: ?BarData = this.mChart.getBarData()
+        if (let Some(bar) <- barData) {
+        	buffer.setBarWidth(bar.getBarWidth())
+        }
         let drawBorder: Bool = dataSet.getBarBorderWidth() > 0.0
-        buffer.setBarWidth(barData().getBarWidth())
+
 
         buffer.feed(dataSet)
         let tempArray: Array<Float64> = buffer.buffer.toArray()
-        trans().pointValuesToPixel(tempArray)
 
-        let fills: ?ArrayList<Fill> = dataSet.getFills()()
+        if (let Some(tran) <- trans) {
+        	tran.pointValuesToPixel(tempArray)
+            buffer.buffer = ArrayList<Float64>(tempArray)
+        }
+        let fills: ?ArrayList<Fill> = dataSet.getFills()
         let isCustomFill: Bool = fills.isSome() && fills().size > 0
         let isSingleColor: Bool = dataSet.getColors().size == 1
         let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
@@ -114,8 +120,10 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 this.mRenderPaint.setColor(Color(dataSet.getColor(pos)))
             }
 
-            let radius = barData().getTopRadius()
-
+            let radius: Float64 = match (barData) {
+                case Some(bar) => bar.getTopRadius()
+                case None => 0.0
+            }
             //顶部的矩形才需要绘制圆角
             let isDrawRounded = radius != 0.0 && (j + 4 >= buffer.size() || (j + 4 < buffer.size() &&
                 buffer.buffer[j] != buffer.buffer[j + 4]))
@@ -136,7 +144,6 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                     RoundCornerType.DOWN
                 }
             }
-
             if (isCustomFill) {
                 let fill: Fill = dataSet.getFill(pos)
 
@@ -150,7 +157,6 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 Utils.drawFillRect(isDrawRounded, c, this.mRenderPaint, buffer.buffer[j], buffer.buffer[j + 1],
                     buffer.buffer[j + 2], buffer.buffer[j + 3], radius, cornerType)
             }
-
             if (drawBorder) {
                 Utils.drawStrokeRect(isDrawRounded, c, this.mBarBorderPaint, buffer.buffer[j], buffer.buffer[j + 1],
                     buffer.buffer[j + 2], buffer.buffer[j + 3], radius, cornerType)
@@ -171,7 +177,6 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
             phaseX = m.getPhaseX()
             phaseY = m.getPhaseY()
         }
-
         // draw the bar shadow before the values
         if (this.mChart.isDrawBarShadowEnabled()) {
             this.mShadowPaint.setColor(Color(dataSet.getBarShadowColor()))
@@ -209,20 +214,27 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 this.mBarShadowRectBuffer.bottom = this.mViewPortHandler().contentBottom()
 
                 match (this.mShadowPaint.getStyle()) {
-                    case Style.STROKE => Utils.drawStrokeRect(radius > 0.0, c, this.mShadowPaint,
+                    case Style.STROKE =>
+                        Utils.drawStrokeRect(radius > 0.0, c, this.mShadowPaint,
                         this.mBarShadowRectBuffer.left, this.mBarShadowRectBuffer.top, this.mBarShadowRectBuffer.right,
                         this.mBarShadowRectBuffer.bottom, radius, RoundCornerType.BOTH) // 阴影上下圆角都绘制比较好
 
-                    case Style.FILL => ()
-                    case Style.FILL_AND_STROKE => ()
-                    case _ => Utils.drawFillRect(radius > 0.0, c, this.mShadowPaint, this.mBarShadowRectBuffer.left,
+                    case Style.FILL =>
+                        Utils.drawFillRect(radius > 0.0, c, this.mShadowPaint, this.mBarShadowRectBuffer.left,
+                        this.mBarShadowRectBuffer.top, this.mBarShadowRectBuffer.right, this.mBarShadowRectBuffer.bottom,
+                        radius, RoundCornerType.BOTH)
+                    case Style.FILL_AND_STROKE =>
+                        Utils.drawFillRect(radius > 0.0, c, this.mShadowPaint, this.mBarShadowRectBuffer.left,
+                        this.mBarShadowRectBuffer.top, this.mBarShadowRectBuffer.right, this.mBarShadowRectBuffer.bottom,
+                        radius, RoundCornerType.BOTH)
+                    case _ =>
+                        Utils.drawFillRect(radius > 0.0, c, this.mShadowPaint, this.mBarShadowRectBuffer.left,
                         this.mBarShadowRectBuffer.top, this.mBarShadowRectBuffer.right, this.mBarShadowRectBuffer.bottom,
                         radius, RoundCornerType.BOTH) // 阴影上下圆角都绘制比较好
 
                 }
             }
         }
-
         drawDataSetFunc(index, phaseX, phaseY, dataSet, c, trans)
     }
 
@@ -252,7 +264,9 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         // if values are drawn
         if (this.isDrawingValuesAllowed(this.mChart)) {
             let barData: ?BarData = this.mChart.getBarData()
-
+            if (barData.isNone()) {
+                return
+            }
             let dataSets: ArrayList<IBarDataSet> = barData().getDataSets()
 
             const valueOffsetPlus: Float64 = 0.0
@@ -268,13 +282,12 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 }
 
                 // apply the text-styling defined by the DataSet
-                this.applyValueTextStyle((dataSet as IDataSet<EntryOhos>)())
+                this.applyValueTextStyle(dataSet)
 
                 let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
-
                 // calculate the correct offset depending on the draw position of
                 // the value
-                let valueTextHeight: Float64 = Utils.calcTextHeight(this.mValuePaint, "8")
+                let valueTextHeight: Float64 = Utils.calcTextHeight(c, this.mValuePaint, "8")
                 posOffset = if (drawValueAboveBar) {
                     -valueOffsetPlus
                 } else {
@@ -306,12 +319,11 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                 // if only single values are drawn (sum)
                 if (!dataSet.isStacked()) {
-                    var j: Int64 = 0
-                    while (j < buffer.buffer.size * Int64(if (let Some(animator) <- this.mAnimator) {
+                    for (j in 0..buffer.buffer.size * Int64(if (let Some(animator) <- this.mAnimator) {
                                 animator.getPhaseX()
                             } else {
                                 1.0
-                            })) {
+                            }) : 4) {
                         let x: Float64 = (buffer.buffer[j] + buffer.buffer[j + 2]) / 2.0
 
                         if (!this.mViewPortHandler().isInBoundsRight(x)) {
@@ -320,7 +332,6 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                         if (!this.mViewPortHandler().isInBoundsY(buffer.buffer[j + 1]) ||
                             !this.mViewPortHandler().isInBoundsLeft(x)) {
-                            j += 4
                             continue
                         }
 

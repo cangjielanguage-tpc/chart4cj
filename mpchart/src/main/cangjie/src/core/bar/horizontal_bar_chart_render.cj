@@ -194,7 +194,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
 
                 // apply the text-styling defined by the DataSet
                 this.applyValueTextStyle((dataSet as IDataSet<EntryOhos>)())
-                let halfTextHeight: Float64 = Utils.calcTextHeight(this.mValuePaint, "10") / 2.0
+                let halfTextHeight: Float64 = Utils.calcTextHeight(c, this.mValuePaint, "10") / 2.0
 
                 let formatter: ?IValueFormatter = dataSet.getValueFormatter()
 
@@ -236,7 +236,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                         }
 
                         // calculate the correct offset depending on the draw position of the value
-                        let valueTextWidth: Float64 = Utils.calcTextWidth(this.mValuePaint, formattedValue)
+                        let valueTextWidth: Float64 = Utils.calcTextWidth(c, this.mValuePaint, formattedValue)
                         posOffset = if (drawValueAboveBar) {
                             valueOffsetPlus
                         } else {
@@ -323,7 +323,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                             }
 
                             // calculate the correct offset depending on the draw position of the value
-                            let valueTextWidth: Float64 = Utils.calcTextWidth(this.mValuePaint, formattedValue)
+                            let valueTextWidth: Float64 = Utils.calcTextWidth(c, this.mValuePaint, formattedValue)
                             posOffset = if (drawValueAboveBar) {
                                 valueOffsetPlus
                             } else {
@@ -411,7 +411,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                                 }
 
                                 // calculate the correct offset depending on the draw position of the value
-                                let valueTextWidth: Float64 = Utils.calcTextWidth(this.mValuePaint, formattedValue)
+                                let valueTextWidth: Float64 = Utils.calcTextWidth(c, this.mValuePaint, formattedValue)
                                 posOffset = if (drawValueAboveBar) {
                                     valueOffsetPlus
                                 } else {
