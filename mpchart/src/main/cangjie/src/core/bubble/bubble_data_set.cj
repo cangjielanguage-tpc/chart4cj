@@ -3,7 +3,7 @@
  */
 package core.bubble
 
-public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubbleEntry> {
+public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubbleEntry> & IBubbleDataSet {
     static var mMaxSize: Float64 = 0.0
     protected var mNormalizeSize: Bool = true
     private var mHighlightCircleWidth: Float64 = 2.5

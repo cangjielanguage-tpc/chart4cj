@@ -6,7 +6,7 @@ package core.pie
 public open class EntryOhos <: BaseEntry {
     private var x: Float64 = 0.0
 
-    public init (x: Float64, y: Float64, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: Any = 0.0) {
+    public init (x: Float64, y: Float64, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: ?Any = Option<Any>.None) {
         super(y, icon, data);
         this.x = x
     }
