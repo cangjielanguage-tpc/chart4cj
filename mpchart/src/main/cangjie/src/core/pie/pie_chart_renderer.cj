@@ -42,7 +42,7 @@ public class PieChartRenderer <: DataRenderer {
         this.mTransparentCirclePaint = Paint()
         this.mTransparentCirclePaint.setColor(Color.WHITE)
         this.mTransparentCirclePaint.setStyle(Style.FILL)
-        this.mTransparentCirclePaint.setGlobalAlpha(Float64(105 / 255))
+        this.mTransparentCirclePaint.setGlobalAlpha(105.0 / 255.0)
         this.mCenterTextPaint = TextPaint()
         this.mCenterTextPaint.setColor(Color.BLACK)
         this.mCenterTextPaint.setTextSize(Utils.handleDataValues(12.0))
