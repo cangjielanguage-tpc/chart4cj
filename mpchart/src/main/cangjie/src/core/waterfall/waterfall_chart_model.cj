@@ -45,6 +45,10 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
         return this.mDrawValueAboveBar
     }
 
+    public func setDrawBarShadow(enabled: Bool): Unit  {
+        this.mDrawBarShadow = enabled;
+    }
+
     public func isDrawBarShadowEnabled(): Bool {
         return this.mDrawBarShadow
     }
