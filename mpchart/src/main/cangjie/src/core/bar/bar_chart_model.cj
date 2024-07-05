@@ -102,8 +102,8 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
                     if (!this.isHighlightFullBarEnabled()) {
                         return None
                     }
-                    return Highlight(hh.getX(), hh.getY(), hh.getDataSetIndex(), 0, -1, hh.getXPx(), hh.getYPx(),
-                        hh.getAxis())
+                    return Highlight(hh.getX(), y: hh.getY(), dataSetIndex: hh.getDataSetIndex(), dataIndex: 0, stackIndex: -1, xPx: hh.getXPx(), yPx: hh.getYPx(),
+                        axis: hh.getAxis())
                 } else {
                     return None
                 }
@@ -239,7 +239,7 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
      */
     public func highlightValue(x: Float64, dataSetIndex: Int64, stackIndex: Int64): Unit {
         this.highlightValueForObject(
-            Highlight(x, 0.0, dataSetIndex, 0, stackIndex, 0.0, 0.0, Option<AxisDependency>.None),
+            Highlight(x, y: 0.0, dataSetIndex: dataSetIndex, stackIndex: stackIndex, axis: Option<AxisDependency>.None),
             false
         )
     }

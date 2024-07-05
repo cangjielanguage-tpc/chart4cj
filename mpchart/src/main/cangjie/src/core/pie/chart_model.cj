@@ -490,7 +490,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
             this.highlightValueForObject(Option<Highlight>.None, callListener)
         } else {
             this.highlightValueForObject(
-                Highlight(x, y, dataSetIndex, dataIndex, 0, 0.0, 0.0, Option<AxisDependency>.None),
+                Highlight(x, y: y, dataSetIndex: dataSetIndex, dataIndex: dataIndex, stackIndex: 0, xPx: 0.0, yPx: 0.0, axis: Option<AxisDependency>.None),
                 callListener
             )
         }

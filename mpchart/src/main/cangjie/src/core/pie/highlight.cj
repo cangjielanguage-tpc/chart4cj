@@ -48,32 +48,16 @@ public class Highlight {
      */
     private var mDrawY: Float64 = 0.0
 
-    public init(x: Float64, y: Float64, dataSetIndex: Int64) {
+    public init(x: Float64, y!: Float64 = Float64.NaN, dataSetIndex!: Int64 = 0, dataIndex!: Int64 = -1, stackIndex!: Int64 = 0, xPx!: Float64 = 0.0,
+        yPx!: Float64 = 0.0, axis!: ?AxisDependency = Option<AxisDependency>.None) {
         this.mX = x
         this.mY = y
-        this.mDataSetIndex = dataSetIndex
-    }
-
-    public init(x: Float64, dataSetIndex: Int64, stackIndex: Int64) {
-        Highlight(x, Float64.NaN, dataSetIndex)
+        this.mDataIndex = dataIndex
         this.mStackIndex = stackIndex
-    }
-
-    public init(x: Float64, y: Float64, xPx: Float64, yPx: Float64, dataSetIndex: Int64, axis: ?AxisDependency) {
-        this.mX = x
-        this.mY = y
         this.mDataSetIndex = dataSetIndex
         this.mXPx = xPx
         this.mYPx = yPx
         this.axis = axis
-    }
-
-    public init(x: Float64, y: Float64, dataSetIndex: Int64, dataIndex: Int64, stackIndex: Int64, xPx: Float64,
-        yPx: Float64, axis: ?AxisDependency) {
-        this(x, y, xPx, yPx, dataSetIndex, axis)
-
-        this.mDataIndex = dataIndex
-        this.mStackIndex = stackIndex
     }
 
 
