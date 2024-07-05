@@ -8,7 +8,7 @@ public class LimitLine <: ComponentBase {
     /** the width of the limit line */
     private var mLineWidth: Float64 = 2.0
     /** the color of the limit line */
-    private var mLineColor: Int64 = ChartColor.rgb(237, 91, 91)
+    private var mLineColor: UInt32  = UInt32(ChartColor.rgb(237, 91, 91))
     /** the style of the label text */
     private var mTextStyle: Style = Style.FILL_AND_STROKE
     /** label string that is drawn next to the limit line */
@@ -69,7 +69,7 @@ public class LimitLine <: ComponentBase {
      *
      * @param color
      */
-    public func setLineColor(color: Int64) {
+    public func setLineColor(color: UInt32) {
         this.mLineColor = color
     }
 
@@ -78,7 +78,7 @@ public class LimitLine <: ComponentBase {
      *
      * @return
      */
-    public func getLineColor(): Int64 {
+    public func getLineColor(): UInt32 {
         return this.mLineColor
     }
 

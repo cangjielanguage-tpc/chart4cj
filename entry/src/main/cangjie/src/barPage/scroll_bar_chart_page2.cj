@@ -260,15 +260,15 @@ class ScrollBarChartPage2 {
                     isChecked: Bool =>
                     if (isChecked) {
                         // 竖向网格线，x轴刻度为8的位置
-                        this.xAxis().addGridLine(GridLineConfig(8.0, Int64(0x0000FF), 0.6, DashPathEffectConfig(5, 10, 2)))
+                        this.xAxis().addGridLine(GridLineConfig(8.0, 0x0000FF, 0.6, DashPathEffectConfig(5, 10, 2)))
                         // 横向网格线，y轴刻度为35的位置
                         this.leftAxis().addGridLine(
-                            GridLineConfig(35.0, Int64(0xFF0000), 1.0, Option<DashPathEffectConfig>.None))
+                            GridLineConfig(35.0, 0xFF0000, 1.0, Option<DashPathEffectConfig>.None))
 
                         this.leftAxis().addGridLine(
-                            GridLineConfig(45.0, Int64(0x999999), 1.0, Option<DashPathEffectConfig>.None))
+                            GridLineConfig(45.0, 0x999999, 1.0, Option<DashPathEffectConfig>.None))
                         this.leftAxis().addGridLine(
-                            GridLineConfig(55.0, Int64(0x0000FF), 1.0, Option<DashPathEffectConfig>.None))
+                            GridLineConfig(55.0, 0x0000FF, 1.0, Option<DashPathEffectConfig>.None))
                     } else {
                         let verticalLines = this.xAxis().getGridLines()
                         let horizontalLines = this.leftAxis().getGridLines()

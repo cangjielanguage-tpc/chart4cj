@@ -4,12 +4,12 @@
 package core.components
 
 public class GridLineConfig {
-    var lineColor: Int64 = 0
+    var lineColor: UInt32 = 0
     var position: Float64 = 0.0
     var lineWidth: Float64 = 0.0
     var dashPathEffect: ?DashPathEffectConfig
 
-    public init(position: Float64, lineColor: Int64, lineWidth: Float64, dashPathEffect: ?DashPathEffectConfig) {
+    public init(position: Float64, lineColor: UInt32, lineWidth: Float64, dashPathEffect: ?DashPathEffectConfig) {
         this.lineColor = lineColor
         this.position = position
         this.lineWidth = lineWidth
@@ -22,7 +22,7 @@ public class GridLineConfig {
     public func getLineWidth(): Float64 {
         this.lineWidth
     }
-    public func getLineColor(): Int64 {
+    public func getLineColor(): UInt32 {
         this.lineColor
     }
     public func getDashPathEffect(): ?DashPathEffectConfig {
