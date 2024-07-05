@@ -40,7 +40,7 @@ public abstract class AxisRenderer <: Renderer {
             this.mGridPaint.setColor(Color.GRAY)
             this.mGridPaint.setStrokeWidth(1.0)
             this.mGridPaint.setStyle(Style.STROKE)
-            this.mGridPaint.setGlobalAlpha(Float64(90 / 255))
+            this.mGridPaint.setGlobalAlpha(90.0 / 255.0)
 
             this.mAxisLinePaint = Paint()
             this.mAxisLinePaint.setColor(Color.BLACK)

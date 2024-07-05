@@ -304,7 +304,7 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
         var high: Int64 = this.mEntries().size - 1
         var closest: Int64 = high
         while (low < high) {
-            let m: Int64 = Int64(floor(Float64((low + high) / 2)))
+            let m: Int64 = Int64(floor((Float64(low + high) / 2.0)))
             let d1: Float64 = this.mEntries().get(m)().getX() - xValue
             let d2: Float64 = this.mEntries().get(m + 1)().getX() - xValue
             let ad1: Float64 = abs(d1)

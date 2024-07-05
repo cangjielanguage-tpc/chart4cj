@@ -40,7 +40,7 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
             if (maxSize == 0) {
                 1
             } else {
-                Int64(sqrt(Float64(entrySize / maxSize)))
+                Int64(sqrt(Float64(entrySize) / Float64(maxSize)))
             }
         } else {
             entrySize;
