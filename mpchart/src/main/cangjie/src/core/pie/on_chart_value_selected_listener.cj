@@ -12,10 +12,10 @@ public interface OnChartValueSelectedListener {
      * @param h The corresponding highlight object that contains information
      *          about the highlighted position such as dataSetIndex, ...
      */
-    prop onValueSelected: (e: EntryOhos, h: Highlight) -> Unit
+    func onValueSelected(e: EntryOhos, h: Highlight): Unit
 
     /**
      * Called when nothing has been selected or an "un-select" has been made.
      */
-    prop onNothingSelected: () -> Unit
+    func onNothingSelected(): Unit
 }

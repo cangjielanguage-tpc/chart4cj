@@ -6,7 +6,7 @@ package core.pie
 public class BubbleEntry <: EntryOhos {
     private var mSize: Float64 = 0.0
 
-    public init(x: Float64, y: Float64, size!: Float64 = 0.0, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: Any = 0.0) {
+    public init(x: Float64, y: Float64, size!: Float64 = 0.0, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: ?Any = Option<Any>.None) {
         super(x, y, icon: icon, data: data);
         this.mSize = size
     }

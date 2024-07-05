@@ -786,7 +786,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      * @param easingX         a custom easing function to be used on the animation phase
      * @param easingY         a custom easing function to be used on the animation phase
      */
-    public func animateXY(durationMillisX: Int32, durationMillisY: Int32, easingX!: String, easingY!: String): Unit {
+    public func animateXY(durationMillisX: Int32, durationMillisY: Int32, easingX!: String = "linear", easingY!: String = "linear"): Unit {
         if (this.mAnimator.isNone()) {
             return
         }
@@ -801,7 +801,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      * @param durationMillis
      * @param easing         a custom easing function to be used on the animation phase
      */
-    public func animateX(durationMillis: Int32, easing!: String): Unit {
+    public func animateX(durationMillis: Int32, easing!: String = "linear"): Unit {
         if (this.mAnimator.isNone()) {
             return
         }
@@ -816,7 +816,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      * @param durationMillis
      * @param easing         a custom easing function to be used on the animation phase
      */
-    public func animateY(durationMillis: Int32, easing!: String): Unit {
+    public func animateY(durationMillis: Int32, easing!: String = "linear"): Unit {
         if (this.mAnimator.isNone()) {
             return
         }
