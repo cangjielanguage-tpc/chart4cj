@@ -17,8 +17,7 @@ public class PieHighlighter <: PieRadarHighlighter<PieChartModel, PieData, IPieD
 
         let entry: EntryOhos = set.getEntryForIndex(index)
 
-        return Highlight(Float64(index), entry.getY(), 0, -1, 0, x, y, set.getAxisDependency())
+        return Highlight(Float64(index), y: entry.getY(), xPx: x, yPx: y, axis: set.getAxisDependency())
 
-        return Highlight(0.0, 0.0, 0, 0, 0, 0.0, 0.0, Option<AxisDependency>.None)
     }
 }

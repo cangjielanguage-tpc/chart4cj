@@ -183,7 +183,7 @@ public open class ChartHighlighter<P, D, S, E> <: IHighlighter where P <: BarLin
                 pixels = t.getPixelForValues(e.getX(), e.getY())
             }
 
-            highlights.append(Highlight(e.getX(), e.getY(), dataSetIndex, 0, 0, pixels.x, pixels.y, axisObj))
+            highlights.append(Highlight(e.getX(), y: e.getY(), dataSetIndex: dataSetIndex, dataIndex: 0, stackIndex: 0, xPx: pixels.x, yPx: pixels.y, axis: axisObj))
         }
 
         return highlights

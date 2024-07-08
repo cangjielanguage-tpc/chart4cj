@@ -2551,19 +2551,17 @@ public class Highlight {
      * 构造
      *
      * 参数 x - 突出显示的x值
-     * 参数 y - 突出显示的y值
-     * 参数 dataSetIndex - 数据对象的索引
+     * 参数 y - 突出显示的y值,默认值为 Float64.NaN
+     * 参数 dataSetIndex - 突出显示的值所在的数据集的索引,默认值为 0
+     * 参数 dataIndex - 数据对象的索引,默认值为 -1
+     * 参数 stackIndex - 索引堆叠条形条目的哪个值高亮显示，默认值为 0
+     * 参数 xPx - 高亮的x像素,默认值为 0.0
+     * 参数 yPx - 高亮的y像素,默认值为 0.0
+     * 参数 axis - 高亮显示的值所属的轴, 默认值为 Option<AxisDependency>.None
      */
-    public init(x: Float64, y: Float64, dataSetIndex: Int64) 
-
-    /**
-     * 设置数据索引
-     *
-     * 参数 x - 突出显示的x值
-     * 参数 y - 突出显示的y值
-     * 参数 dataSetIndex - 数据对象的索引
-     */
-    public func setDataIndex(mDataIndex: Int64): Unit 
+    public init(x: Float64, y!: Float64 = Float64.NaN, dataSetIndex!: Int64 = 0, dataIndex!: Int64 = -1, stackIndex!: Int64 = 0, xPx!: Float64 = 0.0,
+        yPx!: Float64 = 0.0, axis!: ?AxisDependency = Option<AxisDependency>.None)
+    
 
 }
 

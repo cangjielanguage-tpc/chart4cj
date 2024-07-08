@@ -59,8 +59,8 @@ public open class BarHighlighter <: ChartHighlighter<BarDataProvider, BarData, I
                             pixels = t.getPixelForValues(high.getX(), range[stackIndex].to)
                         }
 
-                        let stackedHigh: Highlight = Highlight(e.getX(), e.getY(), high.getDataSetIndex(), 0, stackIndex,
-                            pixels.x, pixels.y, high.getAxis())
+                        let stackedHigh: Highlight = Highlight(e.getX(), y: e.getY(), dataSetIndex: high.getDataSetIndex(), stackIndex: stackIndex,
+                            xPx: pixels.x, yPx: pixels.y, axis: high.getAxis())
 
                         MPPointD.recycleInstance(pixels)
 

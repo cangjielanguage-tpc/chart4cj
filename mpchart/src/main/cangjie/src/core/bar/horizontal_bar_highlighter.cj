@@ -63,8 +63,8 @@ public class HorizontalBarHighlighter <: BarHighlighter {
             }
             let pixels: MPPointD = trans().getPixelForValues(e.getY(), e.getX())
 
-            highlights.append(Highlight(e.getX(), e.getY(), dataSetIndex, 0, 0, pixels.x, pixels.y,
-                set.getAxisDependency()))
+            highlights.append(Highlight(e.getX(), y: e.getY(), dataSetIndex: dataSetIndex, dataIndex: 0, xPx: pixels.x, yPx: pixels.y,
+                axis: set.getAxisDependency()))
         }
 
         return highlights
