@@ -2063,6 +2063,14 @@ public class PieData<: ChartData<IPieDataSet,PiEntry> {
 
 ```cangjie
 public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntry> {        
+
+    /*
+     * 饼状图构建
+     * 
+     * 返回值 PieChartModel - 饼状图构建类
+     */
+    public static func build(): PieChartModel
+
     /*
      * 检查给定索引是否设置为突出显示。
      * 
@@ -2897,7 +2905,7 @@ class PieChartPage {
 
     // 图表数据初始化
     // Step1:必须：初始化图表配置构建类
-    private var model: PieChartModel = PieChartModel()
+    private var model: PieChartModel = PieChartModel.build()
     protected let parties: Array<String> = ["Party A", "Party B", "Party C", "Party D", "Party E", "Party F", "Party G",
     "Party H", "Party I", "Party J", "Party K", "Party L", "Party M", "Party N", "Party O", "Party P", "Party Q",
     "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X", "Party Y", "Party Z"]
@@ -5032,21 +5040,6 @@ public class Fill {
      */
     public func setAlpha (alpha: Float64): Unit
     
-    /*
-     * 填充矩形
-     * 
-     * 参数 c - CanvasRenderingContext2D
-     * 参数 paint - Paint
-     * 参数 left - 左
-     * 参数 top - 上
-     * 参数 right - 右
-     * 参数 bottom - 下
-     * 参数 gradientDirection - 填充方向
-     * 参数 radius - 圆角
-     * 参数 cornerType - 圆角绘制类型
-     * 返回值 Unit 
-     */
-    public func fillRect (c: CanvasRenderingContext2D, paint: Paint, left: Float64, top: Float64, right: Float64, bottom: Float64, gradientDirection: FillDirection, radius: Float64, cornerType: RoundCornerType): Unit
 }
 ```
 
@@ -5126,5 +5119,1138 @@ public interface OnDrawListener {
      * 参数 dataSet - the last drawn DataSet
      */
     func onDrawFinished(dataSet: DataSet<EntryOhos>): Unit
+}
+```
+
+### 1.11 气泡图 BubbleChart
+
+#### 1.11.1 BubbleEntry Class API Description
+
+气泡图数据结构
+
+```cangjie
+public class BubbleEntry<: EntryOhos {
+    
+    /*
+     * 数据结构构造函数
+     * 
+     * 参数 x - x 值
+     * 参数 y - 气泡中心点 y值
+     * 参数 size - 气泡大小 可选参数，默认值 0.0
+     * 参数 icon - 图标，可选参数，默认 None
+     * 参数 data - 额外参数，可选参数，默认值 None
+     */
+    public init(x: Float64, y: Float64, size!: Float64, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: ?Any = Option<Any>.None)
+    
+    /*
+     * 创建一个气泡图数据结构副本
+     * 
+     * 返回值 BubbleEntry - 气泡图数据结构
+     */
+    public func copy (): BubbleEntry
+    
+    /*
+     * 获取气泡图大小
+     * 
+     * 返回值 Float64 - 大小
+     */
+    public func getSize (): Float64
+    
+    /*
+     * 设置气泡图大小
+     * 
+     * 参数 size - 大小
+     * 返回值 Unit
+     */
+    public func setSize (size: Float64): Unit
+}
+```
+
+#### 1.11.2 IBubbleDataSet Interface API Description
+
+气泡图数据对象
+
+```cangjie
+public interface IBubbleDataSet <: IBarLineScatterCandleBubbleDataSet<BubbleEntry> {
+
+    /**
+     * 设置高亮显示时围绕气泡的圆的宽度
+     *
+     * 参数 width - 宽度
+     * 返回值 Unit
+     */
+    public func setHighlightCircleWidth(width: Float64): Unit
+    
+    /**
+     * 获取气泡大小
+     *
+     * 返回值 Float64 - 大小
+     */
+    public func getMaxSize(): Float64
+
+    /**
+     * 是否启用常规化大小
+     *
+     * 返回值 Bool - true/false
+     */
+    public func isNormalizeSizeEnabled(): Bool
+
+    /**
+     * 返回气泡周围高亮显示圆的宽度
+     *
+     * 返回值 Float64 - 宽度
+     */
+    public func getHighlightCircleWidth(): Float64
+}
+
+```
+
+#### 1.11.3 BubbleDataSet Class API Description
+
+气泡图数据集对象
+
+```cangjie
+public class BubbleDataSet<: BarLineScatterCandleBubbleDataSet<BubbleEntry> & IBubbleDataSet {
+    
+    /*
+     * 构造 
+     * 
+     * 参数 yVals - 气泡图数据结构集合
+     * 参数 label - 标签
+     */
+    public init (yVals: ArrayList<BubbleEntry>, label: String)
+    
+    /**
+     * 设置高亮显示时围绕气泡的圆的宽度
+     *
+     * 参数 width - 宽度
+     * 返回值 Unit
+     */
+    public func setHighlightCircleWidth (width: Float64): Unit
+    
+    /**
+     * 返回气泡周围高亮显示圆的宽度
+     *
+     * 返回值 Float64 - 宽度
+     */
+    public func getHighlightCircleWidth (): Float64
+    
+    /*
+     * 创建气泡图数据集对象副本
+     * 
+     * 返回值 DataSet<BubbleEntry> - 数据集对象副本
+     */
+    public func copy (): DataSet<BubbleEntry>
+      
+    /**
+     * 是否启用常规化大小
+     *
+     * 返回值 Bool - true/false
+     */
+    public func isNormalizeSizeEnabled (): Bool
+    
+    /**
+     * 设置启用常规化大小
+     *
+     * 参数 Bool - true/false
+     * 返回值 Unit
+     */
+    public func setNormalizeSizeEnabled (normalizeSize: Bool): Unit
+    
+}
+```
+
+
+#### 1.11.4 BubbleData Class API Description
+
+气泡图数据包
+
+```cangjie
+public class BubbleData<: BarLineScatterCandleBubbleData<IBubbleDataSet,BubbleEntry> {
+    
+    /*
+     * 构造 
+     * 
+     * 参数 sets - 气泡图数据集集合
+     */
+    public init (sets: ArrayList<IBubbleDataSet>)
+    
+    /**
+     * 设置高亮显示时围绕气泡的圆的宽度
+     *
+     * 参数 width - 宽度
+     * 返回值 Unit
+     */
+    public func setHighlightCircleWidth (width: Float64): Unit
+}
+```
+
+#### 1.11.5 BubbleDataProvider Interface API Description
+
+```cangjie
+public interface BubbleDataProvider <: BarLineScatterCandleBubbleDataProvider<BubbleData, IBubbleDataSet, BubbleEntry> {
+    /*
+     * 获取气泡图数据包 
+     * 
+     * 返回值 ?BubbleData - BubbleData 
+     *                    - Option<BubbleData>.None
+     */
+    func getBubbleData(): ?BubbleData
+}
+```
+
+#### 1.11.6 BubbleChartModel Class API Description
+
+气泡图配置构建类
+
+```cangjie
+public class BubbleChartModel<: BarLineChartBaseModel<BubbleData, IBubbleDataSet, BubbleEntry> & BubbleDataProvider {
+    
+    /*
+     * 气泡图配置构建
+     * 
+     * 返回值 BubbleChartModel - 气泡图配置构建类
+     */
+    public static func build (): BubbleChartModel
+       
+    /*
+     * 设置绘图工具
+     * 
+     * 参数 context2d - CanvasRenderingContext2D
+     */
+    public func setContext2D (context2d: CanvasRenderingContext2D)
+    
+    /*
+     * 图表尺寸改变方法
+     * 
+     * 参数 newWidth - 新宽
+     * 参数 newHeight - 新高
+     * 参数 oldWidth - 旧宽
+     * 参数 oldHeight - 旧高
+     */
+    public func onChartSizeChanged (newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64)
+    
+    /*
+     * 绘图
+     * 
+     * 参数 c - CanvasRenderingContext2D
+     * 返回值 Unit 
+     */
+    public func onDraw (c: CanvasRenderingContext2D): Unit
+    
+    /*
+     * 获取气泡图数据包
+     * 
+     * 返回值 ?BubbleData - BubbleData
+     *                   - Option<BubbleData>.None
+     */
+    public func getBubbleData (): ?BubbleData
+}
+```
+
+#### 1.11.6 BubbleChart Component
+
+气泡图组件
+
+```cangjie
+@Component
+public class BubbleChart {}
+```
+#### 1.11.7 示例
+
+```cangjie
+@Entry
+@Component
+class BubbleChartPage {
+    private var menuItemArr: Array<String> = ["Animate X", "Animate Y", "Animate XY"]
+    private var title: String = "BubbleChartPage"
+    private var model: BubbleChartModel = BubbleChartModel.build()
+
+    var isDrawValuesEnable: Bool = true
+    var titleSelcetString: String = "X"
+
+    public func animate() {
+        if (this.titleSelcetString == "X") {
+            this.model.animateX(2000)
+        } else if (this.titleSelcetString == "Y") {
+            this.model.animateY(2000)
+        } else if (this.titleSelcetString == "XY") {
+            this.model.animateXY(2000, 2000)
+        }
+    }
+
+    func aboutToAppear(): BubbleChartModel {
+        let l: ?Legend = this.model.getLegend()
+        if (let Some(legend) <- l) {
+            legend.setEnabled(true)
+        }
+
+        let description: Description = this.model.getDescription()
+        description.setEnabled(false)
+
+        this.model.setMaxVisibleValueCount(60)
+        this.model.setPinchZoom(false)
+        this.model.setDrawGridBackground(false)
+
+        let xAxis: ?XAxis = this.model.getXAxis()
+        if (let Some(x) <- xAxis) {
+            x.setPosition(XAxisPosition.BOTTOM)
+            x.setDrawGridLines(false)
+            x.setGranularity(1.0)
+            x.setLabelCount(7, false)
+        }
+
+        let leftAxis: ?YAxis = this.model.getAxisLeft()
+        if (let Some(ly) <- leftAxis) {
+            ly.setLabelCount(8, false)
+            ly.setPosition(YAxisLabelPosition.OUTSIDE_CHART)
+            ly.setSpaceTop(15.0)
+            ly.setAxisMinimum(0.0)
+        }
+
+        let rightAxis: ?YAxis = this.model.getAxisRight()
+        if (let Some(ry) <- rightAxis) {
+            ry.setLabelCount(8, false)
+            ry.setDrawGridLines(false)
+            ry.setSpaceTop(15.0)
+            ry.setAxisMinimum(0.0)
+        }
+
+        let start: Int64 = 1
+        let values: ArrayList<BubbleEntry> = ArrayList<BubbleEntry>()
+        for (i in start..20) {
+            let val = (Random().nextFloat64() * 41.0)
+
+            if (Random().nextFloat64() * 100.0 < 25.0) {
+                values.append(BubbleEntry(Float64(i), val))
+            } else {
+                values.append(BubbleEntry(Float64(i), val))
+            }
+        }
+
+        let dataSet: BubbleDataSet = BubbleDataSet(values, "DataSet")
+        dataSet.setHighLightColor(0x000000)
+        dataSet.setDrawIcons(false)
+
+        let dataSetList: ArrayList<BubbleDataSet> = ArrayList<BubbleDataSet>()
+        dataSetList.append(dataSet)
+
+        this.setData(5, 50.0)
+        this.model.notifyDataSetChanged()
+        this.model.setVisibleXRangeMaximum(7.0)
+        return this.model
+    }
+
+    /**
+     * 初始化数据
+     * @param count  曲线图点的个数
+     * @param range  y轴范围
+     */
+    private func setData(count: Int64, range: Float64): Unit {
+        let values1 = ArrayList<BubbleEntry>()
+        let values2 = ArrayList<BubbleEntry>()
+        let values3 = ArrayList<BubbleEntry>()
+
+        for (i in 0..count) {
+            values1.append(BubbleEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            )
+            values2.append(BubbleEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            )
+            values3.append(BubbleEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            )
+        }
+
+        let set1: BubbleDataSet = BubbleDataSet(values1, "DS 1")
+        set1.setDrawIcons(false)
+        set1.setColorByColor(0x88c12552)
+        set1.setIconsOffset(MPPointF(0.0, 0.0))
+        set1.setDrawValues(this.isDrawValuesEnable)
+
+        let set2: BubbleDataSet = BubbleDataSet(values2, "DS 2")
+        set2.setDrawIcons(false)
+        set2.setIconsOffset(MPPointF(0.0, 0.0))
+        set2.setColorByColor(0x88ff6600)
+        set2.setDrawValues(this.isDrawValuesEnable)
+
+        let set3: BubbleDataSet = BubbleDataSet(values3, "DS 3")
+        set3.setDrawIcons(false)
+        set3.setIconsOffset(MPPointF(0.0, 0.0))
+        set3.setColorByColor(0x88f5c700)
+        set3.setDrawValues(this.isDrawValuesEnable)
+
+        let dataSets = ArrayList<IBubbleDataSet>()
+        dataSets.append(set1)
+        dataSets.append(set2)
+        dataSets.append(set3)
+        let dataResult: BubbleData = BubbleData(dataSets)
+        dataResult.setDrawValues(this.isDrawValuesEnable)
+        dataResult.setValueTextSize(8.0)
+        dataResult.setValueTextColor(0xffffff)
+        dataResult.setHighlightCircleWidth(1.5)
+        dataResult.setHighlightEnabled(true)
+        dataResult.notifyDataChanged()
+
+        this.model.setData(dataResult)
+    }
+
+    func render() {
+        Column() {
+            Column() {
+                BubbleChart(model: aboutToAppear())
+            }
+        }
+    }
+}
+
+
+```
+
+
+### 1.12 瀑布图 WaterfallChart
+
+#### 1.12.1 WaterfallEntry Class API Description
+
+```cangjie
+public class WaterfallEntry<: EntryOhos {
+    
+    /*
+     * 构造 
+     * 
+     * 参数 x - x 值
+     * 参数 minY - 最小Y值
+     * 参数 maxY - 最大Y值
+     * 参数 icon - 图标，默认值 Option<ChartPixelMap>.None
+     * 参数 data - 额外参数，默认值 Option<Any>.None
+     * 参数 highlights - 高亮，默认值 Array<WaterfallHighlight>()
+     */
+    public init (x: Float64, minY: Float64, maxY: Float64, icon!: ?ChartPixelMap, data!: ?Any, highlights!: Array<WaterfallHighlight>)
+    
+    /*
+     * 获取最小Y值
+     * 
+     * 返回值 Float64 - 最小Y值
+     */
+    public func getMinY (): Float64
+    
+    /*
+     * 获取最大Y值
+     * 
+     * 返回值 Float64 - 最大Y值
+     */
+    public func getMaxY (): Float64
+    
+    /*
+     * 获取高亮数组
+     * 
+     * 返回值 Array<WaterfallHighlight> - 高亮数组
+     */
+    public func getHighlights (): Array<WaterfallHighlight>
+    
+    /*
+     * 设置高亮数组
+     * 
+     * 参数 highlights - 高亮数组
+     * 返回值 Unit
+     */
+    public func setHighlights (highlights: Array<WaterfallHighlight>): Unit
+    
+    /*
+     * 创建副本
+     * 
+     * 返回值 WaterfallEntry - 瀑布图数据结构
+     */
+    public func copy (): WaterfallEntry
+
+}
+```
+
+#### 1.12.2 WaterfallHighlight Class API Description
+
+```cangjie
+public class WaterfallHighlight {
+
+    /*
+     * 构造 
+     * 
+     * 参数 minY - 最小Y值
+     * 参数 maxY - 最大Y值
+     * 参数 color - 颜色，可选参数，默认值 红色
+     */
+    public init(minY: Float64, maxY: Float64, color!: UInt32 = 0xff0000)
+
+    /*
+     * 获取最小Y值
+     */
+    func getMinY()
+
+    /*
+     * 获取最大Y值
+     */
+    func getMaxY()
+
+    /*
+     * 获取颜色
+     */
+    func getColor()
+
+    /*
+     * 设置颜色
+     */
+    func setColor(color: UInt32)
+}
+
+```
+
+#### 1.12.3 IWaterfallDataSet Interface API Description
+
+```cangjie
+public interface IWaterfallDataSet <: IBarLineScatterCandleBubbleDataSet<WaterfallEntry> {
+
+    /**
+     * 判断是否堆叠
+     *
+     * 返回 Bool
+     */
+    public func isStacked(): Bool
+
+    /**
+     * 获取堆叠数目
+     *
+     * 返回 Int64
+     */
+    public func getStackSize(): Int64
+
+    /**
+     * 获取条形背后阴影的颜色
+     *
+     * 返回 UInt32
+     */
+    public func getBarShadowColor(): UInt32
+
+    /**
+     * 获取条形图宽度
+     *
+     * 返回 Float64
+     */
+    public func getBarBorderWidth(): Float64
+
+    /**
+     * 获取条形图颜色
+     *
+     * 返回 UInt32
+     */
+    public func getBarBorderColor(): UInt32
+
+    /**
+     * 获取高亮透明度
+     *
+     * 返回 Float64
+     */
+    public func getHighLightAlpha(): Float64
+
+    /**
+     * 获取堆叠条目的标签
+     *
+     * 返回 Array<String>
+     */
+    public func getStackLabels(): Array<String>
+}
+```
+
+#### 1.12.4 WaterfallDataSet Class API Description
+
+```cangjie
+public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry>&IWaterfallDataSet {
+    
+    /*
+     * 构造 
+     * 
+     * 参数 yVals - 瀑布图数据结构集合
+     * 参数 label - 标签
+     */
+    public init (yVals: ArrayList<WaterfallEntry>, label: String)
+    
+    /*
+     * 是否设置最大或最小y颜色
+     * 
+     * 参数 value - true/false
+     */
+    public func setEnableMaxOrMinHighlightColor (value: Bool)
+    
+    /*
+     * 获取是否设置最大或最小y颜色
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func getEnableMaxOrMinHighlightColor (): Bool
+    
+    /*
+     * 设置y轴最大部分高亮颜色
+     * 
+     * 参数 value - 颜色
+     */
+    public func setMaxyHighlightColor (value: UInt32)
+    
+    /*
+     * 获取y轴最大部分高亮颜色
+     * 
+     * 返回值 UInt32 - 颜色
+     */
+    public func getMaxyHighlightColor (): UInt32
+    
+    /*
+     * 设置y轴最小部分高亮颜色
+     * 
+     * 参数 value - 颜色
+     */
+    public func setMinyHighlightColor (value: UInt32)
+    
+    /*
+     * 获取y轴最小部分高亮颜色
+     * 
+     * 返回值 UInt32 - 颜色
+     */
+    public func getMinyHighlightColor (): UInt32
+    
+    /*
+     * 设置Y轴颜色集合
+     * 
+     * 参数 value - Y轴颜色集合
+     */
+    public func setYAxisSegmentationColors (value: Array<WaterfallHighlight>)
+    
+    /*
+     * 获取Y轴颜色集合
+     * 
+     * 返回值 Array<WaterfallHighlight> - Y轴颜色集合
+     */
+    public func getYAxisSegmentationColors (): Array<WaterfallHighlight>
+    
+    /*
+     * 设置所有高亮点的颜色。
+     * 
+     * 参数 color - 所有高亮点的颜色集合
+     * 返回值 Unit
+     */
+    public func setDotsColors (color: UInt32): Unit
+    
+    /*
+     * 获取所有高亮点的颜色
+     * 
+     * 返回值 Array<UInt32> - 所有高亮点的颜色集合
+     */
+    public func getDotsColors (): Array<UInt32>
+    
+    /*
+     * 是否设置图顶部高亮
+     * 
+     * 参数 value - true/false
+     */
+    public func setMaxTopHighlightEXIST (value: Bool)
+    
+    /*
+     * 判断是否设置图顶部高亮
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func getMaxTopHighlightEXIST (): Bool
+    
+    /*
+     * 是否设置条形图底部高亮
+     * 
+     * 参数 value - true/false
+     */
+    public func setMinBottomHighlightEXIST (value: Bool)
+    
+    /*
+     * 获取是否设置条形图底部高亮
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func getMinBottomHighlightEXIST (): Bool
+    
+    /*
+     * 设置透明度
+     * 
+     * 参数 value - 透明度
+     */
+    public func setOpacity (value: Float64)
+    
+    /*
+     * 获取透明度
+     * 
+     * 返回值 String - 透明度字符串表示
+     */
+    public func getOpacity (): String  
+    
+    /*
+     * 设置条形图边框颜色
+     * 
+     * 参数 color - 颜色
+     * 返回值 Unit 
+     */
+    public func setBarBorderColor (color: UInt32): Unit
+    
+    /**
+     * 获取条形图颜色
+     *
+     * 返回 UInt32
+     */
+    public func getBarBorderColor (): UInt32
+    
+    /*
+     * 设置条形图边框宽度
+     * 
+     * 参数 width - 宽度
+     * 返回值 Unit 
+     */
+    public func setBarBorderWidth (width: Float64): Unit
+    
+    /**
+     * 获取条形图宽度
+     *
+     * 返回 Float64
+     */
+    public func getBarBorderWidth (): Float64
+    
+    /*
+     * 设置高亮透明度
+     * 
+     * 参数 alpha - 透明度
+     * 返回值 Unit 
+     */
+    public func setHighLightAlpha (alpha: Float64): Unit
+    
+    /**
+     * 获取高亮透明度
+     *
+     * 返回 Float64
+     */
+    public func getHighLightAlpha (): Float64
+    
+    /*
+     * 设置堆叠标签
+     * 
+     * 参数 labels - 标签
+     * 返回值 Unit 
+     */
+    public func setStackLabels (labels: Array<String>): Unit
+    
+    /**
+     * 获取堆叠条目的标签
+     *
+     * 返回 Array<String>
+     */
+    public func getStackLabels (): Array<String>
+    
+    /*
+     * 设置条形图阴影颜色
+     * 
+     * 参数 color - 颜色
+     * 返回值 Unit 
+     */
+    public func setBarShadowColor (color: UInt32): Unit
+    
+    /**
+     * 获取条形背后阴影的颜色
+     *
+     * 返回 UInt32
+     */
+    public func getBarShadowColor (): UInt32
+    
+    /**
+     * 获取堆叠数目
+     *
+     * 返回 Int64
+     */
+    public func getStackSize (): Int64
+    
+    /**
+     * 判断是否堆叠
+     *
+     * 返回 Bool
+     */
+    public func isStacked (): Bool
+    
+    /*
+     * 创建瀑布图数据结构副本
+     * 
+     * 返回值 DataSet<WaterfallEntry> - 瀑布图数据结构
+     */
+    public func copy (): DataSet<WaterfallEntry>
+    
+}
+```
+
+#### 1.12.5 WaterfallData Class API Description
+
+```cangjie
+public class WaterfallData<: BarLineScatterCandleBubbleData<IWaterfallDataSet,WaterfallEntry> {
+    
+    /*
+     * 构造 
+     * 
+     */
+    public init ()
+    
+    /*
+     * 构造 
+     * 
+     * 参数 dataSets - 瀑布图数据集对象集合
+     */
+    public init (dataSets: Array<IWaterfallDataSet>)
+    
+    /*
+     * 构造 
+     * 
+     * 参数 dataSets - 瀑布图数据集对象集合
+     */
+    public init (dataSets: ArrayList<IWaterfallDataSet>)
+    
+    /*
+     * 设置每个条形图在坐标轴上的宽度，默认 0.85
+     * 
+     * 参数 mBarWidth - 宽度
+     * 返回值 Unit 
+     */
+    public func setBarWidth (mBarWidth: Float64): Unit
+    
+    /*
+     * 获取每个条形图在坐标轴上的宽度
+     * 
+     * 返回值 Float64 - 宽度
+     */
+    public func getBarWidth (): Float64
+    
+    /*
+     * 设置顶部圆角半径
+     * 
+     * 参数 radius - 圆角半径
+     * 返回值 Unit 
+     */
+    public func setTopRadius (radius: Float64): Unit
+    
+    /*
+     * 获取顶部圆角半径
+     * 
+     * 返回值 Float64 - 圆角半径
+     */
+    public func getTopRadius (): Float64
+    
+    /*
+     * 将指定条目分组
+     * 
+     * 参数 fromX - x轴上分组的起始点
+     * 参数 groupSpace - 组之间的间距
+     * 参数 barSpace - 各条目之间的间距
+     * 返回值 Unit 
+     */
+    public func groupBars (fromX: Float64, groupSpace: Float64, barSpace: Float64): Unit
+    
+    /*
+     * 获取单个条形组在x轴上的宽度
+     * 
+     * 参数 groupSpace - 组之间的间距
+     * 参数 barSpace - 各条目之间的间距
+     * 返回值 Float64 - 宽度
+     */
+    public func getGroupWidth (groupSpace: Float64, barSpace: Float64): Float64
+}
+```
+
+#### 1.12.6 WaterfallDataProvider Interface API Description
+
+```cangjie
+public interface WaterfallDataProvider <: BarLineScatterCandleBubbleDataProvider<WaterfallData,IWaterfallDataSet, WaterfallEntry> {
+
+    /*
+     * 获取瀑布图数据包
+     *
+     * 返回值 ?WaterfallData - WaterfallData
+     *                       - Option<WaterfallData>.None
+     * 
+     */
+    func getWaterfallData(): ?WaterfallData
+
+    /*
+     * 判断是否绘制柱状图阴影
+     * 
+     * 返回值 Bool - true/false
+     */
+    func isDrawBarShadowEnabled(): Bool
+    
+    /*
+     * 判断是否在条形图上方绘制值
+     * 
+     * 返回值 Bool - true/false
+     */
+    func isDrawValueAboveBarEnabled(): Bool
+    
+    /*
+     * 判断条形图是否高亮
+     * 
+     * 返回值 Bool - true/false
+     */
+    func isHighlightFullBarEnabled(): Bool
+}
+```
+
+#### 1.12.7 WaterfallChartModel Class API Description
+
+
+```cangjie
+public class WaterfallChartModel<: BarLineChartBaseModel<WaterfallData,IWaterfallDataSet,WaterfallEntry>&WaterfallDataProvider {
+    
+    /*
+     * 创建 WaterfallChartModel 示例
+     * 
+     * 返回值 WaterfallChartModel - WaterfallChartModel
+     */
+    public static func build (): WaterfallChartModel
+    
+    /*
+     * 设置绘图工具
+     * 
+     * 参数 context2d - CanvasRenderingContext2D
+     */
+    public func setContext2D (context2d: CanvasRenderingContext2D)
+    
+    /*
+     * 图标尺寸改变
+     * 
+     * 参数 newWidth - 新宽
+     * 参数 newHeight - 新高
+     * 参数 oldWidth - 旧宽
+     * 参数 oldHeight - 旧高
+     */
+    public func onChartSizeChanged (newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64)
+    
+    /*
+     * 绘图
+     * 
+     * 参数 c - 标准库画布工具
+     * 返回值 Unit 
+     */
+    public func onDraw (c: CanvasRenderingContext2D): Unit
+    
+    /*
+     * 获取接触点的高亮对象
+     * 
+     * 参数 x - x值
+     * 参数 y - y值
+     * 返回值 ?Highlight - 高亮
+     */
+    public open func getHighlightByTouchPoint (x: Float64, y: Float64): ?Highlight
+    
+    
+    /*
+     * 设置值是否在条形图的上方绘制
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit 
+     */
+    public func setDrawValueAboveBar (enabled: Bool): Unit
+    
+    /*
+     * 是否设置在每个条目后面设置阴影
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit 
+     */
+    public func setDrawBarShadow (enabled: Bool): Unit
+    
+    /*
+     * 设置是否突出显示某个条目（堆叠柱状图）
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit 
+     */
+    public func setHighlightFullBarEnabled (enabled: Bool): Unit
+    
+    /*
+     * 给定值处设置高亮
+     * 
+     * 参数 x - x值
+     * 参数 dataSetIndex - 条目索引
+     * 参数 stackIndex - 堆叠索引
+     * 返回值 Unit 
+     */
+    public func highlightValue (x: Float64, dataSetIndex: Int64, stackIndex: Int64): Unit
+    
+    /*
+     * 获取瀑布图条目
+     * 
+     * 返回值 ?getWaterfallData - 瀑布图条目
+     */
+    public func getWaterfallData (): ?getWaterfallData
+    
+    /*
+     * 是否在x轴范围的两侧各增加一半条形图宽度，以使条形图完全显示出来。
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit 
+     */
+    public func setFitBars (enabled: Bool): Unit
+    
+    /*
+     * 将指定条目分组
+     * 
+     * 参数 fromX - x轴上分组的起始点
+     * 参数 groupSpace - 组之间的间距
+     * 参数 barSpace - 各条目之间的间距
+     * 返回值 Unit 
+     */
+    public func groupBars (fromX: Float64, groupSpace: Float64, barSpace: Float64): Unit
+}
+```
+
+#### 1.12.8 WaterfallChart Component
+
+```cangjie
+public class WaterfallChart {}
+```
+
+#### 1.12.9 示例
+
+```cangjie
+@Entry
+@Component
+class SimpleWaterfallChartPage {
+    private var model: WaterfallChartModel = WaterfallChartModel.build()
+    private var dataSet: WaterfallDataSet = WaterfallDataSet(ArrayList<WaterfallEntry>(), "")
+    private var leftAxis: ?YAxis = Option<YAxis>.None
+    private var rightAxis: ?YAxis = Option<YAxis>.None
+    private var xAxis: ?XAxis = Option<XAxis>.None
+    private var limitLine1: LimitLine = LimitLine(100.0, "100")
+    private var limitLine2: LimitLine = LimitLine(120.0, "Average")
+    private var data: WaterfallData = WaterfallData()
+    private var normalMarker: MarkerView = MarkerView()
+
+    func aboutToAppear(): WaterfallChartModel {
+
+        let description: ?Description = this.model.getDescription()
+        if (let Some(des) <- description) {
+            des.setEnabled(false);
+        }
+
+        let l: ?Legend = this.model.getLegend();
+        if (let Some(legend) <- l) {
+            legend.setEnabled(false);
+        }
+
+        // if more than 40 entries are displayed in the this.model, no values will be drawn
+        this.model.setMaxVisibleValueCount(40);
+
+        // scaling can now only be done on x- and y-axis separately
+        this.model.setPinchZoom(false);
+
+        this.model.setDrawGridBackground(false);
+        this.model.setGridBackgroundColor(0x500000ff)
+        this.model.setDrawBarShadow(false);
+
+        this.model.setDrawValueAboveBar(false);
+        this.model.setHighlightFullBarEnabled(false);
+
+        this.limitLine1 = LimitLine(120.0, "Upper Limit")
+        this.limitLine1.setLineWidth(4.0);
+        this.limitLine1.enableDashedLine(10, 10, 0);
+        this.limitLine1.setLabelPosition(LimitLabelPosition.RIGHT_TOP);
+        this.limitLine1.setTextSize(10.0);
+
+        this.limitLine2 = LimitLine(50.0, "Lower Limit")
+        this.limitLine2.setLineWidth(4.0);
+        this.limitLine2.enableDashedLine(10, 10, 0);
+        this.limitLine2.setLineColor(0xFFFF00);
+        this.limitLine2.setLabelPosition(LimitLabelPosition.RIGHT_BOTTOM);
+        this.limitLine2.setTextSize(10.0);
+
+        // change the position of the y-labels
+        this.leftAxis = this.model.getAxisLeft()
+        if (let Some(laxis) <- this.leftAxis) {
+            laxis.setAxisMinimum(0.0);
+            laxis.setDrawLimitLinesBehindData(false);
+            laxis.setValueFormatter(CustomFormatter());
+
+            // add limit lines
+            laxis.addLimitLine(this.limitLine1);
+            laxis.addLimitLine(this.limitLine2);
+        }
+
+        this.rightAxis = this.model.getAxisRight()
+        if (let Some(r) <- this.rightAxis) {
+            r.setEnabled(false);
+            r.setAxisMinimum(0.0);
+        }
+
+        this.xAxis = this.model.getXAxis()
+        if (let Some(x) <- this.xAxis) {
+            x.setPosition(XAxisPosition.BOTTOM);
+        }
+
+        this.normalMarker = MarkerView()
+        this.model.setMarker(this.normalMarker);
+
+        this.data = this.getNormalData()
+        this.model.setData(this.data);
+        this.model.setVisibleXRangeMaximum(5.0);
+        return this.model
+    }
+
+    private func getNormalData(): WaterfallData {
+        let values: ArrayList<WaterfallEntry> = ArrayList<WaterfallEntry>();
+        let h1 = WaterfallHighlight(20.0, 30.0, color: 0x999999);
+        let h2 = WaterfallHighlight(30.0, 40.0, color: 0x999999);
+        let h3 = WaterfallHighlight(40.0, 60.0, color: 0x339933);
+        let h4 = WaterfallHighlight(60.0, 70.0, color: 0xFF0000);
+
+        values.append(WaterfallEntry(1.0, 10.0, 30.0, highlights: [h1]));
+        values.append(WaterfallEntry(2.0, 15.0, 50.0));
+        values.append(WaterfallEntry(3.0, 20.0, 90.0));
+        values.append(WaterfallEntry(4.0, 5.0, 95.0, highlights: [h2, h3, h4]));
+        values.append(WaterfallEntry(5.0, 5.0, 50.0));
+        values.append(WaterfallEntry(6.0, 45.0, 80.0, highlights: [h2, h3]));
+        values.append(WaterfallEntry(7.0, 60.0, 70.0));
+
+        this.dataSet = WaterfallDataSet(values, "DataSet")
+        this.dataSet.setHighLightColor(0x999999);
+        this.dataSet.setDrawIcons(false);
+        this.dataSet.setColorByColor(0xFFC0CB);
+        this.dataSet.setValueTextSize(10.0)
+
+        let dataSetList: ArrayList<IWaterfallDataSet> = ArrayList<IWaterfallDataSet>();
+        dataSetList.append(this.dataSet);
+
+        let data: WaterfallData = WaterfallData(dataSetList);
+        data.setBarWidth(0.3);
+        return data;
+    }
+
+    func render() {
+        Column() {
+            Column() {
+                WaterfallChart(model: aboutToAppear())
+            }
+            Row() {
+                Row() {
+                    Text("普通: ")
+                    Radio(value: "CUBIC_BEZIER", group: "dataType").checked(true).onChange(
+                        {
+                        isChecked: Bool => if (isChecked) {
+                            this.data = this.getNormalData()
+                            this.model.setData(this.data);
+                        }
+                    })
+                }
+                
+            }.alignSelf(ItemAlign.Center)
+        }
+    }
+}
+
+class CustomFormatter <: IAxisValueFormatter {
+    public func getFormattedValue(value: Float64, axis: AxisBase): String {
+        let str = value.format(".0").split(".")
+        return "${str[0]}%";
+    }
 }
 ```

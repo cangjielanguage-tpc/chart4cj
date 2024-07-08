@@ -5,7 +5,7 @@
 <p align="center">
 <img alt="" src="https://img.shields.io/badge/release-v0.0.1-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/build-pass-brightgreen" style="display: inline-block;" />
-<img alt="" src="https://img.shields.io/badge/cjc-v51.4-brightgreen" style="display: inline-block;" />
+<img alt="" src="https://img.shields.io/badge/cjc-v0.51.4-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/cjcov-0%25-red" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/project-open-brightgreen" style="display: inline-block;" />
 </p>
@@ -20,6 +20,8 @@ chart4Ohos 是一个包含各种类型图表的图表库，主要用于业务数
 - 支持动画显示
 - 支持图例
 - 支持柱状图（水平、垂直）
+- 支持气泡图
+- 支持瀑布图
 
 ## 软件架构
 
@@ -88,7 +90,7 @@ class PieChartPage {
 
     // 图表数据初始化
     // Step1:必须：初始化图表配置构建类
-    private var model: PieChartModel = PieChartModel()
+    private var model: PieChartModel = PieChartModel.build()
     protected let parties: Array<String> = ["Party A", "Party B", "Party C", "Party D", "Party E", "Party F", "Party G",
     "Party H", "Party I", "Party J", "Party K", "Party L", "Party M", "Party N", "Party O", "Party P", "Party Q",
     "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X", "Party Y", "Party Z"]
@@ -345,6 +347,290 @@ class BarChartMultiplePage {
     }
 }
 
+```
+
+#### 气泡图
+
+```cangjie
+@Entry
+@Component
+class BubbleChartPage {
+    private var menuItemArr: Array<String> = ["Animate X", "Animate Y", "Animate XY"]
+    private var title: String = "BubbleChartPage"
+    private var model: BubbleChartModel = BubbleChartModel.build()
+
+    var isDrawValuesEnable: Bool = true
+    var titleSelcetString: String = "X"
+
+    public func animate() {
+        if (this.titleSelcetString == "X") {
+            this.model.animateX(2000)
+        } else if (this.titleSelcetString == "Y") {
+            this.model.animateY(2000)
+        } else if (this.titleSelcetString == "XY") {
+            this.model.animateXY(2000, 2000)
+        }
+    }
+
+    func aboutToAppear(): BubbleChartModel {
+        let l: ?Legend = this.model.getLegend()
+        if (let Some(legend) <- l) {
+            legend.setEnabled(true)
+        }
+
+        let description: Description = this.model.getDescription()
+        description.setEnabled(false)
+
+        this.model.setMaxVisibleValueCount(60)
+        this.model.setPinchZoom(false)
+        this.model.setDrawGridBackground(false)
+
+        let xAxis: ?XAxis = this.model.getXAxis()
+        if (let Some(x) <- xAxis) {
+            x.setPosition(XAxisPosition.BOTTOM)
+            x.setDrawGridLines(false)
+            x.setGranularity(1.0)
+            x.setLabelCount(7, false)
+        }
+
+        let leftAxis: ?YAxis = this.model.getAxisLeft()
+        if (let Some(ly) <- leftAxis) {
+            ly.setLabelCount(8, false)
+            ly.setPosition(YAxisLabelPosition.OUTSIDE_CHART)
+            ly.setSpaceTop(15.0)
+            ly.setAxisMinimum(0.0)
+        }
+
+        let rightAxis: ?YAxis = this.model.getAxisRight()
+        if (let Some(ry) <- rightAxis) {
+            ry.setLabelCount(8, false)
+            ry.setDrawGridLines(false)
+            ry.setSpaceTop(15.0)
+            ry.setAxisMinimum(0.0)
+        }
+
+        let start: Int64 = 1
+        let values: ArrayList<BubbleEntry> = ArrayList<BubbleEntry>()
+        for (i in start..20) {
+            let val = (Random().nextFloat64() * 41.0)
+
+            if (Random().nextFloat64() * 100.0 < 25.0) {
+                values.append(BubbleEntry(Float64(i), val))
+            } else {
+                values.append(BubbleEntry(Float64(i), val))
+            }
+        }
+
+        let dataSet: BubbleDataSet = BubbleDataSet(values, "DataSet")
+        dataSet.setHighLightColor(0x000000)
+        dataSet.setDrawIcons(false)
+
+        let dataSetList: ArrayList<BubbleDataSet> = ArrayList<BubbleDataSet>()
+        dataSetList.append(dataSet)
+
+        this.setData(5, 50.0)
+        this.model.notifyDataSetChanged()
+        this.model.setVisibleXRangeMaximum(7.0)
+        return this.model
+    }
+
+    private func setData(count: Int64, range: Float64): Unit {
+        let values1 = ArrayList<BubbleEntry>()
+        let values2 = ArrayList<BubbleEntry>()
+        let values3 = ArrayList<BubbleEntry>()
+
+        for (i in 0..count) {
+            values1.append(BubbleEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            )
+            values2.append(BubbleEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            )
+            values3.append(BubbleEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            )
+        }
+
+        let set1: BubbleDataSet = BubbleDataSet(values1, "DS 1")
+        set1.setDrawIcons(false)
+        set1.setColorByColor(0x88c12552)
+        set1.setIconsOffset(MPPointF(0.0, 0.0))
+        set1.setDrawValues(this.isDrawValuesEnable)
+
+        let set2: BubbleDataSet = BubbleDataSet(values2, "DS 2")
+        set2.setDrawIcons(false)
+        set2.setIconsOffset(MPPointF(0.0, 0.0))
+        set2.setColorByColor(0x88ff6600)
+        set2.setDrawValues(this.isDrawValuesEnable)
+
+        let set3: BubbleDataSet = BubbleDataSet(values3, "DS 3")
+        set3.setDrawIcons(false)
+        set3.setIconsOffset(MPPointF(0.0, 0.0))
+        set3.setColorByColor(0x88f5c700)
+        set3.setDrawValues(this.isDrawValuesEnable)
+
+        let dataSets = ArrayList<IBubbleDataSet>()
+        dataSets.append(set1)
+        dataSets.append(set2)
+        dataSets.append(set3)
+        let dataResult: BubbleData = BubbleData(dataSets)
+        dataResult.setDrawValues(this.isDrawValuesEnable)
+        dataResult.setValueTextSize(8.0)
+        dataResult.setValueTextColor(0xffffff)
+        dataResult.setHighlightCircleWidth(1.5)
+        dataResult.setHighlightEnabled(true)
+        dataResult.notifyDataChanged()
+
+        this.model.setData(dataResult)
+    }
+
+    func render() {
+        Column() {
+            Column() {
+                BubbleChart(model: aboutToAppear())
+            }
+        }
+    }
+}
+
+```
+
+#### 瀑布图
+
+```cangjie
+@Entry
+@Component
+class SimpleWaterfallChartPage {
+    private var model: WaterfallChartModel = WaterfallChartModel.build()
+    private var dataSet: WaterfallDataSet = WaterfallDataSet(ArrayList<WaterfallEntry>(), "")
+    private var leftAxis: ?YAxis = Option<YAxis>.None
+    private var rightAxis: ?YAxis = Option<YAxis>.None
+    private var xAxis: ?XAxis = Option<XAxis>.None
+    private var limitLine1: LimitLine = LimitLine(100.0, "100")
+    private var limitLine2: LimitLine = LimitLine(120.0, "Average")
+    private var data: WaterfallData = WaterfallData()
+    private var normalMarker: MarkerView = MarkerView()
+
+    func aboutToAppear(): WaterfallChartModel {
+
+        let description: ?Description = this.model.getDescription()
+        if (let Some(des) <- description) {
+            des.setEnabled(false);
+        }
+
+        let l: ?Legend = this.model.getLegend();
+        if (let Some(legend) <- l) {
+            legend.setEnabled(false);
+        }
+        
+        this.model.setMaxVisibleValueCount(40);
+        
+        this.model.setPinchZoom(false);
+
+        this.model.setDrawGridBackground(false);
+        this.model.setGridBackgroundColor(0x500000ff)
+        this.model.setDrawBarShadow(false);
+
+        this.model.setDrawValueAboveBar(false);
+        this.model.setHighlightFullBarEnabled(false);
+
+        this.limitLine1 = LimitLine(120.0, "Upper Limit")
+        this.limitLine1.setLineWidth(4.0);
+        this.limitLine1.enableDashedLine(10, 10, 0);
+        this.limitLine1.setLabelPosition(LimitLabelPosition.RIGHT_TOP);
+        this.limitLine1.setTextSize(10.0);
+
+        this.limitLine2 = LimitLine(50.0, "Lower Limit")
+        this.limitLine2.setLineWidth(4.0);
+        this.limitLine2.enableDashedLine(10, 10, 0);
+        this.limitLine2.setLineColor(0xFFFF00);
+        this.limitLine2.setLabelPosition(LimitLabelPosition.RIGHT_BOTTOM);
+        this.limitLine2.setTextSize(10.0);
+        
+        this.leftAxis = this.model.getAxisLeft()
+        if (let Some(laxis) <- this.leftAxis) {
+            laxis.setAxisMinimum(0.0);
+            laxis.setDrawLimitLinesBehindData(false);
+            laxis.setValueFormatter(CustomFormatter());
+            
+            laxis.addLimitLine(this.limitLine1);
+            laxis.addLimitLine(this.limitLine2);
+        }
+
+        this.rightAxis = this.model.getAxisRight()
+        if (let Some(r) <- this.rightAxis) {
+            r.setEnabled(false);
+            r.setAxisMinimum(0.0);
+        }
+
+        this.xAxis = this.model.getXAxis()
+        if (let Some(x) <- this.xAxis) {
+            x.setPosition(XAxisPosition.BOTTOM);
+        }
+
+        this.normalMarker = MarkerView()
+        this.model.setMarker(this.normalMarker);
+
+        this.data = this.getNormalData()
+        this.model.setData(this.data);
+        this.model.setVisibleXRangeMaximum(5.0);
+        return this.model
+    }
+
+    private func getNormalData(): WaterfallData {
+        let values: ArrayList<WaterfallEntry> = ArrayList<WaterfallEntry>();
+        let h1 = WaterfallHighlight(20.0, 30.0, color: 0x999999);
+        let h2 = WaterfallHighlight(30.0, 40.0, color: 0x999999);
+        let h3 = WaterfallHighlight(40.0, 60.0, color: 0x339933);
+        let h4 = WaterfallHighlight(60.0, 70.0, color: 0xFF0000);
+
+        values.append(WaterfallEntry(1.0, 10.0, 30.0, highlights: [h1]));
+        values.append(WaterfallEntry(2.0, 15.0, 50.0));
+        values.append(WaterfallEntry(3.0, 20.0, 90.0));
+        values.append(WaterfallEntry(4.0, 5.0, 95.0, highlights: [h2, h3, h4]));
+        values.append(WaterfallEntry(5.0, 5.0, 50.0));
+        values.append(WaterfallEntry(6.0, 45.0, 80.0, highlights: [h2, h3]));
+        values.append(WaterfallEntry(7.0, 60.0, 70.0));
+
+        this.dataSet = WaterfallDataSet(values, "DataSet")
+        this.dataSet.setHighLightColor(0x999999);
+        this.dataSet.setDrawIcons(false);
+        this.dataSet.setColorByColor(0xFFC0CB);
+        this.dataSet.setValueTextSize(10.0)
+
+        let dataSetList: ArrayList<IWaterfallDataSet> = ArrayList<IWaterfallDataSet>();
+        dataSetList.append(this.dataSet);
+
+        let data: WaterfallData = WaterfallData(dataSetList);
+        data.setBarWidth(0.3);
+        return data;
+    }
+
+    func render() {
+        Column() {
+            Column() {
+                WaterfallChart(model: aboutToAppear())
+            }
+            Row() {
+                Row() {
+                    Text("普通: ")
+                    Radio(value: "CUBIC_BEZIER", group: "dataType").checked(true).onChange(
+                        {
+                        isChecked: Bool => if (isChecked) {
+                            this.data = this.getNormalData()
+                            this.model.setData(this.data);
+                        }
+                    })
+                }
+                
+            }.alignSelf(ItemAlign.Center)
+        }
+    }
+}
+
+class CustomFormatter <: IAxisValueFormatter {
+    public func getFormattedValue(value: Float64, axis: AxisBase): String {
+        let str = value.format(".0").split(".")
+        return "${str[0]}%";
+    }
+}
 ```
 
 ## 约束与限制

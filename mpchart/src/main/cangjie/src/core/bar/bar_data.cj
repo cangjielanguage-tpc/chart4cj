@@ -3,7 +3,7 @@
  */
 package core.bar
 
-public open class BarData <: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry> {
+public class BarData <: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry> {
     /**
      * the width of the bars on the x-axis, in values (not pixels)
      */
