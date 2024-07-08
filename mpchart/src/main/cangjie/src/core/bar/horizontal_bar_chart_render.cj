@@ -64,9 +64,10 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
 
                 this.mBarShadowRectBuffer.top = x - barWidthHalf
                 this.mBarShadowRectBuffer.bottom = x + barWidthHalf
-
-                trans?.rectValueToPixel(this.mBarShadowRectBuffer)
-
+                if(let Some(t) <- trans) {
+                    t.rectValueToPixel(this.mBarShadowRectBuffer)
+                }
+                
                 if (!this.mViewPortHandler().isInBoundsTop(this.mBarShadowRectBuffer.bottom)) {
                     continue
                 }
@@ -96,13 +97,21 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
         buffer.setPhases(phaseX, phaseY)
         buffer.setDataSet(index)
         buffer.setInverted(this.mChart.isInverted(dataSet.getAxisDependency()))
-        buffer.setBarWidth(this.mChart.getBarData()().getBarWidth())
+        let barData: ?BarData = this.mChart.getBarData()
+
+        if (let Some(bar) <- barData) {
+        	buffer.setBarWidth(bar.getBarWidth())
+        }
 
         buffer.feed(dataSet)
         let tempArray: Array<Float64> = buffer.buffer.toArray()
-        trans?.pointValuesToPixel(tempArray)
+        if (let Some(tran) <- trans) {
+        	tran.pointValuesToPixel(tempArray)
+            buffer.buffer = ArrayList<Float64>(tempArray)
+        }
+        let fills: ?ArrayList<Fill> = dataSet.getFills()
+        let isCustomFill: Bool = fills.isSome() && fills().size > 0
 
-        let isCustomFill: Bool = !dataSet.getFills()().isEmpty()
         let isSingleColor: Bool = dataSet.getColors().size == 1
         let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
 

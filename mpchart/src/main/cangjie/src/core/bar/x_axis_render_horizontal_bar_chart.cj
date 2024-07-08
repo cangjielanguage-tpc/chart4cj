@@ -78,7 +78,6 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
         this.mAxisLabelPaint.setColor(this.mXAxis.getTextColor())
 
         let pointF: MPPointF = MPPointF.getInstance(0.0, 0.0)
-
         if (this.mXAxis.getPosition() == XAxisPosition.TOP) {
             pointF.x = 0.0
             pointF.y = 0.5
@@ -116,7 +115,7 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
 
         let positions: Array<Float64> = Array(Int64(this.mXAxis.mEntryCount * 2.0), item: 0.0)
 
-        for (i in 0..positions.size) {
+        for (i in 0..positions.size: 2) {
 
             // only fill x values
             if (centeringEnabled) {

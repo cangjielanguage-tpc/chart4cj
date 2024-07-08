@@ -10,7 +10,7 @@ public class HorizontalBarChartModel <: BarChartModel {
 
         this.mLeftAxisTransformer = TransformerHorizontalBarChart(this.mViewPortHandler)
         this.mRightAxisTransformer = TransformerHorizontalBarChart(this.mViewPortHandler)
-
+        this.mAnimator = ChartAnimator(this)
         if (let Some(animator) <- this.mAnimator) {
             this.mRenderer = HorizontalBarChartRenderer(this, animator, this.mViewPortHandler)
         }

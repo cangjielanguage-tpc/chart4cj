@@ -8,7 +8,7 @@ import core.pie.*
 import core.bar.*
 from ohos import component.*
 from ohos import base.*
-from std import reflect.{TypeInfo}
+//from std import reflect.{TypeInfo}
 from ohos import device_info.*
 from ohos import animator.*
 
