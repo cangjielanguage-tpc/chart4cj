@@ -4257,7 +4257,7 @@ public class GridLineConfig {
      * 参数 lineWidth - 宽度
      * 参数 dashPathEffect - 是否虚线
      */
-    public init(position: Float64, lineColor: Int64, lineWidth: Float64, dashPathEffect: ?DashPathEffectConfig)
+    public init(position: Float64, lineColor: UInt32, lineWidth: Float64, dashPathEffect: ?DashPathEffectConfig)
 }
 ```
 

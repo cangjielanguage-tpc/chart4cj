@@ -53,7 +53,7 @@ class ScrollBarChartPage {
         this.limitLine2 = LimitLine(50.0, "Lower Limit")
         this.limitLine2.setLineWidth(4.0)
         this.limitLine2.enableDashedLine(10, 10, 0)
-        this.limitLine2.setLineColor(Int64(0xffff00))
+        this.limitLine2.setLineColor(0xffff00)
         this.limitLine2.setLabelPosition(LimitLabelPosition.RIGHT_BOTTOM)
         this.limitLine2.setTextSize(10.0)
 
