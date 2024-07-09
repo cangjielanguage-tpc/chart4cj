@@ -320,7 +320,7 @@ public interface IDataSet<E> where E <: EntryOhos {
     func needsFormatter(): Bool
     
     /*
-     * 设置此数据集的值的标签颜色
+     * 为该数据对象包含的所有Dataset的绘制值设置颜色
      * 
      * 参数 color - 颜色
      * 返回值 Unit
@@ -328,7 +328,7 @@ public interface IDataSet<E> where E <: EntryOhos {
     func setValueTextColor(color: UInt32): Unit
     
     /*
-     * 设置此数据集的值的标签颜色列表
+     * 为该数据对象包含的所有Dataset的绘制值设置颜色-颜色列表
      * 
      * 参数 colors - 颜色列表
      * 返回值 Unit
@@ -698,7 +698,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     public func setValueFormatter (f: ?IValueFormatter): Unit
     
     /*
-     * 为该数据对象包含的所有Dataset设置值-文本的颜色(绘制值标签的颜色)
+     * 为该数据对象包含的所有Dataset的绘制值设置颜色
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -706,7 +706,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     public func setValueTextColor (color: UInt32): Unit
     
     /*
-     * 为该数据对象包含的所有Dataset设置相同的值-颜色列表。
+     * 为该数据对象包含的所有Dataset的绘制值设置颜色-颜色列表
      * 
      * 参数 colors - 颜色集
      * 返回值 Unit 
@@ -896,7 +896,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
     public func setValueFormatter (f: IValueFormatter): Unit
     
     /*
-     * 设置文本颜色
+     * 为该数据对象包含的所有Dataset的绘制值设置颜色
      * 
      * 参数 color - 
      * 返回值 Unit 
@@ -904,7 +904,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
     public func setValueTextColor (color: UInt32): Unit
     
     /*
-     * 设置数据文本颜色
+     * 为该数据对象包含的所有Dataset的绘制值设置颜色-颜色列表
      * 
      * 参数 colors - 颜色
      * 返回值 Unit 

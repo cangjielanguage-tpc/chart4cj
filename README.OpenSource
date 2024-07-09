@@ -1,11 +1,11 @@
 [
     {
         "Name": "MPAndroidChart",
-        "License": " Apache License ",
+        "License": " Apache License 2.0",
         "License File": " LICENSE ",
-        "Version Number": " 2.0 ",
         "Owner": "PhilJay"
         "Upstream URL": "https://github.com/PhilJay/MPAndroidChart",
+        "Version Number": "v3.1.0",
         "Description": "A powerful & easy to use chart library for Android."
     }
 ]
