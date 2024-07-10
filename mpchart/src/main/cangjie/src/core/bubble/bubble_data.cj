@@ -6,6 +6,7 @@ package core.bubble
 public class BubbleData <: BarLineScatterCandleBubbleData<IBubbleDataSet, BubbleEntry> {
     public init(sets: ArrayList<IBubbleDataSet>) {
         super(sets)
+        this.notifyDataChanged()
     }
 
     /**

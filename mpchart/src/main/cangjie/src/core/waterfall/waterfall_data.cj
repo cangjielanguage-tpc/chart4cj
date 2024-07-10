@@ -19,9 +19,11 @@ public class WaterfallData <: BarLineScatterCandleBubbleData<IWaterfallDataSet, 
     }
     public init(dataSets: Array<IWaterfallDataSet>) {
         super(dataSets)
+        this.notifyDataChanged()
     }
     public init(dataSets: ArrayList<IWaterfallDataSet>) {
         super(dataSets)
+        this.notifyDataChanged()
     }
 
     public func setBarWidth(mBarWidth: Float64): Unit {
