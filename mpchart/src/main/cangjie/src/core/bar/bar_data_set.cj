@@ -31,6 +31,7 @@ public class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IBarDat
 
     public init(yVals: ArrayList<BarEntry>, label: String) {
         super(yVals, label)
+        this.calcMinMax()
         this.mHighLightColor = 0x000000
         this.calcStackSize(yVals)
         this.calcEntryCountIncludingStacks(yVals)

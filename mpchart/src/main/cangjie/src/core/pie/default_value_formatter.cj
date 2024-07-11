@@ -30,8 +30,8 @@ public class DefaultValueFormatter <: IValueFormatter {
 
         // put more logic here ...
         // avoid memory allocations here (for performance reasons)
-
-        return value.toString()
+        let str = value.format(".${getDecimalDigits()}")
+        return str
     }
 
     /**

@@ -29,6 +29,7 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
 
     public init(yVals: ArrayList<WaterfallEntry>, label: String) {
         super(yVals, label)
+        this.calcMinMax()
         this.mHighLightColor = 0x000000
         this.calcStackSize(yVals)
         this.calcEntryCountIncludingStacks(yVals)

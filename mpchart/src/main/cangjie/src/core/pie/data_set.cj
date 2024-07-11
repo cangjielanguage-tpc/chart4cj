@@ -43,31 +43,8 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
     public init(entries: ?ArrayList<E>, label: String) {
         super(label: label)
         this.mEntries = entries
-
-        match (this.mEntries) {
-            case None => this.mEntries = ArrayList<E>()
-            case Some(m) =>
-                this.mYMax = -Float64.Max
-                this.mYMin = Float64.Max
-                this.mXMax = -Float64.Max
-                this.mXMin = Float64.Max
-
-                for (e in m) {
-                    if (e.getX() < this.mXMin) {
-                        this.mXMin = e.getX()
-                    }
-
-                    if (e.getX() > this.mXMax) {
-                        this.mXMax = e.getX()
-                    }
-                    if (e.getY() < this.mYMin) {
-                        this.mYMin = e.getY()
-                    }
-
-                    if (e.getY() > this.mYMax) {
-                        this.mYMax = e.getY()
-                    }
-                }
+        if (this.mEntries.isNone()) {
+        	this.mEntries = ArrayList<E>()
         }
     }
 
@@ -80,10 +57,32 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
             return
         }
         for (entry in this.mEntries()) {
-            this.myCalcMinMax(entry)
+            if (entry is BubbleEntry) {
+                let t: ?BubbleEntry = entry as BubbleEntry
+                this.myCalcMinMaxBubble(t())
+            } else {
+                this.myCalcMinMax(entry)
+
+            }
         }
     }
+    public open func myCalcMinMaxBubble(e: BubbleEntry): Unit {
+        if (e.getX() < this.mXMin) {
+            this.mXMin = e.getX()
+        }
 
+        if (e.getX() > this.mXMax) {
+            this.mXMax = e.getX()
+        }
+
+        if (e.getY() < this.mYMin) {
+            this.mYMin = e.getY()
+        }
+
+        if (e.getY() > this.mYMax) {
+            this.mYMax = e.getY()
+        }
+    }
     public func myCalcMinMax(e: ?E): Unit {
         match (e) {
             case Some(t) =>
