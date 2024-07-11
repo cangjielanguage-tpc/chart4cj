@@ -41,11 +41,9 @@ public class XBounds {
 
         let low: Float64 = chart.getLowestVisibleX()
         let high: Float64 = chart.getHighestVisibleX()
-
         let entryFrom: ?E = dataSet.getEntryForXValue(low, Float64.NaN, rounding: Rounding.DOWN)
         let entryTo: ?E = dataSet.getEntryForXValue(high, Float64.NaN, rounding: Rounding.UP)
 
-        if (entryFrom.isSome() && entryTo.isSome()) {
             this.mins = if (let Some(ef) <- entryFrom) {
                 dataSet.getEntryIndexByEntry(ef)
             } else {
@@ -57,7 +55,6 @@ public class XBounds {
                 0
             }
             this.range = Int64(floor(Float64(this.maxs - this.mins) * phaseX))
-        }
     }
 }
 

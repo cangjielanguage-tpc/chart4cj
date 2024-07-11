@@ -19,9 +19,11 @@ public class BarData <: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry> {
     }
     public init(dataSets: Array<IBarDataSet>) {
         super(dataSets)
+        this.notifyDataChanged()
     }
     public init(dataSets: ArrayList<IBarDataSet>) {
         super(dataSets)
+        this.notifyDataChanged()
     }
 
     /**

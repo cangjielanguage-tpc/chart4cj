@@ -35,17 +35,17 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
     private var sizeBuffer: Array<Float64> = Array<Float64>(4, item: 0.0);
     private var pointBuffer: Array<Float64> = Array<Float64>(2, item: 0.0);
 
-    protected func getShapeSize(entrySize: Int64, maxSize: Int64, reference: Int64, normalizeSize: Bool): Int64 {
-        let factor: Int64 = if (normalizeSize) {
-            if (maxSize == 0) {
-                1
+    protected func getShapeSize(entrySize: Float64, maxSize: Float64, reference: Float64, normalizeSize: Bool): Float64 {
+        let factor: Float64 = if (normalizeSize) {
+            if (maxSize == 0.0) {
+                1.0
             } else {
-                Int64(sqrt(Float64(entrySize) / Float64(maxSize)))
+                sqrt(entrySize / maxSize)
             }
         } else {
-            entrySize;
+            entrySize
         }
-        let shapeSize: Int64 = reference * factor;
+        let shapeSize: Float64 = reference * factor
         return shapeSize;
     }
 
@@ -58,8 +58,9 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
         if (let Some(m) <- this.mAnimator) {
             if (let Some(v) <- this.mViewPortHandler) {
                 let phaseY: Float64 = m.getPhaseY();
-
-                this.mXBounds?.set(this.mChart, dataSet)
+                if (let Some(bounds) <- this.mXBounds) {
+                    bounds.set(this.mChart, dataSet)
+                }
 
                 this.sizeBuffer[0] = 0.0
                 this.sizeBuffer[2] = 1.0
@@ -79,20 +80,18 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                         this.pointBuffer[0] = entry.getX()
                         this.pointBuffer[1] = (entry.getY()) * phaseY
                         trans?.pointValuesToPixel(this.pointBuffer)
-
-                        let shapeHalf: Int64 = this.getShapeSize(Int64(entry.getSize()), Int64(dataSet.getMaxSize()),
-                            Int64(referenceSize), normalizeSize) / 2;
-
-                        if (!v.isInBoundsTop(this.pointBuffer[1] + Float64(shapeHalf)) ||
-                            !v.isInBoundsBottom(this.pointBuffer[1] - Float64(shapeHalf))) {
+                        let shapeHalf: Float64 = this.getShapeSize(entry.getSize(), dataSet.getMaxSize(),
+                            referenceSize, normalizeSize) / 2.0
+                        if (!v.isInBoundsTop(this.pointBuffer[1] + shapeHalf) ||
+                            !v.isInBoundsBottom(this.pointBuffer[1] - shapeHalf)) {
                             continue;
                         }
 
-                        if (!v.isInBoundsLeft(this.pointBuffer[0] + Float64(shapeHalf))) {
+                        if (!v.isInBoundsLeft(this.pointBuffer[0] + shapeHalf)) {
                             continue;
                         }
 
-                        if (!v.isInBoundsRight(this.pointBuffer[0] - Float64(shapeHalf))) {
+                        if (!v.isInBoundsRight(this.pointBuffer[0] - shapeHalf)) {
                             break;
                         }
                         let color: UInt32 = dataSet.getColor(j);
@@ -101,7 +100,7 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                         Utils.resetContext2DStyle(c, this.mRenderPaint);
 
                         c.beginPath();
-                        c.arc(this.pointBuffer[0], this.pointBuffer[1], Float64(shapeHalf), 0.0, 2.0 * Float64.PI,
+                        c.arc(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, 0.0, 2.0 * Float64.PI,
                             anticlockwise: true);
                         c.stroke();
                         c.fill();
@@ -126,12 +125,12 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 for (i in 0..dataSets.size) {
                     let dataSet: IBubbleDataSet = dataSets[i];
 
-                    if (!this.shouldDrawValues((dataSet as IDataSet<EntryOhos>)()) || dataSet.getEntryCount() < 1) {
+                    if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) {
                         continue;
                     }
 
                     // apply the text-styling defined by the DataSet
-                    this.applyValueTextStyle((dataSet as IDataSet<EntryOhos>)());
+                    this.applyValueTextStyle(dataSet)
                     if (this.mAnimator.isSome() || this.mViewPortHandler.isSome()) {
                         continue
                     }
@@ -245,23 +244,23 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                     indices[i].setDraw(this.pointBuffer[0], this.pointBuffer[1]);
 
-                    let shapeHalf: Int64 = this.getShapeSize(
-                        Int64(entry().getSize()),
-                        Int64(set().getMaxSize()),
-                        Int64(referenceSize),
+                    let shapeHalf: Float64 = this.getShapeSize(
+                        entry().getSize(),
+                        set().getMaxSize(),
+                        referenceSize,
                         normalizeSize
-                    ) / 2;
+                    ) / 2.0
 
-                    if (!this.mViewPortHandler().isInBoundsTop(this.pointBuffer[1] + Float64(shapeHalf)) ||
-                        !this.mViewPortHandler().isInBoundsBottom(this.pointBuffer[1] - Float64(shapeHalf))) {
+                    if (!this.mViewPortHandler().isInBoundsTop(this.pointBuffer[1] + shapeHalf) ||
+                        !this.mViewPortHandler().isInBoundsBottom(this.pointBuffer[1] - shapeHalf)) {
                         continue;
                     }
 
-                    if (!this.mViewPortHandler().isInBoundsLeft(this.pointBuffer[0] + Float64(shapeHalf))) {
+                    if (!this.mViewPortHandler().isInBoundsLeft(this.pointBuffer[0] + shapeHalf)) {
                         continue;
                     }
 
-                    if (!this.mViewPortHandler().isInBoundsRight(this.pointBuffer[0] - Float64(shapeHalf))) {
+                    if (!this.mViewPortHandler().isInBoundsRight(this.pointBuffer[0] - shapeHalf)) {
                         break;
                     }
 
@@ -279,7 +278,7 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                     this.mHighlightPaint.setStrokeWidth(set().getHighlightCircleWidth());
                     Utils.resetContext2DStyle(c, this.mHighlightPaint);
                     c.beginPath();
-                    c.arc(this.pointBuffer[0], this.pointBuffer[1], Float64(shapeHalf), 0.0, 2.0 * Float64.PI);
+                    c.arc(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, 0.0, 2.0 * Float64.PI);
                     c.stroke();
                     c.closePath();
                 }

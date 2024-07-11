@@ -64,7 +64,6 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
     protected func drawDataSet(c: CanvasRenderingContext2D, dataSet: WaterfallDataSet, index: Int64): Unit {
         let trans: ?Transformer = this.mChart.getTransformer(dataSet.getAxisDependency());
-
         this.mBarBorderPaint.setColor(Color(dataSet.getBarBorderColor()));
         this.mBarBorderPaint.setStrokeWidth(Utils.handleDataValues(dataSet.getBarBorderWidth()));
 
@@ -76,7 +75,6 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
             phaseX = m.getPhaseX()
             phaseY = m.getPhaseY()
         }
-
         // draw the bar shadow before the values
         if (this.mChart.isDrawBarShadowEnabled()) {
             this.mShadowPaint.setColor(Color(dataSet.getBarShadowColor()));
@@ -91,8 +89,8 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
             let barWidthHalf: Float64 = barWidth / 2.0;
             var x: Float64 = 0.0;
-
-            for (i in 0..Int64(min((ceil(Float64(dataSet.getEntryCount()) * phaseX)), Float64(dataSet.getEntryCount())))) {
+            let count = min(Int64(ceil(Float64(dataSet.getEntryCount()) * phaseX)), dataSet.getEntryCount())
+            for (i in 0..count) {
                 let e: WaterfallEntry = dataSet.getEntryForIndex(i)
 
                 x = e.getX()
@@ -131,6 +129,8 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                     this.mWaterfallShadowRectBuffer.width(), this.mWaterfallShadowRectBuffer.height())
                 match (this.mShadowPaint.getStyle()) {
                     case Style.STROKE => c.stroke();
+                    case Style.FILL => c.fill();
+                    case Style.FILL_AND_STROKE => c.fill();
                     case _ => c.fill();
                 }
                 c.closePath();
@@ -146,24 +146,23 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
         if (let Some(data) <- waterfallData) {
             buffer.setBarWidth(data.getBarWidth());
         }
-        let tempArray: Array<Float64> = buffer.buffer.toArray()
+
         buffer.feed(dataSet);
+        let tempArray: Array<Float64> = buffer.buffer.toArray()
         if (let Some(t) <- trans) {
             t.pointValuesToPixel(tempArray);
+            buffer.buffer = ArrayList<Float64>(tempArray)
         }
-
-        let fills: ?ArrayList<Fill> = dataSet.getFills()()
+        let fills: ?ArrayList<Fill> = dataSet.getFills()
         let isCustomFill: Bool = fills.isSome() && fills().size > 0
         let isSingleColor: Bool = dataSet.getColors().size == 1
         let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
-
         if (isSingleColor) {
             this.mRenderPaint.setColor(Color(dataSet.getColor()));
             if (dataSet.getOpacity().size != 0) {
                 this.mRenderPaint.setFilter(dataSet.getOpacity());
             }
         }
-
         let maxTop = buffer.getArrayTop()[buffer.getArrayTop().size - 1];
         let minBottom = buffer.getArrayBottom()[0];
         if (dataSet.getEnableMaxOrMinHighlightColor()) {
@@ -179,6 +178,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
         while (j < buffer.size()) {
             if (this.mViewPortHandler.isNone() || !this.mViewPortHandler().isInBoundsLeft(buffer.buffer[j + 2])) {
                 j += 4
+                pos++
                 continue;
             }
 
@@ -190,7 +190,6 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 // is out of bounds, reuse colors.
                 this.mRenderPaint.setColor(Color(dataSet.getColor(pos)));
             }
-
             if (isCustomFill) {
                 let fill: Fill = dataSet.getFill(pos);
 
@@ -240,7 +239,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                     trans?.pointValuesToPixel(yArray)
                     if (abs(yArray[1] - yArray[3]) > (right - left)) {
                         c.save();
-                        //c.fillStyle = h.getColor();
+                        c.fillStyle(Color(h.getColor()))
                         this.newMethod(c, left, right, radius, yArray, e, minY, maxY);
                         c.restore();
                     } else {
@@ -248,7 +247,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                             continue;
                         }
                         c.save();
-                        //c.fillStyle = h.getColor();
+                        c.fillStyle(Color(h.getColor()))
                         if (yArray[3] + 2.0 * radius > bottom) {
                             this.drawCircle(c, left, bottom - 2.0 * radius, radius);
                         } else {
@@ -270,16 +269,17 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                     trans?.pointValuesToPixel(yArray)
                     if (abs(yArray[1] - yArray[3]) > (right - left)) {
                         c.save();
-                        //c.fillStyle = h.getColor();
+                        c.fillStyle(Color(h.getColor()));
                         if (e.getHighlights().size == 1) {
                             this.drawRoundedRectangles(c, left, yArray[1], right, yArray[3], radius);
                         } else {
+                            
                             this.drawHighlights(c, left, radius, yArray, i, right, h, topNum);
                         }
                         c.restore();
                     } else {
                         c.save();
-                        //c.fillStyle = h.getColor();
+                        c.fillStyle(Color(h.getColor()));
                         if (yArray[3] + 2.0 * radius > bottom) {
                             this.drawCircle(c, left, bottom - 2.0 * radius, radius);
                         } else {
@@ -635,7 +635,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 }
 
                 // apply the text-styling defined by the DataSet
-                this.applyValueTextStyle((dataSet as IDataSet<EntryOhos>)())
+                this.applyValueTextStyle(dataSet)
 
                 let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
 
