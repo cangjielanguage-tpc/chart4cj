@@ -1,10 +1,10 @@
-/**
- * Created on 2024/4/25
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
 package core.pie
 
-/**
- * Created on 2024/4/22
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
 public open class XAxisRenderer <: AxisRenderer {
     protected var mXAxis: XAxis
