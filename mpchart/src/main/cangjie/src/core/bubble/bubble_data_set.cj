@@ -4,7 +4,7 @@
 package core.bubble
 
 public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubbleEntry> & IBubbleDataSet {
-    static var mMaxSize: Float64 = 0.0
+    private var mMaxSize: Float64 = 0.0
     protected var mNormalizeSize: Bool = true
     private var mHighlightCircleWidth: Float64 = 2.5
 
@@ -23,8 +23,8 @@ public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubbleEntry> & I
     public func myCalcMinMax(e: BubbleEntry): Unit {
         super.myCalcMinMax(e)
         let size: Float64 = e.getSize()
-        if (size > BubbleDataSet.mMaxSize) {
-            BubbleDataSet.mMaxSize = size
+        if (size > this.mMaxSize) {
+            this.mMaxSize = size
         }
     }
 
@@ -46,7 +46,7 @@ public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubbleEntry> & I
     }
 
     public func getMaxSize(): Float64 {
-        return BubbleDataSet.mMaxSize
+        return this.mMaxSize
     }
 
     public func isNormalizeSizeEnabled(): Bool {

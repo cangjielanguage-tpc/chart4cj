@@ -284,7 +284,7 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
 
     public func getEntryForXValue(xValue: Float64, closestToY: Float64, rounding!: Rounding = Rounding.CLOSEST): ?E {
         var myRounding: Rounding = rounding
-
+        
         let index: Int64 = this.getEntryIndex(xValue, closestToY, myRounding)
         if (index > -1) {
             if (let Some(entries) <- this.mEntries) {
@@ -334,11 +334,10 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
     }
 
     public func getEntryIndex(xValue: Float64, closestToY: Float64, rounding: Rounding): Int64 {
-        if (this.mEntries.isNone() || this.mEntries().size != 0) {
+        if (this.mEntries.isNone() || this.mEntries().size == 0) {
             return -1
         }
         var closest = getEntryIndexFunc(xValue)
-
         if (closest != -1) {
             let closestXValue: Float64 = this.mEntries().get(closest)().getX()
             if (rounding == Rounding.UP) {

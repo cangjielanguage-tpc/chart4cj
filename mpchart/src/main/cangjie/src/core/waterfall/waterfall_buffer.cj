@@ -56,13 +56,9 @@ public class WaterfallBuffer <: BarBuffer {
     }
 
     protected func addWaterfall(left: Float64, top: Float64, right: Float64, bottom: Float64): Unit {
-        this.index++
-        this.buffer[this.index] = left
-        this.index++
-        this.buffer[this.index] = top
-        this.index++
-        this.buffer[this.index] = right
-        this.index++
-        this.buffer[this.index] = bottom
+        this.buffer.append(left)
+        this.buffer.append(top)
+        this.buffer.append(right)
+        this.buffer.append(bottom)
     }
 }
