@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
+ */
+
 package core.pie
 
 public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorUpdateListener where D <: ChartData<S, E>,
