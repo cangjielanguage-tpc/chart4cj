@@ -119,24 +119,20 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
         if (let Some(b) <- bubbleData) {
             if ((this as DataRenderer)().isDrawingValuesAllowed(this.mChart) && this.mXBounds.isSome()) {
                 let dataSets: ArrayList<IBubbleDataSet> = b.getDataSets();
-
                 let lineHeight: Float64 = Utils.calcTextHeight(c, this.mValuePaint, "1");
-
                 for (i in 0..dataSets.size) {
                     let dataSet: IBubbleDataSet = dataSets[i];
 
                     if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) {
                         continue;
                     }
-
                     // apply the text-styling defined by the DataSet
                     this.applyValueTextStyle(dataSet)
-                    if (this.mAnimator.isSome() || this.mViewPortHandler.isSome()) {
+                    if (this.mAnimator.isNone() || this.mViewPortHandler.isNone()) {
                         continue
                     }
                     let phaseX: Float64 = max(0.0, min(1.0, this.mAnimator().getPhaseX()));
                     let phaseY: Float64 = this.mAnimator().getPhaseY();
-
                     this.mXBounds?.set(this.mChart, dataSet)
                     let positions: Array<Float64> = this.mChart.getTransformer(dataSet.getAxisDependency())().
                         generateTransformedValuesBubble(dataSet, phaseY, Int64(this.mXBounds().mins), Int64(this.mXBounds().maxs))
@@ -150,9 +146,7 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                     let iconsOffset: MPPointF = MPPointF.getInstance(dataSet.getIconsOffset());
                     iconsOffset.x = Utils.handleDataValues(iconsOffset.x)
                     iconsOffset.y = Utils.handleDataValues(iconsOffset.y)
-
-                    var j: Int64 = 0
-                    while (j < positions.size) {
+                    for (j in 0..positions.size: 2) {
                         var valueTextColor: UInt32 = dataSet.getValueTextColor(Int64(j / 2 + Int64(this.mXBounds().mins))
                         );
                         valueTextColor = UInt32(ChartColor.argb(round(255.0 * alpha),
@@ -163,7 +157,6 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                         let y: Float64 = positions[j + 1];
 
                         if ((!this.mViewPortHandler().isInBoundsLeft(x) || !this.mViewPortHandler().isInBoundsY(y))) {
-                            j += 2
                             continue;
                         }
 
@@ -183,8 +176,6 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                                 )
                             }
                         }
-
-                        j += 2
                     }
 
                     MPPointF.recycleInstance(iconsOffset);
@@ -243,7 +234,6 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                     trans?.pointValuesToPixel(this.pointBuffer)
 
                     indices[i].setDraw(this.pointBuffer[0], this.pointBuffer[1]);
-
                     let shapeHalf: Float64 = this.getShapeSize(
                         entry().getSize(),
                         set().getMaxSize(),

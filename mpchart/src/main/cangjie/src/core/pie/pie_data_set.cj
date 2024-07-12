@@ -26,6 +26,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
 
     public init(yVals: ArrayList<PiEntry>, label: String) {
         super(yVals, label);
+        this.calcMinMax()
     }
 
     public func copy(): DataSet<PiEntry> {

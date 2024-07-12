@@ -52,7 +52,7 @@ public class MarkerView <: IMarker {
         let padding: Float64 = 5.0
 
         c.beginPath()
-        //c.fillStyle = "#bcbcbc" //todo 标准库不支持
+        c.fillStyle(Color(0xFFbcbcbc))
         let left: Float64 = posX + offset.x
         let top: Float64 = posY + offset.y
         c.fillRect(left - measureWidth / 2.0 - padding, top - measureHeight - 4.0 * padding, measureWidth + 2.0 * padding,
