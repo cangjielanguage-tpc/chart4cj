@@ -3567,7 +3567,7 @@ public class HorizontalBarChartModel<: BarChartModel {
     public static func build (): HorizontalBarChartModel
     
     /*
-     * 设置最大可见区域
+     * 设置X轴最大可见区域
      * 
      * 参数 maxXRange - 最大区域
      * 返回值 Unit 
@@ -3575,7 +3575,7 @@ public class HorizontalBarChartModel<: BarChartModel {
     public open func setVisibleXRangeMaximum (maxXRange: Float64): Unit
     
     /*
-     * 设置最大最小可见区域
+     * 设置X轴最大最小可见区域
      * 
      * 参数 minXRange - 最大区域
      * 参数 maxXRange - 最小区域
