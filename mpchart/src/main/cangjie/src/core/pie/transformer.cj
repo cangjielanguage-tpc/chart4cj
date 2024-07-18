@@ -10,7 +10,7 @@ public open class Transformer {
      */
     protected var mMatrixOffset: Matrix = Matrix()
     protected var mViewPortHandler: ViewPortHandler
-    protected var matrix2D: Matrix = Matrix()
+    // protected var matrix2D: Matrix = Matrix2D() 当前UI不支持
     protected var resultPath: Path2D = Path2D()
 
     public init(viewPortHandler: ViewPortHandler) {
@@ -108,7 +108,7 @@ public open class Transformer {
 
     protected var valuePointsForGenerateTransformedValuesBubble: Array<Float64> = Array<Float64>(1, item: 0.0)
 
-    /**
+   /**
      * Transforms an List of Entry into a float array containing the x and
      * y values transformed with all matrices for the BUBBLECHART.
      *
@@ -150,32 +150,32 @@ public open class Transformer {
      * @param data
      * @return
      */
-    //    public func generateTransformedValuesLine(data: ILineDataSet, phaseX: Float64, phaseY: Float64, min: Int64,
-    //        max: Int64): Array<Float64> {
-    //        let count: Int64 = Int64(math.floor(((Float64(max - min) * phaseX) + 1.0) * 2.0))
-    //
-    //        if (this.valuePointsForGenerateTransformedValuesLine.size != count) {
-    //            this.valuePointsForGenerateTransformedValuesLine = Array<Float64>(count, item: 0.0)
-    //        }
-    //        let valuePoints: Array<Float64> = this.valuePointsForGenerateTransformedValuesLine
-    //
-    //        for (j in 0..count : 2) {
-    //            let e: ?EntryOhos = data.getEntryForIndex(j / 2 + min)
-    //
-    //            match (e) {
-    //                case Some(entryOhos) =>
-    //                    valuePoints[j] = entryOhos.getX()
-    //                    valuePoints[j + 1] = entryOhos.getY() * phaseY
-    //                case None =>
-    //                    valuePoints[j] = 0.0
-    //                    valuePoints[j + 1] = 0.0
-    //            }
-    //        }
-    //
-    //        this.getValueToPixelMatrix().mapPoints(valuePoints);
-    //
-    //        return valuePoints
-    //    }
+    public func generateTransformedValuesLine(data: ILineDataSet, phaseX: Float64, phaseY: Float64, min: Int64,
+        max: Int64): Array<Float64> {
+        let count: Int64 = Int64(math.floor(((Float64(max - min) * phaseX) + 1.0) * 2.0))
+
+        if (this.valuePointsForGenerateTransformedValuesLine.size != count) {
+            this.valuePointsForGenerateTransformedValuesLine = Array<Float64>(count, item: 0.0)
+        }
+        let valuePoints: Array<Float64> = this.valuePointsForGenerateTransformedValuesLine
+
+        for (j in 0..count : 2) {
+            let e: ?EntryOhos = data.getEntryForIndex(j / 2 + min)
+
+            match (e) {
+                case Some(entryOhos) =>
+                    valuePoints[j] = entryOhos.getX()
+                    valuePoints[j + 1] = entryOhos.getY() * phaseY
+                case None =>
+                    valuePoints[j] = 0.0
+                    valuePoints[j + 1] = 0.0
+            }
+        }
+
+        this.getValueToPixelMatrix().mapPoints(valuePoints);
+
+        return valuePoints
+    }
 
     protected var valuePointsForGenerateTransformedValuesCandle: Array<Float64> = Array<Float64>(1, item: 0.0)
 
@@ -218,25 +218,27 @@ public open class Transformer {
      *
      * @param path
      */
-    //  public func pathValueToPixel(path: Path2D): Path2D {
-    //    path = this.pathTransform(path, this.mMatrixValueToPx);
-    //    path = this.pathTransform(path, this.mViewPortHandler.getMatrixTouch());
-    //    path = this.pathTransform(path, this.mMatrixOffset);
-    //    return path;
-    //  }
+    // todo 当前UI不支持 Matrix2D
+    //      public func pathValueToPixel(path: Path2D): Path2D {
+    //        var pathBuffer: Path2D = path
+    //        pathBuffer = this.pathTransform(path, this.mMatrixValueToPx);
+    //        pathBuffer = this.pathTransform(path, this.mViewPortHandler.getMatrixTouch());
+    //        pathBuffer = this.pathTransform(path, this.mMatrixOffset);
+    //        return pathBuffer;
+    //      }
     //
-    //  public func pathTransform(path: Path2D, matrix: Matrix): Path2D {
-    //    let values = matrix.getValues();
-    //    this.matrix2D.scaleX = values[Matrix.MSCALE_X];
-    //    this.matrix2D.scaleY = values[Matrix.MSCALE_Y];
-    //    this.matrix2D.translateX = values[Matrix.MTRANS_X];
-    //    this.matrix2D.translateY = values[Matrix.MTRANS_Y];
-    //    this.matrix2D.rotateX = values[Matrix.MSKEW_X];
-    //    this.matrix2D.rotateY = values[Matrix.MSKEW_Y];
-    //    this.resultPath = new Path2D();
-    //    this.resultPath.addPath(path, this.matrix2D);
-    //    return this.resultPath;
-    //  }
+    //      public func pathTransform(path: Path2D, matrix: Matrix): Path2D {
+    //        let values = matrix.getValues();
+    //        this.matrix2D.scaleX = values[Matrix.MSCALE_X];
+    //        this.matrix2D.scaleY = values[Matrix.MSCALE_Y];
+    //        this.matrix2D.translateX = values[Matrix.MTRANS_X];
+    //        this.matrix2D.translateY = values[Matrix.MTRANS_Y];
+    //        this.matrix2D.rotateX = values[Matrix.MSKEW_X];
+    //        this.matrix2D.rotateY = values[Matrix.MSKEW_Y];
+    //        this.resultPath = Path2D();
+    //        this.resultPath.addPath(path, this.matrix2D);
+    //        return this.resultPath;
+    //      }
 
     /**
      * Transform an array of points with all matrices. VERY IMPORTANT: Keep
