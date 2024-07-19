@@ -320,25 +320,6 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
     }
 }
 
-public type ChartColorStop = (UInt32, Float64)
 
-public enum Mode <: Equatable<Mode> {
-    | LINEAR
-    | STEPPED
-    | CUBIC_BEZIER
-    | HORIZONTAL_BEZIER
 
-    public operator func ==(b: Mode): Bool {
-        match ((this, b)) {
-            case (LINEAR, LINEAR) => true
-            case (STEPPED, STEPPED) => true
-            case (CUBIC_BEZIER, CUBIC_BEZIER) => true
-            case (HORIZONTAL_BEZIER, HORIZONTAL_BEZIER) => true
-            case _ => false
-        }
-    }
 
-    public operator func !=(b: Mode): Bool {
-        return !(this == b)
-    }
-}

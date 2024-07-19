@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
-package core.line
+package core.pie
 
 public interface ILineRadarDataSet<E> <: ILineScatterCandleRadarDataSet<E> where E <: EntryOhos {
 
@@ -55,3 +55,5 @@ public interface ILineRadarDataSet<E> <: ILineScatterCandleRadarDataSet<E> where
 
     func setGradientFillColor(linearGradientColors: ArrayList<ChartColorStop>): Unit
 }
+
+public type ChartColorStop = (UInt32, Float64)

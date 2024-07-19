@@ -686,7 +686,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         }
     }
 
-    public func calcPos(isTouchEvent: Bool, event: Any) {
+    public func calcPos(isTouchEvent: Bool, event: Any): (Float64, Float64) {
         return (this.mChartTouchListener as BarLineChartTouchListener<D, S, E>)().getXyByEvent(isTouchEvent, event)
     }
 

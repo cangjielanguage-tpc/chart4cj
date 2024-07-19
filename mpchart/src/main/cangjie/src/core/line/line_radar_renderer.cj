@@ -19,11 +19,11 @@ public open class LineRadarRenderer <: LineScatterCandleRadarRenderer {
             alpha = 0.0
         }
 
-        // 使用修改后的颜色值进行绘制,cangjie UI 暂不支持以下两个接口
         c.fillStyle(
             Color(
             UInt32(ChartColor.argb(fillAlpha / 255.0, Int64(color >> 16) & 0xff, Int64(color >> 8) & 0xff,
                 Int64(color) & 0xff))))
+        // 使用修改后的颜色值进行绘制,cangjie UI 暂不支持以下接口
         //c.fill(filledPath)
     }
 
@@ -74,16 +74,15 @@ public open class LineRadarRenderer <: LineScatterCandleRadarRenderer {
                 gradient.addColorStop(color[1], Color(color[0]))
             }
         }
-        //cangjie UI 暂不支持以下两个接口
+
         c.fillStyle(gradient)
+        //cangjie UI 暂不支持以下接口
         //c.fill(filledPath)
     }
 
-    public open func drawData(c: CanvasRenderingContext2D): Unit {
-    }
-    public func drawExtras(c: CanvasRenderingContext2D): Unit {}
-
-    public func drawHighlighted(c: CanvasRenderingContext2D, indices: Array<Highlight>): Unit {}
+    public open func drawData(c: CanvasRenderingContext2D): Unit {}
+    public open func drawExtras(c: CanvasRenderingContext2D): Unit {}
+    public open func drawHighlighted(c: CanvasRenderingContext2D, indices: Array<Highlight>): Unit {}
     public func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool): Unit {}
     public open func initBuffers(): Unit {}
 }

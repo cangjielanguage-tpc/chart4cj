@@ -30,6 +30,7 @@ from mpchart import core.components.*
 from mpchart import core.bar.*
 from mpchart import core.bubble.*
 from mpchart import core.waterfall.*
+from mpchart import core.line.*
 
 
 extend Option<T> {
