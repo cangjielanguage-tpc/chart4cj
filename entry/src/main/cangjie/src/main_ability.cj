@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
+ */
+
 from ohos import base.AppLog
 from ohos import ability.AbilityStage
 from ohos import ability.LaunchReason
