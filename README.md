@@ -188,7 +188,7 @@ class PieChartPage {
         this.model.setData(data)
     }
 
-func render() {
+func build() {
         Column {
             //图表显示
             // 可通过dataSet.notifyDataSetChanged();来触发数据更新，
@@ -339,7 +339,7 @@ class BarChartMultiplePage {
         this.model.invalidate()
     }
 
-    func render() {
+    func build() {
         Column {
             Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
             BarChart(model: aboutToAppear())
@@ -481,7 +481,7 @@ class BubbleChartPage {
         this.model.setData(dataResult)
     }
 
-    func render() {
+    func build() {
         Column() {
             Column() {
                 BubbleChart(model: aboutToAppear())
@@ -603,7 +603,7 @@ class SimpleWaterfallChartPage {
         return data;
     }
 
-    func render() {
+    func build() {
         Column() {
             Column() {
                 WaterfallChart(model: aboutToAppear())

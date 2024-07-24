@@ -1,28 +1,29 @@
 /*
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
+package ohos_app_cangjie_entry
 
-from ohos import base.LengthProp
-from ohos import component.Column
-from ohos import component.Row
-from ohos import component.Button
-from ohos import component.Text
-from ohos import component.CustomView
-from ohos import component.CJEntry
-from ohos import component.loadNativeView
-from ohos import state_manage.SubscriberManager
-from ohos import state_manage.ObservedProperty
-from ohos import state_macro_manage.Entry
-from ohos import state_macro_manage.Component
-from ohos import state_macro_manage.State
-from ohos import state_macro_manage.r
+internal import ohos.base.LengthProp
+internal import ohos.component.Column
+internal import ohos.component.Row
+internal import ohos.component.Button
+internal import ohos.component.Text
+internal import ohos.component.CustomView
+internal import ohos.component.CJEntry
+internal import ohos.component.loadNativeView
+internal import ohos.state_manage.SubscriberManager
+internal import ohos.state_manage.ObservedProperty
+import ohos.state_macro_manage.Entry
+import ohos.state_macro_manage.Component
+import ohos.state_macro_manage.State
+import ohos.state_macro_manage.r
 
 @Entry
 @Component
 class MyView {
     @State
     var message: String = "Hello Cangjie"
-    func render() {
+    func build() {
         Row {
             Column {
                 Button(message).onClick {

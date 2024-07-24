@@ -1,36 +1,31 @@
 /*
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
-package waterfallPage
-from ohos import base.*
-from ohos import component.*
-from ohos import state_manage.*
-from ohos import state_macro_manage.*
+package ohos_app_cangjie_entry.waterfallPage
 
-from ohos import ability.Ability
-from ohos import ability.Want
-from ohos import ability.LaunchParam
-from ohos import window.WindowStage
+internal import  ohos.ability.Ability
+internal import  ohos.ability.Want
+internal import  ohos.ability.LaunchParam
+internal import  ohos.window.WindowStage
 
-from ohos import ability.AbilityStage
-from ohos import ability.LaunchReason
-from cj_res_entry import cj_res_entry.app
-from ohos import prompt_action.*
+internal import  ohos.ability.AbilityStage
+internal import  ohos.ability.LaunchReason
+internal import  ohos.prompt_action.*
 
-from std import sync.*
-from std import collection.*
-from std import time.Duration
-from std import math.*
-from std import random.*
-from std import convert.*
-from std import format.*
-from mpchart import core.pie.*
-from mpchart import core.utils.*
-from mpchart import core.charts.*
-from mpchart import core.waterfall.*
-from mpchart import core.components.*
+internal import std.sync.*
+internal import std.collection.*
+internal import std.time.Duration
+internal import std.math.*
+internal import std.random.*
+internal import std.convert.*
+internal import std.format.*
+internal import mpchart.pie.*
+internal import mpchart.utils.*
+internal import mpchart.charts.*
+internal import mpchart.waterfall.*
+internal import mpchart.components.*
 
-extend Option<T> {
+extend<T> Option<T> {
     operator func ()(): T {
         this.getOrThrow()
     }
