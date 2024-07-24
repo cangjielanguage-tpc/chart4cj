@@ -3,17 +3,17 @@
     "name": "entry",
     "type": "entry",
     "description": "$string:module_desc",
-    "mainElement": "CangjieAbility",
+    "mainElement": "EntryAbility",
     "deviceTypes": [
       "phone"
     ],
     "deliveryWithInstall": true,
     "installationFree": false,
-    "srcEntry": "default.MyAbilityStage",
+    "srcEntry": "ohos_app_cangjie_entry.MyAbilityStage",
     "abilities": [
       {
-        "name": "CangjieAbility",
-        "srcEntry": "default.MainAbility",
+        "name": "EntryAbility",
+        "srcEntry": "ohos_app_cangjie_entry.MainAbility",
         "description": "$string:EntryAbility_desc",
         "icon": "$media:layered_image",
         "label": "$string:EntryAbility_label",

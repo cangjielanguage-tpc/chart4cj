@@ -2,7 +2,7 @@
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
 
-package barPage
+package ohos_app_cangjie_entry.barPage
 public var otherSine: Array<Float64> = [
     0.0, //#0
     0.09983341664682815, //#1

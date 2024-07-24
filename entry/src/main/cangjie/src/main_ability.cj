@@ -1,11 +1,12 @@
 /*
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
+package ohos_app_cangjie_entry
 
-from ohos import base.AppLog
-from ohos import ability.AbilityStage
-from ohos import ability.LaunchReason
-from cj_res_entry import cj_res_entry.app
+internal import ohos.base.AppLog
+internal import ohos.ability.AbilityStage
+internal import ohos.ability.LaunchReason
+internal import cj_res_entry.app
 
 class MainAbility <: Ability {
     public init() {

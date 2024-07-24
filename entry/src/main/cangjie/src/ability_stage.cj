@@ -1,11 +1,12 @@
 /*
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
+package ohos_app_cangjie_entry
 
-from ohos import ability.Ability
-from ohos import ability.Want
-from ohos import ability.LaunchParam
-from ohos import window.WindowStage
+internal import ohos.ability.Ability
+internal import ohos.ability.Want
+internal import ohos.ability.LaunchParam
+internal import ohos.window.WindowStage
 
 class MyAbilityStage <: AbilityStage {
     public override func onCreate(): Unit {

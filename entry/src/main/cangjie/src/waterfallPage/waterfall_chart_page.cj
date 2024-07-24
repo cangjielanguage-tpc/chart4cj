@@ -1,7 +1,12 @@
 /*
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
-package waterfallPage
+package ohos_app_cangjie_entry.waterfallPage
+
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
 
 class MyOnChartValueSelectedListener <: OnChartValueSelectedListener {
     public func onValueSelected(e: EntryOhos, h: Highlight): Unit {
@@ -194,7 +199,7 @@ class SimpleWaterfallChartPage {
         return data;
     }
 
-    func render() {
+    func build() {
         Column() {
             Column() {
                 WaterfallChart(model: aboutToAppear())

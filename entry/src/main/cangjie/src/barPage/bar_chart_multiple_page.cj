@@ -2,7 +2,12 @@
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
 
-package barPage
+package ohos_app_cangjie_entry.barPage
+
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
 
 @Entry
 @Component
@@ -139,7 +144,7 @@ class BarChartMultiplePage {
         this.model.invalidate()
     }
 
-    func render() {
+    func build() {
         Column {
             Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
             BarChart(model: aboutToAppear())
