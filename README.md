@@ -5,7 +5,7 @@
 <p align="center">
 <img alt="" src="https://img.shields.io/badge/release-v0.0.1-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/build-pass-brightgreen" style="display: inline-block;" />
-<img alt="" src="https://img.shields.io/badge/cjc-v0.51.4-brightgreen" style="display: inline-block;" />
+<img alt="" src="https://img.shields.io/badge/cjc-v0.53.5-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/cjcov-NA-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/project-open-brightgreen" style="display: inline-block;" />
 </p>
@@ -22,6 +22,7 @@ chart4Ohos 是一个包含各种类型图表的图表库，主要用于业务数
 - 支持柱状图（水平、垂直）
 - 支持气泡图
 - 支持瀑布图
+- 支持线形图
 
 ## 软件架构
 
@@ -633,13 +634,83 @@ class CustomFormatter <: IAxisValueFormatter {
 }
 ```
 
+#### 折线图
+
+```cangjie
+@Entry
+@Component
+class LineChartNotAxisConfigPage {
+    private var model: LineChartModel = LineChartModel.build()
+    private var leftAxis: ?YAxis = Option<YAxis>.None
+    private var rightAxis: ?YAxis = Option<YAxis>.None
+    private var xAxis: ?XAxis = Option<XAxis>.None
+    private var dataSet: LineDataSet = LineDataSet(ArrayList<EntryOhos>(), "Data Set")
+
+    func aboutToAppear(): LineChartModel {
+        let l: ?Legend = this.model.getLegend()
+        if (let Some(v) <- l) {
+            v.setEnabled(true)
+            v.setOrientation(LegendOrientation.VERTICAL)
+            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
+            v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER)
+            v.setYOffset(-10.0)
+        }
+
+        this.model.setMaxVisibleValueCount(60)
+        let lineData: LineData = this.getLineData()
+        lineData.setValueTextSize(10.0)
+        this.model.setExtraOffsets(20.0,20.0,20.0,20.0)
+        this.model.setData(lineData)
+
+        this.model.invalidate()
+        return this.model
+    }
+
+    private func getLineData(): LineData {
+        let start: Int64 = 1
+        let values: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
+
+        values.append( EntryOhos(1.0, 5.0));
+        values.append( EntryOhos(2.0, 10.0));
+        values.append( EntryOhos(3.0, 4.0));
+        values.append( EntryOhos(4.0, 5.0));
+
+        this.dataSet = LineDataSet(values, "DataSet")
+
+        this.dataSet.setColorByColor(0x404040)
+        this.dataSet.setMode(Mode.LINEAR)
+        this.dataSet.setDrawCircles(true) //折线点画圆圈
+        this.dataSet.setDrawCircleHole(false) //设置内部孔
+
+        // 设置数据点的颜色
+        this.dataSet.setCircleColor(0x3333FF)
+
+        // 设置数据点的半径
+        this.dataSet.setCircleRadius(4.0) // 设置半径大小
+        this.dataSet.setCircleHoleRadius(2.0) //设置内径
+
+        let dataSetList: ArrayList<ILineDataSet> = ArrayList<ILineDataSet>()
+        dataSetList.append(this.dataSet)
+
+        let lineData: LineData = LineData(dataSetList)
+        return lineData
+    }
+
+    func build() {
+        Column {
+            LineChart(model: aboutToAppear())
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+    }
+}
+
+```
+
 ## 约束与限制
 
 在下述版本验证通过：
 
-    DevEco Studio: 5.0.3.400 
-    cangjie SDK: 0.5.5
-    Cangjie support Plugin: 0.5.5
+    DevEco Studio NEXT Developer Beta2(5.0.3.500) 
+    SDK: OHCangjie0.10.0-OH5.0.0.31
 
 ## 开源协议
 
