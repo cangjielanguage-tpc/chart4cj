@@ -4253,7 +4253,9 @@ public class LimitLine<: ComponentBase {
 }
 ```
 
-##### 1.10.3.5 GridLineConfig Class API Description
+##### 1.10.3.5 GridLineConfig and DashPathEffectConfig Class API Description
+
+###### 1.10.3.5.1 GridLineConfig Class API Description
 网格线
 ```cangjie
 public class GridLineConfig {
@@ -4266,6 +4268,22 @@ public class GridLineConfig {
      * 参数 dashPathEffect - 是否虚线
      */
     public init(position: Float64, lineColor: UInt32, lineWidth: Float64, dashPathEffect: ?DashPathEffectConfig)
+}
+```
+##### 1.10.3.5.2 DashPathEffectConfig Class API Description
+
+虚线
+
+```cangjie
+public class DashPathEffectConfig {
+    /*
+     * 虚线样式构造
+     * 
+     * 参数 lineLength - 线段长度
+     * 参数 spaceLength - 线段间隔
+     * 参数 phase - 相位偏移，以度数表示(通常使用0)
+     */
+    public init(lineLength: Int64, spaceLength: Int64, phase: Int64)
 }
 ```
 
@@ -6253,4 +6271,855 @@ class CustomFormatter <: IAxisValueFormatter {
         return "${str[0]}%";
     }
 }
+```
+
+### 1.13 线形图 LineChart
+
+#### 1.13.1 ILineDataSet Interface API Description
+
+```cangjie
+public interface ILineDataSet <: ILineRadarDataSet<EntryOhos> {
+    
+    /**
+     * 获取线形图的绘图模式
+     *
+     * 返回值 Mode - 绘图模式
+     */
+    func getMode(): Mode
+
+    /**
+     * 返回三次线的强度
+     * 最大值=1.0，最小值=0.05，默认值：0.2
+     *
+     * 返回值 Float64 - 强度
+     */
+    func getCubicIntensity(): Float64
+
+    /**
+     * 返回绘制的圆的大小（外圆）。
+     *
+     * 返回值 Float - 圆的大小
+     */
+    func getCircleRadius(): Float64
+
+    /**
+     * 返回绘制圆的孔的大小（内圆）
+     *
+     * 返回值 Float - 圆的大小
+     */
+    func getCircleHoleRadius(): Float64
+
+    /**
+     * 返回圆颜色数组的给定索引处圆的颜色。
+     *
+     * 参数 index - 索引
+     * 返回值 UInt32 - 颜色
+     */
+    func getCircleColorByIndex(index: Int64): UInt32
+
+    /**
+     * 返回圆颜色数目
+     *
+     * 返回值 Int64 - 数目
+     */
+    func getCircleColorCount(): Int64
+
+    /**
+     * 是否设置绘制数据点处为圆圈
+     *
+     * 返回值 Bool - true/false
+     */
+    func isDrawCirclesEnabled(): Bool
+
+    /**
+     * 获取数据点处圆的颜色
+     *
+     * 返回值
+     */
+    func getCircleHoleColor(): UInt32
+
+    /**
+     * 是否设置绘制数据点内圆处为圆圈
+     *
+     * 返回值
+     */
+    func isDrawCircleHoleEnabled(): Bool
+
+    func isDrawSteppedEnabled(): Bool
+
+    /**
+     * 获取绘制线的样式
+     *
+     * 返回值 DashPathEffect - 线条样式
+     */
+    func getDashPathEffect(): ?DashPathEffect
+
+    /**
+     * 如果是虚线返回true，否则为false
+     *
+     * 返回值 Bool - true/false
+     */
+    func isDashedLineEnabled(): Bool
+
+    /**
+     * 返回填充线格式
+     * 
+     * 返回值 IFillFormatter - 格式
+     */
+    func getFillFormatter(): IFillFormatter
+}
+
+```
+
+#### 1.13.2 LineDataSet Class API Description
+
+线形图数据集对象
+
+```cangjie
+public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
+    
+    /*
+     * 线形图数据集构造函数
+     * 
+     * 参数 yVals - 线性图数据结构集合
+     * 参数 label - 标签
+     */
+    public init (yVals: ArrayList<EntryOhos>, label: String)
+    
+    /*
+     * 获取指定索引的圆的颜色
+     * 
+     * 参数 index - 索引
+     * 返回值 UInt32 - 颜色
+     */
+    public func getCircleColor (index: Int64): UInt32
+    
+    /*
+     * 创建副本
+     * 
+     * 返回值 DataSet<EntryOhos> - 数据集副本
+     */
+    public func copy (): DataSet<EntryOhos>
+    
+    /*
+     * 获取绘图模式
+     * 
+     * 返回值 Mode - 绘图模式
+     */
+    public func getMode (): Mode
+    
+    /*
+     * 设置绘图模式
+     * 
+     * 参数 mode - 绘图模式
+     * 返回值 Unit
+     */
+    public func setMode (mode: Mode): Unit
+    
+    /*
+     * 设置曲线强度
+     * 最大值=1.0，最小值=0.05，默认值：0.2
+     * 
+     * 参数 intensity - 强度
+     * 返回值 Unit
+     */
+    public func setCubicIntensity (intensity: Float64): Unit
+    
+    /*
+     * 获取曲线强度
+     * 
+     * 返回值 Float64 - 曲线强度
+     */
+    public func getCubicIntensity (): Float64
+    
+    /*
+     * 设置绘制数据点圆的大小（外圆）
+     * 
+     * 参数 radius - 圆的大小
+     * 返回值 Unit 
+     */
+    public func setCircleRadius (radius: Float64): Unit
+    
+    /*
+     * 返回绘制数据点圆的大小（外圆）
+     * 
+     * 返回值 Float64 - 圆的大小
+     */
+    public func getCircleRadius (): Float64
+    
+    /*
+     * 设置绘制数据点中心圆的大小（内圆）
+     * 
+     * 参数 holeRadius - 中心圆的大小
+     * 返回值 Unit 
+     */
+    public func setCircleHoleRadius (holeRadius: Float64): Unit
+    
+    /*
+     * 返回绘制数据点中心圆的大小（内圆）
+     * 
+     * 返回值 Float64 - 中心圆的大小
+     */
+    public func getCircleHoleRadius (): Float64
+    
+    /*
+     * 绘制虚线的样式参数
+     * 
+     * 参数 lineLength - 线段的长度
+     * 参数 spaceLength - 线段之间的空间长度
+     * 参数 phase - 相位偏移，以度数表示(通常使用0)
+     * 返回值 Unit 
+     */
+    public func enableDashedLine (lineLength: Int64, spaceLength: Int64, phase: Int64): Unit
+    
+    /*
+     * 绘制线是实线
+     * 
+     * 返回值 Unit 
+     */
+    public func disableDashedLine (): Unit
+    
+    /*
+     * 判断 绘制线是否是虚线
+     * 
+     * 返回值 Bool - 
+     */
+    public func isDashedLineEnabled (): Bool
+    
+    /*
+     * 获取绘制线的样式
+     * 
+     * 返回值 ?DashPathEffect - 绘制线的样式
+     */
+    public func getDashPathEffect (): ?DashPathEffect
+    
+    /*
+     * 是否设置绘制数据点为圆圈(折线点)
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit 
+     */
+    public func setDrawCircles (enabled: Bool): Unit
+    
+    /*
+     * 判断 折线点处是否为圆圈
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func isDrawCirclesEnabled (): Bool
+    
+    /*
+     * 获取折现点圆圈的颜色集合
+     * 
+     * 返回值 ArrayList<UInt32> - 颜色集合
+     */
+    public func getCircleColors (): ArrayList<UInt32>
+    
+    /*
+     * 获取指定索引处圆圈的颜色
+     * 
+     * 参数 index - 指定索引
+     * 返回值 UInt32 - 颜色
+     */
+    public func getCircleColorByIndex (index: Int64): UInt32
+    
+    /*
+     * 获取圆圈颜色数目
+     * 
+     * 返回值 Int64 - 颜色数目
+     */
+    public func getCircleColorCount (): Int64
+       
+    /*
+     * 设置折线点圆圈颜色数组
+     * 
+     * 参数 colors - 颜色数组
+     * 返回值 Unit 
+     */
+    public func setCircleColors (colors: Array<UInt32>): Unit
+    
+    /*
+     * 设置圆圈颜色
+     * 
+     * 参数 color - 颜色
+     * 返回值 Unit 
+     */
+    public func setCircleColor (color: UInt32): Unit
+    
+    /*
+     * 重置圆圈颜色
+     * 
+     * 返回值 Unit 
+     */
+    public func resetCircleColors (): Unit
+    
+    /*
+     * 设置圆圈中心孔的颜色
+     * 
+     * 参数 color - 颜色
+     * 返回值 Unit 
+     */
+    public func setCircleHoleColor (color: UInt32): Unit
+    
+    /*
+     * 获取圆圈中心孔的颜色
+     * 
+     * 返回值 UInt32 - 颜色
+     */
+    public func getCircleHoleColor (): UInt32
+    
+    /*
+     * 是否设置折现点圆圈中心为孔
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit 
+     */
+    public func setDrawCircleHole (enabled: Bool): Unit
+    
+    /*
+     * 判断折现点圆圈中心是否为孔
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func isDrawCircleHoleEnabled (): Bool
+    
+    /*
+     * 设置填充线样式
+     * 
+     * 参数 formatter - 样式
+     * 返回值 Unit 
+     */
+    public func setFillFormatter (formatter: ?IFillFormatter): Unit
+    
+    /*
+     * 获取填充线样式
+     * 
+     * 返回值 IFillFormatter - 样式
+     */
+    public func getFillFormatter (): IFillFormatter
+    
+    /*
+     * 获取线条样式
+     * 
+     * 返回值 ?DashPathEffect - 线条样式
+     */
+    public func getDashPathEffectHighlight (): ?DashPathEffect
+}
+```
+
+#### 1.13.3 LineData Class API Description
+
+线形图数据包
+
+```cangjie
+public class LineData<: BarLineScatterCandleBubbleData<ILineDataSet,EntryOhos> {
+    
+    /*
+     * 线形图数据构造函数 
+     * 
+     */
+    public init ()
+    
+    /*
+     * 线形图数据构造函数 
+     * 
+     * 参数 dataSets - 线形图数据集集合
+     */
+    public init (dataSets: Array<ILineDataSet>)
+    
+    /*
+     * 线形图数据构造函数
+     * 
+     * 参数 dataSets - 线形图数据集集合
+     */
+    public init (dataSets: ArrayList<ILineDataSet>)
+}
+```
+
+#### 1.13.4 LineData Interface API Description
+
+```cangjie
+public interface LineDataProvider <: BarLineScatterCandleBubbleDataProvider<LineData, ILineDataSet, EntryOhos> {
+    
+    /*
+     * 获取线形图数据包
+     * 
+     * 返回值 LineData - 线形图数据包
+     */
+    func getLineData(): ?LineData
+
+    /*
+     * 获取Y坐标轴
+     * 
+     * 参数 dependency - 坐标轴位置
+     * 返回值 YAxis - Y坐标轴
+     */
+    func getAxis(dependency: AxisDependency): ?YAxis
+}
+```
+
+#### 1.13.5 LineChartModel Class API Description
+
+线性图配置构建类
+
+```cangjie
+public class LineChartModel<: BarLineChartBaseModel<LineData,ILineDataSet,EntryOhos>&LineDataProvider {
+    
+    /*
+     * 线性图构造
+     * 
+     * 返回值 LineChartModel - 线性图配置构建类
+     */
+    public static func build (): LineChartModel
+    
+    /*
+     * 重绘图表
+     */
+    public func invalidate ()
+    
+    /*
+     * 设置图表绘制的上下文。
+     * 
+     * 参数 context2d - 图表绘制的上下文。
+     */
+    public func setContext2D (context2d: CanvasRenderingContext2D)
+    
+    /*
+     * 更新图表正确 Size。
+     * 
+     * 参数 newWidth - 图表当前显示的宽。
+     * 参数 newHeight - 图表当前显示的高。
+     * 参数 oldWidth - 图表改变Size前显示的宽。
+     * 参数 oldHeight - 图表改变Size前显示的高。
+     * 返回值 Unit 
+     */
+    public func onChartSizeChanged (newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64)
+    
+    /*
+     * 图表绘制方法。
+     * 
+     * 参数 c - 图表绘制的上下文。
+     * 返回值 Unit 
+     */
+    public func onDraw (c: CanvasRenderingContext2D): Unit
+    
+    /*
+     * 获取线形图数据包
+     * 
+     * 返回值 ?LineData - 线形图数据包
+     */
+    public func getLineData (): ?LineData
+}
+```
+
+#### 1.13.6 LineChart Component
+
+线形图组件
+
+```cangjie
+@Component
+public class LineChart
+```
+
+### 1.14 线形图父类
+
+#### 1.14.1 ILineRadarDataSet Interface API Description
+
+```cangjie
+public interface ILineRadarDataSet<E> <: ILineScatterCandleRadarDataSet<E> where E <: EntryOhos {
+
+    /**
+     * 返回填充线以下区域的颜色。
+     *
+     * 返回值 UInt32 - 颜色
+     */
+    func getFillColor(): UInt32
+
+    /**
+     * 退回填充线以下绘制区域
+     *
+     * 返回值 ChartPixelMap - 图表像素图
+     */
+    func getFillDrawable(): ?ChartPixelMap
+
+    /**
+     * 返回填充线以下区域的透明度
+     * 默认: 85.0
+     *
+     * 返回值 Float64 - 透明度
+     */
+    func getFillAlpha(): Float64
+
+    /**
+     * 返回绘制线的宽度
+     * 返回值 Float64 - 宽度
+     */
+    func getLineWidth(): Float64
+
+    /**
+     * 如果启用填充绘图，则返回 true,反之false
+     *
+     * 返回值 Bool - true/false
+     */
+    func isDrawFilledEnabled(): Bool
+
+    /**
+     * 如果数据集应该被填充(表面)，而不仅仅是作为一条线，则设置为 true
+     * 禁用此功能将极大地提高性能
+     *
+     * 参数 enabled - true/false
+     * 返回值 Unit
+     */
+    func setDrawFilled(enabled: Bool): Unit
+
+    /**
+     * 获取填充区域颜色渐变值集合
+     *
+     * 返回值 ArrayList<ChartColorStop> - 颜色渐变集合
+     */
+    func getGradientFillColor(): ?ArrayList<ChartColorStop>
+
+    /**
+     * 设置填充区域颜色渐变集合
+     *
+     * 参数 linearGradientColors -  颜色渐变集合
+     * 返回值 Unit 
+     */
+    func setGradientFillColor(linearGradientColors: ArrayList<ChartColorStop>): Unit
+}
+
+```
+
+#### 1.14.2 LineRadarDataSet Abstract Class API Description
+
+```cangjie
+public abstract class LineRadarDataSet<E> <: LineScatterCandleRadarDataSet<E>&ILineRadarDataSet<E> {
+    
+    /*
+     * 数据集构造函数
+     * 
+     * 参数 yVals - 数据结构集合
+     * 参数 label - 标签
+     */
+    public init (yVals: ArrayList<E>, label: String)
+    
+    /**
+     * 返回填充线以下区域的颜色
+     *
+     * 返回值 UInt32 - 颜色
+     */
+    public func getFillColor (): UInt32
+    
+    /*
+     * 设置填充线以下区域的颜色
+     * 
+     * 参数 color - 颜色
+     * 返回值 Unit
+     */
+    public func setFillColor (color: UInt32): Unit
+    
+    /**
+     * 设置填充区域颜色渐变集合
+     *
+     * 参数 linearGradientColors -  颜色渐变集合
+     * 返回值 Unit 
+     */
+    public func setGradientFillColor (linearGradientColors: ArrayList<ChartColorStop>): Unit
+    
+    /**
+     * 获取填充区域颜色渐变值集合
+     *
+     * 返回值 ?ArrayList<ChartColorStop> - 颜色渐变集合
+     */
+    public func getGradientFillColor (): ?ArrayList<ChartColorStop>
+    
+    /*
+     * 获取 FillDrawa
+     * 
+     * 返回值 ?ChartPixelMap - 
+     */
+    public func getFillDrawable (): ?ChartPixelMap
+    
+    /**
+     * 退回填充线以下绘制区域
+     *
+     * 返回值 ChartPixelMap - 图表像素图
+     */
+    public func setFillDrawable (drawable: ChartPixelMap): Unit
+    
+    /**
+     * 返回填充线以下区域的透明度
+     * 默认: 85.0
+     *
+     * 返回值 Float64 - 透明度
+     */
+    public func getFillAlpha (): Float64
+    
+    /*
+     * 设置填充线以下区域的透明度
+     * 
+     * 参数 alpha - 透明度
+     * 返回值 Unit
+     */
+    public func setFillAlpha (alpha: Float64): Unit
+    
+    /*
+     * 设置线宽
+     * 
+     * 参数 width - 线宽
+     * 返回值 Unit
+     */
+    public func setLineWidth (width: Float64): Unit
+    
+    /*
+     * 获取线宽
+     * 
+     * 返回值 Float64 - 线宽
+     */
+    public func getLineWidth (): Float64
+    
+    /**
+     * 如果数据集应该被填充(表面)，而不仅仅是作为一条线，则设置为 true
+     * 禁用此功能将极大地提高性能
+     *
+     * 参数 enabled - true/false
+     * 返回值 Unit
+     */
+    public func setDrawFilled (filled: Bool): Unit
+    
+    /**
+     * 如果启用填充绘图，则返回 true,反之false
+     *
+     * 返回值 Bool - true/false
+     */
+    public func isDrawFilledEnabled (): Bool
+}
+```
+
+#### 1.14.3 LineScatterCandleRadarDataSet Abstract Class API Description
+```cangjie
+public abstract class LineScatterCandleRadarDataSet<E> <: BarLineScatterCandleBubbleDataSet<E>&ILineScatterCandleRadarDataSet<E> {
+    
+    /*
+     * 数据集构造函数
+     * 
+     * 参数 yVals - 数据结构集合
+     * 参数 label - 标签
+     */
+    public init (yVals: ArrayList<E>, label: String)
+    
+    /*
+     * 设置水平高亮
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit
+     */
+    public func setDrawHorizontalHighlightIndicator (enabled: Bool): Unit
+    
+    /*
+     * 设置垂直高亮
+     * 
+     * 参数 enabled  - true/false
+     * 返回值 Unit 
+     */
+    public func setDrawVerticalHighlightIndicator (enabled: Bool): Unit
+    
+    /*
+     * 设置水平/垂直高亮
+     * 
+     * 参数 enabled - true/false
+     * 返回值 Unit 
+     */
+    public func setDrawHighlightIndicators (enabled: Bool): Unit
+    
+    /*
+     * 判断是否是垂直高亮 
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func isVerticalHighlightIndicatorEnabled (): Bool
+    
+    /*
+     * 判断是否是水平高亮 
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func isHorizontalHighlightIndicatorEnabled (): Bool
+    
+    /*
+     * 设置高亮线宽
+     * 
+     * 参数 width - 线宽
+     * 返回值 Unit 
+     */
+    public func setHighlightLineWidth (width: Float64): Unit
+    
+    /*
+     * 获取高亮线宽
+     * 
+     * 返回值 Float64 - 线宽
+     */
+    public func getHighlightLineWidth (): Float64
+    
+    /*
+     * 高光线以虚线模式绘制
+     * 
+     * 参数 lineLength - 线段的长度
+     * 参数 spaceLength - 线段之间的空间长度
+     * 参数 phase - 相位偏移，以度数表示(通常使用0)
+     * 返回值 Unit 
+     */
+    public func enableDashedHighlightLine (lineLength: Int64, spaceLength: Int64, phase: Int64): Unit
+    
+    /*
+     * 禁用以虚线模式绘制的高亮线
+     * 
+     * 返回值 Unit 
+     */
+    public func disableDashedHighlightLine (): Unit
+    
+    /*
+     * 如果为高亮显示线启用了虚线效果，则返回true，如果未启用，则返回false，默认 false
+     * 
+     * 返回值 Bool - true/false
+     */
+    public func isDashedHighlightLineEnabled (): Bool
+    
+    /*
+     * 获取高亮线的样式
+     * 
+     * 返回值 ?DashPathEffect - 高亮线的样式
+     */
+    public open func getDashPathEffectHighlight (): ?DashPathEffect
+}
+```
+
+### 1.15 其他接口
+
+#### 1.15.1 IFillFormatter Interface
+
+线形数据集填充线应终止的垂直(y轴)位置。
+
+```cangjie
+public interface IFillFormatter {
+
+    /**
+     * 返回线形数据集填充线应终止的垂直(y轴)位置。
+     *
+     * 参数 dataSet - 当前绘制的数据集
+     * 参数 dataProvider - 当前绘制的数据包
+     * 返回值 Float64 - 位置
+     */
+    func getFillLinePosition(dataSet: ILineDataSet, dataProvider: LineDataProvider): Float64
+}
+```
+
+#### 1.15.2 DefaultFillFormatter Class
+
+线形数据集填充线应终止的垂直(y轴)位置。
+
+```cangjie
+public class DefaultFillFormatter <: IFillFormatter {
+
+    /**
+     * 返回线形数据集填充线应终止的垂直(y轴)位置。
+     *
+     * 参数 dataSet - 当前绘制的数据集
+     * 参数 dataProvider - 当前绘制的数据包
+     * 返回值 Float64 - 位置
+     */
+    func getFillLinePosition(dataSet: ILineDataSet, dataProvider: LineDataProvider): Float64
+}
+```
+
+#### 1.15.3 Mode Enum
+
+线形图绘制线模式
+
+```cangjie
+public enum Mode <: Equatable<Mode> {
+    | LINEAR            // 线
+    | STEPPED           // 90度折线
+    | CUBIC_BEZIER      // 贝塞尔曲线
+    | HORIZONTAL_BEZIER // 曲线
+}
+```
+
+#### 1.15.4 ChartColorStop Type
+
+图表线以下填充区域颜色设置
+
+```cangjie
+public type ChartColorStop = (UInt32, Float64)
+```
+
+#### 1.15.5 折线图示例
+
+```cangjie
+@Entry
+@Component
+class LineChartNotAxisConfigPage {
+    private var model: LineChartModel = LineChartModel.build()
+    private var leftAxis: ?YAxis = Option<YAxis>.None
+    private var rightAxis: ?YAxis = Option<YAxis>.None
+    private var xAxis: ?XAxis = Option<XAxis>.None
+    private var dataSet: LineDataSet = LineDataSet(ArrayList<EntryOhos>(), "Data Set")
+
+    func aboutToAppear(): LineChartModel {
+        let l: ?Legend = this.model.getLegend()
+        if (let Some(v) <- l) {
+            v.setEnabled(true)
+            v.setOrientation(LegendOrientation.VERTICAL)
+            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
+            v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER)
+            v.setYOffset(-10.0)
+        }
+
+        this.model.setMaxVisibleValueCount(60)
+        let lineData: LineData = this.getLineData()
+        lineData.setValueTextSize(10.0)
+        this.model.setExtraOffsets(20.0,20.0,20.0,20.0)
+        this.model.setData(lineData)
+
+        this.model.invalidate()
+        return this.model
+    }
+
+    private func getLineData(): LineData {
+        let start: Int64 = 1
+        let values: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
+
+        values.append( EntryOhos(1.0, 5.0));
+        values.append( EntryOhos(2.0, 10.0));
+        values.append( EntryOhos(3.0, 4.0));
+        values.append( EntryOhos(4.0, 5.0));
+
+        this.dataSet = LineDataSet(values, "DataSet")
+
+        this.dataSet.setColorByColor(0x404040)
+        this.dataSet.setMode(Mode.LINEAR)
+        this.dataSet.setDrawCircles(true) //折线点画圆圈
+        this.dataSet.setDrawCircleHole(false) //设置内部孔
+
+        // 设置数据点的颜色
+        this.dataSet.setCircleColor(0x3333FF)
+
+        // 设置数据点的半径
+        this.dataSet.setCircleRadius(4.0) // 设置半径大小
+        this.dataSet.setCircleHoleRadius(2.0) //设置内径
+
+        let dataSetList: ArrayList<ILineDataSet> = ArrayList<ILineDataSet>()
+        dataSetList.append(this.dataSet)
+
+        let lineData: LineData = LineData(dataSetList)
+        return lineData
+    }
+
+    func build() {
+        Column {
+            LineChart(model: aboutToAppear())
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+    }
+}
+
 ```
