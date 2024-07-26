@@ -85,7 +85,7 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
         if (let Some(md: ChartData<IPieDataSet, PiEntry>) <- this.mData) {
             this.calcMinMax()
 
-            this.mLegendRenderer?.computeLegend(md as ChartData<IDataSet<EntryOhos>, EntryOhos>)
+            this.mLegendRenderer?.computeLegend(md)
 
             this.calculateOffsets()
         } else {

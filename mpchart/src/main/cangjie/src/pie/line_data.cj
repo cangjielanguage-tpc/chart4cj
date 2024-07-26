@@ -9,9 +9,11 @@ public class LineData <: BarLineScatterCandleBubbleData<ILineDataSet, EntryOhos>
     }
     public init(dataSets: Array<ILineDataSet>) {
         super(dataSets)
+        this.notifyDataChanged()
     }
 
     public init(dataSets: ArrayList<ILineDataSet>) {
         super(dataSets)
+        this.notifyDataChanged()
     }
 }

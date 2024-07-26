@@ -292,14 +292,11 @@ public class LineChartRenderer <: LineRadarRenderer {
         } else {
             canvas = c
         }
-
         this.mXBounds().set(this.mChart, dataSet)
-
         // if drawing filled is enabled
         if (dataSet.isDrawFilledEnabled() && entryCount > 0 && trans.isSome()) {
             this.drawLinearFill(c, dataSet, trans(), this.mXBounds())
         }
-
         // more than 1 color
         if (dataSet.getColors().size > 1) {
             let Float64OfFloats = pointsPerEntryPair * 2
@@ -395,13 +392,12 @@ public class LineChartRenderer <: LineRadarRenderer {
                 })
                 e2 = dataSet.getEntryForIndex(x)
 
-                j += 1
                 this.mLineBuffer[j] = e1.getX()
-                j += 1
+                j++
                 this.mLineBuffer[j] = e1.getY() * phaseY
+                j++
 
                 if (isDrawSteppedEnabled) {
-                    j += 1
                     this.mLineBuffer[j] = e2.getX()
                     j += 1
                     this.mLineBuffer[j] = e1.getY() * phaseY
@@ -409,11 +405,12 @@ public class LineChartRenderer <: LineRadarRenderer {
                     this.mLineBuffer[j] = e2.getX()
                     j += 1
                     this.mLineBuffer[j] = e1.getY() * phaseY
+                    j += 1
                 }
-                j += 1
                 this.mLineBuffer[j] = e2.getX()
                 j += 1
                 this.mLineBuffer[j] = e2.getY() * phaseY
+                j += 1
             }
 
             if (j > 0) {
@@ -432,6 +429,7 @@ public class LineChartRenderer <: LineRadarRenderer {
                 for (i in 0..size : 2) {
                     canvas.lineTo(this.mLineBuffer[i], this.mLineBuffer[i + 1])
                 }
+
                 canvas.stroke()
                 canvas.closePath()
             }

@@ -58,34 +58,35 @@ DevEco Studio 编译构建
 #### 饼状图
 
 ```cangjie
-from ohos import base.LengthProp
-from ohos import component.Column
-from ohos import component.Row
-from ohos import component.Button
-from ohos import component.Text
-from ohos import component.CustomView
-from ohos import component.CJEntry
-from ohos import component.loadNativeView
-from ohos import state_manage.SubscriberManager
-from ohos import state_manage.ObservedProperty
-from ohos import state_macro_manage.Entry
-from ohos import state_macro_manage.Component
-from ohos import state_macro_manage.State
-from ohos import state_macro_manage.r
-from ohos import base.*
-from ohos import component.*
+import ohos.state_macro_manage.*
+import ohos.base.LengthProp
+import ohos.component.Column
+import ohos.component.Row
+import ohos.component.Button
+import ohos.component.Text
+import ohos.component.CustomView
+import ohos.component.CJEntry
+import ohos.component.loadNativeView
+import ohos.state_manage.SubscriberManager
+import ohos.state_manage.ObservedProperty
+import ohos.state_macro_manage.Entry
+import ohos.state_macro_manage.Component
+import ohos.state_macro_manage.State
+import ohos.state_macro_manage.r
+import ohos.base.*
+import ohos.component.*
 
-from std import collection.{ArrayList}
-from std import math.*
-from std import random.*
-from mpchart import core.pie.*
-from mpchart import core.utils.*
-from mpchart import core.components.*
+import std.collection.{ArrayList}
+import std.math.*
+import std.random.*
+import mpchart.pie.*
+import mpchart.utils.*
+import mpchart.components.*
 
 
 @Entry
 @Component
-class PieChartPage {
+class PieChartPageReadme {
     //标题栏标题
     private var title: String = "PieChart"
 
@@ -201,13 +202,15 @@ func build() {
     }
 }
 ```
-
+<p align="left">
+<img src="./doc/assets/pie.png" width="30%" >
+</p>
 #### 柱状图
 
 ```cangjie
 @Entry
 @Component
-class BarChartMultiplePage {
+class BarChartPageReadme {
     private var title: String = "Negative"
     private var model: BarChartModel = BarChartModel.build()
     private var leftAxis: ?YAxis = Option<YAxis>.None
@@ -349,13 +352,15 @@ class BarChartMultiplePage {
 }
 
 ```
-
+<p align="left">
+<img src="./doc/assets/bar.png" width="30%" >
+</p>
 #### 气泡图
 
 ```cangjie
 @Entry
 @Component
-class BubbleChartPage {
+class BubbleChartPageReadme {
     private var menuItemArr: Array<String> = ["Animate X", "Animate Y", "Animate XY"]
     private var title: String = "BubbleChartPage"
     private var model: BubbleChartModel = BubbleChartModel.build()
@@ -492,13 +497,15 @@ class BubbleChartPage {
 }
 
 ```
-
+<p align="left">
+<img src="./doc/assets/bubble.png" width="30%" >
+</p>
 #### 瀑布图
 
 ```cangjie
 @Entry
 @Component
-class SimpleWaterfallChartPage {
+class WaterfallChartPageReadme {
     private var model: WaterfallChartModel = WaterfallChartModel.build()
     private var dataSet: WaterfallDataSet = WaterfallDataSet(ArrayList<WaterfallEntry>(), "")
     private var leftAxis: ?YAxis = Option<YAxis>.None
@@ -518,7 +525,7 @@ class SimpleWaterfallChartPage {
 
         let l: ?Legend = this.model.getLegend();
         if (let Some(legend) <- l) {
-            legend.setEnabled(false);
+            legend.setEnabled(true);
         }
         
         this.model.setMaxVisibleValueCount(40);
@@ -633,13 +640,15 @@ class CustomFormatter <: IAxisValueFormatter {
     }
 }
 ```
-
+<p align="left">
+<img src="./doc/assets/waterfall.png" width="30%" >
+</p>
 #### 折线图
 
 ```cangjie
 @Entry
 @Component
-class LineChartNotAxisConfigPage {
+class LineChartNotAxisConfigPageReadme {
     private var model: LineChartModel = LineChartModel.build()
     private var leftAxis: ?YAxis = Option<YAxis>.None
     private var rightAxis: ?YAxis = Option<YAxis>.None
@@ -652,7 +661,8 @@ class LineChartNotAxisConfigPage {
             v.setEnabled(true)
             v.setOrientation(LegendOrientation.VERTICAL)
             v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER)
+            v.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
+            v.setDrawInside(true)
             v.setYOffset(-10.0)
         }
 
@@ -704,7 +714,9 @@ class LineChartNotAxisConfigPage {
 }
 
 ```
-
+<p align="left">
+<img src="./doc/assets/liner.png" width="30%" >
+</p>
 ## 约束与限制
 
 在下述版本验证通过：

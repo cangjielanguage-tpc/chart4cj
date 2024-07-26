@@ -33,8 +33,8 @@ public abstract class BaseDataSet<E> <: IDataSet<E> where E <: EntryOhos {
      */
     protected var mValueTypeface: FontFamily = FontFamily.NONE
     private var mForm: LegendForm = LegendForm.DEFAULT
-    private var mFormSize: Float64 = 0.0
-    private var mFormLineWidth: Float64 = 0.0
+    private var mFormSize: Float64 = Float64.NaN
+    private var mFormLineWidth: Float64 = Float64.NaN
     private var mFormLineDashEffect: ?DashPathEffect = None
     /**
      * if true, y-values are drawn on the chart

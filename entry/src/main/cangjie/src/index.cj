@@ -2,9 +2,10 @@
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
 package ohos_app_cangjie_entry
-
+import ohos.state_macro_manage.*
 internal import ohos.base.LengthProp
 internal import ohos.component.Column
+internal import ohos.component.Scroll
 internal import ohos.component.Row
 internal import ohos.component.Button
 internal import ohos.component.Text
@@ -17,19 +18,60 @@ import ohos.state_macro_manage.Entry
 import ohos.state_macro_manage.Component
 import ohos.state_macro_manage.State
 import ohos.state_macro_manage.r
+import ohos.image.createPixelMap
+import ohos.image.PixelMapFormat
+import ohos.image.Size
+import ohos.image.InitializationOptions
+import ohos.image.DecodingOptions
+import ohos.image.createImageSource
+import ohos.ability.*
+import ohos.router.*
+import encoding.json.*
+//import service.*
+import std.collection.*
+
+import ohos.base.*
+import ohos.state_macro_manage.*
+import ohos.ability.Ability
+import ohos.ability.Want
+import ohos.ability.LaunchParam
+import ohos.window.WindowStage
+import ohos.ability.AbilityStage
+import ohos.ability.LaunchReason
+
+
+func getData(): ArrayList<String> {
+    let arr = ArrayList<String>(
+        "LineChartNotAxisConfigPage"
+
+
+
+
+
+    )
+    return arr
+}
 
 @Entry
 @Component
 class MyView {
-    @State
-    var message: String = "Hello Cangjie"
-    func build() {
-        Row {
-            Column {
-                Button(message).onClick {
-                    evt => AppLog.info("Hello Cangjie")
-                }.fontSize(40).height(80)
-            }.width(100.percent)
-        }.height(100.percent)
-    }
+        func build() {
+        Column {
+                        Button("WaterfallChartPageReadme")
+                                .onClick {
+                                Router.push(url: "WaterfallChartPageReadme")
+                            }
+
+
+
+                        Button("LineChartNotAxisConfigPageReadme")
+                                .onClick {
+                                Router.push(url: "LineChartNotAxisConfigPageReadme")
+                            }
+
+
+                }
+
+        }
 }
+
