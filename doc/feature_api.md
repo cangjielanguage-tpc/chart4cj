@@ -203,8 +203,8 @@ public interface IDataSet<E> where E <: EntryOhos {
     /*
      * 从DataSets条目数组中删除条目
      * 
-     * 参数 e - 
-     * 返回值 Bool
+     * 参数 e - EntryOhos 子类
+     * 返回值 Bool - 如果成功则返回true，如果不成功则返回false
      */
     func removeEntry(e: E): Bool
 
@@ -212,7 +212,7 @@ public interface IDataSet<E> where E <: EntryOhos {
      * 从数据集中删除最接近给定x值的Entry对象
      * 
      * 参数 xValue - x值
-     * 返回值 Bool
+     * 返回值 Bool - 如果成功则返回true，如果不成功则返回false
      */
     func removeEntryByXValue(xValue: Float64): Bool
     
@@ -4651,7 +4651,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setMaxVisibleValueCount (count: Int64): Unit
     
     /*
-     * 设置图表可绘制的最大数量
+     * 获取置图表可绘制的最大数量
      * 
      * 返回值 Int64 - 数量 
      */
@@ -5142,12 +5142,12 @@ public interface OnDrawListener {
 
 ### 1.11 气泡图 BubbleChart
 
-#### 1.11.1 BubbleEntry Class API Description
+#### 1.11.1 BubblesEntry Class API Description
 
 气泡图数据结构
 
 ```cangjie
-public class BubbleEntry<: EntryOhos {
+public class BubblesEntry<: EntryOhos {
     
     /*
      * 数据结构构造函数
@@ -5163,9 +5163,9 @@ public class BubbleEntry<: EntryOhos {
     /*
      * 创建一个气泡图数据结构副本
      * 
-     * 返回值 BubbleEntry - 气泡图数据结构
+     * 返回值 BubblesEntry - 气泡图数据结构
      */
-    public func copy (): BubbleEntry
+    public func copy (): BubblesEntry
     
     /*
      * 获取气泡图大小
@@ -5189,7 +5189,7 @@ public class BubbleEntry<: EntryOhos {
 气泡图数据对象
 
 ```cangjie
-public interface IBubbleDataSet <: IBarLineScatterCandleBubbleDataSet<BubbleEntry> {
+public interface IBubbleDataSet <: IBarLineScatterCandleBubbleDataSet<BubblesEntry> {
 
     /**
      * 设置高亮显示时围绕气泡的圆的宽度
@@ -5228,7 +5228,7 @@ public interface IBubbleDataSet <: IBarLineScatterCandleBubbleDataSet<BubbleEntr
 气泡图数据集对象
 
 ```cangjie
-public class BubbleDataSet<: BarLineScatterCandleBubbleDataSet<BubbleEntry> & IBubbleDataSet {
+public class BubbleDataSet<: BarLineScatterCandleBubbleDataSet<BubblesEntry> & IBubbleDataSet {
     
     /*
      * 构造 
@@ -5236,7 +5236,7 @@ public class BubbleDataSet<: BarLineScatterCandleBubbleDataSet<BubbleEntry> & IB
      * 参数 yVals - 气泡图数据结构集合
      * 参数 label - 标签
      */
-    public init (yVals: ArrayList<BubbleEntry>, label: String)
+    public init (yVals: ArrayList<BubblesEntry>, label: String)
     
     /**
      * 设置高亮显示时围绕气泡的圆的宽度
@@ -5256,9 +5256,9 @@ public class BubbleDataSet<: BarLineScatterCandleBubbleDataSet<BubbleEntry> & IB
     /*
      * 创建气泡图数据集对象副本
      * 
-     * 返回值 DataSet<BubbleEntry> - 数据集对象副本
+     * 返回值 DataSet<BubblesEntry> - 数据集对象副本
      */
-    public func copy (): DataSet<BubbleEntry>
+    public func copy (): DataSet<BubblesEntry>
       
     /**
      * 是否启用常规化大小
@@ -5284,7 +5284,7 @@ public class BubbleDataSet<: BarLineScatterCandleBubbleDataSet<BubbleEntry> & IB
 气泡图数据包
 
 ```cangjie
-public class BubbleData<: BarLineScatterCandleBubbleData<IBubbleDataSet,BubbleEntry> {
+public class BubbleData<: BarLineScatterCandleBubbleData<IBubbleDataSet,BubblesEntry> {
     
     /*
      * 构造 
@@ -5306,7 +5306,7 @@ public class BubbleData<: BarLineScatterCandleBubbleData<IBubbleDataSet,BubbleEn
 #### 1.11.5 BubbleDataProvider Interface API Description
 
 ```cangjie
-public interface BubbleDataProvider <: BarLineScatterCandleBubbleDataProvider<BubbleData, IBubbleDataSet, BubbleEntry> {
+public interface BubbleDataProvider <: BarLineScatterCandleBubbleDataProvider<BubbleData, IBubbleDataSet, BubblesEntry> {
     /*
      * 获取气泡图数据包 
      * 
@@ -5322,7 +5322,7 @@ public interface BubbleDataProvider <: BarLineScatterCandleBubbleDataProvider<Bu
 气泡图配置构建类
 
 ```cangjie
-public class BubbleChartModel<: BarLineChartBaseModel<BubbleData, IBubbleDataSet, BubbleEntry> & BubbleDataProvider {
+public class BubbleChartModel<: BarLineChartBaseModel<BubbleData, IBubbleDataSet, BubblesEntry> & BubbleDataProvider {
     
     /*
      * 气泡图配置构建
@@ -5435,14 +5435,14 @@ class BubbleChartPage {
         }
 
         let start: Int64 = 1
-        let values: ArrayList<BubbleEntry> = ArrayList<BubbleEntry>()
+        let values: ArrayList<BubblesEntry> = ArrayList<BubblesEntry>()
         for (i in start..20) {
             let val = (Random().nextFloat64() * 41.0)
 
             if (Random().nextFloat64() * 100.0 < 25.0) {
-                values.append(BubbleEntry(Float64(i), val))
+                values.append(BubblesEntry(Float64(i), val))
             } else {
-                values.append(BubbleEntry(Float64(i), val))
+                values.append(BubblesEntry(Float64(i), val))
             }
         }
 
@@ -5465,16 +5465,16 @@ class BubbleChartPage {
      * @param range  y轴范围
      */
     private func setData(count: Int64, range: Float64): Unit {
-        let values1 = ArrayList<BubbleEntry>()
-        let values2 = ArrayList<BubbleEntry>()
-        let values3 = ArrayList<BubbleEntry>()
+        let values1 = ArrayList<BubblesEntry>()
+        let values2 = ArrayList<BubblesEntry>()
+        let values3 = ArrayList<BubblesEntry>()
 
         for (i in 0..count) {
-            values1.append(BubbleEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            values1.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
             )
-            values2.append(BubbleEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            values2.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
             )
-            values3.append(BubbleEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            values3.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
             )
         }
 
@@ -6841,7 +6841,7 @@ public abstract class LineRadarDataSet<E> <: LineScatterCandleRadarDataSet<E>&IL
     public func getFillDrawable (): ?ChartPixelMap
     
     /**
-     * 退回填充线以下绘制区域
+     * 设置填充线以下绘制区域
      *
      * 返回值 ChartPixelMap - 图表像素图
      */
@@ -7050,7 +7050,8 @@ public enum Mode <: Equatable<Mode> {
 图表线以下填充区域颜色设置
 
 ```cangjie
-public type ChartColorStop = (UInt32, Float64)
+// (UInt32, Float64):(颜色，透明度)
+public type ChartColorStop = (UInt32, Float64) 
 ```
 
 #### 1.15.5 折线图示例

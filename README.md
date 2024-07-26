@@ -416,14 +416,14 @@ class BubbleChartPageReadme {
         }
 
         let start: Int64 = 1
-        let values: ArrayList<BubbleEntry> = ArrayList<BubbleEntry>()
+        let values: ArrayList<BubblesEntry> = ArrayList<BubblesEntry>()
         for (i in start..20) {
             let val = (Random().nextFloat64() * 41.0)
 
             if (Random().nextFloat64() * 100.0 < 25.0) {
-                values.append(BubbleEntry(Float64(i), val))
+                values.append(BubblesEntry(Float64(i), val))
             } else {
-                values.append(BubbleEntry(Float64(i), val))
+                values.append(BubblesEntry(Float64(i), val))
             }
         }
 
@@ -441,16 +441,16 @@ class BubbleChartPageReadme {
     }
 
     private func setData(count: Int64, range: Float64): Unit {
-        let values1 = ArrayList<BubbleEntry>()
-        let values2 = ArrayList<BubbleEntry>()
-        let values3 = ArrayList<BubbleEntry>()
+        let values1 = ArrayList<BubblesEntry>()
+        let values2 = ArrayList<BubblesEntry>()
+        let values3 = ArrayList<BubblesEntry>()
 
         for (i in 0..count) {
-            values1.append(BubbleEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            values1.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
             )
-            values2.append(BubbleEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            values2.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
             )
-            values3.append(BubbleEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            values3.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
             )
         }
 
