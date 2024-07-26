@@ -391,7 +391,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         }
 
         if (this.mLegendRenderer.isSome()) {
-            this.mLegendRenderer().computeLegend(this.mData() as ChartData<IDataSet<EntryOhos>, EntryOhos>)
+            this.mLegendRenderer().computeLegend(this.mData)
         }
 
         this.calculateOffsets()

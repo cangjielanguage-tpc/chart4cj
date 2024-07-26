@@ -163,7 +163,16 @@ public abstract class AxisRenderer <: Renderer {
         }
 
         // Normalize interval
-        let intervalMagnitude: Float64 = Utils.roundToNextSignificant(pow(10.0, floor(log10(interval))))
+        let intervalMagnitude: Float64 = Utils.roundToNextSignificant(
+            pow(
+                10.0,
+                if (interval == 0.0) {
+                    0.0
+                } else {
+                    log10(interval)
+                }
+            )
+        )
         let intervalSigDigit: Float64 = floor((interval / intervalMagnitude))
         if (intervalSigDigit > 5.0) {
             // Use one order of magnitude higher, to avoid intervals like 0.9 or 90

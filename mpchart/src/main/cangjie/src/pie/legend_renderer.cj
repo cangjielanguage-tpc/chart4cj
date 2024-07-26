@@ -51,8 +51,8 @@ public class LegendRenderer <: Renderer {
 
     protected var computedEntries: ArrayList<LegendEntry> = ArrayList<LegendEntry>()
 
-    private func computeLegendMatchDataSet(dataSet: ?IDataSet<EntryOhos>,
-        data: ?ChartData<IDataSet<EntryOhos>, EntryOhos>, i: Int64): Unit {
+    private func computeLegendMatchDataSet<D, S, E>(dataSet: ?S, data: ?D, i: Int64): Unit where D <: ChartData<S, E>,
+        S <: IDataSet<E>, E <: EntryOhos {
         let clrs: ArrayList<UInt32> = dataSet().getColors()
         let entryCount: Int64 = dataSet().getEntryCount()
         match (dataSet) {
@@ -129,7 +129,7 @@ public class LegendRenderer <: Renderer {
                     );
                 }
             case _ =>
-                let j: Int64 = 0;
+                var j: Int64 = 0;
                 while (j < clrs.size && j < entryCount) {
                     var label: String = ""
 
@@ -163,6 +163,7 @@ public class LegendRenderer <: Renderer {
                             clrsData
                         )
                     );
+                    j ++
                 }
         }
     }
@@ -171,13 +172,13 @@ public class LegendRenderer <: Renderer {
      *
      * @param data
      */
-    public func computeLegend(data: ?ChartData<IDataSet<EntryOhos>, EntryOhos>): Unit {
+    public func computeLegend<D, S, E>(data: ?D): Unit where D <: ChartData<S, E>, S <: IDataSet<E>, E <: EntryOhos {
         if (this.mLegend.isSome() && !this.mLegend().isLegendCustom() && data.isSome()) {
             this.computedEntries.clear()
 
             // loop for building up the colors and labels used in the legend
             for (i in 0..data().getDataSetCount()) {
-                let dataSet: Option<IDataSet<EntryOhos>> = data().getDataSetByIndex(i)
+                let dataSet: Option<S> = data().getDataSetByIndex(i)
                 if (dataSet.isNone()) {
                     continue
                 }

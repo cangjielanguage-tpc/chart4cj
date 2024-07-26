@@ -29,7 +29,11 @@ public class Matrix {
     private var data: Array<Float64> = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
 
     public func reset() {
-        this.data = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+        this.data[Matrix.MSCALE_X] = 1.0
+        this.data[Matrix.MSCALE_Y] = 1.0
+        this.data[Matrix.MPERSP_2] = 1.0
+        this.data[Matrix.MTRANS_X] = 0.0
+        this.data[Matrix.MTRANS_Y] = 0.0
     }
 
     public func set(matrix: Matrix) {

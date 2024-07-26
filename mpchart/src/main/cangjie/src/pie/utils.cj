@@ -334,6 +334,7 @@ public abstract class Utils {
             context2D.lineWidth(paint.getStrokeWidth())
             context2D.textAlign(paint.getTextAlign())
             context2D.textBaseline(paint.getTextBaseline())
+            context2D.font(size: Length(paint.getTextSize()))
 
             let dashEffect: ?DashPathEffect = paint.getDashPathEffect()
             if (let Some(dashE) <- dashEffect) {
