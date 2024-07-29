@@ -247,7 +247,7 @@ public interface IDataSet<E> where E <: EntryOhos {
     func getLabel(): String
     
     /*
-     * 设置描述数据集的标签字符串
+     * 设置描述数据集的标签字符串，默认 DataSet
      * 
      * 参数 label - 标签字符串
      * 返回值 Unit
@@ -320,7 +320,7 @@ public interface IDataSet<E> where E <: EntryOhos {
     func needsFormatter(): Bool
     
     /*
-     * 为该数据对象包含的所有Dataset的绘制值设置颜色
+     * 为该数据对象包含的所有Dataset的绘制值设置颜色，默认 0x000000 （黑色）
      * 
      * 参数 color - 颜色
      * 返回值 Unit
@@ -344,7 +344,7 @@ public interface IDataSet<E> where E <: EntryOhos {
     func setValueTypeface(tf: FontFamily): Unit
     
     /*
-     * 设置此数据集的值标签的文本大小。
+     * 设置此数据集的值标签的文本大小，（默认 8.0vp,详细请看cangjieUI组件中像素模块）
      * 
      * 参数 size - 文本大小
      * 返回值 Unit
@@ -402,7 +402,7 @@ public interface IDataSet<E> where E <: EntryOhos {
     func getFormLineDashEffect(): ?DashPathEffect
     
     /*
-     * 将其设置为true可在图表上绘制y值
+     * 将其设置为true可在图表上绘制y值，默认值为true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit
@@ -417,7 +417,7 @@ public interface IDataSet<E> where E <: EntryOhos {
     func isDrawValuesEnabled(): Bool
     
     /*
-     * 将此设置为true可在图表上绘制y图标。
+     * 将此设置为true可在图表上绘制y图标,默认值为true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit
@@ -432,7 +432,7 @@ public interface IDataSet<E> where E <: EntryOhos {
     func isDrawIconsEnabled(): Bool
     
     /*
-     * 图表上绘制的图标的偏移量
+     * 图表上绘制的图标的偏移量,默认MPPointF(0,0)
      * 
      * 参数 offset - 偏移量
      * 返回值 Unit
@@ -447,7 +447,7 @@ public interface IDataSet<E> where E <: EntryOhos {
     func getIconsOffset(): MPPointF
     
     /*
-     * 设置此数据集的可见性
+     * 设置此数据集的可见性,默认值为true
      * 
      * 参数 visible - true/false
      * 返回值 Int64
@@ -698,7 +698,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     public func setValueFormatter (f: ?IValueFormatter): Unit
     
     /*
-     * 为该数据对象包含的所有Dataset的绘制值设置颜色
+     * 为该数据对象包含的所有Dataset的绘制值设置颜色，默认 0x000000 （黑色）
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -722,7 +722,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     public func setValueTypeface (tf: FontFamily): Unit
     
     /*
-     * 设置此数据对象包含的所有DataSet的值-文本的大小(以vp为单位)
+     * 设置此数据集的值标签的文本大小，（默认 8.0vp,详细请看cangjieUI组件中像素模块）
      * 
      * 参数 size - 字体大小
      * 返回值 Unit 
@@ -730,7 +730,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     public func setValueTextSize (size: Float64): Unit
     
     /*
-     * 启用/禁用此数据对象包含的所有DataSet的绘图值(值-文本)
+     * 启用/禁用此数据对象包含的所有DataSet的绘图值(值-文本),默认值为true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -739,7 +739,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     
     /*
      * 启用/禁用此数据对象包含的所有DataSet的突出显示值。如果设置为true这意味着可以通过编程方式或通过触摸手势突出显示值。
-     * 
+     * 默认值为true
      * 参数 enabled - true/false 
      * 返回值 Unit 
      */
@@ -783,7 +783,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     public func getMaxEntryCountSet (): ?S
     
     /*
-     * 设置是否仅通过X轴距离来判断是否高亮点。
+     * 设置是否仅通过X轴距离来判断是否高亮,默认值false
      * 
      * 参数 highlightByXDistance - 是否仅通过X轴距离来判断是否高亮点
      */
@@ -838,7 +838,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
     public func addColor (color: UInt32): Unit
     
     /*
-     * 设置此DataSet应使用的唯一颜色。
+     * 设置此DataSet应使用的唯一颜色,默认值 0x8ceaff
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -848,7 +848,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
     /*
      * 设置具有特定alpha值的颜色
      * 
-     * 参数 color - 颜色
+     * 参数 color - 颜色，默认0x8ceaff
      * 参数 alpha - 透明度（0.0-1.0）
      * 返回值 Unit 
      */
@@ -871,7 +871,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
     public func resetColors (): Unit
     
     /*
-     * 设置图表标签
+     * 设置图表标签，默认 DataSet
      * 
      * 参数 label - 标签
      * 返回值 Unit 
@@ -879,7 +879,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
     public func setLabel (label: String): Unit
 
     /*
-     * 设置是否高亮显示
+     * 设置是否高亮显示,默认值为true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -896,7 +896,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
     public func setValueFormatter (f: IValueFormatter): Unit
     
     /*
-     * 为该数据对象包含的所有Dataset的绘制值设置颜色
+     * 为该数据对象包含的所有Dataset的绘制值设置颜色，默认 0x000000 （黑色）
      * 
      * 参数 color - 
      * 返回值 Unit 
@@ -920,7 +920,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
     public func setValueTypeface (tf: FontFamily): Unit
     
     /*
-     * 设置数据文本大小
+     * 设置此数据集的值标签的文本大小，（默认 8.0vp,详细请看cangjieUI组件中像素模块）
      * 
      * 参数 size - 大小（单位像素）
      * 返回值 Unit 
@@ -928,7 +928,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
     public func setValueTextSize (size: Float64): Unit
     
     /*
-     * 设置启用/禁用此数据对象包含的所有DataSet的绘图值(值-文本)
+     * 设置启用/禁用此数据对象包含的所有DataSet的绘图值(值-文本),默认值为true
      * 
      * 参数 enabled - 
      * 返回值 Unit 
@@ -937,7 +937,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
     
     
     /*
-     * 设置是否绘制数据项图标*
+     * 设置是否绘制数据项图标,默认值为true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -946,7 +946,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
     
     
     /*
-     * 设置数据项图标的偏移量 *
+     * 设置数据项图标的偏移量,默认MPPointF(0,0)
      * 
      * 参数 offsetDp - MPPointF
      * 返回值 Unit 
@@ -955,7 +955,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
     
     
     /*
-     * 设置此数据集的可见性。如果数据集不可见，则在刷新数据集时将不会绘制到图表中
+     * 设置此数据集的可见性。如果数据集不可见，则在刷新数据集时将不会绘制到图表中,默认值为true
      * 
      * 参数 visible - true/false
      * 返回值 Unit 
@@ -1096,7 +1096,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func getMaxHighlightDistance (): Float64
     
     /*
-     * 设置最大高亮距离
+     * 设置最大高亮距离，默认0.0
      * 
      * 参数 distDp - 距离 
      * 返回值 Unit 
@@ -1127,14 +1127,14 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func isHighlightPerLongPressEnabled (): Bool
     
     /*
-     * 设置是否启用每次点击高亮显示
+     * 设置是否启用每次点击高亮显示,默认true
      * 
      * 参数 enabled - true/false
      */
     public func setHighlightPerTapEnabled (enabled: Bool)
     
     /*
-     * 设置是否启用每次长按高亮显示
+     * 设置是否启用每次长按高亮显示,默认true
      * 
      * 参数 enabled - true/false
      */
@@ -1334,7 +1334,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func isDragDecelerationEnabled (): Bool
     
     /*
-     * 设置是否开启惯性滑动
+     * 设置是否开启惯性滑动,默认true
      * 
      * 参数 enabled - true/false
      */
@@ -1348,7 +1348,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func getDragDecelerationFrictionCoef (): Float64
     
     /*
-     * 设置拖动减速摩擦系数
+     * 设置拖动减速摩擦系数,默认0.9，范围（0.0-1.0）
      * 
      * 参数 newValue - 摩擦系数
      */
@@ -1366,7 +1366,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func animateXY (durationMillisX: Int32, durationMillisY: Int32, easingX: String, easingY: String): Unit
     
     /*
-     * 展示图表时带有X轴动画。
+     * 展示图表时带有X轴动画，默认'linear'
      * 
      * 参数 durationMillis - 动画播放的时长，单位毫秒。
      * 参数 easing - 动画差值曲线，可选值：参考仓颉语言系统 API 参考-UI 界面-ohos.animator
@@ -1391,7 +1391,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func animateX (durationMillis: Int32, easing: String): Unit
     
     /*
-     * 展示图表时带有Y轴动画。
+     * 展示图表时带有Y轴动画，默认'linear'
      * 
      * 参数 durationMillis - 动画播放的时长，单位毫秒。
      * 参数 easing - 动画差值曲线，可选值：参考仓颉语言系统 API 参考-UI 界面-ohos.animator
@@ -1520,7 +1520,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func getCenterOffsets (): ?MPPointF
     
     /*
-     * 设置图表额外偏移量
+     * 设置图表额外偏移量，默认（0.0，0.0，0.0，0.0）
      * 
      * 参数 left - 左
      * 参数 top - 高
@@ -1530,7 +1530,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func setExtraOffsets (left: Float64, top: Float64, right: Float64, bottom: Float64)
     
     /*
-     * 设置附加到视口顶部的额外偏移
+     * 设置附加到视口顶部的额外偏移，默认0.0
      * 
      * 参数 offset - 
      */
@@ -1544,7 +1544,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func getExtraTopOffset (): Float64
     
     /*
-     * 设置附加到视口右边的额外偏移
+     * 设置附加到视口右边的额外偏移，默认0.0
      * 
      * 参数 offset - 
      */
@@ -1558,7 +1558,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func getExtraRightOffset (): Float64
     
     /*
-     * 设置附加到视口底部的额外偏移
+     * 设置附加到视口底部的额外偏移，默认0.0
      * 
      * 参数 offset - 
      */
@@ -1572,7 +1572,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func getExtraBottomOffset (): Float64
     
     /*
-     * 设置附加到视口左边的额外偏移
+     * 设置附加到视口左边的额外偏移，默认0.0
      * 
      * 参数 offset - 
      */
@@ -1586,7 +1586,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func getExtraLeftOffset (): Float64
     
     /*
-     * 将其设置为 true 可启用图表的log输出
+     * 将其设置为 true 可启用图表的log输出，默认false
      * 
      * 参数 enabled - true/false
      */
@@ -1600,14 +1600,14 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func isLogEnabled (): Bool
     
     /*
-     * 设置文本，通知用户没有可用于绘制图表的数据。
+     * 设置文本，通知用户没有可用于绘制图表的数据,默认“No chart data available.”
      * 
      * 参数 text - 文本
      */
     public func setNoDataText (text: String)
     
     /*
-     * 设置无数据文本的颜色
+     * 设置无数据文本的颜色，默认0xFFA500
      * 
      * 参数 color - 
      */
@@ -1621,14 +1621,14 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func setNoDataTextTypeface (tf: FontFamily)
     
     /*
-     * 对齐无数据文本
+     * 对齐无数据文本，默认Center
      * 
      * 参数 align - 
      */
     public func setNoDataTextAlignment (align: TextAlignStyle)
     
     /*
-     * 设置为false。禁用图表所有手势与触摸
+     * 设置为false。禁用图表所有手势与触摸，默认true
      * 
      * 参数 enabled - true/false
      */
@@ -1734,7 +1734,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func isDrawMarkerViewsEnabled (): Bool
     
     /*
-     * 设置是否开启绘画标记点显示
+     * 设置是否开启绘画标记点显示,默认true
      * 
      * 参数 enabled - true/false
      */
@@ -1755,14 +1755,14 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func isDrawLongPressMarkersEnabled (): Bool
     
     /*
-     * 将此设置为true可在点击图表值时绘制用户指定的标记
+     * 将此设置为true可在点击图表值时绘制用户指定的标记,默认true
      * 
      * 参数 enabled - true/false
      */
     public func setDrawMarkers (enabled: Bool)
     
     /*
-     * 将此设置为true可在长按图表值时绘制用户指定的标记
+     * 将此设置为true可在长按图表值时绘制用户指定的标记,默认true
      * 
      * 参数 enabled - true/false
      */
@@ -1900,7 +1900,8 @@ public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
     
     /*
      * 启用后，当最小值小于切片间距本身时，切片间距将为0.0。
-     * 
+     * 默认false 
+     *
      * 参数 autoDisable - true/false
      * 返回值 Unit 
      */
@@ -1916,7 +1917,7 @@ public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
     public func setSelectionShift (shift: Float64): Unit
         
     /*
-     * 设置 x 轴值的位置
+     * 设置 x 轴值的位置,默认INSIDE_SLICE
      * 
      * 参数 xValuePosition - ValuePosition
      * 返回值 Unit 
@@ -1924,7 +1925,7 @@ public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
     public func setXValuePosition (xValuePosition: ValuePosition): Unit
         
     /*
-     * 设置 y 轴值的位置
+     * 设置 y 轴值的位置,默认INSIDE_SLICE
      * 
      * 参数 yValuePosition - ValuePosition
      * 返回值 Unit 
@@ -1932,7 +1933,7 @@ public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
     public func setYValuePosition (yValuePosition: ValuePosition): Unit
         
     /*
-     * 设置值引导线颜色
+     * 设置值引导线颜色，默认值0xff000000
      * 
      * 参数 valueLineColor - 颜色值
      * 返回值 Unit 
@@ -1948,7 +1949,7 @@ public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
     public func setUseValueColorForLine (enabled: Bool): Unit
        
     /*
-     * 设置值引导线宽度
+     * 设置值引导线宽度，默认false
      * 
      * 参数 valueLineWidth - 行宽
      * 返回值 Unit 
@@ -1956,7 +1957,7 @@ public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
     public func setValueLineWidth (valueLineWidth: Float64): Unit
        
     /*
-     * 设置超出切片大小的百分比（表示偏移量
+     * 设置超出切片大小的百分比（表示偏移量,默认值75.0）
      * 
      * 参数 valueLinePart1OffsetPercentage - 百分比
      * 返回值 Unit 
@@ -1964,7 +1965,7 @@ public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
     public func setValueLinePart1OffsetPercentage (valueLinePart1OffsetPercentage: Float64): Unit
         
     /*
-     * 设置图表上半部分的长度
+     * 设置图表上半部分的长度，默认值0.3
      * 
      * 参数 valueLinePart1Length - 长度
      * 返回值 Unit 
@@ -1972,7 +1973,7 @@ public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
     public func setValueLinePart1Length (valueLinePart1Length: Float64): Unit
        
     /*
-     * 设置图表下半部分的长度
+     * 设置图表下半部分的长度，默认值0.4
      * 
      * 参数 valueLinePart2Length - 长度
      * 返回值 Unit 
@@ -1981,7 +1982,7 @@ public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
     
     
     /*
-     * 设置可变长度
+     * 设置可变长度，默认值为true
      * 
      * 参数 valueLineVariableLength - true/false
      * 返回值 Unit 
@@ -1989,7 +1990,7 @@ public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
     public func setValueLineVariableLength (valueLineVariableLength: Bool): Unit
        
     /*
-     * 设置高亮显示的扇区颜色
+     * 设置高亮显示的扇区颜色,默认值0xffbb73
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -2080,7 +2081,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     public func needsHighlight (index: Float64): Bool
         
     /*
-     * 设置在 Pie Chart中心绘制的孔的颜色(如果启用)
+     * 设置在 Pie Chart中心绘制的孔的颜色(如果启用),默认0x000000
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -2088,7 +2089,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     public func setHoleColor (color: UInt32): Unit
     
     /*
-     * 启用或禁用孔后面切片内部尖端的可见性
+     * 启用或禁用孔后面切片内部尖端的可见性,默认false
      * 
      * 参数 enable - true/false
      * 返回值 Unit 
@@ -2097,7 +2098,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
   
     
     /*
-     * 将此设置为true将饼图中心画为空
+     * 将此设置为true将饼图中心画为空,默认true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -2106,7 +2107,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     
     
     /*
-     * 设置显示在 PieChart 中心的文本 String。
+     * 设置显示在 PieChart 中心的文本 String,默认空字符串
      * 
      * 参数 text - 文本
      * 返回值 Unit 
@@ -2114,7 +2115,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     public func setCenterText (text: String): Unit
        
     /*
-     * 将其设置为true以绘制显示在扇形图中心的文字
+     * 将其设置为true以绘制显示在扇形图中心的文字，默认true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -2130,7 +2131,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     public func setCenterTextTypeface (t: FontFamily): Unit
     
     /*
-     * 设置PieChart的中心文本的大小。
+     * 设置PieChart的中心文本的大小。范围[6.0, 48.0],默认10.0
      * 
      * 参数 sizeDp - 字体大小
      * 返回值 Unit 
@@ -2138,7 +2139,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     public func setCenterTextSize (sizeDp: Float64): Unit
     
     /*
-     * 设置PieChart中心文本的大小(以像素为单位)
+     * 设置PieChart中心文本的大小(以像素为单位)，范围[6.0, 48.0],默认10.0
      * 
      * 参数 sizePixels - 大小(以像素为单位)
      * 返回值 Unit 
@@ -2156,7 +2157,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     
     
     /*
-     * 设置PieChart中心文本的颜色。
+     * 设置PieChart中心文本的颜色。默认0x000000
      * 
      * 参数 color - 中心文本的颜色
      * 返回值 Unit 
@@ -2164,7 +2165,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     public func setCenterTextColor (color: UInt32): Unit
     
     /*
-     * 以最大半径的百分比设置图中心孔的半径(max=整个图表的半径)，默认为50%
+     * 以最大半径的百分比设置图中心孔的半径(max=整个图表的半径)，默认为50.0
      * 
      * 参数 percent - 百分比
      * 返回值 Unit 
@@ -2172,7 +2173,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     public func setHoleRadius (percent: Float64): Unit
       
     /*
-     * 设置圈应有的颜色。
+     * 设置圈应有的颜色,默认0xffffff
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -2180,15 +2181,15 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     public func setTransparentCircleColor (color: UInt32): Unit
     
     /*
-     * 设置圆的半径，该圆画在图中的孔旁边，以最大半径的百分比(max=整个图表的半径)，默认为55%->表示默认比中心孔大5% *
-     * 
+     * 设置圆的半径，该圆画在图中的孔旁边，以最大半径的百分比(max=整个图表的半径)，默认为55%->表示默认比中心孔大5% 
+     * 默认值55.0
      * 参数 percent - 百分比
      * 返回值 Unit 
      */
     public func setTransparentCircleRadius (percent: Float64): Unit
        
     /*
-     * 设置圈的透明度，0=完全透明，255=完全不透明。默认值为100。*
+     * 设置圈的透明度，0.0=完全透明，255.0=完全不透明。默认值为100.0
      * 
      * 参数 alpha - 透明度
      * 返回值 Unit 
@@ -2196,7 +2197,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     public func setTransparentCircleAlpha (alpha: Float64): Unit
     
     /*
-     * 将此设置为true则将条目标签绘制到饼图切片中*
+     * 将此设置为true则将条目标签绘制到饼图切片中,默认true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -2205,7 +2206,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     
     
     /*
-     * 设置绘制条目标签的颜色。
+     * 设置绘制条目标签的颜色,默认0xffffff
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -2221,7 +2222,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     public func setEntryLabelTypeface (tf: FontFamily): Unit
     
     /*
-     * 设置条目标签的大小。默认值:14vp
+     * 设置条目标签的大小。默认值:14.0
      * 
      * 参数 size - 大小
      * 返回值 Unit 
@@ -2229,8 +2230,9 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     public func setEntryLabelTextSize (size: Float64): Unit
     
     /*
-     * 设置是否以曲线方式绘制切片，仅在启用绘制孔且切片未在孔下绘制时起作用。*
-     * 
+     * 设置是否以曲线方式绘制切片，仅在启用绘制孔且切片未在孔下绘制时起作用。
+     * 默认false
+     *
      * 参数 enabled - true/false
      * 返回值 Unit 
      */
@@ -2239,7 +2241,8 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     
     /*
      * 如果启用此功能，PieChart中的值将以百分数绘制，而不是以其原始值绘制,如果为IValueFormatter，提供的格式化的值将以百分比形式提供。
-     * 
+     * 默认false
+     *
      * 参数 enabled - true/false
      * 返回值 Unit 
      */
@@ -2263,7 +2266,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
     public func setMaxAngle (maxangle: Float64): Unit
     
     /* 
-     * 设置角度来设置切片的最小大小，您必须调用{@link#notifyDataSetchanged()}和{@link#invalidate()}来进行更改，只有当有足够的空间让所有切片具有最小角度时才起作用。
+     * 设置角度来设置切片的最小大小，您必须调用link#notifyDataSetchanged()和link#invalidate()来进行更改，只有当有足够的空间让所有切片具有最小角度时才起作用。
      * 
      * 参数 minAngle - 最小大小
      * 返回值 Unit 
@@ -2409,7 +2412,7 @@ public class Legend<: ComponentBase {
     public func setOrientation (value: LegendOrientation): Unit
     
     /*
-     * 设置图例将在图表内部还是外部绘制
+     * 设置图例将在图表内部还是外部绘制,默认false
      * 
      * 参数 value - true/false
      * 返回值 Unit 
@@ -2417,7 +2420,7 @@ public class Legend<: ComponentBase {
     public func setDrawInside (value: Bool): Unit
     
     /*
-     * 设置图例的文本方向
+     * 设置图例的文本方向，默认LEFT_TO_RIGHT
      * 
      * 参数 pos - LegendDirection
      * 返回值 Unit 
@@ -2425,7 +2428,7 @@ public class Legend<: ComponentBase {
     public func setDirection (pos: LegendDirection): Unit
     
     /*
-     * 设置图例设置的当前窗体的形状
+     * 设置图例设置的当前窗体的形状，默认SQUARE
      * 
      * 参数 shape - LegendForm
      * 返回值 Unit 
@@ -2433,7 +2436,7 @@ public class Legend<: ComponentBase {
     public func setForm (shape: LegendForm): Unit
     
     /*
-     * 设置图例窗体大小
+     * 设置图例窗体大小，默认Float64.NaN
      * 
      * 参数 size - 大小 
      * 返回值 Unit 
@@ -2442,7 +2445,7 @@ public class Legend<: ComponentBase {
     
     
     /*
-     * 设置图例窗体线宽
+     * 设置图例窗体线宽，默认Float64.NaN
      * 
      * 参数 size - 线宽
      * 返回值 Unit 
@@ -2459,7 +2462,7 @@ public class Legend<: ComponentBase {
 
     
     /*
-     * 设置水平轴上图例项之间的间距，单位为像素
+     * 设置水平轴上图例项之间的间距，单位为像素,默认值6.0
      * 
      * 参数 space - 间距
      * 返回值 Unit 
@@ -2467,7 +2470,7 @@ public class Legend<: ComponentBase {
     public func setXEntrySpace (space: Float64): Unit
     
     /*
-     * 设置垂直轴上图例项之间的间距，单位为像素
+     * 设置垂直轴上图例项之间的间距，单位为像素，默认值0.0
      * 
      * 参数 space - 间距
      * 返回值 Unit 
@@ -2475,7 +2478,7 @@ public class Legend<: ComponentBase {
     public func setYEntrySpace (space: Float64): Unit
    
     /*
-     * 设置窗体和实际标签/文本之间的空格
+     * 设置窗体和实际标签/文本之间的空格，默认值1.0
      * 
      * 参数 space - 空格
      * 返回值 Unit 
@@ -2483,7 +2486,7 @@ public class Legend<: ComponentBase {
     public func setFormToTextSpace (space: Float64): Unit
     
     /*
-     * 是否设置文本换行显示
+     * 是否设置文本换行显示，默认值false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -2491,7 +2494,7 @@ public class Legend<: ComponentBase {
     public func setWordWrapEnabled (enabled: Bool): Unit 
      
     /*
-     * 设置整个图例视图的最大相对大小
+     * 设置整个图例视图的最大相对大小，默认值0.95
      * 
      * 参数 maxSize - 大小
      * 返回值 Unit 
@@ -2514,7 +2517,7 @@ public class Description<: ComponentBase {
     public init ()
     
     /*
-     * 设置说明文本
+     * 设置说明文本，默认值“Description Label”
      * 
      * 参数 text - 文本
      * 返回值 Unit 
@@ -2531,7 +2534,7 @@ public class Description<: ComponentBase {
     public func setPosition (x: Float64, y: Float64): Unit
     
     /*
-     * 设置文本居中格式
+     * 设置文本居中格式，默认值right
      * 
      * 参数 align - TextAlignStyle
      */
@@ -2648,7 +2651,7 @@ public class MarkerView <: IMarker {
     public init()
     
     /**
-     * 设置指定的点的偏移量
+     * 设置指定的点的偏移量，默认值MPPointF(0.0,0.0)
      *
      * 参数 offset - 指定点
      */
@@ -2720,14 +2723,14 @@ public class ChartPixelMap {
     public func setIcon (newIcon: PixelMap)
     
     /*
-     * 设置图像宽度
+     * 设置图像宽度,默认值0.0
      * 
      * 参数 width - 宽度
      */
     public func setWidth (width: Int64)
      
     /*
-     * 设置图像高度
+     * 设置图像高度,默认值0.0
      * 
      * 参数 height - 高度
      */
@@ -3144,7 +3147,7 @@ public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBa
     public func setFills (fills: ArrayList<Fill>): Unit
     
     /*
-     * 设置条形图阴影颜色
+     * 设置条形图阴影颜色，默认值0xd7d7d7
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -3152,7 +3155,7 @@ public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBa
     public func setBarShadowColor (color: UInt32): Unit
     
     /*
-     * 设置条形图边框宽度
+     * 设置条形图边框宽度，默认值0.0
      * 
      * 参数 width - 宽度
      * 返回值 Unit 
@@ -3160,7 +3163,7 @@ public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBa
     public func setBarBorderWidth (width: Float64): Unit
     
     /*
-     * 设置条形图边框颜色
+     * 设置条形图边框颜色，默认值0x000000
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -3168,7 +3171,7 @@ public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBa
     public func setBarBorderColor (color: UInt32): Unit
     
     /*
-     * 设置高亮透明度
+     * 设置高亮透明度,默认值120.0
      * 
      * 参数 alpha - 透明度
      * 返回值 Unit 
@@ -3224,7 +3227,7 @@ public open class BarData<: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry
     public func getBarWidth (): Float64
     
     /*
-     * 设置顶部圆角半径
+     * 设置顶部圆角半径，默认值0.0
      * 
      * 参数 radius - 圆角半径
      * 返回值 Unit 
@@ -3339,7 +3342,7 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
     
     
     /*
-     * 设置值是否在条形图的上方绘制
+     * 设置值是否在条形图的上方绘制，默认值true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -3347,7 +3350,7 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
     public func setDrawValueAboveBar (enabled: Bool): Unit
     
     /*
-     * 是否设置在每个条目后面设置阴影
+     * 是否设置在每个条目后面设置阴影,默认值false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -3355,7 +3358,7 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
     public func setDrawBarShadow (enabled: Bool): Unit
     
     /*
-     * 设置是否突出显示某个条目（堆叠柱状图）
+     * 设置是否突出显示某个条目（堆叠柱状图）,默认值false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -3381,6 +3384,7 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
     
     /*
      * 是否在x轴范围的两侧各增加一半条形图宽度，以使条形图完全显示出来。
+     * 默认值false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -3725,7 +3729,7 @@ public abstract class AxisBase<: ComponentBase {
     public init ()
     
     /*
-     * 设置轴上的最小标签数
+     * 设置轴上的最小标签数,默认值2
      * 
      * 参数 labels - 标签数
      * 返回值 Unit 
@@ -3733,7 +3737,7 @@ public abstract class AxisBase<: ComponentBase {
     public func setAxisMinLabels (labels: Int64): Unit
     
     /*
-     * 设置轴上的最大标签数
+     * 设置轴上的最大标签数，默认值25
      * 
      * 参数 labels - 标签数
      * 返回值 Unit 
@@ -3741,7 +3745,7 @@ public abstract class AxisBase<: ComponentBase {
     public func setAxisMaxLabels (labels: Int64): Unit
     
     /*
-     * 是否设置网格线
+     * 是否设置网格线，默认值true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -3749,7 +3753,7 @@ public abstract class AxisBase<: ComponentBase {
     public func setDrawGridLines (enabled: Bool): Unit
     
     /*
-     * 是否设置轴线
+     * 是否设置轴线，默认值false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -3757,7 +3761,7 @@ public abstract class AxisBase<: ComponentBase {
     public func setDrawAxisLine (enabled: Bool): Unit
     
     /*
-     * 设置轴标签是否居中显示
+     * 设置轴标签是否居中显示,默认值false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -3765,7 +3769,7 @@ public abstract class AxisBase<: ComponentBase {
     public func setCenterAxisLabels (enabled: Bool): Unit
     
     /*
-     * 设置网格线颜色
+     * 设置网格线颜色,默认值0x808080
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -3773,7 +3777,7 @@ public abstract class AxisBase<: ComponentBase {
     public func setGridColor (color: Color): Unit
     
     /*
-     * 设置轴线宽度
+     * 设置轴线宽度,默认值1.0
      * 
      * 参数 width - 宽度
      * 返回值 Unit 
@@ -3781,7 +3785,7 @@ public abstract class AxisBase<: ComponentBase {
     public func setAxisLineWidth (width: Float64): Unit
     
     /*
-     * 设置网格线宽度
+     * 设置网格线宽度，默认值1.0
      * 
      * 参数 width - 宽度
      * 返回值 Unit 
@@ -3789,7 +3793,7 @@ public abstract class AxisBase<: ComponentBase {
     public func setGridLineWidth (width: Float64): Unit
     
     /*
-     * 设置轴线颜色
+     * 设置轴线颜色，默认值0x808080
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -3797,7 +3801,7 @@ public abstract class AxisBase<: ComponentBase {
     public func setAxisLineColor (color: Color): Unit
     
     /*
-     * 是否设置标签显示
+     * 是否设置标签显示，默认值true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -3807,14 +3811,14 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 设置标签数量
      * 
-     * 参数 count - 标签数量
-     * 参数 force - true/false
+     * 参数 count - 标签数量,默认6
+     * 参数 force - true/false，默认false
      * 返回值 Unit 
      */
     public func setLabelCount (count: Int64, force: ?Bool): Unit
     
     /*
-     * 是否设置轴上的粒度显示
+     * 是否设置轴上的粒度显示,默认false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -3822,7 +3826,7 @@ public abstract class AxisBase<: ComponentBase {
     public func setGranularityEnabled (enabled: Bool): Unit
     
     /*
-     * 放大时设置轴上的最小间隔
+     * 放大时设置轴上的最小间隔,默认值1.0
      * 
      * 参数 granularity - 最小间隔
      * 返回值 Unit 
@@ -3972,7 +3976,7 @@ public abstract class AxisBase<: ComponentBase {
     public func resetAxisMinimum (): Unit
     
     /*
-     * 设置轴线最小值
+     * 设置轴线最小值，默认值0.0
      * 
      * 参数 min - 最小值
      * 返回值 Unit 
@@ -3980,7 +3984,7 @@ public abstract class AxisBase<: ComponentBase {
     public func setAxisMinimum (min: Float64): Unit
     
     /*
-     * 设置轴线的最大值
+     * 设置轴线的最大值，默认值0.0
      * 
      * 参数 max - 最大值
      * 返回值 Unit 
@@ -3988,7 +3992,7 @@ public abstract class AxisBase<: ComponentBase {
     public func setAxisMaximum (max: Float64): Unit
     
     /*
-     * 设置额外最小间距
+     * 设置额外最小间距，默认值0.0
      * 
      * 参数 mSpaceMin - 间距
      * 返回值 Unit 
@@ -3996,7 +4000,7 @@ public abstract class AxisBase<: ComponentBase {
     public func setSpaceMin (mSpaceMin: Float64): Unit
     
     /*
-     * 设置额外最大间距
+     * 设置额外最大间距，默认值0.0
      * 
      * 参数 mSpaceMax - 间距
      * 返回值 Unit 
@@ -4017,7 +4021,7 @@ public class XAxis<: AxisBase {
     public init ()
     
     /*
-     * 设置轴位置
+     * 设置轴位置，默认OUTSIDE_CHART
      * 
      * 参数 pos - 位置
      * 返回值 Unit 
@@ -4025,7 +4029,7 @@ public class XAxis<: AxisBase {
     public func setPosition (pos: XAxisPosition): Unit
     
     /*
-     * 设置绘制X轴标签的角度
+     * 设置绘制X轴标签的角度，默认值0.0
      * 
      * 参数 angle - 角度
      * 返回值 Unit 
@@ -4034,6 +4038,7 @@ public class XAxis<: AxisBase {
     
     /*
      * 如果设置为true，将避免图表中第一个和最后一个标签从图表边缘或屏幕上“剪切”
+     * 默认值 false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4041,7 +4046,7 @@ public class XAxis<: AxisBase {
     public func setAvoidFirstLastClipping (enabled: Bool): Unit
     
     /*
-     * 设置X轴数据偏移量
+     * 设置X轴数据偏移量,默认值0.0
      * 
      * 参数 xOffset - 偏移量 
      * 返回值 Unit 
@@ -4049,7 +4054,7 @@ public class XAxis<: AxisBase {
     public func setLabelXOffset (xOffset: Int64): Unit
     
     /*
-     * 设置x标签的位置
+     * 设置x标签的位置，默认值center
      * 
      * 参数 position - x轴标签位置
      * 返回值 Unit 
@@ -4065,7 +4070,7 @@ public class XAxis<: AxisBase {
     public func setCustomLabels (numbers: Array<Float64>): Unit
     
     /*
-     * 设置是否绘制自定义标签
+     * 设置是否绘制自定义标签,默认值false
      * 
      * 参数 flag - true/false
      * 返回值 Unit 
@@ -4086,7 +4091,7 @@ public class YAxis<: AxisBase {
     public init (position: ?AxisDependency)
     
     /*
-     * 设置Y轴最小宽度
+     * 设置Y轴最小宽度,默认值0.0
      * 
      * 参数 minWidth - 宽度
      * 返回值 Unit 
@@ -4102,7 +4107,7 @@ public class YAxis<: AxisBase {
     public func setMaxWidth (maxWidth: Float64): Unit
     
     /*
-     * 设置Y轴位置
+     * 设置Y轴位置，默认值TOP
      * 
      * 参数 pos - 位置
      * 返回值 Unit 
@@ -4110,7 +4115,7 @@ public class YAxis<: AxisBase {
     public func setPosition (pos: YAxisLabelPosition): Unit
     
     /*
-     * 设置Y轴数据偏移量
+     * 设置Y轴数据偏移量，默认值0.0
      * 
      * 参数 xOffset - 偏移量
      * 返回值 Unit 
@@ -4118,7 +4123,7 @@ public class YAxis<: AxisBase {
     public func setLabelXOffset (xOffset: Float64): Unit
     
     /*
-     * 将此设置为true以启用绘制顶部y-label条目
+     * 将此设置为true以启用绘制顶部y-label条目，默认值true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4126,7 +4131,7 @@ public class YAxis<: AxisBase {
     public func setDrawTopYLabelEntry (enabled: Bool): Unit
     
     /*
-     * 设置y轴反转
+     * 设置y轴反转,默认值false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4134,7 +4139,7 @@ public class YAxis<: AxisBase {
     public func setInverted (enabled: Bool): Unit
     
     /*
-     * 设置顶轴空间占整个范围的百分比。
+     * 设置顶轴空间占整个范围的百分比,默认值10.0
      * 
      * 参数 percent - 百分比
      * 返回值 Unit 
@@ -4142,7 +4147,7 @@ public class YAxis<: AxisBase {
     public func setSpaceTop (percent: Float64): Unit
     
     /*
-     * 设置底部轴空间占整个范围的百分比
+     * 设置底部轴空间占整个范围的百分比，默认值10.0
      * 
      * 参数 percent - 百分比
      * 返回值 Unit 
@@ -4158,7 +4163,7 @@ public class YAxis<: AxisBase {
     public func setDrawZeroLine (mDrawZeroLine: Bool): Unit
     
     /*
-     * 设置零线颜色
+     * 设置零线颜色，默认值0x808080
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -4166,7 +4171,7 @@ public class YAxis<: AxisBase {
     public func setZeroLineColor (color: Color): Unit
     
     /*
-     * 设置零线宽度
+     * 设置零线宽度，默认值1.0
      * 
      * 参数 width - 宽度
      * 返回值 Unit 
@@ -4196,14 +4201,14 @@ public class LimitLine<: ComponentBase {
     public init (limit: Float64, label: String)
     
     /*
-     * 设置限制线的宽度
+     * 设置限制线的宽度，范围[0.2,12.0],默认值2.0
      * 
      * 参数 width - 宽度
      */
     public func setLineWidth (width: Float64)
     
     /*
-     * 设置限制线的颜色
+     * 设置限制线的颜色，默认值0x5bed5b
      * 
      * 参数 color - 颜色
      */
@@ -4231,21 +4236,21 @@ public class LimitLine<: ComponentBase {
     public func getDashPathEffect (): ?DashPathEffect
     
     /*
-     * 设置文本样式
+     * 设置文本样式,默认值FILL_AND_STROKE
      * 
      * 参数 style - 样式
      */
     public func setTextStyle (style: Style)
     
     /*
-     * 设置标签位置
+     * 设置标签位置，默认值RIGHT_TOP
      * 
      * 参数 pos - 位置
      */
     public func setLabelPosition (pos: LimitLabelPosition)
     
     /*
-     * 设置标签内容
+     * 设置标签内容，默认 DataSet
      * 
      * 参数 label - 标签
      */
@@ -4457,7 +4462,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public init ()
     
     /*
-     * 是否设置长按光标显示
+     * 是否设置长按光标显示，默认false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4466,7 +4471,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     
     
     /*
-     * 是否设置长按时间间隔
+     * 是否设置长按时间间隔，默认值500ms
      * 
      * 参数 duration - 时间
      * 返回值 Unit 
@@ -4474,7 +4479,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setLongPressDuration (duration: Int64): Unit
     
     /*
-     * 是否设置y坐标轴延长线
+     * 是否设置y坐标轴延长线，默认值false
      * 
      * 参数 opt - true/false
      */
@@ -4491,8 +4496,8 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     /*
      * 设置可缩放的最小比例
      * 
-     * 参数 scaleX - x 缩放因子
-     * 参数 scaleY - y 缩放因子
+     * 参数 scaleX - x 缩放因子,默认值1.0
+     * 参数 scaleY - y 缩放因子,默认值1.0
      * 返回值 Unit 
      */
     public func setScaleMinima (scaleX: Float64, scaleY: Float64): Unit
@@ -4569,7 +4574,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func moveViewTo (xValue: Float64, yValue: Float64, axis: AxisDependency): Unit
     
     /*
-     * 将使当前视图的左侧移动到x轴上的指定位置，并将视图中心移动到y轴的指定位置,启动动画效果*
+     * 将使当前视图的左侧移动到x轴上的指定位置，并将视图中心移动到y轴的指定位置,启动动画效果
      * 
      * 参数 xValue - x轴上的指定位置
      * 参数 yValue - y轴上的指定位置
@@ -4658,7 +4663,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func getMaxVisibleCount (): Int64
     
     /*
-     * 设置拖动图表时是否高亮显示
+     * 设置拖动图表时是否高亮显示，默认true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4667,7 +4672,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
 
     
     /*
-     * 设置网格线背景颜色
+     * 设置网格线背景颜色，默认0xf0f0f0
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -4675,7 +4680,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setGridBackgroundColor (color: UInt32): Unit
     
     /*
-     * 设置是否启用图表拖动效果
+     * 设置是否启用图表拖动效果，默认true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4683,7 +4688,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setDragEnabled (enabled: Bool): Unit
     
     /*
-     * 设置是否启用X轴上的拖动效果
+     * 设置是否启用X轴上的拖动效果,默认true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4692,7 +4697,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     
     
     /*
-     * 设置Y轴是否拖动
+     * 设置Y轴是否拖动,默认true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4707,7 +4712,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func isDragYEnabled (): Bool
     
     /*
-     * 设置是否启用缩放功能
+     * 设置是否启用缩放功能，默认true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4715,7 +4720,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setScaleEnabled (enabled: Bool): Unit
     
     /*
-     * 设置是否启用x轴缩放功能*
+     * 设置是否启用x轴缩放功能，默认true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4723,7 +4728,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setScaleXEnabled (enabled: Bool): Unit
     
     /*
-     * 设置是否启用y轴缩放功能*
+     * 设置是否启用y轴缩放功能，默认true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4731,7 +4736,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setScaleYEnabled (enabled: Bool): Unit
     
     /*
-     * 是否设置双击图表放大
+     * 是否设置双击图表放大，默认true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4739,7 +4744,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setDoubleTapToZoomEnabled (enabled: Bool): Unit
     
     /*
-     * 是否设置网格背景颜色
+     * 是否设置网格背景颜色,默认false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4747,7 +4752,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setDrawGridBackground (enabled: Bool): Unit
     
     /*
-     * 是否设置边框线
+     * 是否设置边框线,默认false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4755,7 +4760,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setDrawBorders (enabled: Bool): Unit
     
     /*
-     * 设置值是否在矩阵中*
+     * 设置值是否在矩阵中,默认false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4763,7 +4768,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setClipValuesToContent (enabled: Bool): Unit
     
     /*
-     * 设置数据是否在矩阵中
+     * 设置数据是否在矩阵中,默认true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4771,7 +4776,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setClipDataToContent (enabled: Bool): Unit
     
     /*
-     * 设置边框线的宽度
+     * 设置边框线的宽度，默认1.0
      * 
      * 参数 width - 宽度
      * 返回值 Unit 
@@ -4779,7 +4784,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setBorderWidth (width: Float64): Unit
     
     /*
-     * 设置边框线的颜色
+     * 设置边框线的颜色，默认0x000000
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -4796,7 +4801,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     
     
     /*
-     * 设置图表旋转后是否保持原位置
+     * 设置图表旋转后是否保持原位置，默认false
      * 
      * 参数 keepPositionOnRotation - true/false
      * 返回值 Unit 
@@ -4826,7 +4831,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func getAxis (axis: AxisDependency): ?YAxis
     
     /*
-     * 如果设置为真，可以用2个手指同时缩放x和y轴
+     * 如果设置为真，可以用2个手指同时缩放x和y轴,默认false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -4834,7 +4839,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setPinchZoom (enabled: Bool): Unit
     
     /*
-     * 设置x拖动偏移量
+     * 设置x拖动偏移量,默认0.0
      * 
      * 参数 offset - 偏移量
      * 返回值 Unit 
@@ -4842,7 +4847,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setDragOffsetX (offset: Float64): Unit
     
     /*
-     * 设置y拖动偏移量
+     * 设置y拖动偏移量，默认0.0
      * 
      * 参数 offset - 偏移量
      * 返回值 Unit 
@@ -4850,7 +4855,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func setDragOffsetY (offset: Float64): Unit
     
     /*
-     * 设置是否可在y轴上设置缩放
+     * 设置是否可在y轴上设置缩放，默认false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -5175,7 +5180,7 @@ public class BubblesEntry<: EntryOhos {
     public func getSize (): Float64
     
     /*
-     * 设置气泡图大小
+     * 设置气泡图大小，默认值0.0
      * 
      * 参数 size - 大小
      * 返回值 Unit
@@ -5192,7 +5197,7 @@ public class BubblesEntry<: EntryOhos {
 public interface IBubbleDataSet <: IBarLineScatterCandleBubbleDataSet<BubblesEntry> {
 
     /**
-     * 设置高亮显示时围绕气泡的圆的宽度
+     * 设置高亮显示时围绕气泡的圆的宽度，默认值2.5
      *
      * 参数 width - 宽度
      * 返回值 Unit
@@ -5239,7 +5244,7 @@ public class BubbleDataSet<: BarLineScatterCandleBubbleDataSet<BubblesEntry> & I
     public init (yVals: ArrayList<BubblesEntry>, label: String)
     
     /**
-     * 设置高亮显示时围绕气泡的圆的宽度
+     * 设置高亮显示时围绕气泡的圆的宽度，默认值2.5
      *
      * 参数 width - 宽度
      * 返回值 Unit
@@ -5268,7 +5273,7 @@ public class BubbleDataSet<: BarLineScatterCandleBubbleDataSet<BubblesEntry> & I
     public func isNormalizeSizeEnabled (): Bool
     
     /**
-     * 设置启用常规化大小
+     * 设置启用常规化大小，默认值true
      *
      * 参数 Bool - true/false
      * 返回值 Unit
@@ -5294,7 +5299,7 @@ public class BubbleData<: BarLineScatterCandleBubbleData<IBubbleDataSet,BubblesE
     public init (sets: ArrayList<IBubbleDataSet>)
     
     /**
-     * 设置高亮显示时围绕气泡的圆的宽度
+     * 设置高亮显示时围绕气泡的圆的宽度,默认值2.5
      *
      * 参数 width - 宽度
      * 返回值 Unit
@@ -5689,7 +5694,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public init (yVals: ArrayList<WaterfallEntry>, label: String)
     
     /*
-     * 是否设置最大或最小y颜色
+     * 是否设置最大或最小y颜色，默认值false
      * 
      * 参数 value - true/false
      */
@@ -5703,7 +5708,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getEnableMaxOrMinHighlightColor (): Bool
     
     /*
-     * 设置y轴最大部分高亮颜色
+     * 设置y轴最大部分高亮颜色,默认值0xff0000
      * 
      * 参数 value - 颜色
      */
@@ -5717,7 +5722,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getMaxyHighlightColor (): UInt32
     
     /*
-     * 设置y轴最小部分高亮颜色
+     * 设置y轴最小部分高亮颜色,默认值0xff0000
      * 
      * 参数 value - 颜色
      */
@@ -5745,7 +5750,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getYAxisSegmentationColors (): Array<WaterfallHighlight>
     
     /*
-     * 设置所有高亮点的颜色。
+     * 设置所有高亮点的颜色，默认0xff0000
      * 
      * 参数 color - 所有高亮点的颜色集合
      * 返回值 Unit
@@ -5760,7 +5765,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getDotsColors (): Array<UInt32>
     
     /*
-     * 是否设置图顶部高亮
+     * 是否设置图顶部高亮，默认false
      * 
      * 参数 value - true/false
      */
@@ -5774,7 +5779,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getMaxTopHighlightEXIST (): Bool
     
     /*
-     * 是否设置条形图底部高亮
+     * 是否设置条形图底部高亮,默认false
      * 
      * 参数 value - true/false
      */
@@ -5788,7 +5793,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getMinBottomHighlightEXIST (): Bool
     
     /*
-     * 设置透明度
+     * 设置透明度,默认值100.0
      * 
      * 参数 value - 透明度
      */
@@ -5802,7 +5807,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getOpacity (): String  
     
     /*
-     * 设置条形图边框颜色
+     * 设置条形图边框颜色，默认值0x000000
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -5817,7 +5822,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getBarBorderColor (): UInt32
     
     /*
-     * 设置条形图边框宽度
+     * 设置条形图边框宽度，默认值0.0
      * 
      * 参数 width - 宽度
      * 返回值 Unit 
@@ -5832,7 +5837,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getBarBorderWidth (): Float64
     
     /*
-     * 设置高亮透明度
+     * 设置高亮透明度，默认值120.0
      * 
      * 参数 alpha - 透明度
      * 返回值 Unit 
@@ -5862,7 +5867,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getStackLabels (): Array<String>
     
     /*
-     * 设置条形图阴影颜色
+     * 设置条形图阴影颜色，默认值0xd7d7d7
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -5941,7 +5946,7 @@ public class WaterfallData<: BarLineScatterCandleBubbleData<IWaterfallDataSet,Wa
     public func getBarWidth (): Float64
     
     /*
-     * 设置顶部圆角半径
+     * 设置顶部圆角半径，默认值0.0
      * 
      * 参数 radius - 圆角半径
      * 返回值 Unit 
@@ -6062,7 +6067,7 @@ public class WaterfallChartModel<: BarLineChartBaseModel<WaterfallData,IWaterfal
     
     
     /*
-     * 设置值是否在条形图的上方绘制
+     * 设置值是否在条形图的上方绘制，默认值true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -6070,7 +6075,7 @@ public class WaterfallChartModel<: BarLineChartBaseModel<WaterfallData,IWaterfal
     public func setDrawValueAboveBar (enabled: Bool): Unit
     
     /*
-     * 是否设置在每个条目后面设置阴影
+     * 是否设置在每个条目后面设置阴影,默认值false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -6078,7 +6083,7 @@ public class WaterfallChartModel<: BarLineChartBaseModel<WaterfallData,IWaterfal
     public func setDrawBarShadow (enabled: Bool): Unit
     
     /*
-     * 设置是否突出显示某个条目（堆叠柱状图）
+     * 设置是否突出显示某个条目（堆叠柱状图），默认值false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -6104,6 +6109,7 @@ public class WaterfallChartModel<: BarLineChartBaseModel<WaterfallData,IWaterfal
     
     /*
      * 是否在x轴范围的两侧各增加一半条形图宽度，以使条形图完全显示出来。
+     * 默认值false
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -6409,7 +6415,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
     public func getMode (): Mode
     
     /*
-     * 设置绘图模式
+     * 设置绘图模式,默认值LINEAR
      * 
      * 参数 mode - 绘图模式
      * 返回值 Unit
@@ -6433,7 +6439,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
     public func getCubicIntensity (): Float64
     
     /*
-     * 设置绘制数据点圆的大小（外圆）
+     * 设置绘制数据点圆的大小（外圆），默认值8.0，最小为1.0
      * 
      * 参数 radius - 圆的大小
      * 返回值 Unit 
@@ -6448,7 +6454,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
     public func getCircleRadius (): Float64
     
     /*
-     * 设置绘制数据点中心圆的大小（内圆）
+     * 设置绘制数据点中心圆的大小（内圆），默认2.0，最小0.5
      * 
      * 参数 holeRadius - 中心圆的大小
      * 返回值 Unit 
@@ -6494,7 +6500,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
     public func getDashPathEffect (): ?DashPathEffect
     
     /*
-     * 是否设置绘制数据点为圆圈(折线点)
+     * 是否设置绘制数据点为圆圈(折线点)，默认值true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -6539,7 +6545,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
     public func setCircleColors (colors: Array<UInt32>): Unit
     
     /*
-     * 设置圆圈颜色
+     * 设置圆圈颜色,，默认值#8ceaff
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -6554,7 +6560,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
     public func resetCircleColors (): Unit
     
     /*
-     * 设置圆圈中心孔的颜色
+     * 设置圆圈中心孔的颜色，默认值0xffffff
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -6569,7 +6575,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
     public func getCircleHoleColor (): UInt32
     
     /*
-     * 是否设置折现点圆圈中心为孔
+     * 是否设置折现点圆圈中心为孔，默认值true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -6811,7 +6817,7 @@ public abstract class LineRadarDataSet<E> <: LineScatterCandleRadarDataSet<E>&IL
     public func getFillColor (): UInt32
     
     /*
-     * 设置填充线以下区域的颜色
+     * 设置填充线以下区域的颜色，默认值0x8ceaff
      * 
      * 参数 color - 颜色
      * 返回值 Unit
@@ -6856,7 +6862,7 @@ public abstract class LineRadarDataSet<E> <: LineScatterCandleRadarDataSet<E>&IL
     public func getFillAlpha (): Float64
     
     /*
-     * 设置填充线以下区域的透明度
+     * 设置填充线以下区域的透明度,默认值85，范围[0.0,100.0]
      * 
      * 参数 alpha - 透明度
      * 返回值 Unit
@@ -6864,7 +6870,7 @@ public abstract class LineRadarDataSet<E> <: LineScatterCandleRadarDataSet<E>&IL
     public func setFillAlpha (alpha: Float64): Unit
     
     /*
-     * 设置线宽
+     * 设置线宽,默认值2.5，范围[0.0,10.0]
      * 
      * 参数 width - 线宽
      * 返回值 Unit
@@ -6880,7 +6886,7 @@ public abstract class LineRadarDataSet<E> <: LineScatterCandleRadarDataSet<E>&IL
     
     /**
      * 如果数据集应该被填充(表面)，而不仅仅是作为一条线，则设置为 true
-     * 禁用此功能将极大地提高性能
+     * 禁用此功能将极大地提高性能，默认值false
      *
      * 参数 enabled - true/false
      * 返回值 Unit
@@ -6909,7 +6915,7 @@ public abstract class LineScatterCandleRadarDataSet<E> <: BarLineScatterCandleBu
     public init (yVals: ArrayList<E>, label: String)
     
     /*
-     * 设置水平高亮
+     * 设置水平高亮,默认值true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit
@@ -6917,7 +6923,7 @@ public abstract class LineScatterCandleRadarDataSet<E> <: BarLineScatterCandleBu
     public func setDrawHorizontalHighlightIndicator (enabled: Bool): Unit
     
     /*
-     * 设置垂直高亮
+     * 设置垂直高亮,默认值true
      * 
      * 参数 enabled  - true/false
      * 返回值 Unit 
@@ -6925,7 +6931,7 @@ public abstract class LineScatterCandleRadarDataSet<E> <: BarLineScatterCandleBu
     public func setDrawVerticalHighlightIndicator (enabled: Bool): Unit
     
     /*
-     * 设置水平/垂直高亮
+     * 设置水平/垂直高亮,默认值true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -6947,7 +6953,7 @@ public abstract class LineScatterCandleRadarDataSet<E> <: BarLineScatterCandleBu
     public func isHorizontalHighlightIndicatorEnabled (): Bool
     
     /*
-     * 设置高亮线宽
+     * 设置高亮线宽,默认值0.5
      * 
      * 参数 width - 线宽
      * 返回值 Unit 
