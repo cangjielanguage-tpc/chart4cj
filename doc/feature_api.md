@@ -5752,7 +5752,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     /*
      * 设置所有高亮点的颜色，默认0xff0000
      * 
-     * 参数 color - 所有高亮点的颜色集合
+     * 参数 color - 所有高亮点的颜色
      * 返回值 Unit
      */
     public func setDotsColors (color: UInt32): Unit
