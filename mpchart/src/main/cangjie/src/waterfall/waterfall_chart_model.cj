@@ -60,6 +60,29 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
     public func onDraw(c: CanvasRenderingContext2D): Unit {
         super.onDraw(c)
     }
+    protected func calcMinMax(): Unit {
+        match (this.mData) {
+            case Some(data: WaterfallData) =>
+                if (let Some(xaxis) <- this.mXAxis) {
+                    if (this.mFitBars) {
+                        xaxis.calculate(
+                            data.getXMin() - data.getBarWidth() / 2.0,
+                            data.getXMax() + data.getBarWidth() / 2.0
+                        )
+                    } else {
+                        xaxis.calculate(data.getXMin(), data.getXMax())
+                    }
+                }
+                // calculate axis range (min / max) according to provided data
+                if (let Some(axisLeft) <- this.mAxisLeft) {
+                    axisLeft.calculate(data.getYMin(AxisDependency.LEFT), data.getYMax(AxisDependency.LEFT))
+                }
+                if (let Some(axisReft) <- this.mAxisRight) {
+                    axisReft.calculate(data.getYMin(AxisDependency.RIGHT), data.getYMax(AxisDependency.RIGHT))
+                }
+            case _ => return
+        }
+    }
 
      public func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {
         if (this.mData.isNone()) {
