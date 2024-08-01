@@ -291,13 +291,6 @@ public interface IDataSet<E> where E <: EntryOhos {
     func isHighlightEnabled(): Bool
     
     /*
-     * 如果设置为true，将启用值高亮显示
-     * 参数 enabled - true/false
-     * 返回值 Unit
-     */
-    func setHighlightEnabled(enabled: Bool): Unit
-    
-    /*
      * 设置用于在图表中绘制值的格式
      * 
      * 参数 f - 使用chart.getDefaultValueFormatter()
@@ -633,7 +626,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
      * 在指定的索引处向DataSet添加一个Entry。条目添加到列表的未尾。
      * 
      * 参数 e - Entry
-     * 参数 dataSetIndex - 指定索引
+     * 参数 dataSetIndex - 指定索引,范围[0-dataSet.size-2]
      * 返回值 Unit 
      */
     public func addEntry (e: E, dataSetIndex: Int64): Unit
@@ -642,7 +635,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
      * 从指定索引处的DataSet中移除给定的Entry对象。
      * 
      * 参数 e - Entry对象
-     * 参数 dataSetIndex - 指定索引
+     * 参数 dataSetIndex - 指定索引,范围[0-dataSet.size-2]
      * 返回值 Bool - true/false
      */
     public func removeEntry (e: E, dataSetIndex: Int64): Bool
@@ -738,21 +731,6 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     public func setDrawValues (enabled: Bool): Unit
     
     /*
-     * 启用/禁用此数据对象包含的所有DataSet的突出显示值。如果设置为true这意味着可以通过编程方式或通过触摸手势突出显示值。
-     * 默认值为true
-     * 参数 enabled - true/false 
-     * 返回值 Unit 
-     */
-    public func setHighlightEnabled (enabled: Bool): Unit
-    
-    /*
-     * 如果启用了所有基础值的突出显示，则返回true;如果未启用，则返回false。
-     * 
-     * 返回值 Bool - true/false 
-     */
-    public func isHighlightEnabled (): Bool
-    
-    /*
      * 从所有数据集中清除此数据对象并删除所有条目。别忘了在这之后让图表失效。
      * 
      * 返回值 Unit 
@@ -781,20 +759,6 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
      *           - S 是所有 IdataSet 的父类
      */
     public func getMaxEntryCountSet (): ?S
-    
-    /*
-     * 设置是否仅通过X轴距离来判断是否高亮,默认值false
-     * 
-     * 参数 highlightByXDistance - 是否仅通过X轴距离来判断是否高亮点
-     */
-    public func setHighlightByXDistance (highlightByXDistance: Bool)
-    
-    /*
-     * 检查是否仅通过X轴距离来判断是否高亮点。
-     * 
-     * 返回值 Bool - 是否仅通过X轴距离来判断是否高亮点的布尔值
-     */
-    public func isHighlightByXDistance (): Bool
 }
 ```
 
@@ -877,15 +841,6 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
      * 返回值 Unit 
      */
     public func setLabel (label: String): Unit
-
-    /*
-     * 设置是否高亮显示,默认值为true
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setHighlightEnabled (enabled: Bool): Unit
-    
     
     /*
      * 设置值格式
@@ -1005,7 +960,6 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
      */
     public func onAnimationUpdate (result: AnimatorResult): Unit
     
-    
     /*
      * 为图表设置新的数据对象
      * 
@@ -1075,186 +1029,6 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func strIsEmpty (str: ?String): Bool
     
     /*
-     * 设置最后一个手势单点
-     * 
-     * 返回值 Unit 
-     */
-    public func setLastGestureSingleTap (): Unit
-    
-    /*
-     * 设置最后一个手势长按
-     * 
-     * 返回值 Unit 
-     */
-    public func setLastGestureLongPress (): Unit
-    
-    /*
-     * 获取高亮的最大距离
-     * 
-     * 返回值 Float64 - 最大距离
-     */
-    public func getMaxHighlightDistance (): Float64
-    
-    /*
-     * 设置最大高亮距离，默认0.0
-     * 
-     * 参数 distDp - 距离 
-     * 返回值 Unit 
-     */
-    public func setMaxHighlightDistance (distDp: Float64): Unit
-    
-    /*
-     * 返回当前高亮显示值的数组。这可能是空值，如果没有突出显示，则为空数组。
-     * 
-     * 返回值 ?Array<Highlight> - 高亮显示值的数组
-     *                          - Array<Highlight>
-     *                          - Option<Array<Highlight>>.None
-     */
-    public func getHighlighted (): ?Array<Highlight>
-    
-    /*
-     * 判断启用每次点击高亮显示
-     * 
-     * 返回值 Bool - true/false
-     */
-    public func isHighlightPerTapEnabled (): Bool
-    
-    /*
-     * 判断启用每次长按高亮显示
-     * 
-     * 返回值 Bool - true/false
-     */
-    public func isHighlightPerLongPressEnabled (): Bool
-    
-    /*
-     * 设置是否启用每次点击高亮显示,默认true
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setHighlightPerTapEnabled (enabled: Bool)
-    
-    /*
-     * 设置是否启用每次长按高亮显示,默认true
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setHighlightPerLongPressEnabled (enabled: Bool)
-    
-    /*
-     * 判断值是否高亮显示
-     * 
-     * 返回值 Bool - true/false
-     */
-    public func valuesToHighlight (): Bool
-    
-    /*
-     * 突出显示给定数组值高亮显示
-     * 
-     * 参数 highs - Array<Highlight>
-     */
-    public func highlightValuesForArray (highs: Array<Highlight>)
-    
-    /*
-     * 高亮显示给定数据集中给定x值处的任何y值
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 参数 dataIndex - 要搜索的数据索引
-     * 返回值 Unit 
-     */
-    public func highlightValue (x: Float64, dataSetIndex: Int64, dataIndex: Int64): Unit
-    
-    /*
-     * 高亮显示给定数据集中给定x值处的任何y值
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 返回值 Unit 
-     */
-    public func highlightValue (x: Float64, dataSetIndex: Int64): Unit
-    
-    /*
-     * 高亮显示给定数据集中给定x值处的任何y值
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 y - 要突出显示的y值。
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 参数 dataIndex - 要搜索的数据索引
-     * 返回值 Unit 
-     */
-    public func highlightValue (x: Float64, y: Float64, dataSetIndex: Int64, dataIndex: Int64): Unit
-    
-    /*
-     * 高亮显示给定数据集中给定x值处的任何y值
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 y - 要突出显示的y值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 返回值 Unit 
-     */
-    public func highlightValue (x: Float64, y: Float64, dataSetIndex: Int64): Unit
-    
-    /*
-     * 高亮显示给定数据集中给定x值处的任何y值
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 参数 dataIndex - 要搜索的数据索引
-     * 参数 callListener - 是否应为此更改调用侦听器
-     * 返回值 Unit 
-     */
-    public func highlightValue (x: Float64, dataSetIndex: Int64, dataIndex: Int64, callListener: Bool): Unit
-    
-    /*
-     * 高亮显示给定数据集中给定x值处的任何y值
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 参数 callListener - 是否应为此更改调用侦听器
-     * 返回值 Unit 
-     */
-    public func highlightValue (x: Float64, dataSetIndex: Int64, callListener: Bool): Unit
-    
-    /*
-     * 高亮显示给定数据集中给定x值处的任何y值
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 y - 要突出显示的y值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 参数 dataIndex - 要搜索的数据索引
-     * 参数 callListener - 是否应为此更改调用侦听器
-     */
-    public func highlightValue (x: Float64, y: Float64, dataSetIndex: Int64, dataIndex: Int64, callListener: Bool)
-    
-    /*
-     * 高亮显示给定数据集中给定x值处的任何y值
-     * 
-     * 参数 x - 要突出显示的x值
-     * 参数 y - 要突出显示的x值
-     * 参数 dataSetIndex - 要搜索的数据集索引
-     * 参数 callListener - 是否应为此更改调用侦听器
-     * 返回值 Unit 
-     */
-    public func highlightValue (x: Float64, y: Float64, dataSetIndex: Int64, callListener: Bool): Unit
-    
-    /*
-     * 高亮显示通过触摸手势选择的值
-     * 
-     * 参数 high - 高亮显示对象
-     * 返回值 Unit 
-     */
-    public func highlightValue (high: ?Highlight): Unit
-    
-    /*
-     * 高亮显示通过触摸手势选择的值
-     * 
-     * 参数 high - 高亮显示对象
-     * 参数 callListener - 调用侦听器
-     * 返回值 Unit 
-     */
-    public func highlightValue (high: ?Highlight, callListener: Bool): Unit
-    
-    /*
      * 重绘图表。
      * 
      * 返回值 Unit
@@ -1281,43 +1055,6 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func onChartSizeChanged (newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64): Unit
     
     /*
-     * 返回图表触摸屏幕时的 Highlight 对象（包含 x-index 和 DataSet 索引）。
-     * 
-     * 参数 x - 屏幕触摸点的x轴坐标。
-     * 参数 y - 屏幕触摸点的y轴坐标。
-     * 返回值 ?Highlight - 触摸点的高亮对象。
-     *                   - Highlight
-     *                   - Option<Highlight>.None
-     */
-    public func getHighlightByTouchPoint (x: Float64, y: Float64): ?Highlight
-    
-    /*
-     * 设置触摸监听器
-     * 
-     * 参数 l - 触摸监听事件
-     * 返回值 Unit 
-     */
-    public func setOnTouchListener (l: ChartTouchListener<ChartModel<D,S,E>,D,S,E>): Unit
-    
-    /*
-     * 获取触摸监听事件
-     * 
-     * 返回值 ?ChartTouchListener<ChartModel<D,S,E>,D,S,E> - 触摸监听事件
-     *                   - ChartTouchListener<ChartModel<D,S,E>,D,S,E>
-     *                   - Option<ChartTouchListener<ChartModel<D,S,E>,D,S,E>>.None
-     * 
-     */
-    public func getOnTouchListener (): ?ChartTouchListener<ChartModel<D,S,E>,D,S,E>
-    
-    /*
-     * 获取标记点位置
-     * 
-     * 参数 high - 高亮显示对象
-     * 返回值 Array<Float64> - 位置集合
-     */
-    public open func getMarkerPosition (high: Highlight): Array<Float64>
-    
-    /*
      * 返回负责对图表值进行动画处理的动画制作者。
      * 
      * 返回值 ?ChartAnimator - 动画管理类。
@@ -1325,34 +1062,6 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
      *                      - Option<ChartAnimator>.None
      */
     public func getAnimator (): ?ChartAnimator
-    
-    /*
-     * 如果设置为 true，则图表在润色后继续滚动默认值：true
-     * 
-     * 返回值 Bool - true/false
-     */
-    public func isDragDecelerationEnabled (): Bool
-    
-    /*
-     * 设置是否开启惯性滑动,默认true
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setDragDecelerationEnabled (enabled: Bool)
-    
-    /*
-     * 获取拖动减速摩擦系数
-     * 
-     * 返回值 Float64 - 摩擦系数
-     */
-    public func getDragDecelerationFrictionCoef (): Float64
-    
-    /*
-     * 设置拖动减速摩擦系数,默认0.9，范围（0.0-1.0）
-     * 
-     * 参数 newValue - 摩擦系数
-     */
-    public func setDragDecelerationFrictionCoef (newValue: Float64)
     
     /*
      * 展示图表时同时带有X轴，Y轴动画
@@ -1437,22 +1146,6 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
      * 返回值 Unit 
      */
     public func setOnChartValueSelectedListener (l: OnChartValueSelectedListener): Unit
-    
-    /*
-     * 为图表设置手势监听事件
-     * 
-     * 参数 l - 手势监听事件
-     * 返回值 Unit 
-     */
-    public func setOnChartGestureListener (l: OnChartGestureListener): Unit
-    
-    /*
-     * 获取自定义手势监听事件
-     * 
-     * 返回值 ?OnChartGestureListener - OnChartGestureListener
-     *                                - Option<OnChartGestureListener>.None
-     */
-    public func getOnChartGestureListener (): ?OnChartGestureListener
     
     /*
      * 获取 Y 轴最大值
@@ -1635,58 +1328,6 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func setTouchEnabled (enabled: Bool)
     
     /*
-     * 获取是否禁用图表的所有手势与触摸
-     * 
-     * 返回值 Bool - 
-     */
-    public func getTouchEnabled (): Bool
-    
-    /*
-     * 设置在图表上单击某个值时显示的标记
-     * 
-     * 参数 marker - IMarker
-     */
-    public func setMarker (marker: IMarker)
-    
-    /*
-     * 设置长按标记
-     * 
-     * 参数 marker - 
-     */
-    public func setLongPressMarker (marker: IMarker)
-    
-    /*
-     * 获取是否做了标记显示
-     * 
-     * 返回值 ?IMarker - IMarker
-     *                - Option<IMarker>.None
-     */
-    public func getMarker (): ?IMarker
-    
-    /*
-     * 获取长按标记
-     * 
-     * 返回值 ?IMarker - IMarker
-     *                - Option<IMarker>.None
-     */
-    public func getLongPressMarker (): ?IMarker
-    
-    /*
-     * 设置标记区域
-     * 
-     * 参数 v - IMarker
-     */
-    public func setMarkerView (v: IMarker)
-    
-    /*
-     * 获取标记区域
-     * 
-     * 返回值 ?IMarker - IMarker
-     *                - Option<IMarker>.None 
-     */
-    public func getMarkerView (): ?IMarker
-    
-    /*
      * 设置图表描述信息
      * 
      * 参数 desc - Description
@@ -1727,48 +1368,6 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func getContentRect (): MyRect
     
     /*
-     * 判断是否开启绘画标记点显示
-     * 
-     * 返回值 Bool - true/false
-     */
-    public func isDrawMarkerViewsEnabled (): Bool
-    
-    /*
-     * 设置是否开启绘画标记点显示,默认true
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setDrawMarkerViews (enabled: Bool)
-    
-    /*
-     * 如果在点按值时启用了绘制标记，则返回true 
-     * 
-     * 返回值 Bool - true/false
-     */
-    public func isDrawMarkersEnabled (): Bool
-    
-    /*
-     * 如果在长按值时启用了绘制标记，则返回true 
-     * 
-     * 返回值 Bool - true/false
-     */
-    public func isDrawLongPressMarkersEnabled (): Bool
-    
-    /*
-     * 将此设置为true可在点击图表值时绘制用户指定的标记,默认true
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setDrawMarkers (enabled: Bool)
-    
-    /*
-     * 将此设置为true可在长按图表值时绘制用户指定的标记,默认true
-     * 
-     * 参数 enabled - true/false
-     */
-    public func setDrawLongPressMarkers (enabled: Bool)
-    
-    /*
      * 返回已为图表设置的 ChartData 对象。
      * 
      * 返回值 ?ChartData<S,E> - 数据对象。
@@ -1799,22 +1398,6 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
      * 参数 renderer - 图表数据渲染器
      */
     public func setRenderer (renderer: ?DataRenderer)
-    
-    /*
-     * 返回当前高亮显示条目接口。
-     * 
-     * 返回值 ?IHighlighter - 获取触摸点的高亮对象接口类。
-     *                     - IHighlighter
-     *                     - Option<IHighlighter>.None
-     */
-    public func getHighlighter (): ?IHighlighter
-    
-    /*
-     * 设置高亮显示
-     * 
-     * 参数 highlighter - 高亮显示接口类
-     */
-    public func setHighlighter (highlighter: ChartHighlighter<BarLineScatterCandleBubbleDataProvider<IDataSet<EntryOhos>,EntryOhos>,IDataSet<EntryOhos>,EntryOhos>)
     
     /*
      * 返回图表(整个视图)的中心点的可回收的MPPointF实例。
@@ -1988,15 +1571,7 @@ public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
      * 返回值 Unit 
      */
     public func setValueLineVariableLength (valueLineVariableLength: Bool): Unit
-       
-    /*
-     * 设置高亮显示的扇区颜色,默认值0xffbb73
-     * 
-     * 参数 color - 颜色
-     * 返回值 Unit 
-     */
-    public func setHighlightColor (color: UInt32): Unit
-
+    
 }
 ```
 
@@ -2071,15 +1646,7 @@ public class PieChartModel<: PieRadarChartBaseModel<PieData, IPieDataSet, PiEntr
      * 返回值 PieChartModel - 饼状图构建类
      */
     public static func build(): PieChartModel
-
-    /*
-     * 检查给定索引是否设置为突出显示。
-     * 
-     * 参数 index - 给定索引
-     * 返回值 Bool - true/false
-     */
-    public func needsHighlight (index: Float64): Bool
-        
+    
     /*
      * 设置在 Pie Chart中心绘制的孔的颜色(如果启用),默认0x000000
      * 
@@ -2553,47 +2120,7 @@ public class DefaultValueFormatter <: IValueFormatter {
 }
 ```
 
-### 1.6 高亮
-
-#### 1.6.1 Highlight
-```cangjie
-public class Highlight {
-    /**
-     * 构造
-     *
-     * 参数 x - 突出显示的x值
-     * 参数 y - 突出显示的y值,默认值为 Float64.NaN
-     * 参数 dataSetIndex - 突出显示的值所在的数据集的索引,默认值为 0
-     * 参数 dataIndex - 数据对象的索引,默认值为 -1
-     * 参数 stackIndex - 索引堆叠条形条目的哪个值高亮显示，默认值为 0
-     * 参数 xPx - 高亮的x像素,默认值为 0.0
-     * 参数 yPx - 高亮的y像素,默认值为 0.0
-     * 参数 axis - 高亮显示的值所属的轴, 默认值为 Option<AxisDependency>.None
-     */
-    public init(x: Float64, y!: Float64 = Float64.NaN, dataSetIndex!: Int64 = 0, dataIndex!: Int64 = -1, stackIndex!: Int64 = 0, xPx!: Float64 = 0.0,
-        yPx!: Float64 = 0.0, axis!: ?AxisDependency = Option<AxisDependency>.None)
-    
-
-}
-
-```
-#### 1.6.2 ChartHighlighter
-
-```cangjie
-public open class ChartHighlighter<P, S, E> <: IHighlighter where P <: BarLineScatterCandleBubbleDataProvider<S, E>,
-    S <: IDataSet<E>, E <: EntryOhos {
-    
-    public init(chart: P) 
-
-    public open func getHighlight(x: Float64, y: Float64): ?Highlight
-
-    public func getClosestHighlightByPixel(closestValues: ArrayList<Highlight>, x: Float64, y: Float64,
-        axis: ?AxisDependency, minSelectionDistance: Float64): ?Highlight
-    
-}
-```
-
-#### 1.6.3 ChartHighlighter
+#### 1.6.3 BarLineScatterCandleBubbleDataProvider
 
 ```cangjie
 public interface BarLineScatterCandleBubbleDataProvider<S, E> <: ChartInterface<S, E> where S <: IDataSet<E>,
@@ -2608,102 +2135,6 @@ public interface BarLineScatterCandleBubbleDataProvider<S, E> <: ChartInterface<
 
     func getData(): ?ChartData<S, E>
 }
-```
-
-### 1.7 IMarker
-#### 1.7.1 IMarker interface API Description
-
-```cangjie
-public interface IMarker {
-
-    /**
-     * 返回 IMarker在x轴和y轴上的偏移量。
-     */
-    func getOffset(): MPPointF
-
-    /**
-     * 返回 用于绘制的特定“点”的偏移量
-     *
-     * 参数 posX - 标记绘制的 x 位置
-     * 参数 posY - 标记绘制的 Y位置
-     */
-    func getOffsetForDrawingAtPoint(posX: Float64, posY: Float64): MPPointF
-
-    /**
-     * 使用给定的Canvas对象在屏幕的给定位置绘制IMarker
-     *
-     * 参数 canvas - CanvasRenderingContext2D
-     * 参数 posX - x 偏移
-     * 参数 posY - y 偏移
-     */
-    func draw(c: CanvasRenderingContext2D, posX: Float64, posY: Float64, e: EntryOhos, highlight: Highlight): Unit
-}
-
-```
-#### 1.7.2 MarkerView class API Description
-
-```cangjie
-
-public class MarkerView <: IMarker {
-    /**
-     * 初始化构造
-     */
-    public init()
-    
-    /**
-     * 设置指定的点的偏移量，默认值MPPointF(0.0,0.0)
-     *
-     * 参数 offset - 指定点
-     */
-    public func setOffsetByMPPointF(offset: MPPointF)
-    
-    /**
-     * 设置指定的点的偏移量
-     *
-     * 参数 posX - 标记绘制的 x 位置
-     * 参数 posY - 标记绘制的 Y位置
-     */
-    public func setOffset(offsetX: Float64, offsetY: Float64): Unit 
-    
-    /**
-     * 返回 IMarker在x轴和y轴上的偏移量。
-     */
-    public func getOffset(): MPPointF
-    
-    /**
-     * 返回 用于绘制的特定“点”的偏移量
-     *
-     * 参数 posX - 标记绘制的 x 位置
-     * 参数 posY - 标记绘制的 Y位置
-     */
-    public func setChartView(chart: ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>): Unit
-    
-    /**
-     * 返回 用于绘制的特定“点”的偏移量
-     *
-     * 参数 posX - 标记绘制的 x 位置
-     * 参数 posY - 标记绘制的 Y位置
-     */
-    public func getChartView(): ?ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos> 
-    
-    /**
-     * 返回 用于绘制的特定“点”的偏移量
-     *
-     * 参数 posX - 标记绘制的 x 位置
-     * 参数 posY - 标记绘制的 Y位置
-     */
-    public func getOffsetForDrawingAtPoint(posX: Float64, posY: Float64): MPPointF
-    
-    /**
-     * 使用给定的Canvas对象在屏幕的给定位置绘制IMarker
-     *
-     * 参数 canvas
-     * 参数 posX
-     * 参数 posY
-     */
-    public func draw(c: CanvasRenderingContext2D, posX: Float64, posY: Float64, e: EntryOhos, highlight: Highlight) 
-}
-
 ```
 
 ### 1.8 其他接口
@@ -2947,11 +2378,7 @@ class PieChartPage {
         this.model.setDrawCenterText(true); // 绘制中心文本
 
         this.model.setRotationAngle(0.0);  // 设置旋转角度
-     
-        // 通过触摸启用图表的旋转
-        this.model.setRotationEnabled(true);
-        this.model.setHighlightPerTapEnabled(true); // 启用点击高亮效果
-
+        
         this.setData(4, 10);  // 设置图表数据
         return this.model
     }
@@ -3171,14 +2598,6 @@ public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBa
     public func setBarBorderColor (color: UInt32): Unit
     
     /*
-     * 设置高亮透明度,默认值120.0
-     * 
-     * 参数 alpha - 透明度
-     * 返回值 Unit 
-     */
-    public func setHighLightAlpha (alpha: Float64): Unit
-    
-    /*
      * 设置堆叠标签
      * 
      * 参数 labels - 标签
@@ -3287,12 +2706,6 @@ public interface BarDataProvider <: BarLineScatterCandleBubbleDataProvider<IBarD
      */
     func isDrawValueAboveBarEnabled(): Bool
     
-    /*
-     * 判断条形图是否高亮
-     * 
-     * 返回值 Bool - true/false
-     */
-    func isHighlightFullBarEnabled(): Bool
 }
 ```
 ##### 1.10.1.6  BarChartModel Class API Description
@@ -3332,16 +2745,6 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
     public func onDraw (c: CanvasRenderingContext2D): Unit
     
     /*
-     * 获取接触点的高亮对象
-     * 
-     * 参数 x - x值
-     * 参数 y - y值
-     * 返回值 ?Highlight - 高亮
-     */
-    public open func getHighlightByTouchPoint (x: Float64, y: Float64): ?Highlight
-    
-    
-    /*
      * 设置值是否在条形图的上方绘制，默认值true
      * 
      * 参数 enabled - true/false
@@ -3356,24 +2759,6 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
      * 返回值 Unit 
      */
     public func setDrawBarShadow (enabled: Bool): Unit
-    
-    /*
-     * 设置是否突出显示某个条目（堆叠柱状图）,默认值false
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setHighlightFullBarEnabled (enabled: Bool): Unit
-    
-    /*
-     * 给定值处设置高亮
-     * 
-     * 参数 x - x值
-     * 参数 dataSetIndex - 条目索引
-     * 参数 stackIndex - 堆叠索引
-     * 返回值 Unit 
-     */
-    public func highlightValue (x: Float64, dataSetIndex: Int64, stackIndex: Int64): Unit
     
     /*
      * 获取柱状图条目
@@ -3446,7 +2831,6 @@ class BarChartMultiplePage {
         this.model.setDrawBarShadow(false)
 
         this.model.setDrawValueAboveBar(true)
-        this.model.setHighlightFullBarEnabled(false)
 
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(leftaxis) <- this.leftAxis) {
@@ -3691,7 +3075,6 @@ class HorizontalBarChartPage {
         }
 
         let dataSet: BarDataSet = BarDataSet(values, "DataSet")
-        dataSet.setHighLightColor(0x000000)
         dataSet.setDrawIcons(false)
 
         dataSet.setColorByColor(0x8CEAFF)
@@ -4344,12 +3727,6 @@ public class DefaultAxisValueFormatter<: IAxisValueFormatter {
 
 ```cangjie
 public interface  IBarLineScatterCandleBubbleDataSet<E> <: IDataSet<E> where E <: EntryOhos {
-    /*
-     * 获取高亮颜色
-     * 
-     * 返回值 UInt32 - 16进制颜色
-     */
-    public func getHighLightColor(): UInt32
 }
 ```
 ##### 1.10.4.2 BarLineScatterCandleBubbleDataSet abstract API Description
@@ -4363,21 +3740,6 @@ public abstract class BarLineScatterCandleBubbleDataSet<E> <: DataSet<E> where E
      * 返回值 UInt32 - 16进制颜色
      */
     public init (yVals: ArrayList<E>, label: String)
-    
-    /*
-     * 设置高亮颜色
-     * 
-     * 参数 color - 16进制颜色
-     * 返回值 Unit
-     */
-    public func setHighLightColor (color: UInt32): Unit
-    
-    /*
-     * 获取高亮颜色
-     * 
-     * 返回值 UInt32 - 16进制颜色
-     */
-    public func getHighLightColor (): UInt32
 }
 ```
 
@@ -4462,23 +3824,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public init ()
     
     /*
-     * 是否设置长按光标显示，默认false
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setLongPressCursorEnabled (enabled: Bool): Unit
-    
-    
-    /*
-     * 是否设置长按时间间隔，默认值500ms
-     * 
-     * 参数 duration - 时间
-     * 返回值 Unit 
-     */
-    public func setLongPressDuration (duration: Int64): Unit
-    
-    /*
      * 是否设置y坐标轴延长线，默认值false
      * 
      * 参数 opt - true/false
@@ -4492,15 +3837,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      * 返回值 Unit 
      */
     public open func onDraw (context2D: CanvasRenderingContext2D): Unit
-    
-    /*
-     * 设置可缩放的最小比例
-     * 
-     * 参数 scaleX - x 缩放因子,默认值1.0
-     * 参数 scaleY - y 缩放因子,默认值1.0
-     * 返回值 Unit 
-     */
-    public func setScaleMinima (scaleX: Float64, scaleY: Float64): Unit
     
     /*
      * 设置X轴最大可见区域
@@ -4544,16 +3880,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      * 返回值 Unit 
      */
     public open func setVisibleYRangeMinimum (minYRange: Float64, axis: AxisDependency): Unit
-    
-    /*
-     * 设置缩放的y最大最小范围
-     * 
-     * 参数 minYRange - 最小范围
-     * 参数 maxYRange - 最大范围
-     * 参数 axis - 轴位置
-     * 返回值 Unit 
-     */
-    public open func setVisibleYRange (minYRange: Float64, maxYRange: Float64, axis: AxisDependency): Unit
     
     /*
      * 将当前左侧视口移动到指定的x位置
@@ -4663,86 +3989,13 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func getMaxVisibleCount (): Int64
     
     /*
-     * 设置拖动图表时是否高亮显示，默认true
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setHighlightPerDragEnabled (enabled: Bool): Unit
-
-    
-    /*
      * 设置网格线背景颜色，默认0xf0f0f0
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
      */
     public func setGridBackgroundColor (color: UInt32): Unit
-    
-    /*
-     * 设置是否启用图表拖动效果，默认true
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setDragEnabled (enabled: Bool): Unit
-    
-    /*
-     * 设置是否启用X轴上的拖动效果,默认true
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setDragXEnabled (enabled: Bool): Unit
-    
-    
-    /*
-     * 设置Y轴是否拖动,默认true
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setDragYEnabled (enabled: Bool): Unit
-    
-    /*
-     * 判断是否启用Y轴上的拖动效果 
-     * 
-     * 返回值 Bool - true/false
-     */
-    public func isDragYEnabled (): Bool
-    
-    /*
-     * 设置是否启用缩放功能，默认true
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setScaleEnabled (enabled: Bool): Unit
-    
-    /*
-     * 设置是否启用x轴缩放功能，默认true
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setScaleXEnabled (enabled: Bool): Unit
-    
-    /*
-     * 设置是否启用y轴缩放功能，默认true
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setScaleYEnabled (enabled: Bool): Unit
-    
-    /*
-     * 是否设置双击图表放大，默认true
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setDoubleTapToZoomEnabled (enabled: Bool): Unit
-    
+
     /*
      * 是否设置网格背景颜色,默认false
      * 
@@ -4799,7 +4052,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      */
     public func setMinOffset (minOffset: Float64): Unit
     
-    
     /*
      * 设置图表旋转后是否保持原位置，默认false
      * 
@@ -4829,38 +4081,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      * 返回值 ?YAxis - Y轴
      */
     public func getAxis (axis: AxisDependency): ?YAxis
-    
-    /*
-     * 如果设置为真，可以用2个手指同时缩放x和y轴,默认false
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setPinchZoom (enabled: Bool): Unit
-    
-    /*
-     * 设置x拖动偏移量,默认0.0
-     * 
-     * 参数 offset - 偏移量
-     * 返回值 Unit 
-     */
-    public func setDragOffsetX (offset: Float64): Unit
-    
-    /*
-     * 设置y拖动偏移量，默认0.0
-     * 
-     * 参数 offset - 偏移量
-     * 返回值 Unit 
-     */
-    public func setDragOffsetY (offset: Float64): Unit
-    
-    /*
-     * 设置是否可在y轴上设置缩放，默认false
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setAutoScaleMinMaxEnabled (enabled: Bool): Unit
     
     /*
      * 图表尺寸改变
@@ -5195,14 +4415,6 @@ public class BubblesEntry<: EntryOhos {
 
 ```cangjie
 public interface IBubbleDataSet <: IBarLineScatterCandleBubbleDataSet<BubblesEntry> {
-
-    /**
-     * 设置高亮显示时围绕气泡的圆的宽度，默认值2.5
-     *
-     * 参数 width - 宽度
-     * 返回值 Unit
-     */
-    public func setHighlightCircleWidth(width: Float64): Unit
     
     /**
      * 获取气泡大小
@@ -5217,13 +4429,6 @@ public interface IBubbleDataSet <: IBarLineScatterCandleBubbleDataSet<BubblesEnt
      * 返回值 Bool - true/false
      */
     public func isNormalizeSizeEnabled(): Bool
-
-    /**
-     * 返回气泡周围高亮显示圆的宽度
-     *
-     * 返回值 Float64 - 宽度
-     */
-    public func getHighlightCircleWidth(): Float64
 }
 
 ```
@@ -5242,21 +4447,6 @@ public class BubbleDataSet<: BarLineScatterCandleBubbleDataSet<BubblesEntry> & I
      * 参数 label - 标签
      */
     public init (yVals: ArrayList<BubblesEntry>, label: String)
-    
-    /**
-     * 设置高亮显示时围绕气泡的圆的宽度，默认值2.5
-     *
-     * 参数 width - 宽度
-     * 返回值 Unit
-     */
-    public func setHighlightCircleWidth (width: Float64): Unit
-    
-    /**
-     * 返回气泡周围高亮显示圆的宽度
-     *
-     * 返回值 Float64 - 宽度
-     */
-    public func getHighlightCircleWidth (): Float64
     
     /*
      * 创建气泡图数据集对象副本
@@ -5298,13 +4488,6 @@ public class BubbleData<: BarLineScatterCandleBubbleData<IBubbleDataSet,BubblesE
      */
     public init (sets: ArrayList<IBubbleDataSet>)
     
-    /**
-     * 设置高亮显示时围绕气泡的圆的宽度,默认值2.5
-     *
-     * 参数 width - 宽度
-     * 返回值 Unit
-     */
-    public func setHighlightCircleWidth (width: Float64): Unit
 }
 ```
 
@@ -5452,7 +4635,6 @@ class BubbleChartPage {
         }
 
         let dataSet: BubbleDataSet = BubbleDataSet(values, "DataSet")
-        dataSet.setHighLightColor(0x000000)
         dataSet.setDrawIcons(false)
 
         let dataSetList: ArrayList<BubbleDataSet> = ArrayList<BubbleDataSet>()
@@ -5509,8 +4691,6 @@ class BubbleChartPage {
         dataResult.setDrawValues(this.isDrawValuesEnable)
         dataResult.setValueTextSize(8.0)
         dataResult.setValueTextColor(0xffffff)
-        dataResult.setHighlightCircleWidth(1.5)
-        dataResult.setHighlightEnabled(true)
         dataResult.notifyDataChanged()
 
         this.model.setData(dataResult)
@@ -6008,13 +5188,6 @@ public interface WaterfallDataProvider <: BarLineScatterCandleBubbleDataProvider
      * 返回值 Bool - true/false
      */
     func isDrawValueAboveBarEnabled(): Bool
-    
-    /*
-     * 判断条形图是否高亮
-     * 
-     * 返回值 Bool - true/false
-     */
-    func isHighlightFullBarEnabled(): Bool
 }
 ```
 
@@ -6057,16 +5230,6 @@ public class WaterfallChartModel<: BarLineChartBaseModel<WaterfallData,IWaterfal
     public func onDraw (c: CanvasRenderingContext2D): Unit
     
     /*
-     * 获取接触点的高亮对象
-     * 
-     * 参数 x - x值
-     * 参数 y - y值
-     * 返回值 ?Highlight - 高亮
-     */
-    public open func getHighlightByTouchPoint (x: Float64, y: Float64): ?Highlight
-    
-    
-    /*
      * 设置值是否在条形图的上方绘制，默认值true
      * 
      * 参数 enabled - true/false
@@ -6081,24 +5244,6 @@ public class WaterfallChartModel<: BarLineChartBaseModel<WaterfallData,IWaterfal
      * 返回值 Unit 
      */
     public func setDrawBarShadow (enabled: Bool): Unit
-    
-    /*
-     * 设置是否突出显示某个条目（堆叠柱状图），默认值false
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setHighlightFullBarEnabled (enabled: Bool): Unit
-    
-    /*
-     * 给定值处设置高亮
-     * 
-     * 参数 x - x值
-     * 参数 dataSetIndex - 条目索引
-     * 参数 stackIndex - 堆叠索引
-     * 返回值 Unit 
-     */
-    public func highlightValue (x: Float64, dataSetIndex: Int64, stackIndex: Int64): Unit
     
     /*
      * 获取瀑布图条目
@@ -6173,7 +5318,6 @@ class SimpleWaterfallChartPage {
         this.model.setDrawBarShadow(false);
 
         this.model.setDrawValueAboveBar(false);
-        this.model.setHighlightFullBarEnabled(false);
 
         this.limitLine1 = LimitLine(120.0, "Upper Limit")
         this.limitLine1.setLineWidth(4.0);
@@ -6913,90 +6057,6 @@ public abstract class LineScatterCandleRadarDataSet<E> <: BarLineScatterCandleBu
      * 参数 label - 标签
      */
     public init (yVals: ArrayList<E>, label: String)
-    
-    /*
-     * 设置水平高亮,默认值true
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit
-     */
-    public func setDrawHorizontalHighlightIndicator (enabled: Bool): Unit
-    
-    /*
-     * 设置垂直高亮,默认值true
-     * 
-     * 参数 enabled  - true/false
-     * 返回值 Unit 
-     */
-    public func setDrawVerticalHighlightIndicator (enabled: Bool): Unit
-    
-    /*
-     * 设置水平/垂直高亮,默认值true
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setDrawHighlightIndicators (enabled: Bool): Unit
-    
-    /*
-     * 判断是否是垂直高亮 
-     * 
-     * 返回值 Bool - true/false
-     */
-    public func isVerticalHighlightIndicatorEnabled (): Bool
-    
-    /*
-     * 判断是否是水平高亮 
-     * 
-     * 返回值 Bool - true/false
-     */
-    public func isHorizontalHighlightIndicatorEnabled (): Bool
-    
-    /*
-     * 设置高亮线宽,默认值0.5
-     * 
-     * 参数 width - 线宽
-     * 返回值 Unit 
-     */
-    public func setHighlightLineWidth (width: Float64): Unit
-    
-    /*
-     * 获取高亮线宽
-     * 
-     * 返回值 Float64 - 线宽
-     */
-    public func getHighlightLineWidth (): Float64
-    
-    /*
-     * 高光线以虚线模式绘制
-     * 
-     * 参数 lineLength - 线段的长度
-     * 参数 spaceLength - 线段之间的空间长度
-     * 参数 phase - 相位偏移，以度数表示(通常使用0)
-     * 返回值 Unit 
-     */
-    public func enableDashedHighlightLine (lineLength: Int64, spaceLength: Int64, phase: Int64): Unit
-    
-    /*
-     * 禁用以虚线模式绘制的高亮线
-     * 
-     * 返回值 Unit 
-     */
-    public func disableDashedHighlightLine (): Unit
-    
-    /*
-     * 如果为高亮显示线启用了虚线效果，则返回true，如果未启用，则返回false，默认 false
-     * 
-     * 返回值 Bool - true/false
-     */
-    public func isDashedHighlightLineEnabled (): Bool
-    
-    /*
-     * 获取高亮线的样式
-     * 
-     * 返回值 ?DashPathEffect - 高亮线的样式
-     */
-    public open func getDashPathEffectHighlight (): ?DashPathEffect
 }
 ```
 

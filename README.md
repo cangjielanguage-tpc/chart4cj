@@ -192,11 +192,6 @@ class PieChartPageReadme {
 
 func build() {
         Column {
-            //图表显示
-            // 可通过dataSet.notifyDataSetChanged();来触发数据更新，
-            // 可通过this.model.notifyDataSetChanged();来触发坐标轴数据更新，
-            // 可通过this.model.invalidate();来触发绘制更新。
-            
             PieChart(model: aboutToAppear())
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
@@ -243,7 +238,6 @@ class BarChartPageReadme {
         this.model.setDrawBarShadow(false)
 
         this.model.setDrawValueAboveBar(true)
-        this.model.setHighlightFullBarEnabled(false)
 
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(leftaxis) <- this.leftAxis) {
@@ -428,7 +422,6 @@ class BubbleChartPageReadme {
         }
 
         let dataSet: BubbleDataSet = BubbleDataSet(values, "DataSet")
-        dataSet.setHighLightColor(0x000000)
         dataSet.setDrawIcons(false)
 
         let dataSetList: ArrayList<BubbleDataSet> = ArrayList<BubbleDataSet>()
@@ -480,8 +473,6 @@ class BubbleChartPageReadme {
         dataResult.setDrawValues(this.isDrawValuesEnable)
         dataResult.setValueTextSize(8.0)
         dataResult.setValueTextColor(0xffffff)
-        dataResult.setHighlightCircleWidth(1.5)
-        dataResult.setHighlightEnabled(true)
         dataResult.notifyDataChanged()
 
         this.model.setData(dataResult)
@@ -723,6 +714,8 @@ class LineChartNotAxisConfigPageReadme {
 
     DevEco Studio NEXT Developer Beta2(5.0.3.500) 
     SDK: OHCangjie0.10.0-OH5.0.0.31
+
+    1. 仓颉 UI 未支持手势组件，影响图表手势操作后的高亮、缩放、平移、旋转功能；
 
 ## 开源协议
 
