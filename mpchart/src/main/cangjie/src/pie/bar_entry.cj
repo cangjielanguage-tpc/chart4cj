@@ -142,8 +142,8 @@ public class BarEntry <: EntryOhos {
     }
 
     protected func calcRanges(): Unit {
-        let values: ?Array<Float64> = this.getYVals()
-        if (let Some(v) <- values) {
+        let v: Array<Float64> = this.getYVals()
+
             if (v.size == 0) {
                 return
             } else {
@@ -164,8 +164,6 @@ public class BarEntry <: EntryOhos {
                     }
                 }
             }
-        } else {
-            return
-        }
+
     }
 }

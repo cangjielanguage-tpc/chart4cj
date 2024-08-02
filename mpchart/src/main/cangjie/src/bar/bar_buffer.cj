@@ -45,12 +45,12 @@ public open class BarBuffer <: AbstractBuffer<IBarDataSet> {
 
             let x: Float64 = e.getX()
             var y: Float64 = e.getY()
-            let values: ?Array<Float64> = e.getYVals()
+            let values: Array<Float64> = e.getYVals()
 
-            if (!this.mContainsStacks || values.isNone()) {
+            if (!this.mContainsStacks || values.size == 0) {
                 feedValueIsNone(x, y, barWidthHalf)
-            } else if (let Some(val) <- values) {
-                feedValueIsSome(e, val, x, y, barWidthHalf)
+            } else {
+                feedValueIsSome(e, values, x, y, barWidthHalf)
             }
         }
 
@@ -101,7 +101,6 @@ public open class BarBuffer <: AbstractBuffer<IBarDataSet> {
         var posY: Float64 = 0.0
         var negY: Float64 = -e.getNegativeSum()
         var yStart: Float64 = 0.0
-
         // fill the stack
         for (k in 0..val.size) {
             let value: Float64 = val[k]
@@ -152,7 +151,6 @@ public open class BarBuffer <: AbstractBuffer<IBarDataSet> {
             // multiply the height of the rect with the phase
             top *= this.phaseY
             bottom *= this.phaseY
-
             this.addBar(left, top, right, bottom)
         }
     }

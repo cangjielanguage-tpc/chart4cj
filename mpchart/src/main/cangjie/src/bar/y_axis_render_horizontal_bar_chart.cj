@@ -43,7 +43,6 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
         if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawLabelsEnabled() || this.mViewPortHandler.isNone()) {
             return
         }
-
         let positions: Array<Float64> = this.getTransformedPositions()
 
         this.mAxisLabelPaint.setFontFamily(this.mYAxis.getTypeface())
@@ -72,7 +71,6 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
                 yPos = this.mViewPortHandler().contentBottom() + textHeight + baseYOffset
             }
         }
-
         this.drawYLabels(c, yPos, positions, this.mYAxis.getYOffset())
     }
 
@@ -125,13 +123,12 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
         }
 
         let xOffset: Float64 = this.mYAxis.getLabelXOffset()
-
         for (i in fromIndex..Int64(to)) {
             let text: String = this.mYAxis.getFormattedLabel(i)
 
             Utils.resetContext2DStyle(c, this.mAxisLabelPaint)
             c.beginPath()
-            c.strokeText(text, positions[i * 2], fixedPosition - offset + xOffset)
+            c.fillText(text, positions[i * 2], fixedPosition - offset + xOffset)
             c.closePath()
         }
     }

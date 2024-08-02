@@ -140,7 +140,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
 
     public open func onDraw(context2D: CanvasRenderingContext2D): Unit {
         super.onDraw(context2D)
-
         if (this.mData.isNone() || this.mRenderer.isNone() || !this.mChartSizeCorrected) {
             return
         }
@@ -166,7 +165,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         if (this.mXAxisRenderer.isSome() && this.mXAxis.isSome() && this.mXAxis().isEnabled()) {
             this.mXAxisRenderer().computeAxis(this.mXAxis().mAxisMinimum, this.mXAxis().mAxisMaximum, false)
         }
-
         // y轴延长线计算
         var extraLength = 0
         if (this.yAxisExtensionLineIsEnable()) {
@@ -183,7 +181,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
                 }
             }
         }
-
         if (let Some(xAxisRenderer) <- this.mXAxisRenderer) {
             xAxisRenderer.renderAxisLine(context2D, extraLine: 0.0)
         }
@@ -236,7 +233,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             context2D.closePath()
             context2D.clip()
         }
-
         this.mRenderer().drawData(context2D)
 
         if (this.mXAxisRenderer.isSome() && this.mXAxis.isSome() && !this.mXAxis().isDrawGridLinesBehindDataEnabled()) {
@@ -276,7 +272,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             !this.mAxisRight().isDrawLimitLinesBehindDataEnabled()) {
             this.mAxisRendererRight().renderLimitLines(context2D)
         }
-
         if (this.mXAxisRenderer.isSome()) {
             this.mXAxisRenderer().renderAxisLabels(context2D)
         }
@@ -286,7 +281,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         if (this.mAxisRendererRight.isSome()) {
             this.mAxisRendererRight().renderAxisLabels(context2D)
         }
-
         if (this.isClipValuesToContentEnabled()) {
             context2D.save()
             let rect = this.mViewPortHandler.getContentRect()
@@ -301,7 +295,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         if (this.mLegendRenderer.isSome()) {
             this.mLegendRenderer().renderLegend(context2D)
         }
-
         this.drawDescription(context2D)
 
         this.drawMarkers(context2D)
@@ -375,9 +368,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         if (this.mRenderer.isSome()) {
             this.mRenderer().initBuffers()
         }
-
         this.calcMinMax()
-
         if (this.mAxisRendererLeft.isSome() && this.mAxisLeft.isSome()) {
             this.mAxisRendererLeft().computeAxis(this.mAxisLeft().mAxisMinimum, this.mAxisLeft().mAxisMaximum,
                 this.mAxisLeft().isInverted())
@@ -391,7 +382,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         }
 
         if (this.mLegendRenderer.isSome()) {
-            this.mLegendRenderer().computeLegend(this.mData)
+            this.mLegendRenderer().computeLegend(this.mData())
         }
 
         this.calculateOffsets()

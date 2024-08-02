@@ -793,12 +793,4 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
 
         this.mMinAngleForSlices = m
     }
-
-    protected func onDetachedFromWindow(): Unit {
-        // releases the bitmap in the renderer to avoid oom error
-        if (let Some(render: PieChartRenderer) <- this.mRenderer) {
-            render.releaseBitmap()
-        }
-        // super.onDetachedFromWindow()
-    }
 }

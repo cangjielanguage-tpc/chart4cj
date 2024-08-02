@@ -96,7 +96,7 @@ public open class XAxisRenderer <: AxisRenderer {
             return
         }
 
-        let yoffset = this.mXAxis.getYOffset()
+        var yoffset = this.mXAxis.getYOffset()
 
         this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface())
         this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize())
@@ -106,6 +106,7 @@ public open class XAxisRenderer <: AxisRenderer {
         if (this.mXAxis.getPosition() == XAxisPosition.TOP) {
             pointF.x = 0.5
             pointF.y = 1.0
+            yoffset = yoffset + 15.0
             this.drawLabels(c, this.mViewPortHandler().contentTop() - yoffset, pointF)
         } else if (this.mXAxis.getPosition() == XAxisPosition.TOP_INSIDE) {
             pointF.x = 0.5

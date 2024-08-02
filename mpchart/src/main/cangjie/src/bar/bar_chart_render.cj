@@ -85,7 +85,6 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         }
         let drawBorder: Bool = dataSet.getBarBorderWidth() > 0.0
 
-
         buffer.feed(dataSet)
         let tempArray: Array<Float64> = buffer.buffer.toArray()
 
@@ -109,7 +108,6 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 pos++
                 continue
             }
-
             if (!this.mViewPortHandler().isInBoundsRight(buffer.buffer[j])) {
                 break
             }
@@ -119,7 +117,6 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 // is out of bounds, reuse colors.
                 this.mRenderPaint.setColor(Color(dataSet.getColor(pos)))
             }
-
             let radius: Float64 = match (barData) {
                 case Some(bar) => bar.getTopRadius()
                 case None => 0.0
@@ -127,23 +124,24 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
             //顶部的矩形才需要绘制圆角
             let isDrawRounded = radius != 0.0 && (j + 4 >= buffer.size() || (j + 4 < buffer.size() &&
                 buffer.buffer[j] != buffer.buffer[j + 4]))
-
             // 圆角位置：同时受 值 和 图表是否 inverted 影响
             var cornerType: RoundCornerType = RoundCornerType.UP
-
-            if (isInverted) {
-                cornerType = if (dataSet.getEntryForIndex(pos).getY() > 0.0) {
-                    RoundCornerType.DOWN
+            if (dataSet.getEntryCount() > pos) {
+                if (isInverted) {
+                    cornerType = if (dataSet.getEntryForIndex(pos).getY() > 0.0) {
+                        RoundCornerType.DOWN
+                    } else {
+                        RoundCornerType.UP
+                    }
                 } else {
-                    RoundCornerType.UP
-                }
-            } else {
-                cornerType = if (dataSet.getEntryForIndex(pos).getY() > 0.0) {
-                    RoundCornerType.UP
-                } else {
-                    RoundCornerType.DOWN
+                    cornerType = if (dataSet.getEntryForIndex(pos).getY() > 0.0) {
+                        RoundCornerType.UP
+                    } else {
+                        RoundCornerType.DOWN
+                    }
                 }
             }
+
             if (isCustomFill) {
                 let fill: Fill = dataSet.getFill(pos)
 
@@ -167,7 +165,6 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
     }
     protected open func drawDataSet(c: CanvasRenderingContext2D, dataSet: IBarDataSet, index: Int64): Unit {
         let trans: ?Transformer = this.mChart.getTransformer(dataSet.getAxisDependency())
-
         this.mBarBorderPaint.setColor(Color(dataSet.getBarBorderColor()))
         this.mBarBorderPaint.setStrokeWidth(Utils.handleDataValues(dataSet.getBarBorderWidth()))
 
@@ -201,15 +198,12 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 if(let Some(t) <- trans) {
                     t.rectValueToPixel(this.mBarShadowRectBuffer)
                 }
-
                 if (!this.mViewPortHandler().isInBoundsLeft(this.mBarShadowRectBuffer.right)) {
                     continue
                 }
-
                 if (!this.mViewPortHandler().isInBoundsRight(this.mBarShadowRectBuffer.left)) {
                     break
                 }
-
                 this.mBarShadowRectBuffer.top = this.mViewPortHandler().contentTop()
                 this.mBarShadowRectBuffer.bottom = this.mViewPortHandler().contentBottom()
 
@@ -257,7 +251,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         )
     }
 
-    public func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool = false): Unit {
+    public open func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool): Unit {
         if (this.mChart.getBarData().isNone()) {
             return
         }
@@ -383,8 +377,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                                 1.0
                             })) {
                         let entry: BarEntry = dataSet.getEntryForIndex(index)
-
-                        let vals: ?Array<Float64> = entry.getYVals()
+                        let vals: Array<Float64> = entry.getYVals()
                         let x: Float64 = (buffer.buffer[bufferIndex] + buffer.buffer[bufferIndex + 2]) / 2.0
 
                         let color: UInt32 = dataSet.getValueTextColor(index)
@@ -392,7 +385,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                         // we still draw stacked bars, but there is one
                         // non-stacked
                         // in between
-                        if (vals.isNone()) {
+                        if (vals.size == 0) {
                             if (!this.mViewPortHandler().isInBoundsRight(x)) {
                                 break
                             }
@@ -436,13 +429,13 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                         // draw stack values
                         } else {
-                            var transformed: Array<Float64> = Array<Float64>(vals().size * 2, item: 0.0)
+                            var transformed: Array<Float64> = Array<Float64>(vals.size * 2, item: 0.0)
                             var posY: Float64 = 0.0
                             var negY: Float64 = -entry.getNegativeSum()
                             var k: Int64 = 0
                             var idx: Int64 = 0
                             while (k < transformed.size) {
-                                let value: Float64 = vals()[idx]
+                                let value: Float64 = vals[idx]
                                 var y: Float64 = 0.0
                                 if (value == 0.0 && (posY == 0.0 || negY == 0.0)) {
                                     // Take care of the situation of a 0.0 value, which overlaps a non-zero bar
@@ -462,34 +455,28 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                             if (let Some(tran) <- trans) {
                                 tran.pointValuesToPixel(transformed)
                             }
-
-                            var m: Int64 = 0
-                            while (m < transformed.size) {
-                                var val: Float64 = vals()[k / 2]
+                            for (m in 0..transformed.size: 2) {
+                                var val: Float64 = vals[m / 2]
                                 let drawBelow: Bool = (val == 0.0 && negY == 0.0 && posY > 0.0) || val < 0.0
-                                let y: Float64 = transformed[k + 1] + if (drawBelow) {
+                                let y: Float64 = transformed[m + 1] + if (drawBelow) {
                                     negOffset
                                 } else {
                                     posOffset
                                 }
-
                                 if (!this.mViewPortHandler().isInBoundsRight(x)) {
                                     break
                                 }
-
                                 if (!this.mViewPortHandler().isInBoundsY(y) ||
                                     !this.mViewPortHandler().isInBoundsLeft(x)) {
-                                    m += 2
                                     continue
                                 }
-
                                 if (dataSet.isDrawValuesEnabled()) {
                                     let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
                                     if (let Some(formatter) <- valueFormatter) {
                                         this.drawValue(
                                             c,
                                             formatter,
-                                            vals()[k / 2],
+                                            vals[m / 2],
                                             entry,
                                             i,
                                             x,
@@ -507,14 +494,13 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                                         (y + iconsOffset.y)
                                     )
                                 }
-                                m += 2
                             }
                         }
 
-                        bufferIndex = if (vals.isNone()) {
+                        bufferIndex = if (vals.size == 0) {
                             bufferIndex + 4
                         } else {
-                            bufferIndex + 4 * vals().size
+                            bufferIndex + 4 * vals.size
                         }
                         index++
                     }

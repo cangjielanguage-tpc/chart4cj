@@ -16,9 +16,9 @@ public class HorizontalBarBuffer <: BarBuffer {
             let e: BarEntry = data.getEntryForIndex(i)
             let x: Float64 = e.getX()
             var y: Float64 = e.getY()
-            let vals: ?Array<Float64> = e.getYVals()
+            let vals: Array<Float64> = e.getYVals()
 
-            if (!this.mContainsStacks || vals.isNone()) {
+            if (!this.mContainsStacks || vals.size == 0) {
                 feedValIsNone(x, y, barWidthHalf)
             } else {
                 feedValIsSome(e, vals, y, x, barWidthHalf)

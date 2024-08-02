@@ -60,6 +60,12 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
             if (entry is BubblesEntry) {
                 let t: ?BubblesEntry = entry as BubblesEntry
                 this.myCalcMinMaxBubble(t())
+            } else if (entry is WaterfallEntry) {
+                let t: ?WaterfallEntry = entry as WaterfallEntry
+                this.myCalcMinMaxWaterfall(t())
+            } else if (entry is BarEntry) {
+                let t: ?BarEntry = entry as BarEntry
+                this.myBarCalcMinMax(t())
             } else {
                 this.myCalcMinMax(entry)
 
@@ -83,6 +89,39 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
             this.mYMax = e.getY()
         }
     }
+    public open func myCalcMinMaxWaterfall(e: WaterfallEntry): Unit {
+
+    }
+
+    public  func myBarCalcMinMax(e: BarEntry) : Unit {
+        if (!e.getY().isNaN()) {
+            if (e.getYVals().size <= 0) {
+                if (e.getY() < this.mYMin) {
+                    this.mYMin = e.getY()
+                }
+
+                if (e.getY() > this.mYMax) {
+                    this.mYMax = e.getY()
+                }
+            } else {
+                if (-e.getNegativeSum() < this.mYMin) {
+                    this.mYMin = -e.getNegativeSum()
+                }
+
+                if (e.getPositiveSum() > this.mYMax) {
+                    this.mYMax = e.getPositiveSum()
+                }
+            }
+            if (e.getX() < this.mXMin) {
+                this.mXMin = e.getX()
+            }
+
+            if (e.getX() > this.mXMax) {
+                this.mXMax = e.getX()
+            }
+        }
+    }
+
     public func myCalcMinMax(e: ?E): Unit {
         match (e) {
             case Some(t) =>

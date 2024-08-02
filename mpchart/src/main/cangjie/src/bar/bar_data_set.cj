@@ -134,31 +134,6 @@ public class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IBarDat
         }
     }
 
-    public func myBarCalcMinMax(e: ?BarEntry): Unit {
-        if (let Some(ee) <- e) {
-            if (!ee.getY().isNaN()) {
-                if (ee.getYVals().size > 0) {
-                    if (ee.getY() < this.mYMin) {
-                        this.mYMin = ee.getY()
-                    }
-
-                    if (ee.getY() > this.mYMax) {
-                        this.mYMax = ee.getY()
-                    }
-                } else {
-                    if (-ee.getNegativeSum() < this.mYMin) {
-                        this.mYMin = -ee.getNegativeSum()
-                    }
-
-                    if (ee.getPositiveSum() > this.mYMax) {
-                        this.mYMax = ee.getPositiveSum()
-                    }
-                }
-                this.calcMinMaxX(ee)
-            }
-        }
-    }
-
     public func getStackSize(): Int64 {
         return this.mStackSize
     }

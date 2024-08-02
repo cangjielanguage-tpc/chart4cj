@@ -24,7 +24,6 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
     protected var mLeftAxisMin: Float64 = Float64.Max
     protected var mRightAxisMax: Float64 = -Float64.Max
     protected var mRightAxisMin: Float64 = Float64.Max
-    // public mDisplayRect: MyRect = new MyRect();
 
     /**
      * array that holds all DataSets the ChartData object represents
@@ -175,8 +174,10 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
     }
 
     public func getYMin(axis: AxisDependency): Float64 {
+
         if (axis == AxisDependency.LEFT) {
             if (this.mLeftAxisMin == Float64.Max) {
+
                 return this.mRightAxisMin
             } else {
                 return this.mLeftAxisMin

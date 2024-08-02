@@ -7,7 +7,6 @@ public class HorizontalBarChartModel <: BarChartModel {
     protected  init() {
         super()
         this.mViewPortHandler = HorizontalViewPortHandler()
-
         this.mLeftAxisTransformer = TransformerHorizontalBarChart(this.mViewPortHandler)
         this.mRightAxisTransformer = TransformerHorizontalBarChart(this.mViewPortHandler)
         this.mAnimator = ChartAnimator(this)
@@ -15,7 +14,7 @@ public class HorizontalBarChartModel <: BarChartModel {
             this.mRenderer = HorizontalBarChartRenderer(this, animator, this.mViewPortHandler)
         }
 
-        this.setHighlighter(HorizontalBarHighlighter(this))
+//        this.setHighlighter(HorizontalBarHighlighter(this))
 
         if (let Some(axisLeft) <- this.mAxisLeft) {
             this.mAxisRendererLeft = YAxisRendererHorizontalBarChart(this.mViewPortHandler, axisLeft,

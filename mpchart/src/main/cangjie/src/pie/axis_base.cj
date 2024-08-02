@@ -764,7 +764,6 @@ public abstract class AxisBase <: ComponentBase {
      * @param dataMax the max value according to chart data
      */
     public open func calculate(dataMin: Float64, dataMax: Float64): Unit {
-
         // if custom, use value as is, else use data value
         var min: Float64
         var max: Float64
@@ -778,7 +777,6 @@ public abstract class AxisBase <: ComponentBase {
         } else {
             max = dataMax + this.mSpaceMax
         }
-
         // temporary range (before calculations)
         let range: Float64 = abs(max - min)
 

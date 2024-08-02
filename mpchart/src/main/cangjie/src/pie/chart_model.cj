@@ -140,7 +140,6 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
             // calculate how many digits are needed
             // 缺失方法
             this.setupDefaultFormatter(d.getYMin(), d.getYMax())
-
             if (let Some(md) <- this.mData) {
                 var dataSets = md.getDataSets()
                 for (item in dataSets) {
@@ -329,7 +328,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
                 y = getHeight() - this.mViewPortHandler.offsetBottom() - this.mDescription.getYOffset()
             }
             Utils.resetContext2DStyle(c, this.mDescPaint)
-            c.strokeText(this.mDescription.getText(), x, y)
+            c.fillText(this.mDescription.getText(), x, y)
         }
 
     }
@@ -582,7 +581,6 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      */
     public open func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {
         if (this.mData.isNone()) {
-            AppLog.error(LOG_TAG + ":Can't select by touch. No data set.")
             return Option<Highlight>.None
         } else {
             let hghLighter = this.getHighlighter()

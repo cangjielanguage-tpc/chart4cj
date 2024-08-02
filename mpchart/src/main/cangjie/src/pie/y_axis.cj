@@ -333,7 +333,6 @@ public class YAxis <: AxisBase {
     public func calculate(dataMin: Float64, dataMax: Float64): Unit {
         var min: Float64 = dataMin
         var max: Float64 = dataMax
-
         // Make sure max is greater than min
         if (min > max) {
             if (this.mCustomAxisMax && this.mCustomAxisMin) {
@@ -365,7 +364,6 @@ public class YAxis <: AxisBase {
 
         // recalculate
         range = abs(max - min)
-
         // calc extra spacing
         if (this.mCustomAxisMin) {
             this.mAxisMinimum = this.mAxisMinimum
@@ -378,7 +376,6 @@ public class YAxis <: AxisBase {
         } else {
             this.mAxisMaximum = max + (range / 100.0) * this.getSpaceTop()
         }
-
         this.mAxisRange = abs(this.mAxisMinimum - this.mAxisMaximum)
     }
 }

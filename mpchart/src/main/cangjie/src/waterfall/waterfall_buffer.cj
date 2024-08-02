@@ -51,8 +51,8 @@ public class WaterfallBuffer <: BarBuffer {
         }
 
         this.reset()
-        this.arrayTop.toArray().sort()
-        this.arrayBottom.toArray().sort()
+        waterfallSortBy(this.arrayTop)
+        waterfallSortBy(this.arrayBottom)
     }
 
     protected func addWaterfall(left: Float64, top: Float64, right: Float64, bottom: Float64): Unit {
@@ -60,5 +60,17 @@ public class WaterfallBuffer <: BarBuffer {
         this.buffer.append(top)
         this.buffer.append(right)
         this.buffer.append(bottom)
+    }
+
+    private func waterfallSortBy(waterfallArray: ArrayList<Float64>) {
+        waterfallArray.sortBy(stable: true){ rht: Float64, lht: Float64 =>
+            if (rht < lht) {
+                return Ordering.LT
+            }
+            if (rht > lht) {
+                return Ordering.GT
+            }
+            return Ordering.EQ
+        }
     }
 }

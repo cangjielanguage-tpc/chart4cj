@@ -227,7 +227,9 @@ public class LegendRenderer <: Renderer {
         // 计算标签行高
 
         let labelLineHeight: Float64 = Utils.getLineHeight(this.mLegendLabelPaint, c)
-
+//        let tm: TextMetrics = c.measureText("Test")
+//
+//        let labelLineHeight: Float64 = 61.0
         // 计算标签行间距，包括额外的垂直空间
         let labelLineSpacing: Float64 = Utils.getLineSpacing(this.mLegendLabelPaint, c)
             + Utils.handleDataValues(this.mLegend().getYEntrySpace())

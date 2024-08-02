@@ -10,7 +10,6 @@ public open class Transformer {
      */
     protected var mMatrixOffset: Matrix = Matrix()
     protected var mViewPortHandler: ViewPortHandler
-    // protected var matrix2D: Matrix = Matrix2D() 当前UI不支持
     protected var resultPath: Path2D = Path2D()
 
     public init(viewPortHandler: ViewPortHandler) {
@@ -50,8 +49,6 @@ public open class Transformer {
     public open func prepareMatrixOffset(inverted: Bool) {
         this.mMatrixOffset.reset()
 
-        // offset.postTranslate(mOffsetLeft, getHeight() - mOffsetBottom);
-
         if (!inverted) {
             this.mMatrixOffset.postTranslate(
                 this.mViewPortHandler.offsetLeft(),
@@ -65,39 +62,6 @@ public open class Transformer {
 
     protected var valuePointsForGenerateTransformedValuesScatter: Array<Float64> = Array<Float64>(1, item: 0.0)
 
-    /**
-     * Transforms an List of Entry into a float array containing the x and
-     * y values transformed with all matrices for the SCATTERCHART.
-     *
-     * @param data
-     * @return
-     */
-    //    public func generateTransformedValuesScatter(data: IScatterDataSet, phaseX: Float64, phaseY: Float64, froms: Int64,
-    //        tos: Int64): Array<Float64> {
-    //        let count: Int64 = Int64(math.floor((Float64(tos - froms) * phaseX + 1.0) * 2.0))
-    //
-    //        if (this.valuePointsForGenerateTransformedValuesScatter.size != count) {
-    //            this.valuePointsForGenerateTransformedValuesScatter = Array<Float64>(count, item: 0.0)
-    //        }
-    //        let valuePoints: Array<Float64> = this.valuePointsForGenerateTransformedValuesScatter
-    //
-    //        for (j in 0..count : 2) {
-    //            let e: ?EntryOhos = data.getEntryForIndex(j / 2 + froms)
-    //
-    //            match (e) {
-    //                case Some(entryOhos) =>
-    //                    valuePoints[j] = entryOhos.getX()
-    //                    valuePoints[j + 1] = entryOhos.getY() * phaseY
-    //                case None =>
-    //                    valuePoints[j] = 0.0
-    //                    valuePoints[j + 1] = 0.0
-    //            }
-    //        }
-    //
-    //        this.getValueToPixelMatrix().mapPoints(valuePoints)
-    //
-    //        return valuePoints
-    //    }
     public var mMBuffer1: Matrix = Matrix()
     public func getValueToPixelMatrix(): Matrix {
         mMBuffer1.set(mMatrixValueToPx)
@@ -180,65 +144,12 @@ public open class Transformer {
     protected var valuePointsForGenerateTransformedValuesCandle: Array<Float64> = Array<Float64>(1, item: 0.0)
 
     /**
-     * Transforms an List of Entry into a float array containing the x and
-     * y values transformed with all matrices for the CANDLESTICKCHART.
-     *
-     * @param data
-     * @return
-     */
-    //    public func generateTransformedValuesCandle(data: ICandleDataSet, phaseX: Float64, phaseY: Float64,
-    //        fromValue: Int64, toValue: Int64): Array<Float64> {
-    //        let count: Int64 = Int64(math.floor((Float64(toValue - fromValue) * phaseX + 1.0) * 2.0))
-    //
-    //        if (this.valuePointsForGenerateTransformedValuesCandle.size != count) {
-    //            this.valuePointsForGenerateTransformedValuesCandle = Array<Float64>(count, item: 0.0)
-    //        }
-    //        let valuePoints: Array<Float64> = this.valuePointsForGenerateTransformedValuesCandle;
-    //
-    //        for (j in 0..count : 2) {
-    //            let e: ?CandleEntry = data.getEntryForIndex(j / 2 + fromValue)
-    //            match (e) {
-    //                case Some(CandleEntry) =>
-    //                    valuePoints[j] = CandleEntry.getX()
-    //                    valuePoints[j + 1] = CandleEntry.getHigh() * phaseY
-    //                case None =>
-    //                    valuePoints[j] = 0.0
-    //                    valuePoints[j + 1] = 0.0
-    //            }
-    //        }
-    //
-    //        this.getValueToPixelMatrix().mapPoints(valuePoints)
-    //
-    //        return valuePoints
-    //    }
-
-    /**
      * transform a path with all the given matrices VERY IMPORTANT: keep order
      * to value-touch-offset
      *
      * @param path
      */
     // todo 当前UI不支持 Matrix2D
-    //      public func pathValueToPixel(path: Path2D): Path2D {
-    //        var pathBuffer: Path2D = path
-    //        pathBuffer = this.pathTransform(path, this.mMatrixValueToPx);
-    //        pathBuffer = this.pathTransform(path, this.mViewPortHandler.getMatrixTouch());
-    //        pathBuffer = this.pathTransform(path, this.mMatrixOffset);
-    //        return pathBuffer;
-    //      }
-    //
-    //      public func pathTransform(path: Path2D, matrix: Matrix): Path2D {
-    //        let values = matrix.getValues();
-    //        this.matrix2D.scaleX = values[Matrix.MSCALE_X];
-    //        this.matrix2D.scaleY = values[Matrix.MSCALE_Y];
-    //        this.matrix2D.translateX = values[Matrix.MTRANS_X];
-    //        this.matrix2D.translateY = values[Matrix.MTRANS_Y];
-    //        this.matrix2D.rotateX = values[Matrix.MSKEW_X];
-    //        this.matrix2D.rotateY = values[Matrix.MSKEW_Y];
-    //        this.resultPath = Path2D();
-    //        this.resultPath.addPath(path, this.matrix2D);
-    //        return this.resultPath;
-    //      }
 
     /**
      * Transform an array of points with all matrices. VERY IMPORTANT: Keep
