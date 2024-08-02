@@ -95,7 +95,6 @@ public abstract class ChartTouchListener<D, S, E> where  D <: ChartData<S, E>,
      */
     protected func performHighlight(h: Highlight, e: ?TouchEvent) {
         if (Utils.isHighLightEquals(h, this.mLastHighlighted)) {
-            // this.mChart.highlightValue(0,undefined,undefined, undefined,true);
             this.mChart.highlightValueForObject(Option<Highlight>.None, true);
             this.mLastHighlighted = None
         } else {
