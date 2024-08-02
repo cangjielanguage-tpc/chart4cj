@@ -292,7 +292,6 @@ public class PieChartRenderer <: DataRenderer {
 
             this.mPathBuffer.closePath() // 封闭路径
 
-            // this.mBitmapCanvas.drawPath(mPathBuffer, mRenderPaint)
             // 绘制路径
             Utils.resetContext2DStyle(c, this.mRenderPaint)
             c.stroke(this.mPathBuffer)
@@ -1023,7 +1022,7 @@ public class PieChartRenderer <: DataRenderer {
             }
 
             this.mPathBuffer.closePath()
-
+            //todo
             // this.mBitmapCanvas.drawPath(this.mPathBuffer, this.mRenderPaint)
             Utils.resetContext2DStyle(c, this.mRenderPaint)
             c.beginPath()
@@ -1087,21 +1086,6 @@ public class PieChartRenderer <: DataRenderer {
             angle += sliceAngle * phaseX
         }
         MPPointF.recycleInstance(center)
-    }
-
-    public func releaseBitmap(): Unit {
-        // if (this.mBitmapCanvas != null) {
-        //   this.mBitmapCanvas.setBitmap(null);
-        //   this.mBitmapCanvas = null;
-        // }
-        // if (this.mDrawBitmap != null) {
-        //     let drawBitmap:Bitmap = this.mDrawBitmap.get([]);
-        //     if (drawBitmap != null) {
-        //         drawBitmap.recycle();
-        //     }
-        //     this.mDrawBitmap.clear();
-        //   this.mDrawBitmap = null;
-        // }
     }
 
     private func arcTo(path: Path2D, roundedCircleBox: MyRect, startAngle: Float64, sweepAngle: Float64): Unit {

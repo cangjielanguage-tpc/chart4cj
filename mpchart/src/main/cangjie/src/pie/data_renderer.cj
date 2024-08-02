@@ -12,7 +12,6 @@ public abstract class DataRenderer <: Renderer {
      * main paint object used for rendering
      */
     protected var mRenderPaint: Paint = Paint()
-    // protected mPathPaint:PathPaint = new PathPaint();
 
     /**
      * paint used for highlighting values
@@ -37,7 +36,6 @@ public abstract class DataRenderer <: Renderer {
 
         this.mValuePaint = Paint()
 
-        // this.mValuePaint.setColor(ChartColor.rgb(63, 63, 63));
         this.mValuePaint.setColor("#3F3F3F")
         this.mValuePaint.setTextAlign(TextAlignStyle.Center)
         this.mValuePaint.setTextSize(9.0)
@@ -86,10 +84,6 @@ public abstract class DataRenderer <: Renderer {
     public func getPaintRender(): Paint {
         return this.mRenderPaint
     }
-
-    // public getPathPaint():PathPaint {
-    //   return this.mPathPaint;
-    // }
 
     /**
      * Applies the required styling (provided by the DataSet) to the value-paint
