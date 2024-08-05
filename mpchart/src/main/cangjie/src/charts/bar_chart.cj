@@ -28,7 +28,7 @@ public class BarChart {
                     {
                     oldArea: Area, newArea: Area => if (((newArea.width != oldArea.width) || (newArea.height != oldArea.
                         height))) {
-                        this.model.onChartSizeChanged(300.0, 300.0, oldArea.width, oldArea.height)
+                        this.model.onChartSizeChanged(400.0, 400.0, oldArea.width, oldArea.height)
                         let jobs = this.model.mJobs
                         let length = jobs.size
                         for (i in 0..length) {

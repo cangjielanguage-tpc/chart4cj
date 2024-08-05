@@ -1,7 +1,7 @@
 /*
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
-package mpchart.waterfall
+package mpchart.pie
 
 public class WaterfallEntry <: EntryOhos {
     private var mYVals: Array<Float64> = Array<Float64>()
@@ -32,6 +32,7 @@ public class WaterfallEntry <: EntryOhos {
     }
 
     public func setHighlights(highlights: Array<WaterfallHighlight>): Unit {
+        this.mHighlights = Array<WaterfallHighlight>(highlights.size, item: WaterfallHighlight(0.0, 0.0))
         if (highlights.size > 0) {
             for (i in 0..highlights.size) {
                 this.mHighlights[i] = highlights[i]
@@ -86,8 +87,7 @@ public class WaterfallEntry <: EntryOhos {
     }
 
      protected func calcRanges(): Unit {
-        let values: ?Array<Float64> = this.getYVals()
-        if (let Some(v) <- values) {
+        let v: Array<Float64> = this.getYVals()
             if (v.size == 0) {
                 return
             } else {
@@ -108,9 +108,7 @@ public class WaterfallEntry <: EntryOhos {
                     }
                 }
             }
-        } else {
-            return
-        }
+
     }
 
     public func getNegativeSum(): Float64 {
@@ -130,19 +128,19 @@ public class WaterfallHighlight {
 
   }
 
-  func getMinY() {
+  public func getMinY() {
     return this.minY;
   }
 
-  func getMaxY() {
+  public func getMaxY() {
     return this.maxY;
   }
 
-  func getColor() {
+  public func getColor() {
     return this.color;
   }
 
-  func setColor(color: UInt32) {
+  public func setColor(color: UInt32) {
     this.color = color;
   }
 }

@@ -176,7 +176,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
         }
     }
 
-    func drawValues(c: CanvasRenderingContext2D) {
+    public func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool) {
         if (this.mViewPortHandler.isNone() || this.mAnimator.isNone()) {
             return
         }
@@ -219,23 +219,18 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                 // if only single values are drawn (sum)
                 if (!dataSet.isStacked()) {
                     var j: Int64 = 0
-                    while (j < buffer.buffer.size * Int64(this.mAnimator().getPhaseX())) {
-                        let y: Float64 = (buffer.buffer[j + 1] + buffer.buffer[j + 3]) / 2.0
+                    for (j in 0..buffer.buffer.size * Int64(this.mAnimator().getPhaseX()): 4) {
 
+                        let y: Float64 = (buffer.buffer[j + 1] + buffer.buffer[j + 3]) / 2.0
                         if (!this.mViewPortHandler().isInBoundsTop(buffer.buffer[j + 1])) {
                             break
                         }
-
                         if (!this.mViewPortHandler().isInBoundsX(buffer.buffer[j])) {
-                            j += 4
                             continue
                         }
-
                         if (!this.mViewPortHandler().isInBoundsBottom(buffer.buffer[j + 1])) {
-                            j += 4
                             continue
                         }
-
                         let entry: BarEntry = dataSet.getEntryForIndex(j / 4)
                         let val: Float64 = entry.getY()
                         var formattedValue: String = ""
@@ -257,12 +252,10 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                             valueOffsetPlus
                         }
                         -(buffer.buffer[j + 2] - buffer.buffer[j])
-
                         if (isInverted) {
                             posOffset = -posOffset - valueTextWidth
                             negOffset = -negOffset - valueTextWidth
                         }
-
                         if (dataSet.isDrawValuesEnabled()) {
                             this.drawHorizontalValue(
                                 c,
@@ -307,12 +300,12 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                         let entry: BarEntry = dataSet.getEntryForIndex(index)
 
                         let color: UInt32 = dataSet.getValueTextColor(index)
-                        let vals: ?Array<Float64> = entry.getYVals()
+                        let vals: Array<Float64> = entry.getYVals()
 
                         // we still draw stacked bars, but there is one
                         // non-stacked
                         // in between
-                        if (vals.isNone()) {
+                        if (vals.size == 0) {
                             if (!this.mViewPortHandler().isInBoundsTop(buffer.buffer[bufferIndex + 1])) {
                                 break
                             }
@@ -350,6 +343,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                             }
 
                             if (dataSet.isDrawValuesEnabled()) {
+
                                 this.drawHorizontalValue(c, formattedValue,
                                     buffer.buffer[bufferIndex + 2]
                                     + if (entry.getY() >= 0.0) {
@@ -383,14 +377,14 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                                 }
                             }
                         } else {
-                            let transformed: Array<Float64> = Array<Float64>(vals().size * 2, item: 0.0)
+                            let transformed: Array<Float64> = Array<Float64>(vals.size * 2, item: 0.0)
 
                             var posY: Float64 = 0.0
                             var negY: Float64 = -entry.getNegativeSum()
                             var m: Int64 = 0
                             var idx: Int64 = 0
                             while (m < transformed.size) {
-                                let value: Float64 = vals()[idx]
+                                let value: Float64 = vals[idx]
                                 var y: Float64 = 0.0
 
                                 if (value == 0.0 && (posY == 0.0 || negY == 0.0)) {
@@ -412,7 +406,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                             trans?.pointValuesToPixel(transformed)
                             var k: Int64 = 0
                             while (k < transformed.size) {
-                                let val: Float64 = vals()[k / 2]
+                                let val: Float64 = vals[k / 2]
                                 var formattedValue: String = ""
                                 if (formatter.isSome()) {
                                     formattedValue = formatter().getFormattedValue(val, entry, i,
@@ -473,10 +467,10 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                                 k += 2
                             }
                         }
-                        bufferIndex = if (vals.isNone()) {
+                        bufferIndex = if (vals.size == 0) {
                             bufferIndex + 4
                         } else {
-                            bufferIndex + 4 * vals().size
+                            bufferIndex + 4 * vals.size
                         }
                         index++
                     }
@@ -490,7 +484,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
         this.mValuePaint.setColor(Color(color))
         Utils.resetContext2DStyle(c, this.mValuePaint)
         c.beginPath()
-        c.strokeText(valueText, x, y)
+        c.fillText(valueText, x, y)
         c.closePath()
     }
 

@@ -17,6 +17,13 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
         let model: WaterfallChartModel = WaterfallChartModel()
         var mAnimator: ChartAnimator = ChartAnimator(model)
         model.mRenderer = WaterfallChartRenderer(model, mAnimator, model.mViewPortHandler)
+
+        model.setHighlighter(WaterfallHighlighter(model))
+        let xAxis: ?XAxis = model.getXAxis()
+        if (let Some(xaxis) <- xAxis) {
+            xaxis.setSpaceMin(0.5)
+            xaxis.setSpaceMax(0.5)
+        }
         return model
     }
     public func getWaterfallData(): ?WaterfallData {
@@ -30,6 +37,30 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
     public func invalidate(): Unit {
         if (let Some(context2d) <- this.context2d) {
             super.onDraw(context2d)
+        }
+    }
+
+     protected func calcMinMax(): Unit {
+        match (this.mData) {
+            case Some(data: WaterfallData) =>
+                if (let Some(xaxis) <- this.mXAxis) {
+                    if (this.mFitBars) {
+                        xaxis.calculate(
+                            data.getXMin() - data.getBarWidth() / 2.0,
+                            data.getXMax() + data.getBarWidth() / 2.0
+                        )
+                    } else {
+                        xaxis.calculate(data.getXMin(), data.getXMax())
+                    }
+                }
+                // calculate axis range (min / max) according to provided data
+                if (let Some(axisLeft) <- this.mAxisLeft) {
+                    axisLeft.calculate(data.getYMin(AxisDependency.LEFT), data.getYMax(AxisDependency.LEFT))
+                }
+                if (let Some(axisReft) <- this.mAxisRight) {
+                    axisReft.calculate(data.getYMin(AxisDependency.RIGHT), data.getYMax(AxisDependency.RIGHT))
+                }
+            case _ => return
         }
     }
 
@@ -59,29 +90,6 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
 
     public func onDraw(c: CanvasRenderingContext2D): Unit {
         super.onDraw(c)
-    }
-    protected func calcMinMax(): Unit {
-        match (this.mData) {
-            case Some(data: WaterfallData) =>
-                if (let Some(xaxis) <- this.mXAxis) {
-                    if (this.mFitBars) {
-                        xaxis.calculate(
-                            data.getXMin() - data.getBarWidth() / 2.0,
-                            data.getXMax() + data.getBarWidth() / 2.0
-                        )
-                    } else {
-                        xaxis.calculate(data.getXMin(), data.getXMax())
-                    }
-                }
-                // calculate axis range (min / max) according to provided data
-                if (let Some(axisLeft) <- this.mAxisLeft) {
-                    axisLeft.calculate(data.getYMin(AxisDependency.LEFT), data.getYMax(AxisDependency.LEFT))
-                }
-                if (let Some(axisReft) <- this.mAxisRight) {
-                    axisReft.calculate(data.getYMin(AxisDependency.RIGHT), data.getYMax(AxisDependency.RIGHT))
-                }
-            case _ => return
-        }
     }
 
      public func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {

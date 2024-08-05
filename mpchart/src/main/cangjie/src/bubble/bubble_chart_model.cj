@@ -33,6 +33,7 @@ public class BubbleChartModel <: BarLineChartBaseModel<BubbleData, IBubbleDataSe
     }
 
     public func onDraw(c: CanvasRenderingContext2D): Unit {
+
         super.onDraw(c);
     }
 

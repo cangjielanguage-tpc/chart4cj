@@ -165,6 +165,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
         }
         let maxTop = buffer.getArrayTop()[buffer.getArrayTop().size - 1];
         let minBottom = buffer.getArrayBottom()[0];
+
         if (dataSet.getEnableMaxOrMinHighlightColor()) {
             for (i in 0..Int64(min((ceil(Float64(dataSet.getEntryCount()) * phaseX)), Float64(dataSet.getEntryCount())))) {
                 let e: WaterfallEntry = dataSet.getEntryForIndex(i)
@@ -398,10 +399,12 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
     private func initMaxAndMinHighlightData(e: WaterfallEntry, dataSet: WaterfallDataSet, maxTop: Float64,
         minBottom: Float64) {
+
         if (maxTop == e.getMaxY() && !dataSet.getMaxTopHighlightEXIST()) {
             dataSet.setMaxTopHighLightEXIST(true);
             e.setHighlights(WaterfallHighlight(maxTop, maxTop, color:dataSet.getMaxyHighlightColor()));
         }
+
         if (minBottom == e.getMinY() && !dataSet.getMinBottomHighlightEXIST()) {
             dataSet.setMinBottomHighlightEXIST(true);
             e.setHighlights(WaterfallHighlight(minBottom, minBottom, color:dataSet.getMinyHighlightColor()));
@@ -738,7 +741,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                             })) {
                         let entry: WaterfallEntry = dataSet.getEntryForIndex(index)
 
-                        let vals: ?Array<Float64> = entry.getYVals()
+                        let vals: Array<Float64> = entry.getYVals()
                         let x: Float64 = (buffer.buffer[bufferIndex] + buffer.buffer[bufferIndex + 2]) / 2.0
 
                         let color: UInt32 = dataSet.getValueTextColor(index)
@@ -746,7 +749,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                         // we still draw stacked bars, but there is one
                         // non-stacked
                         // in between
-                        if (vals.isNone()) {
+                        if (vals.size == 0) {
                             if (!this.mViewPortHandler().isInBoundsRight(x)) {
                                 break
                             }
@@ -790,13 +793,13 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                         // draw stack values
                         } else {
-                            var transformed: Array<Float64> = Array<Float64>(vals().size * 2, item: 0.0)
+                            var transformed: Array<Float64> = Array<Float64>(vals.size * 2, item: 0.0)
                             var posY: Float64 = 0.0
                             var negY: Float64 = -entry.getNegativeSum()
                             var k: Int64 = 0
                             var idx: Int64 = 0
                             while (k < transformed.size) {
-                                let value: Float64 = vals()[idx]
+                                let value: Float64 = vals[idx]
                                 var y: Float64 = 0.0
                                 if (value == 0.0 && (posY == 0.0 || negY == 0.0)) {
                                     // Take care of the situation of a 0.0 value, which overlaps a non-zero bar
@@ -817,11 +820,10 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                                 tran.pointValuesToPixel(transformed)
                             }
 
-                            var m: Int64 = 0
-                            while (m < transformed.size) {
-                                var val: Float64 = vals()[k / 2]
+                            for (m in 0..transformed.size: 2) {
+                                var val: Float64 = vals[m / 2]
                                 let drawBelow: Bool = (val == 0.0 && negY == 0.0 && posY > 0.0) || val < 0.0
-                                let y: Float64 = transformed[k + 1] + if (drawBelow) {
+                                let y: Float64 = transformed[m + 1] + if (drawBelow) {
                                     negOffset
                                 } else {
                                     posOffset
@@ -833,7 +835,6 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                                 if (!this.mViewPortHandler().isInBoundsY(y) ||
                                     !this.mViewPortHandler().isInBoundsLeft(x)) {
-                                    m += 2
                                     continue
                                 }
 
@@ -843,7 +844,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                                         this.drawValue(
                                             c,
                                             formatter,
-                                            vals()[k / 2],
+                                            vals[m / 2],
                                             entry,
                                             i,
                                             x,
@@ -861,14 +862,13 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                                         (y + iconsOffset.y)
                                     )
                                 }
-                                m += 2
                             }
                         }
 
-                        bufferIndex = if (vals.isNone()) {
+                        bufferIndex = if (vals.size == 0) {
                             bufferIndex + 4
                         } else {
-                            bufferIndex + 4 * vals().size
+                            bufferIndex + 4 * vals.size
                         }
                         index++
                     }

@@ -70,7 +70,6 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
         if (!this.mXAxis.isEnabled() || !this.mXAxis.isDrawLabelsEnabled() || this.mViewPortHandler.isNone()) {
             return
         }
-
         let xoffset: Float64 = this.mXAxis.getXOffset()
 
         this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface())
@@ -102,7 +101,6 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
             pointF.y = 0.5
             this.drawLabels(c, this.mViewPortHandler().contentLeft() - xoffset, pointF)
         }
-
         MPPointF.recycleInstance(pointF)
     }
 

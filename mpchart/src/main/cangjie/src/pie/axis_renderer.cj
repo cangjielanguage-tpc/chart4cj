@@ -151,7 +151,6 @@ public abstract class AxisRenderer <: Renderer {
         // Find out how much spacing (in y value space) between axis values
         let rawInterval: Float64 = range / Float64(labelCount)
         var interval: Float64 = Utils.roundToNextSignificant(rawInterval)
-
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to avoid repeated values when rounding values for display.
         if (this.mAxis.isGranularityEnabled()) {
@@ -166,11 +165,11 @@ public abstract class AxisRenderer <: Renderer {
         let intervalMagnitude: Float64 = Utils.roundToNextSignificant(
             pow(
                 10.0,
-                if (interval == 0.0) {
+                floor(if (interval == 0.0) {
                     0.0
                 } else {
                     log10(interval)
-                }
+                })
             )
         )
         let intervalSigDigit: Float64 = floor((interval / intervalMagnitude))
@@ -208,14 +207,12 @@ public abstract class AxisRenderer <: Renderer {
         } else {
             this.mAxis.mDecimals = 0
         }
-
         if (this.mAxis.isCenterAxisLabelsEnabled()) {
             if (this.mAxis.mCenteredEntries.size < n) {
                 this.mAxis.mCenteredEntries = ArrayList<Float64>(n)
             }
 
             let offset: Float64 = interval / 2.0
-
             for (i in 0..n) {
                 //this.mAxis.mCenteredEntries[i] = this.mAxis.mEntries[i] + offset
                 this.mAxis.mCenteredEntries.append(this.mAxis.mEntries[i] + offset)

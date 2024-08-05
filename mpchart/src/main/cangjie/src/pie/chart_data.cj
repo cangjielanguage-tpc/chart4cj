@@ -174,8 +174,10 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
     }
 
     public func getYMin(axis: AxisDependency): Float64 {
+
         if (axis == AxisDependency.LEFT) {
             if (this.mLeftAxisMin == Float64.Max) {
+
                 return this.mRightAxisMin
             } else {
                 return this.mLeftAxisMin

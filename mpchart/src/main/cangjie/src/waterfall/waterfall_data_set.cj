@@ -57,6 +57,7 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
         }
     }
 
+
     public func setEnableMaxOrMinHighlightColor(value: Bool) {
         this.enableMaxOrMinHighlightColor = value
     }
@@ -149,8 +150,8 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
         this.maxTopHighlightEXIST = value
     }
 
-    public func myCalcMinMax(e: WaterfallEntry): Unit {
-        if (e.getY().isNaN()) {
+    public func myCalcMinMaxWaterfall(e: WaterfallEntry): Unit {
+        if (!e.getY().isNaN()) {
             if (e.getMinY() < this.mYMin) {
                 this.mYMin = e.getMinY()
             }
