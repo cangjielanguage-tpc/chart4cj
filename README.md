@@ -21,7 +21,7 @@ chart4Ohos 是一个包含各种类型图表的图表库，主要用于业务数
 - 支持柱状图（水平、垂直）
 - 支持气泡图
 - 支持瀑布图
-- 支持线形图
+- 支持线形图(暂不支持曲线及其填充)
 
 ## 软件架构
 
@@ -112,9 +112,7 @@ class PieChartPageReadme {
         this.model.setUsePercentValues(true);  // 使用百分比值
         this.model.getDescription().setEnabled(false)  // 禁用描述信息
         this.model.setExtraOffsets(5.0, 10.0, 5.0, 5.0); // 设置额外偏移量
-
-        this.model.setDragDecelerationFrictionCoef(0.95); // 设置拖动减速摩擦系数
-
+        
         this.model.setCenterText("mpchart"); // 设置中心文本
         this.model.setCenterTextSize(22.0) // 设置中心文本大小
 
@@ -128,13 +126,7 @@ class PieChartPageReadme {
         this.model.setTransparentCircleRadius(61.0);  // 设置透明圆环半径
 
         this.model.setDrawCenterText(true); // 绘制中心文本
-
-        this.model.setRotationAngle(0.0);  // 设置旋转角度
-     
-        // 通过触摸启用图表的旋转
-        this.model.setRotationEnabled(true);
-        this.model.setHighlightPerTapEnabled(true); // 启用点击高亮效果
-
+        
         this.setData(4, 10);  // 设置图表数据
         return this.model
     }
@@ -228,10 +220,7 @@ class BarChartPageReadme {
 
         // if more than 40 entries are displayed in the this.model, no values will be drawn
         this.model.setMaxVisibleValueCount(60)
-
-        // scaling can now only be done on x- and y-axis separately
-        this.model.setPinchZoom(false)
-
+        
         this.model.setDrawGridBackground(false)
         this.model.setGridBackgroundColor(0x500000ff)
         this.model.setDrawBarShadow(false)
@@ -381,7 +370,6 @@ class BubbleChartPageReadme {
         description.setEnabled(false)
 
         this.model.setMaxVisibleValueCount(60)
-        this.model.setPinchZoom(false)
         this.model.setDrawGridBackground(false)
 
         let xAxis: ?XAxis = this.model.getXAxis()
@@ -527,7 +515,6 @@ class WaterfallChartPageReadme {
         this.model.setDrawBarShadow(false);
 
         this.model.setDrawValueAboveBar(false);
-        this.model.setHighlightFullBarEnabled(false);
 
         this.limitLine1 = LimitLine(120.0, "Upper Limit")
         this.limitLine1.setLineWidth(4.0);
@@ -588,7 +575,6 @@ class WaterfallChartPageReadme {
         values.append(WaterfallEntry(7.0, 60.0, 70.0));
 
         this.dataSet = WaterfallDataSet(values, "DataSet")
-        this.dataSet.setHighLightColor(0x999999);
         this.dataSet.setDrawIcons(false);
         this.dataSet.setColorByColor(0xFFC0CB);
         this.dataSet.setValueTextSize(10.0)
@@ -715,6 +701,9 @@ class LineChartNotAxisConfigPageReadme {
     SDK: OHCangjie0.10.0-OH5.0.0.31
 
     1. 仓颉 UI 未支持手势组件，影响图表手势操作后的高亮、缩放、平移、旋转功能；
+    2. 线形图曲线模式暂不支持；
+    3. 饼状图、线形图填充效果暂不支持；
+    4. 受仓颉 UI 画布组件 CanvasRenderingContext2D 的 measureText(String) 接口的影响，凡涉及到文本的地方都有距离误差；
 
 ## 开源协议
 
