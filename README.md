@@ -1,9 +1,9 @@
 <div align="center">
-<h1>Chart4Ohos</h1>
+<h1>chart4cj</h1>
 </div>
 
 <p align="center">
-<img alt="" src="https://img.shields.io/badge/release-v0.0.1-brightgreen" style="display: inline-block;" />
+<img alt="" src="https://img.shields.io/badge/release-v0.0.2-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/build-pass-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/cjc-v0.53.5-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/cjcov-NA-brightgreen" style="display: inline-block;" />
@@ -12,7 +12,7 @@
 
 ## 介绍
 
-chart4Ohos 是一个包含各种类型图表的图表库，主要用于业务数据汇总，例如销售数据走势图，股价走势图等场景中使用，方便开发者快速实现图表UI，chart4Ohos主要包括线形图、柱状图、饼状图、蜡烛图、气泡图、雷达图、瀑布图等自定义图表库。
+chart4cj 是一个包含各种类型图表的图表库，主要用于业务数据汇总，例如销售数据走势图，股价走势图等场景中使用，方便开发者快速实现图表 UI，chart4cj 主要包括线形图、柱状图、饼状图、蜡烛图、气泡图、雷达图、瀑布图等自定义图表库。
 
 ### 特性
 
@@ -21,27 +21,76 @@ chart4Ohos 是一个包含各种类型图表的图表库，主要用于业务数
 - 支持柱状图（水平、垂直）
 - 支持气泡图
 - 支持瀑布图
-- 支持线形图
+- 支持线形图(暂不支持曲线及其填充)
 
-## 软件架构
+### 软件架构
 
+```mermaid
+flowchart TD
+    A("chart")
+    A-->B("Basic")
+    A-->C("LineData")
+        C-->H("DataSet")
+        H-->H1("Entry")
+        H-->H2("Value Formatter")
+    A-->D("Axis")
+        D-->D1("XAxis")
+        D-->D2("YAxis")
+            D2-->D21("Left")
+            D2-->D22("Right")
+        D-->D3("LimitLine")
+        D-->D4("GridLine")
+    A-->E("Legend")
+    A-->F("MarkerView")
+    A-->G("ViewPort")
+
+    class A classA
+    class B,C,D,E,F,G classB
+    class H,D1,D2,D3,D4 classH
+    class H1,H2,D21,D22 classE
+    classDef classA fill:#d2691e,color:#fff,stroke:#d2691e;
+    classDef classB fill:#daa520,color:#fff,stroke:#daa520;
+    classDef classH fill:#8fbc8b,color:#fff,stroke:#8fbc8b;
+    classDef classE fill:#808080,color:#fff,stroke:#808080;
+
+```
 ### 源码目录
 
 ```shell
-├─doc                         // API 文档
-├─entry                       // UI模块
+├─AppScope
+├─doc                         
+├─entry                       
 │  └─src
 │      └─main
-│          ├─cangjie          // UI测试代码 
-│          │  └─src
-│          └─resources        // UI测试资源 
-├─mpchart                     // 核心代码模块      
-│  └─src
-│      └─main
-│          ├─cangjie          // 核心代码
-│          │  └─src
+│          ├─cangjie      
 │          └─resources
+├─mpchart                       
+│  └─src
+│      └─main
+│          ├─cangjie
+│          │  └─src
+│          │      ├─bar
+│          │      ├─basedata
+│          │      ├─bubble
+│          │      ├─charts
+│          │      ├─components
+│          │      ├─line
+│          │      ├─pie
+│          │      ├─utild
+│          │      ├─waterfall
+│          └─resources
+└─hvigor
 ```
+- AppScope 全局资源存放目录和应用全局信息配置目录
+- doc API文档和使用手册存放目录
+- entry 工程模块 - 编译生成一个HAP
+- entry src main cangjie src 仓颉UI页面目录
+- entry src main resources 资源文件目录
+- mpchart 工程模块 - 编译生成一个har包
+- mpchart src main cangjie src 仓颉各个图表源码目录
+- mpchart src main resources 资源文件目录
+- hvigor 构建工具目录
+
 ### 接口说明
 
 主要类和函数接口说明详见 [API](doc/feature_api.md)
@@ -50,7 +99,32 @@ chart4Ohos 是一个包含各种类型图表的图表库，主要用于业务数
 
 ### 编译构建
 
-DevEco Studio 编译构建
+1. 通过 module 引入
+    1. 克隆下载项目
+    2. 将 mpchart 模块拷贝到应用项目下
+    3. 修改自身应用 entry 下的 oh-package.json5 文件，在 dependencies 字段添加 "mpchart": "file:../mpchart"
+      ```json
+      {
+         "name": "entry",
+         "version": "1.0.0",
+         "description": "Please describe the basic information.",
+         "main": "",
+         "author": "",
+         "license": "",
+        "dependencies": {
+            "markdown": "file:../mpchart"
+        }
+      }
+      ```
+    4. 修改自身应用 entry/src/main/cangjie 下的 cjpm.toml 文件，在 [dependencies] 字段下添加 mpchart = {path = "../../../../mpchart/src/main/cangjie", version = "1.0.0"}
+       ```toml
+       [dependencies]
+           mpchart = {path = "../../../../mpchart/src/main/cangjie", version = "1.0.0"}
+       ```
+    5. 在项目中使用 import mpchart.* 引用 mpchart 项目
+       ```cangjie
+       import mpchart.*
+       ```
 
 ### 功能示例
 
@@ -112,9 +186,7 @@ class PieChartPageReadme {
         this.model.setUsePercentValues(true);  // 使用百分比值
         this.model.getDescription().setEnabled(false)  // 禁用描述信息
         this.model.setExtraOffsets(5.0, 10.0, 5.0, 5.0); // 设置额外偏移量
-
-        this.model.setDragDecelerationFrictionCoef(0.95); // 设置拖动减速摩擦系数
-
+        
         this.model.setCenterText("mpchart"); // 设置中心文本
         this.model.setCenterTextSize(22.0) // 设置中心文本大小
 
@@ -128,13 +200,7 @@ class PieChartPageReadme {
         this.model.setTransparentCircleRadius(61.0);  // 设置透明圆环半径
 
         this.model.setDrawCenterText(true); // 绘制中心文本
-
-        this.model.setRotationAngle(0.0);  // 设置旋转角度
-     
-        // 通过触摸启用图表的旋转
-        this.model.setRotationEnabled(true);
-        this.model.setHighlightPerTapEnabled(true); // 启用点击高亮效果
-
+        
         this.setData(4, 10);  // 设置图表数据
         return this.model
     }
@@ -199,6 +265,7 @@ func build() {
 <p align="left">
 <img src="./doc/assets/pie.png" width="30%" >
 </p>
+
 #### 柱状图
 
 ```cangjie
@@ -228,10 +295,7 @@ class BarChartPageReadme {
 
         // if more than 40 entries are displayed in the this.model, no values will be drawn
         this.model.setMaxVisibleValueCount(60)
-
-        // scaling can now only be done on x- and y-axis separately
-        this.model.setPinchZoom(false)
-
+        
         this.model.setDrawGridBackground(false)
         this.model.setGridBackgroundColor(0x500000ff)
         this.model.setDrawBarShadow(false)
@@ -261,7 +325,6 @@ class BarChartPageReadme {
         }
 
         this.normalMarker = MarkerView()
-        this.model.setMarker(this.normalMarker)
 
         if (this.xAxis.isSome() && this.leftAxis.isSome()) {
             this.setData(5, 110)
@@ -348,6 +411,7 @@ class BarChartPageReadme {
 <p align="left">
 <img src="./doc/assets/bar.png" width="30%" >
 </p>
+
 #### 气泡图
 
 ```cangjie
@@ -381,7 +445,6 @@ class BubbleChartPageReadme {
         description.setEnabled(false)
 
         this.model.setMaxVisibleValueCount(60)
-        this.model.setPinchZoom(false)
         this.model.setDrawGridBackground(false)
 
         let xAxis: ?XAxis = this.model.getXAxis()
@@ -490,6 +553,7 @@ class BubbleChartPageReadme {
 <p align="left">
 <img src="./doc/assets/bubble.png" width="30%" >
 </p>
+
 #### 瀑布图
 
 ```cangjie
@@ -519,15 +583,10 @@ class WaterfallChartPageReadme {
         }
         
         this.model.setMaxVisibleValueCount(40);
-        
-        this.model.setPinchZoom(false);
-
         this.model.setDrawGridBackground(false);
         this.model.setGridBackgroundColor(0x500000ff)
         this.model.setDrawBarShadow(false);
-
         this.model.setDrawValueAboveBar(false);
-        this.model.setHighlightFullBarEnabled(false);
 
         this.limitLine1 = LimitLine(120.0, "Upper Limit")
         this.limitLine1.setLineWidth(4.0);
@@ -564,8 +623,6 @@ class WaterfallChartPageReadme {
         }
 
         this.normalMarker = MarkerView()
-        this.model.setMarker(this.normalMarker);
-
         this.data = this.getNormalData()
         this.model.setData(this.data);
         this.model.setVisibleXRangeMaximum(5.0);
@@ -588,7 +645,6 @@ class WaterfallChartPageReadme {
         values.append(WaterfallEntry(7.0, 60.0, 70.0));
 
         this.dataSet = WaterfallDataSet(values, "DataSet")
-        this.dataSet.setHighLightColor(0x999999);
         this.dataSet.setDrawIcons(false);
         this.dataSet.setColorByColor(0xFFC0CB);
         this.dataSet.setValueTextSize(10.0)
@@ -633,7 +689,8 @@ class CustomFormatter <: IAxisValueFormatter {
 <p align="left">
 <img src="./doc/assets/waterfall.png" width="30%" >
 </p>
-#### 折线图
+
+#### 线形图
 
 ```cangjie
 @Entry
@@ -707,6 +764,7 @@ class LineChartNotAxisConfigPageReadme {
 <p align="left">
 <img src="./doc/assets/liner.png" width="30%" >
 </p>
+
 ## 约束与限制
 
 在下述版本验证通过：
@@ -715,6 +773,9 @@ class LineChartNotAxisConfigPageReadme {
     SDK: OHCangjie0.10.0-OH5.0.0.31
 
     1. 仓颉 UI 未支持手势组件，影响图表手势操作后的高亮、缩放、平移、旋转功能；
+    2. 线形图曲线模式暂不支持；
+    3. 饼状图、线形图填充效果暂不支持；
+    4. 受仓颉 UI 画布组件 CanvasRenderingContext2D 的 measureText(String) 接口的影响，凡涉及到文本的地方都有距离误差；
 
 ## 开源协议
 
