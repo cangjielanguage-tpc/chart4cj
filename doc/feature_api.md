@@ -5284,7 +5284,7 @@ public class WaterfallChart {}
 ```cangjie
 @Entry
 @Component
-class SimpleWaterfallChartPage {
+class WaterfallChartPageReadme {
     private var model: WaterfallChartModel = WaterfallChartModel.build()
     private var dataSet: WaterfallDataSet = WaterfallDataSet(ArrayList<WaterfallEntry>(), "")
     private var leftAxis: ?YAxis = Option<YAxis>.None
@@ -5304,13 +5304,11 @@ class SimpleWaterfallChartPage {
 
         let l: ?Legend = this.model.getLegend();
         if (let Some(legend) <- l) {
-            legend.setEnabled(false);
+            legend.setEnabled(true);
         }
-
-        // if more than 40 entries are displayed in the this.model, no values will be drawn
+        
         this.model.setMaxVisibleValueCount(40);
-
-        // scaling can now only be done on x- and y-axis separately
+        
         this.model.setPinchZoom(false);
 
         this.model.setDrawGridBackground(false);
@@ -5331,15 +5329,13 @@ class SimpleWaterfallChartPage {
         this.limitLine2.setLineColor(0xFFFF00);
         this.limitLine2.setLabelPosition(LimitLabelPosition.RIGHT_BOTTOM);
         this.limitLine2.setTextSize(10.0);
-
-        // change the position of the y-labels
+        
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(laxis) <- this.leftAxis) {
             laxis.setAxisMinimum(0.0);
             laxis.setDrawLimitLinesBehindData(false);
             laxis.setValueFormatter(CustomFormatter());
-
-            // add limit lines
+            
             laxis.addLimitLine(this.limitLine1);
             laxis.addLimitLine(this.limitLine2);
         }
@@ -5380,7 +5376,6 @@ class SimpleWaterfallChartPage {
         values.append(WaterfallEntry(7.0, 60.0, 70.0));
 
         this.dataSet = WaterfallDataSet(values, "DataSet")
-        this.dataSet.setHighLightColor(0x999999);
         this.dataSet.setDrawIcons(false);
         this.dataSet.setColorByColor(0xFFC0CB);
         this.dataSet.setValueTextSize(10.0)
@@ -5398,19 +5393,6 @@ class SimpleWaterfallChartPage {
             Column() {
                 WaterfallChart(model: aboutToAppear())
             }
-            Row() {
-                Row() {
-                    Text("普通: ")
-                    Radio(value: "CUBIC_BEZIER", group: "dataType").checked(true).onChange(
-                        {
-                        isChecked: Bool => if (isChecked) {
-                            this.data = this.getNormalData()
-                            this.model.setData(this.data);
-                        }
-                    })
-                }
-                
-            }.alignSelf(ItemAlign.Center)
         }
     }
 }
@@ -6106,8 +6088,8 @@ public class DefaultFillFormatter <: IFillFormatter {
 public enum Mode <: Equatable<Mode> {
     | LINEAR            // 线
     | STEPPED           // 90度折线
-    | CUBIC_BEZIER      // 贝塞尔曲线
-    | HORIZONTAL_BEZIER // 曲线
+    | CUBIC_BEZIER      // 贝塞尔曲线 暂不支持
+    | HORIZONTAL_BEZIER // 曲线 暂不支持
 }
 ```
 
