@@ -164,7 +164,7 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
         }
     }
 
-    protected func myCalcMinMaxY(e: E): Unit {
+    protected open func myCalcMinMaxY(e: E): Unit {
         if (e.getY() < this.mYMin) {
             this.mYMin = e.getY()
         }

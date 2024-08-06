@@ -100,9 +100,9 @@ public open class Transformer {
             }
         }
 
-        this.getValueToPixelMatrix().mapPoints(valuePoints);
+        this.getValueToPixelMatrix().mapPoints(valuePoints)
 
-        return valuePoints;
+        return valuePoints
     }
 
     protected var valuePointsForGenerateTransformedValuesLine: ArrayList<Float64> = ArrayList<Float64>(1)
@@ -140,7 +140,42 @@ public open class Transformer {
         return tmpArray
     }
 
-    protected var valuePointsForGenerateTransformedValuesCandle: Array<Float64> = Array<Float64>(1, item: 0.0)
+    protected var valuePointsForGenerateTransformedValuesCandle: ArrayList<Float64> = ArrayList<Float64>(1)
+
+    /**
+     * Transforms an List of Entry into a float array containing the x and
+     * y values transformed with all matrices for the CANDLESTICKCHART.
+     *
+     * @param data
+     * @return
+     */
+    public func generateTransformedValuesCandle(data: ICandleDataSet, phaseX: Float64, phaseY: Float64,
+        fromValue: Int64, toValue: Int64): Array<Float64> {
+        let count: Int64 = Int64(floor((Float64(toValue - fromValue) * (phaseX) + 1.0) * 2.0))
+
+        if (this.valuePointsForGenerateTransformedValuesCandle.size != count) {
+            this.valuePointsForGenerateTransformedValuesCandle = ArrayList<Float64>(count)
+        }
+        let valuePoints: ArrayList<Float64> = this.valuePointsForGenerateTransformedValuesCandle
+
+        for (j in 0..count : 2) {
+            let e: CandleEntry = data.getEntryForIndex(j / 2 + fromValue)
+            Utils.newSet(valuePoints, j, e.getX())
+            Utils.newSet(valuePoints, j+1, e.getHigh() * phaseY)
+        }
+
+        var tmpArray = valuePoints.toArray()
+        this.getValueToPixelMatrix().mapPoints(tmpArray);
+        return tmpArray
+    }
+
+    /**
+     * transform a path with all the given matrices VERY IMPORTANT: keep order
+     * to value-touch-offset
+     *
+     * @param path
+     */
+    // todo 当前UI不支持 Matrix2D
 
     /**
      * Transform an array of points with all matrices. VERY IMPORTANT: Keep
