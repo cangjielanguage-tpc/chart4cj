@@ -1,8 +1,8 @@
-# chart4Ohos 特性文档
+# chart4cj 特性文档
 
 ## 介绍
 
-chart4Ohos 是一个包含各种类型图表的图表库，主要用于业务数据汇总，例如销售数据走势图，股价走势图等场景中使用，方便开发者快速实现图表 UI，chart4Ohos主要包括线形图、柱状图、饼状图、蜡烛图、气泡图、雷达图、瀑布图等自定义图表库。
+chart4cj 是一个包含各种类型图表的图表库，主要用于业务数据汇总，例如销售数据走势图，股价走势图等场景中使用，方便开发者快速实现图表 UI，chart4cj主要包括线形图、柱状图、饼状图、蜡烛图、气泡图、雷达图、瀑布图等自定义图表库。
 
 ## 1 生成各种类型的图表，包括：线形图、条形图、饼状图、蜡烛图、气泡图、雷达图、散点图、瀑布图、组合图、自定义图表
 
@@ -284,13 +284,6 @@ public interface IDataSet<E> where E <: EntryOhos {
     func getColor(index: Int64): UInt32
     
     /*
-     * 如果启用了值的高亮显示，则返回true；如果未启用，则返回false
-     * 
-     * 返回值 Bool
-     */
-    func isHighlightEnabled(): Bool
-    
-    /*
      * 设置用于在图表中绘制值的格式
      * 
      * 参数 f - 使用chart.getDefaultValueFormatter()
@@ -570,14 +563,6 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
      * 返回值 Array<String> - 标签集合
      */
     public func getDataSetLabels (): Array<String>
-    
-    /*
-     * 获取相应高亮显示对象的Entry
-     * 
-     * 参数 highlight - 高亮
-     * 返回值 EntryOhos - EntryOhos
-     */
-    public open func getEntryForHighlight (highlight: Highlight): EntryOhos
     
     /*
      * 返回具有给定标签的DataSet对象。搜索可以区分大小写，也可以不区分大小写重要提示:此方法在运行时进行计算。在性能危急的情况下小心使用。
@@ -1616,13 +1601,6 @@ public class PieData<: ChartData<IPieDataSet,PiEntry> {
      * 返回值 ArrayList<IPieDataSet> - ArrayList<IPieDataSet>
      */
     public override func getDataSets (): ArrayList<IPieDataSet>
-     /*
-     * 获取相应高亮显示对象的Entry
-     * 
-     * 参数 highlight - 高亮
-     * 返回值 PiEntry - PiEntry
-     */
-    public override func getEntryForHighlight (highlight: Highlight): PiEntry
     
     /*
      * 返回此PieData对象中所有值的和。
@@ -2130,9 +2108,7 @@ public interface BarLineScatterCandleBubbleDataProvider<S, E> <: ChartInterface<
     func isInverted(axis: AxisDependency): Bool
 
     func getLowestVisibleX(): Float64
-
-    func getHighestVisibleX(): Float64
-
+    
     func getData(): ?ChartData<S, E>
 }
 ```
@@ -2519,14 +2495,7 @@ public interface IBarDataSet <: IBarLineScatterCandleBubbleDataSet<BarEntry> {
      * 返回 UInt32
      */
     public func getBarBorderColor(): UInt32
-
-    /**
-     * 获取高亮透明度
-     *
-     * 返回 Float64
-     */
-    public func getHighLightAlpha(): Float64
-
+    
     /**
      * 获取堆叠条目的标签
      *
@@ -2822,10 +2791,7 @@ class BarChartMultiplePage {
 
         // if more than 40 entries are displayed in the this.model, no values will be drawn
         this.model.setMaxVisibleValueCount(60)
-
-        // scaling can now only be done on x- and y-axis separately
-        this.model.setPinchZoom(false)
-
+        
         this.model.setDrawGridBackground(false)
         this.model.setGridBackgroundColor(0x500000ff)
         this.model.setDrawBarShadow(false)
@@ -2855,7 +2821,6 @@ class BarChartMultiplePage {
         }
 
         this.normalMarker = MarkerView()
-        this.model.setMarker(this.normalMarker)
 
         if (this.xAxis.isSome() && this.leftAxis.isSome()) {
             this.setData(5, 110)
@@ -3026,10 +2991,8 @@ class HorizontalBarChartPage {
         this.model.setDrawValueAboveBar(true)
 
         let description: Description = this.model.getDescription()
-
         description.setEnabled(false)
-
-        this.model.setPinchZoom(false)
+        
         this.model.setDrawGridBackground(false)
 
         let xAxis: ?XAxis = this.model.getXAxis()
@@ -3795,14 +3758,7 @@ public interface BarLineScatterCandleBubbleDataProvider<D, S, E> <: ChartInterfa
      * 返回值 Float64
      */
     func getLowestVisibleX(): Float64
-
-    /*
-     * 获取最大可见x值
-     *
-     * 返回值 Float64
-     */
-    func getHighestVisibleX(): Float64
-
+    
     /*
      * 获取数据包
      *
@@ -4051,14 +4007,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      * 返回值 Unit 
      */
     public func setMinOffset (minOffset: Float64): Unit
-    
-    /*
-     * 设置图表旋转后是否保持原位置，默认false
-     * 
-     * 参数 keepPositionOnRotation - true/false
-     * 返回值 Unit 
-     */
-    public func setKeepPositionOnRotation (keepPositionOnRotation: Bool): Unit
     
     /*
      * 获取左侧Y轴
@@ -4595,7 +4543,6 @@ class BubbleChartPage {
         description.setEnabled(false)
 
         this.model.setMaxVisibleValueCount(60)
-        this.model.setPinchZoom(false)
         this.model.setDrawGridBackground(false)
 
         let xAxis: ?XAxis = this.model.getXAxis()
@@ -4843,14 +4790,7 @@ public interface IWaterfallDataSet <: IBarLineScatterCandleBubbleDataSet<Waterfa
      * 返回 UInt32
      */
     public func getBarBorderColor(): UInt32
-
-    /**
-     * 获取高亮透明度
-     *
-     * 返回 Float64
-     */
-    public func getHighLightAlpha(): Float64
-
+    
     /**
      * 获取堆叠条目的标签
      *
@@ -5015,21 +4955,6 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
      * 返回 Float64
      */
     public func getBarBorderWidth (): Float64
-    
-    /*
-     * 设置高亮透明度，默认值120.0
-     * 
-     * 参数 alpha - 透明度
-     * 返回值 Unit 
-     */
-    public func setHighLightAlpha (alpha: Float64): Unit
-    
-    /**
-     * 获取高亮透明度
-     *
-     * 返回 Float64
-     */
-    public func getHighLightAlpha (): Float64
     
     /*
      * 设置堆叠标签
@@ -5309,8 +5234,6 @@ class WaterfallChartPageReadme {
         
         this.model.setMaxVisibleValueCount(40);
         
-        this.model.setPinchZoom(false);
-
         this.model.setDrawGridBackground(false);
         this.model.setGridBackgroundColor(0x500000ff)
         this.model.setDrawBarShadow(false);
@@ -5352,7 +5275,6 @@ class WaterfallChartPageReadme {
         }
 
         this.normalMarker = MarkerView()
-        this.model.setMarker(this.normalMarker);
 
         this.data = this.getNormalData()
         this.model.setData(this.data);
@@ -5729,13 +5651,6 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
      * 返回值 IFillFormatter - 样式
      */
     public func getFillFormatter (): IFillFormatter
-    
-    /*
-     * 获取线条样式
-     * 
-     * 返回值 ?DashPathEffect - 线条样式
-     */
-    public func getDashPathEffectHighlight (): ?DashPathEffect
 }
 ```
 
