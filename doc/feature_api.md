@@ -2336,9 +2336,7 @@ class PieChartPage {
         this.model.setUsePercentValues(true);  // 使用百分比值
         this.model.getDescription().setEnabled(false)  // 禁用描述信息
         this.model.setExtraOffsets(5.0, 10.0, 5.0, 5.0); // 设置额外偏移量
-
-        this.model.setDragDecelerationFrictionCoef(0.95); // 设置拖动减速摩擦系数
-
+        
         this.model.setCenterText("mpchart"); // 设置中心文本
         this.model.setCenterTextSize(22.0) // 设置中心文本大小
 
