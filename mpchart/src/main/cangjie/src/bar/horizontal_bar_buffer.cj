@@ -9,7 +9,7 @@ public class HorizontalBarBuffer <: BarBuffer {
     }
 
     public func feed(data: IBarDataSet) {
-        let size: Int64 = data.getEntryCount() * Int64(this.phaseX)
+        let size: Int64 = Int64(ceil(Float64(data.getEntryCount()) * this.phaseX))
         let barWidthHalf: Float64 = this.mBarWidth / 2.0
 
         for (i in 0..size) {

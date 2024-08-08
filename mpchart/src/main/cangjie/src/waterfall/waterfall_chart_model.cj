@@ -15,8 +15,8 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
     }
     public static func build(): WaterfallChartModel {
         let model: WaterfallChartModel = WaterfallChartModel()
-        var mAnimator: ChartAnimator = ChartAnimator(model)
-        model.mRenderer = WaterfallChartRenderer(model, mAnimator, model.mViewPortHandler)
+        model.mAnimator = ChartAnimator(model)
+        model.mRenderer = WaterfallChartRenderer(model, model.mAnimator(), model.mViewPortHandler)
 
         model.setHighlighter(WaterfallHighlighter(model))
         let xAxis: ?XAxis = model.getXAxis()

@@ -52,6 +52,7 @@ class BarChartPageReadme {
         }
 
         // if more than 40 entries are displayed in the this.model, no values will be drawn
+        this.model.animateXY(2000, 2000);
         this.model.setMaxVisibleValueCount(60)
 
         // scaling can now only be done on x- and y-axis separately

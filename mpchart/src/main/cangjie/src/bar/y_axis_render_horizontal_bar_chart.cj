@@ -74,7 +74,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
         this.drawYLabels(c, yPos, positions, this.mYAxis.getYOffset())
     }
 
-    public func renderAxisLine(c: CanvasRenderingContext2D) {
+    public func renderAxisLine(c: CanvasRenderingContext2D, extraLine!: Float64) {
         if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawAxisLineEnabled() || this.mViewPortHandler.isNone()) {
             return
         }

@@ -238,6 +238,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         if (this.mXAxisRenderer.isSome() && this.mXAxis.isSome() && !this.mXAxis().isDrawGridLinesBehindDataEnabled()) {
             this.mXAxisRenderer().renderGridLines(context2D)
         }
+
         if (this.mAxisRendererLeft.isSome() && this.mAxisLeft.isSome() &&
             !this.mAxisLeft().isDrawGridLinesBehindDataEnabled()) {
             this.mAxisRendererLeft().renderGridLines(context2D)

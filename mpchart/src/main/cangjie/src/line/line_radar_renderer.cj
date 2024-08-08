@@ -83,6 +83,6 @@ public open class LineRadarRenderer <: LineScatterCandleRadarRenderer {
     public open func drawData(c: CanvasRenderingContext2D): Unit {}
     public open func drawExtras(c: CanvasRenderingContext2D): Unit {}
     public open func drawHighlighted(c: CanvasRenderingContext2D, indices: Array<Highlight>): Unit {}
-    public func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool): Unit {}
+    public open func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool): Unit {}
     public open func initBuffers(): Unit {}
 }

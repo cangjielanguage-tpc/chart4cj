@@ -12,8 +12,8 @@ public class LineChartModel <: BarLineChartBaseModel<LineData, ILineDataSet, Ent
 
     public static func build(): LineChartModel {
         let model: LineChartModel = LineChartModel()
-        var mAnimator: ChartAnimator = ChartAnimator(model)
-        model.mRenderer = LineChartRenderer(model, mAnimator, model.mViewPortHandler)
+        model.mAnimator = ChartAnimator(model)
+        model.mRenderer = LineChartRenderer(model, model.mAnimator(), model.mViewPortHandler)
 
         return model
     }

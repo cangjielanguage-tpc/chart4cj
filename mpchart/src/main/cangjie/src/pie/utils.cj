@@ -38,7 +38,7 @@ public abstract class Utils {
      */
     public static func calcTextWidth(c: CanvasRenderingContext2D, paint: Paint, demoText: String): Float64 {
         let textMetrics: TextMetrics = c.measureText(demoText)
-        return textMetrics.width
+        return 50.0
     }
 
     private static var mCalcTextHeightRect: MyRect = MyRect()
@@ -53,19 +53,19 @@ public abstract class Utils {
      */
     public static func calcTextHeight(c: CanvasRenderingContext2D, paint: Paint, demoText: String): Float64 {
         let textMetrics: TextMetrics = c.measureText(demoText)
-        return textMetrics.height
+        return 50.0
     }
 
     public static func getLineHeight(paint: Paint, c: CanvasRenderingContext2D): Float64 {
         Utils.resetContext2DStyle(c, paint)
         let textMetrics: TextMetrics = c.measureText("Test")
-        return textMetrics.height
+        return 50.0
     }
 
     public static func getLineSpacing(paint: Paint, c: CanvasRenderingContext2D): Float64 {
         Utils.resetContext2DStyle(c, paint)
         let textMetrics: TextMetrics = c.measureText("Test")
-        return textMetrics.height * 0.3
+        return 20.0
     }
 
     public static func calcTextSize(c: CanvasRenderingContext2D, paint: Paint, demoText: String): FSize {
@@ -315,32 +315,36 @@ public abstract class Utils {
     }
 
     public static func resetContext2DStyle(context2D: CanvasRenderingContext2D, paint: Paint) {
-            match (paint.getStyle()) {
-              case Style.FILL =>
+        match (paint.getStyle()) {
+            case Style.FILL =>
                 let c: Color = paint.getFillStyle()
                 context2D.fillStyle(paint.getFillStyle())
-              case Style.STROKE =>
-                context2D.strokeStyle(paint.getStrokeStyle())
-              case Style.FILL_AND_STROKE =>
+            case Style.STROKE => context2D.strokeStyle(paint.getStrokeStyle())
+            case Style.FILL_AND_STROKE =>
                 context2D.fillStyle(paint.getFillStyle())
                 context2D.strokeStyle(paint.getStrokeStyle())
-              case _ =>
+            case _ =>
                 context2D.fillStyle(paint.getFillStyle())
                 context2D.strokeStyle(paint.getStrokeStyle())
-            }
-            if (let Some(globalAlpha) <- paint.getGlobalAlpha()) {
-                context2D.globalAlpha(globalAlpha)
-            }
-            context2D.lineWidth(paint.getStrokeWidth())
-            context2D.textAlign(paint.getTextAlign())
-            context2D.textBaseline(paint.getTextBaseline())
-            context2D.font(size: Length(paint.getTextSize()))
+        }
 
-            let dashEffect: ?DashPathEffect = paint.getDashPathEffect()
-            if (let Some(dashE) <- dashEffect) {
-                context2D.lineDash(dashE.getDash())
-                context2D.lineDashOffset(dashE.getOffset())
-            }
+        if (let Some(style2) <- paint.getFillStyle2()) {
+            context2D.fillStyle(style2)
+        }
+
+        if (let Some(globalAlpha) <- paint.getGlobalAlpha()) {
+            context2D.globalAlpha(globalAlpha)
+        }
+        context2D.lineWidth(paint.getStrokeWidth())
+        context2D.textAlign(paint.getTextAlign())
+        context2D.textBaseline(paint.getTextBaseline())
+        context2D.font(size: Length(paint.getTextSize()))
+
+        let dashEffect: ?DashPathEffect = paint.getDashPathEffect()
+        if (let Some(dashE) <- dashEffect) {
+            context2D.lineDash(dashE.getDash())
+            context2D.lineDashOffset(dashE.getOffset())
+        }
     }
 
     public static func parseInt(num: Float64): Float64 {
@@ -376,37 +380,37 @@ public abstract class Utils {
      */
     public static func fillRoundedRect(c: CanvasRenderingContext2D, left: Float64, top: Float64, width: Float64,
         height: Float64, radius: Float64, cornerType: RoundCornerType) {
-            let min: Float64 = min(width, height)
+        let min: Float64 = min(width, height)
         var newRadius: Float64 = radius
         if (newRadius > min / 2.0) {
-          newRadius = min / 2.0
+            newRadius = min / 2.0
         }
 
         match (cornerType) {
-          case RoundCornerType.DOWN =>
-            c.moveTo(left, top)
-            c.lineTo(left + width, top)
-            c.arcTo(left + width, top + height, left, top + height, newRadius)
-            c.lineTo(left + newRadius, top + height)
-            c.arcTo(left, top + height, left, top, newRadius)
-          case RoundCornerType.BOTH =>
-            c.moveTo(left + newRadius, top)
-            c.arcTo(left + width, top, left + width, top + height, newRadius)
-            c.arcTo(left + width, top + height, left, top + height, newRadius)
-            c.arcTo(left, top + height, left, top, newRadius)
-            c.arcTo(left, top, left + newRadius, top, newRadius)
-          case RoundCornerType.UP =>
-            c.moveTo(left + newRadius, top)
-            c.arcTo(left + width, top, left + width, top + height, newRadius)
-            c.lineTo(left + width, top + height)
-            c.lineTo(left, top + height)
-            c.arcTo(left, top, left + width, top, newRadius)
-          case _ =>
-            c.moveTo(left + newRadius, top)
-            c.arcTo(left + width, top, left + width, top + height, newRadius)
-            c.lineTo(left + width, top + height)
-            c.lineTo(left, top + height)
-            c.arcTo(left, top, left + width, top, newRadius)
+            case RoundCornerType.DOWN =>
+                c.moveTo(left, top)
+                c.lineTo(left + width, top)
+                c.arcTo(left + width, top + height, left, top + height, newRadius)
+                c.lineTo(left + newRadius, top + height)
+                c.arcTo(left, top + height, left, top, newRadius)
+            case RoundCornerType.BOTH =>
+                c.moveTo(left + newRadius, top)
+                c.arcTo(left + width, top, left + width, top + height, newRadius)
+                c.arcTo(left + width, top + height, left, top + height, newRadius)
+                c.arcTo(left, top + height, left, top, newRadius)
+                c.arcTo(left, top, left + newRadius, top, newRadius)
+            case RoundCornerType.UP =>
+                c.moveTo(left + newRadius, top)
+                c.arcTo(left + width, top, left + width, top + height, newRadius)
+                c.lineTo(left + width, top + height)
+                c.lineTo(left, top + height)
+                c.arcTo(left, top, left + width, top, newRadius)
+            case _ =>
+                c.moveTo(left + newRadius, top)
+                c.arcTo(left + width, top, left + width, top + height, newRadius)
+                c.lineTo(left + width, top + height)
+                c.lineTo(left, top + height)
+                c.arcTo(left, top, left + width, top, newRadius)
         }
     }
 
@@ -418,6 +422,14 @@ public abstract class Utils {
     public static func drawStrokeRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: Paint, left: Float64,
         top: Float64, right: Float64, bottom: Float64, radius: Float64, cornerType: RoundCornerType) {
         Utils.drawRect(isDrawRounded, c, paint, left, top, right, bottom, radius, false, cornerType)
+    }
+
+    public static func newSet(array: ArrayList<Float64>, index: Int64, value: Float64) {
+        if (index < array.size) {
+            array.set(index, value)
+        } else {
+            array.append(value)
+        }
     }
 
     private static func drawRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: Paint, left: Float64,

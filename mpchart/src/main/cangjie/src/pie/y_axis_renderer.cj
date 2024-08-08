@@ -66,7 +66,7 @@ public open class YAxisRenderer <: AxisRenderer {
         this.drawYLabels(c, xPos, positions, yOffset)
     }
 
-    public func renderAxisLine(c: CanvasRenderingContext2D, extraLine!: Float64): Unit {
+    public open func renderAxisLine(c: CanvasRenderingContext2D, extraLine!: Float64): Unit {
         if (!this.mYAxis.isEnabled() || !this.mYAxis.isDrawAxisLineEnabled()) {
             return
         }
@@ -287,7 +287,6 @@ public open class YAxisRenderer <: AxisRenderer {
             this.mLimitLineClippingRect.height())
         c.closePath()
         c.clip()
-
         this.mLimitLinePaint.setStyle(Style.STROKE)
         this.mLimitLinePaint.setColor(Color(UInt32(l.getLineColor())))
         this.mLimitLinePaint.setStrokeWidth(l.getLineWidth())
@@ -297,7 +296,6 @@ public open class YAxisRenderer <: AxisRenderer {
         this.mRenderLimitLinesBuffer[1] = l.getLimit()
 
         this.mTrans.pointValuesToPixel(this.mRenderLimitLinesBuffer)
-
         Utils.resetContext2DStyle(c, this.mLimitLinePaint)
         c.beginPath()
         c.moveTo(this.mViewPortHandler().contentLeft(), this.mRenderLimitLinesBuffer[1])
@@ -326,6 +324,7 @@ public open class YAxisRenderer <: AxisRenderer {
             c.restore()
         }
     }
+
     /**
      * Draws the LimitLines associated with this axis to the screen.
      *
@@ -344,15 +343,12 @@ public open class YAxisRenderer <: AxisRenderer {
 
         for (i in 0..limitLines.size) {
             let l: LimitLine = limitLines.get(i)()
-
             if (!l.isEnabled()) {
                 continue
             }
-
             c.save()
 
             this.renderLine(c, l)
-
             let label: String = l.getLabel()
             if (label != "") {
                 this.mLimitLinePaint.setStyle(l.getTextStyle())
@@ -361,11 +357,9 @@ public open class YAxisRenderer <: AxisRenderer {
                 this.mLimitLinePaint.setFontFamily(l.getTypeface())
                 this.mLimitLinePaint.setStrokeWidth(0.5)
                 this.mLimitLinePaint.setTextSize(l.getTextSize())
-
                 let labelLineHeight = Utils.calcTextHeight(c, this.mLimitLinePaint, label)
                 let xOffset = 4.0 + l.getXOffset()
                 let yOffset = l.getLineWidth() + labelLineHeight + l.getYOffset()
-
                 let position: LimitLabelPosition = l.getLabelPosition()
                 let paintStyle = this.mLimitLinePaint.getStyle()
 
@@ -380,9 +374,20 @@ public open class YAxisRenderer <: AxisRenderer {
                                 pts[1] - yOffset + labelLineHeight)
                             c.closePath()
 
-                        case Style.FILL => ()
-                        case Style.FILL_AND_STROKE => ()
+                        case Style.FILL =>
+
+                            c.beginPath()
+                            c.fillText(label, this.mViewPortHandler().contentRight() - xOffset,
+                                pts[1] - yOffset + labelLineHeight)
+                            c.closePath()
+                        case Style.FILL_AND_STROKE =>
+
+                            c.beginPath()
+                            c.fillText(label, this.mViewPortHandler().contentRight() - xOffset,
+                                pts[1] - yOffset + labelLineHeight)
+                            c.closePath()
                         case _ =>
+
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentRight() - xOffset,
                                 pts[1] - yOffset + labelLineHeight)
@@ -398,9 +403,20 @@ public open class YAxisRenderer <: AxisRenderer {
                                 pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
                             c.closePath()
 
-                        case Style.FILL => ()
-                        case Style.FILL_AND_STROKE => ()
+                        case Style.FILL =>
+
+                            c.beginPath()
+                            c.fillText(label, this.mViewPortHandler().contentRight() - xOffset,
+                                pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
+                            c.closePath()
+                        case Style.FILL_AND_STROKE =>
+
+                            c.beginPath()
+                            c.fillText(label, this.mViewPortHandler().contentRight() - xOffset,
+                                pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
+                            c.closePath()
                         case _ =>
+
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentRight() - xOffset,
                                 pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
@@ -416,8 +432,18 @@ public open class YAxisRenderer <: AxisRenderer {
                                 pts[1] - yOffset + labelLineHeight)
                             c.closePath()
 
-                        case Style.FILL => ()
-                        case Style.FILL_AND_STROKE => ()
+                        case Style.FILL =>
+
+                            c.beginPath()
+                            c.fillText(label, this.mViewPortHandler().contentLeft() + xOffset,
+                                pts[1] - yOffset + labelLineHeight)
+                            c.closePath()
+                        case Style.FILL_AND_STROKE =>
+
+                            c.beginPath()
+                            c.fillText(label, this.mViewPortHandler().contentLeft() + xOffset,
+                                pts[1] - yOffset + labelLineHeight)
+                            c.closePath()
                         case _ =>
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentLeft() + xOffset,
@@ -434,8 +460,18 @@ public open class YAxisRenderer <: AxisRenderer {
                                 pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
                             c.closePath()
 
-                        case Style.FILL => ()
-                        case Style.FILL_AND_STROKE => ()
+                        case Style.FILL =>
+
+                            c.beginPath()
+                            c.fillText(label, this.mViewPortHandler().contentLeft() + xOffset,
+                                pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
+                            c.closePath()
+                        case Style.FILL_AND_STROKE =>
+
+                            c.beginPath()
+                            c.fillText(label, this.mViewPortHandler().contentLeft() + xOffset,
+                                pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
+                            c.closePath()
                         case _ =>
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentLeft() + xOffset,

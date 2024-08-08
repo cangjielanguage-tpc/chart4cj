@@ -291,7 +291,6 @@ public class PieChartRenderer <: DataRenderer {
             }
 
             this.mPathBuffer.closePath() // 封闭路径
-
             // 绘制路径
             Utils.resetContext2DStyle(c, this.mRenderPaint)
             c.stroke(this.mPathBuffer)
@@ -652,7 +651,6 @@ public class PieChartRenderer <: DataRenderer {
 
                 if (entry.getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
                     let icon: ?ChartPixelMap = entry.getIcon()
-
                     let x: Float64 = (labelRadius + iconsOffset.y) * sliceXBase + center.x
                     var y: Float64 = (labelRadius + iconsOffset.y) * sliceYBase + center.y
                     y += iconsOffset.x

@@ -189,10 +189,16 @@ public enum LimitLabelPosition <: Equatable<LimitLabelPosition> {
     | RIGHT_BOTTOM
 
     public operator func ==(b: LimitLabelPosition): Bool {
-        this == b
+        match ((this, b)) {
+            case (LEFT_TOP, LEFT_TOP) => true
+            case (LEFT_BOTTOM, LEFT_BOTTOM) => true
+            case (RIGHT_TOP, RIGHT_TOP) => true
+            case (RIGHT_BOTTOM, RIGHT_BOTTOM) => true
+            case _ => false
+        }
     }
 
     public operator func !=(b: LimitLabelPosition): Bool {
-        this != b
+         return !(this == b)
     }
 }
