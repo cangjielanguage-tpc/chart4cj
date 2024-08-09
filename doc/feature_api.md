@@ -4,7 +4,7 @@
 
 chart4cj 是一个包含各种类型图表的图表库，主要用于业务数据汇总，例如销售数据走势图，股价走势图等场景中使用，方便开发者快速实现图表 UI，chart4cj主要包括线形图、柱状图、饼状图、蜡烛图、气泡图、雷达图、瀑布图等自定义图表库。
 
-## 1 生成各种类型的图表，包括：线形图、条形图、饼状图、蜡烛图、气泡图、雷达图、散点图、瀑布图、组合图、自定义图表
+## 1 生成各种类型的图表，包括：线形图、柱状图、饼状图、蜡烛图、气泡图、雷达图、散点图、瀑布图、组合图、自定义图表
 
 ### 1.1 图表基础信息基类
 
@@ -2481,14 +2481,14 @@ public interface IBarDataSet <: IBarLineScatterCandleBubbleDataSet<BarEntry> {
     public func getBarShadowColor(): UInt32
 
     /**
-     * 获取条形图宽度
+     * 获取柱状图宽度
      *
      * 返回 Float64
      */
     public func getBarBorderWidth(): Float64
 
     /**
-     * 获取条形图颜色
+     * 获取柱状图颜色
      *
      * 返回 UInt32
      */
@@ -2533,7 +2533,7 @@ public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBa
     public func setGradientColor (startColor: UInt32, endColor: UInt32): Unit
     
     /*
-     * 设置数据集条形图的填充
+     * 设置数据集柱状图的填充
      * 
      * 参数 fills - 填充集合
      * 返回值 Unit 
@@ -2541,7 +2541,7 @@ public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBa
     public func setFills (fills: ArrayList<Fill>): Unit
     
     /*
-     * 设置条形图阴影颜色，默认值0xd7d7d7
+     * 设置柱状图阴影颜色，默认值0xd7d7d7
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -2549,7 +2549,7 @@ public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBa
     public func setBarShadowColor (color: UInt32): Unit
     
     /*
-     * 设置条形图边框宽度，默认值0.0
+     * 设置柱状图边框宽度，默认值0.0
      * 
      * 参数 width - 宽度
      * 返回值 Unit 
@@ -2557,7 +2557,7 @@ public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBa
     public func setBarBorderWidth (width: Float64): Unit
     
     /*
-     * 设置条形图边框颜色，默认值0x000000
+     * 设置柱状图边框颜色，默认值0x000000
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -2598,7 +2598,7 @@ public open class BarData<: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry
     public init (dataSets: ArrayList<IBarDataSet>)
     
     /*
-     * 设置每个条形图在坐标轴上的宽度，默认 0.85
+     * 设置每个柱状图在坐标轴上的宽度，默认 0.85
      * 
      * 参数 mBarWidth - 宽度
      * 返回值 Unit 
@@ -2606,7 +2606,7 @@ public open class BarData<: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry
     public func setBarWidth (mBarWidth: Float64): Unit
     
     /*
-     * 获取每个条形图在坐标轴上的宽度
+     * 获取每个柱状图在坐标轴上的宽度
      * 
      * 返回值 Float64 - 宽度
      */
@@ -2667,7 +2667,7 @@ public interface BarDataProvider <: BarLineScatterCandleBubbleDataProvider<IBarD
     func isDrawBarShadowEnabled(): Bool
     
     /*
-     * 判断是否在条形图上方绘制值
+     * 判断是否在柱状图上方绘制值
      * 
      * 返回值 Bool - true/false
      */
@@ -2712,7 +2712,7 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
     public func onDraw (c: CanvasRenderingContext2D): Unit
     
     /*
-     * 设置值是否在条形图的上方绘制，默认值true
+     * 设置值是否在柱状图的上方绘制，默认值true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -2735,7 +2735,7 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
     public func getBarData (): ?BarData
     
     /*
-     * 是否在x轴范围的两侧各增加一半条形图宽度，以使条形图完全显示出来。
+     * 是否在x轴范围的两侧各增加一半柱状图宽度，以使柱状图完全显示出来。
      * 默认值false
      * 
      * 参数 enabled - true/false
@@ -4776,14 +4776,14 @@ public interface IWaterfallDataSet <: IBarLineScatterCandleBubbleDataSet<Waterfa
     public func getBarShadowColor(): UInt32
 
     /**
-     * 获取条形图宽度
+     * 获取柱状图宽度
      *
      * 返回 Float64
      */
     public func getBarBorderWidth(): Float64
 
     /**
-     * 获取条形图颜色
+     * 获取柱状图颜色
      *
      * 返回 UInt32
      */
@@ -4897,14 +4897,14 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getMaxTopHighlightEXIST (): Bool
     
     /*
-     * 是否设置条形图底部高亮,默认false
+     * 是否设置柱状图底部高亮,默认false
      * 
      * 参数 value - true/false
      */
     public func setMinBottomHighlightEXIST (value: Bool)
     
     /*
-     * 获取是否设置条形图底部高亮
+     * 获取是否设置柱状图底部高亮
      * 
      * 返回值 Bool - true/false
      */
@@ -4925,7 +4925,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getOpacity (): String  
     
     /*
-     * 设置条形图边框颜色，默认值0x000000
+     * 设置柱状图边框颜色，默认值0x000000
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -4933,14 +4933,14 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func setBarBorderColor (color: UInt32): Unit
     
     /**
-     * 获取条形图颜色
+     * 获取柱状图颜色
      *
      * 返回 UInt32
      */
     public func getBarBorderColor (): UInt32
     
     /*
-     * 设置条形图边框宽度，默认值0.0
+     * 设置柱状图边框宽度，默认值0.0
      * 
      * 参数 width - 宽度
      * 返回值 Unit 
@@ -4948,7 +4948,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func setBarBorderWidth (width: Float64): Unit
     
     /**
-     * 获取条形图宽度
+     * 获取柱状图宽度
      *
      * 返回 Float64
      */
@@ -4970,7 +4970,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getStackLabels (): Array<String>
     
     /*
-     * 设置条形图阴影颜色，默认值0xd7d7d7
+     * 设置柱状图阴影颜色，默认值0xd7d7d7
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -5034,7 +5034,7 @@ public class WaterfallData<: BarLineScatterCandleBubbleData<IWaterfallDataSet,Wa
     public init (dataSets: ArrayList<IWaterfallDataSet>)
     
     /*
-     * 设置每个条形图在坐标轴上的宽度，默认 0.85
+     * 设置每个柱状图在坐标轴上的宽度，默认 0.85
      * 
      * 参数 mBarWidth - 宽度
      * 返回值 Unit 
@@ -5042,7 +5042,7 @@ public class WaterfallData<: BarLineScatterCandleBubbleData<IWaterfallDataSet,Wa
     public func setBarWidth (mBarWidth: Float64): Unit
     
     /*
-     * 获取每个条形图在坐标轴上的宽度
+     * 获取每个柱状图在坐标轴上的宽度
      * 
      * 返回值 Float64 - 宽度
      */
@@ -5106,7 +5106,7 @@ public interface WaterfallDataProvider <: BarLineScatterCandleBubbleDataProvider
     func isDrawBarShadowEnabled(): Bool
     
     /*
-     * 判断是否在条形图上方绘制值
+     * 判断是否在柱状图上方绘制值
      * 
      * 返回值 Bool - true/false
      */
@@ -5153,7 +5153,7 @@ public class WaterfallChartModel<: BarLineChartBaseModel<WaterfallData,IWaterfal
     public func onDraw (c: CanvasRenderingContext2D): Unit
     
     /*
-     * 设置值是否在条形图的上方绘制，默认值true
+     * 设置值是否在柱状图的上方绘制，默认值true
      * 
      * 参数 enabled - true/false
      * 返回值 Unit 
@@ -5176,7 +5176,7 @@ public class WaterfallChartModel<: BarLineChartBaseModel<WaterfallData,IWaterfal
     public func getWaterfallData (): ?getWaterfallData
     
     /*
-     * 是否在x轴范围的两侧各增加一半条形图宽度，以使条形图完全显示出来。
+     * 是否在x轴范围的两侧各增加一半柱状图宽度，以使柱状图完全显示出来。
      * 默认值false
      * 
      * 参数 enabled - true/false
@@ -6015,7 +6015,7 @@ public enum Mode <: Equatable<Mode> {
 public type ChartColorStop = (UInt32, Float64) 
 ```
 
-#### 1.15.5 折线图示例
+#### 1.15.5 线形图示例
 
 ```cangjie
 @Entry

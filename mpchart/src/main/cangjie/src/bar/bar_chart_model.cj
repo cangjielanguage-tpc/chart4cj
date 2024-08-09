@@ -20,14 +20,16 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
     private var mDrawBarShadow: Bool = false
     private var mFitBars: Bool = false
 
+    private var mMinAngleForSlices: Float64 = 0.0
+
     init() {
         super()
     }
 
     public static func build(): BarChartModel {
         let model: BarChartModel = BarChartModel()
-        var mAnimator: ChartAnimator = ChartAnimator(model)
-        model.mRenderer = BarChartRenderer(model, mAnimator, model.mViewPortHandler)
+        model.mAnimator = ChartAnimator(model)
+        model.mRenderer = BarChartRenderer(model, model.mAnimator(), model.mViewPortHandler)
 
         model.setHighlighter(BarHighlighter(model))
 
@@ -102,8 +104,8 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
                     if (!this.isHighlightFullBarEnabled()) {
                         return None
                     }
-                    return Highlight(hh.getX(), y: hh.getY(), dataSetIndex: hh.getDataSetIndex(), dataIndex: 0, stackIndex: -1, xPx: hh.getXPx(), yPx: hh.getYPx(),
-                        axis: hh.getAxis())
+                    return Highlight(hh.getX(), y: hh.getY(), dataSetIndex: hh.getDataSetIndex(), dataIndex: 0,
+                        stackIndex: -1, xPx: hh.getXPx(), yPx: hh.getYPx(), axis: hh.getAxis())
                 } else {
                     return None
                 }

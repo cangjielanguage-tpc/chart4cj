@@ -146,7 +146,6 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
         if (let Some(data) <- waterfallData) {
             buffer.setBarWidth(data.getBarWidth());
         }
-
         buffer.feed(dataSet);
         let tempArray: Array<Float64> = buffer.buffer.toArray()
         if (let Some(t) <- trans) {
@@ -163,9 +162,15 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 this.mRenderPaint.setFilter(dataSet.getOpacity());
             }
         }
-        let maxTop = buffer.getArrayTop()[buffer.getArrayTop().size - 1];
-        let minBottom = buffer.getArrayBottom()[0];
+        var maxTop = 0.0
+        if (buffer.getArrayTop().size > 0) {
+        	maxTop = buffer.getArrayTop()[buffer.getArrayTop().size - 1];
+        }
 
+        var minBottom = 0.0
+        if (buffer.getArrayBottom().size > 0) {
+            minBottom = buffer.getArrayBottom()[0];
+        }
         if (dataSet.getEnableMaxOrMinHighlightColor()) {
             for (i in 0..Int64(min((ceil(Float64(dataSet.getEntryCount()) * phaseX)), Float64(dataSet.getEntryCount())))) {
                 let e: WaterfallEntry = dataSet.getEntryForIndex(i)

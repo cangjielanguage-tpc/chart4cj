@@ -20,7 +20,7 @@ public abstract class ComponentBase {
     /**
      * the text size of the labels
      */
-    protected var mTextSize: Float64 = 10.0
+    protected var mTextSize: Float64 = 14.0
     /**
      * the text color to use for the labels
      */

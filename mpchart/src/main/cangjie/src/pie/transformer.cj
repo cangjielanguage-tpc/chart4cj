@@ -72,59 +72,23 @@ public open class Transformer {
 
     protected var valuePointsForGenerateTransformedValuesBubble: Array<Float64> = Array<Float64>(1, item: 0.0)
 
-   /**
+    /**
      * Transforms an List of Entry into a float array containing the x and
      * y values transformed with all matrices for the BUBBLECHART.
      *
      * @param data
      * @return
      */
-        public func generateTransformedValuesBubble(data: IBubbleDataSet, phaseY: Float64, froms: Int64, tos: Int64): Array<Float64> {
-            let count = (tos - froms + 1) * 2
+    public func generateTransformedValuesBubble(data: IBubbleDataSet, phaseY: Float64, froms: Int64, tos: Int64): Array<Float64> {
+        let count = (tos - froms + 1) * 2
 
-            if (this.valuePointsForGenerateTransformedValuesBubble.size != count) {
-                this.valuePointsForGenerateTransformedValuesBubble = Array<Float64>(count, item: 0.0)
-            }
-            let valuePoints: Array<Float64> = this.valuePointsForGenerateTransformedValuesBubble
-
-            for (j in 0..count : 2) {
-                let e: ?EntryOhos = data.getEntryForIndex(j / 2 + froms)
-
-                match (e) {
-                    case Some(entryOhos) =>
-                        valuePoints[j] = entryOhos.getX()
-                        valuePoints[j + 1] = entryOhos.getY() * phaseY
-                    case None =>
-                        valuePoints[j] = 0.0
-                        valuePoints[j + 1] = 0.0
-                }
-            }
-
-            this.getValueToPixelMatrix().mapPoints(valuePoints);
-
-            return valuePoints;
+        if (this.valuePointsForGenerateTransformedValuesBubble.size != count) {
+            this.valuePointsForGenerateTransformedValuesBubble = Array<Float64>(count, item: 0.0)
         }
-
-    protected var valuePointsForGenerateTransformedValuesLine: Array<Float64> = Array<Float64>(1, item: 0.0)
-
-    /**
-     * Transforms an List of Entry into a float array containing the x and
-     * y values transformed with all matrices for the LINECHART.
-     *
-     * @param data
-     * @return
-     */
-    public func generateTransformedValuesLine(data: ILineDataSet, phaseX: Float64, phaseY: Float64, min: Int64,
-        max: Int64): Array<Float64> {
-        let count: Int64 = Int64(floor(((Float64(max - min) * phaseX) + 1.0) * 2.0))
-
-        if (this.valuePointsForGenerateTransformedValuesLine.size != count) {
-            this.valuePointsForGenerateTransformedValuesLine = Array<Float64>(count, item: 0.0)
-        }
-        let valuePoints: Array<Float64> = this.valuePointsForGenerateTransformedValuesLine
+        let valuePoints: Array<Float64> = this.valuePointsForGenerateTransformedValuesBubble
 
         for (j in 0..count : 2) {
-            let e: ?EntryOhos = data.getEntryForIndex(j / 2 + min)
+            let e: ?EntryOhos = data.getEntryForIndex(j / 2 + froms)
 
             match (e) {
                 case Some(entryOhos) =>
@@ -138,18 +102,45 @@ public open class Transformer {
 
         this.getValueToPixelMatrix().mapPoints(valuePoints);
 
-        return valuePoints
+        return valuePoints;
+    }
+
+    protected var valuePointsForGenerateTransformedValuesLine: ArrayList<Float64> = ArrayList<Float64>(1)
+
+    /**
+     * Transforms an List of Entry into a float array containing the x and
+     * y values transformed with all matrices for the LINECHART.
+     *
+     * @param data
+     * @return
+     */
+    public func generateTransformedValuesLine(data: ILineDataSet, phaseX: Float64, phaseY: Float64, min: Int64,
+        max: Int64): Array<Float64> {
+        let count: Int64 = Int64(floor(((Float64(max - min) * phaseX) + 1.0) * 2.0))
+        if (this.valuePointsForGenerateTransformedValuesLine.size != count) {
+            this.valuePointsForGenerateTransformedValuesLine = ArrayList<Float64>(count)
+        }
+        let valuePoints: ArrayList<Float64> = this.valuePointsForGenerateTransformedValuesLine
+
+        for (j in 0..count : 2) {
+            let e: ?EntryOhos = data.getEntryForIndex(j / 2 + min)
+            match (e) {
+                case Some(entryOhos) =>
+                    Utils.newSet(valuePoints, j, entryOhos.getX())
+                    Utils.newSet(valuePoints, j + 1, entryOhos.getY() * phaseY)
+
+                case None =>
+                    Utils.newSet(valuePoints, j, 0.0)
+                    Utils.newSet(valuePoints, j + 1, 0.0)
+            }
+        }
+
+        var tmpArray = valuePoints.toArray()
+        this.getValueToPixelMatrix().mapPoints(tmpArray);
+        return tmpArray
     }
 
     protected var valuePointsForGenerateTransformedValuesCandle: Array<Float64> = Array<Float64>(1, item: 0.0)
-
-    /**
-     * transform a path with all the given matrices VERY IMPORTANT: keep order
-     * to value-touch-offset
-     *
-     * @param path
-     */
-    // todo 当前UI不支持 Matrix2D
 
     /**
      * Transform an array of points with all matrices. VERY IMPORTANT: Keep

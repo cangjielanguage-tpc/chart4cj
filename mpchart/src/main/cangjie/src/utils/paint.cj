@@ -10,7 +10,7 @@ public open class Paint {
 
     var fillStyle: Color = Color.WHITE
     var fillStyle1: String = "#ffffff"
-    var fillStyle2: CanvasGradient = CanvasRenderingContext2D(RenderingContextSettings(antialias: true)).createLinearGradient(0,0,0,0)
+    var fillStyle2: ?CanvasGradient = Option<CanvasGradient>.None
     //var fillStyle3: CanvasPattern
 
     var strokeStyle: Color = Color.BLACK
@@ -112,7 +112,7 @@ public open class Paint {
         return this.fillStyle1
     }
 
-    public func getColor2(): CanvasGradient {
+    public func getColor2(): ?CanvasGradient {
         return this.fillStyle2
     }
 
@@ -168,7 +168,7 @@ public open class Paint {
         return this.fillStyle1
     }
 
-    public func getFillStyle2(): CanvasGradient {
+    public func getFillStyle2(): ?CanvasGradient {
         return this.fillStyle2
     }
 

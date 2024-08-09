@@ -2,6 +2,7 @@
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
 package ohos_app_cangjie_entry
+
 import ohos.state_macro_manage.*
 internal import ohos.base.LengthProp
 internal import ohos.component.Column
@@ -27,9 +28,7 @@ import ohos.image.createImageSource
 import ohos.ability.*
 import ohos.router.*
 import encoding.json.*
-//import service.*
 import std.collection.*
-
 import ohos.base.*
 import ohos.state_macro_manage.*
 import ohos.ability.Ability
@@ -39,39 +38,25 @@ import ohos.window.WindowStage
 import ohos.ability.AbilityStage
 import ohos.ability.LaunchReason
 
-
-func getData(): ArrayList<String> {
-    let arr = ArrayList<String>(
-        "LineChartNotAxisConfigPage"
-
-
-
-
-
-    )
-    return arr
-}
-
 @Entry
 @Component
 class MyView {
-        func build() {
+    func build() {
         Column {
-                        Button("WaterfallChartPageReadme")
-                                .onClick {
-                                Router.push(url: "WaterfallChartPageReadme")
-                            }
+            Button("PieChartPage").onClick {
+                Router.push(url: "PieChartPage")
+            }
+
+            Button("SimpleWaterfallChartPage").onClick {
+                Router.push(url: "SimpleWaterfallChartPage")
+            }
+
+            Button("IconPieChartPage").onClick {
+                Router.push(url: "IconPieChartPage")
+            }
 
 
-
-                        Button("LineChartNotAxisConfigPageReadme")
-                                .onClick {
-                                Router.push(url: "LineChartNotAxisConfigPageReadme")
-                            }
-
-
-                }
 
         }
+    }
 }
-

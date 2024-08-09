@@ -57,7 +57,7 @@ class WaterfallChartPageReadme {
             v.setDrawInside(true)
             v.setYOffset(-10.0)
         }
-
+        this.model.animateXY(2000, 2000);
         this.model.setMaxVisibleValueCount(40);
 
         this.model.setPinchZoom(false);

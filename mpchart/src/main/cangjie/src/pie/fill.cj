@@ -162,6 +162,7 @@ public class Fill {
                 c.fill()
                 c.restore()
             } else {
+
                 // save
                 let previous: Style = paint.getStyle()
                 let previousColor: Color = paint.getColor()
@@ -190,7 +191,6 @@ public class Fill {
                         gradient.addColorStop(i, this.mGradientColors()[i])
                     }
                 }
-
                 paint.setFillStyle(gradient)
                 Utils.resetContext2DStyle(c, paint)
                 c.beginPath()

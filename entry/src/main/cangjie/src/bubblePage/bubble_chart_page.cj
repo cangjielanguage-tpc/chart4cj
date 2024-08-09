@@ -8,15 +8,7 @@ import ohos.component.*
 import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
-class MyOnChartValueSelectedListener <: OnChartValueSelectedListener {
-    public func onValueSelected(e: EntryOhos, h: Highlight): Unit {
-        AppLog.info("BubbleChartPage onValueSelected: ${e.getX()}")
-    }
 
-    public func onNothingSelected(): Unit {
-        AppLog.info("MyOnChartValueSelectedListener onNothingSelected")
-    }
-}
 
 @Entry
 @Component
@@ -25,7 +17,6 @@ class BubbleChartPage {
     private var title: String = "BubbleChartPage"
     private var model: BubbleChartModel = BubbleChartModel.build()
 
-    private var valueSelectedListener: OnChartValueSelectedListener = MyOnChartValueSelectedListener()
     var isDrawValuesEnable: Bool = true
     var titleSelcetString: String = "X"
 
@@ -44,7 +35,6 @@ class BubbleChartPage {
         if (let Some(legend) <- l) {
             legend.setEnabled(true)
         }
-        this.model.setOnChartValueSelectedListener(this.valueSelectedListener)
 
         let description: Description = this.model.getDescription()
         description.setEnabled(false)

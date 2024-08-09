@@ -264,7 +264,7 @@ public class LineChartRenderer <: LineRadarRenderer {
         }
     }
 
-    private var mLineBuffer: Array<Float64> = Array<Float64>(4, item: 0.0)
+    private var mLineBuffer: Array<Float64> = Array<Float64>(10, item: 0.0)
 
     protected func drawLinear(c: CanvasRenderingContext2D, dataSet: ILineDataSet): Unit {
         if (this.mXBounds.isNone()) {
@@ -354,7 +354,6 @@ public class LineChartRenderer <: LineRadarRenderer {
                     !this.mViewPortHandler().isInBoundsBottom(min(firstCoordinateY, lastCoordinateY))) {
                     continue
                 }
-
                 // get the color that is set for this line-segment
                 this.mRenderPaint.setColor(Color(dataSet.getColor(j)))
                 // canvas.drawLines(this.mLineBuffer, 0, pointsPerEntryPair * 2, this.mRenderPaint)
@@ -551,21 +550,19 @@ public class LineChartRenderer <: LineRadarRenderer {
         return filled
     }
 
-    public func drawValues(c: CanvasRenderingContext2D) {
+    public func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool) {
         if (this.isDrawingValuesAllowed(this.mChart)) {
             let lineData: ?LineData = this.mChart.getLineData()
             if (lineData.isNone()) {
                 return
             }
             let dataSets: ArrayList<ILineDataSet> = lineData().getDataSets()
-
             for (i in 0..dataSets.size) {
                 let dataSet: ILineDataSet = dataSets[i]
 
                 if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) {
                     continue
                 }
-
                 // apply the text-styling defined by the DataSet
                 this.applyValueTextStyle(dataSet)
 
@@ -573,7 +570,6 @@ public class LineChartRenderer <: LineRadarRenderer {
 
                 // make sure the values do not interfere with the circles
                 var valOffset: Float64 = dataSet.getCircleRadius() * 1.75
-
                 if (!dataSet.isDrawCirclesEnabled()) {
                     valOffset /= 2.0
                 }
@@ -584,7 +580,6 @@ public class LineChartRenderer <: LineRadarRenderer {
                 this.mXBounds().set(this.mChart, dataSet)
 
                 var positions: Array<Float64> = Array<Float64>()
-
                 if (trans.isSome()) {
                     positions = trans().generateTransformedValuesLine(
                         dataSet,
@@ -606,22 +601,17 @@ public class LineChartRenderer <: LineRadarRenderer {
                 let iconsOffset: MPPointF = MPPointF.getInstance(dataSet.getIconsOffset())
                 iconsOffset.x = Utils.handleDataValues(iconsOffset.x)
                 iconsOffset.y = Utils.handleDataValues(iconsOffset.y)
-
                 for (j in 0..positions.size : 2) {
                     let x: Float64 = positions[j]
                     let y: Float64 = positions[j + 1]
-
                     if (this.mViewPortHandler.isNone() || !this.mViewPortHandler().isInBoundsRight(x)) {
                         break
                     }
-
                     if (this.mViewPortHandler.isNone() || !this.mViewPortHandler().isInBoundsLeft(x) ||
                         !this.mViewPortHandler().isInBoundsY(y)) {
                         continue
                     }
-
                     let entry: EntryOhos = dataSet.getEntryForIndex(j / 2 + this.mXBounds().mins)
-
                     if (dataSet.isDrawValuesEnabled()) {
                         let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
                         if (valueFormatter.isSome()) {

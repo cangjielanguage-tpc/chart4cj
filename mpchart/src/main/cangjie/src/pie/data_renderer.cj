@@ -137,9 +137,9 @@ public abstract class DataRenderer <: Renderer {
         }
         this.mValuePaint.setColor(color)
         Utils.resetContext2DStyle(c, this.mValuePaint)
-
         match (this.mValuePaint.getStyle()) {
             case Style.STROKE =>
+
                 c.beginPath()
                 if (let Some(handle) <- this.mViewPortHandler) {
                     if (isHorizontalFlip) {

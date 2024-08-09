@@ -11,8 +11,8 @@ public class BubbleChartModel <: BarLineChartBaseModel<BubbleData, IBubbleDataSe
 
     public static func build(): BubbleChartModel {
         let model: BubbleChartModel = BubbleChartModel()
-        var mAnimator: ChartAnimator = ChartAnimator(model)
-        model.mRenderer = BubbleChartRenderer(model, mAnimator, model.mViewPortHandler)
+        model.mAnimator = ChartAnimator(model)
+        model.mRenderer = BubbleChartRenderer(model, model.mAnimator(), model.mViewPortHandler)
         model.setHighlighter(ChartHighlighter(model))
 
         return model

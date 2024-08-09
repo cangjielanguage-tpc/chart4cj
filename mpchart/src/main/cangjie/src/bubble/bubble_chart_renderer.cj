@@ -103,7 +103,6 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                         this.mRenderPaint.setColor(Color(color))
 
                         Utils.resetContext2DStyle(c, this.mRenderPaint);
-
                         c.beginPath();
                         c.arc(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, 0.0, 2.0 * Float64.PI,
                             anticlockwise: true);
@@ -138,6 +137,7 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                     }
                     let phaseX: Float64 = max(0.0, min(1.0, this.mAnimator().getPhaseX()));
                     let phaseY: Float64 = this.mAnimator().getPhaseY();
+
                     this.mXBounds?.set(this.mChart, dataSet)
                     let positions: Array<Float64> = this.mChart.getTransformer(dataSet.getAxisDependency())().
                         generateTransformedValuesBubble(dataSet, phaseY, Int64(this.mXBounds().mins), Int64(this.mXBounds().maxs))

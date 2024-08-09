@@ -105,7 +105,10 @@ public abstract class BaseDataSet<E> <: IDataSet<E> where E <: EntryOhos {
      * @param colors
      */
     public func setColorsByList(colors: ArrayList<UInt32>): Unit {
-        this.mColors = colors
+        if (colors.size > 0) {
+            this.mColors = colors
+        }
+
     }
 
     /**
@@ -132,7 +135,9 @@ public abstract class BaseDataSet<E> <: IDataSet<E> where E <: EntryOhos {
      * @param colors
      */
     public func setColorsByArr(colors: Array<UInt32>): Unit {
-        this.mColors.clear()
+        if (colors.size > 0) {
+            this.mColors.clear()
+        }
 
         this.mColors.appendAll(colors)
     }

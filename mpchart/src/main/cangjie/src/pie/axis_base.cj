@@ -788,7 +788,6 @@ public abstract class AxisBase <: ComponentBase {
 
         this.mAxisMinimum = min
         this.mAxisMaximum = max
-
         // actual range
         this.mAxisRange = abs(max - min)
     }

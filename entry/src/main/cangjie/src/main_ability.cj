@@ -7,7 +7,10 @@ internal import ohos.base.AppLog
 internal import ohos.ability.AbilityStage
 internal import ohos.ability.LaunchReason
 internal import cj_res_entry.app
+import ohos.ability.*
 
+public var globalAbilityContext: Option<AbilityContext> = Option<AbilityContext>.None
+//public var globalAbilityContext: ?AbilityContext = None
 class MainAbility <: Ability {
     public init() {
         super()
@@ -16,8 +19,10 @@ class MainAbility <: Ability {
 
     public override func onCreate(want: Want, launchParam: LaunchParam): Unit {
         AppLog.info("MainAbility OnCreated.${want.abilityName}")
+        globalAbilityContext = Option<AbilityContext>.Some(this.context)
         match (launchParam.launchReason) {
             case LaunchReason.START_ABILITY => AppLog.info("START_ABILITY")
+
             case _ => ()
         }
     }
@@ -26,4 +31,9 @@ class MainAbility <: Ability {
         AppLog.info("MainAbility onWindowStageCreate.")
         windowStage.loadContent("MyView")
     }
+}
+//let ABILITY_REGISTER_RESULT = Ability.registerCreator("MainAbility", createAbility)
+
+public func getGlobalAbilityContext(): AbilityContext {
+    globalAbilityContext.getOrThrow()
 }

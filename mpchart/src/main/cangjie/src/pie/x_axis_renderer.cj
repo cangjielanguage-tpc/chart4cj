@@ -336,9 +336,7 @@ public open class XAxisRenderer <: AxisRenderer {
 
             position[0] = l.getLimit()
             position[1] = 0.0
-
             this.mTrans.pointValuesToPixel(position)
-
             this.renderLimitLineLine(c, l, position)
             this.renderLimitLineLabel(c, l, position, 2.0 + l.getYOffset())
             c.restore()
@@ -352,8 +350,7 @@ public open class XAxisRenderer <: AxisRenderer {
      */
     public func renderCustomGridLines(c: CanvasRenderingContext2D) {
         let gridLines = this.mXAxis.getGridLines()
-
-        // && this.renderLinesInner(c, gridLines)
+        this.renderLinesInner(c, gridLines)
     }
 
     /**
@@ -364,10 +361,10 @@ public open class XAxisRenderer <: AxisRenderer {
     public open func renderLimitLines(c: CanvasRenderingContext2D): Unit {
         let limitLines = this.mXAxis.getLimitLines()
 
-        //limitLines && this.renderLinesInner(c, limitLines)
+        this.renderLinesInner(c, limitLines)
     }
 
-    public var mLimitLineSegmentsBuffer: ArrayList<Float64> = ArrayList<Float64>(4)
+    public var mLimitLineSegmentsBuffer: Array<Float64> = Array<Float64>(4, item: 0.0)
 
     public func renderLimitLineLine(c: CanvasRenderingContext2D, limitLine: LimitLine, position: Array<Float64>): Unit {
         this.mLimitLineSegmentsBuffer[0] = position[0]
@@ -384,13 +381,13 @@ public open class XAxisRenderer <: AxisRenderer {
         }
 
         this.mLimitLinePaint.setStyle(Style.STROKE)
-        this.mLimitLinePaint.setColor(Color(UInt32(limitLine.getLineColor())))
+
+        this.mLimitLinePaint.setColor(Color(limitLine.getLineColor()))
         this.mLimitLinePaint.setStrokeWidth(limitLine.getLineWidth())
         let dashPathEffect = limitLine.getDashPathEffect()
         if (dashPathEffect.isSome()) {
             this.mLimitLinePaint.setDashPathEffect(dashPathEffect)
         }
-
         Utils.resetContext2DStyle(c, this.mLimitLinePaint)
         c.beginPath()
         c.moveTo(this.mLimitLineSegmentsBuffer[0], this.mLimitLineSegmentsBuffer[1])
@@ -416,8 +413,24 @@ public open class XAxisRenderer <: AxisRenderer {
                 } + yOffset + labelLineHeight)
                 c.closePath()
 
-            case Style.FILL => ()
-            case Style.FILL_AND_STROKE => ()
+            case Style.FILL =>
+                                c.beginPath()
+                c.fillText(label, position[0] + xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentTop()
+                } else {
+                    0.0
+                } + yOffset + labelLineHeight)
+                c.closePath()
+            case Style.FILL_AND_STROKE =>
+                                c.beginPath()
+                c.fillText(label, position[0] + xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentTop()
+                } else {
+                    0.0
+                } + yOffset + labelLineHeight)
+                c.closePath()
             case _ =>
                 c.beginPath()
                 c.fillText(label, position[0] + xOffset,
@@ -446,9 +459,16 @@ public open class XAxisRenderer <: AxisRenderer {
                 } - yOffset)
                 c.closePath()
 
-            case Style.FILL => ()
+            case Style.FILL =>
+                                c.beginPath()
+                c.fillText(label, position[0] + xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentBottom()
+                } else {
+                    0.0
+                } - yOffset)
+                c.closePath()
             case Style.FILL_AND_STROKE =>
-                ()
 
                 c.beginPath()
                 c.fillText(label, position[0] + xOffset,
@@ -464,8 +484,8 @@ public open class XAxisRenderer <: AxisRenderer {
     private func lablePositionIsLEFT_TOP(limitLine: LimitLine, c: CanvasRenderingContext2D, label: String,
         position: Array<Float64>, yOffset: Float64, paintStyle: Style, xOffset: Float64): Unit {
         this.mLimitLinePaint.setTextAlign(TextAlignStyle.Right)
-        let labelLineHeight = Utils.calcTextHeight(c, this.mLimitLinePaint, label)
 
+        let labelLineHeight = Utils.calcTextHeight(c, this.mLimitLinePaint, label)
         Utils.resetContext2DStyle(c, this.mLimitLinePaint)
         match (paintStyle) {
             case Style.STROKE =>
@@ -478,10 +498,18 @@ public open class XAxisRenderer <: AxisRenderer {
                 } + yOffset + labelLineHeight)
                 c.closePath()
 
-            case Style.FILL => ()
-            case Style.FILL_AND_STROKE =>
-                ()
+            case Style.FILL =>
 
+                c.beginPath()
+                c.fillText(label, position[0] - xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentTop()
+                } else {
+                    0.0
+                } + yOffset + labelLineHeight)
+                c.closePath()
+
+            case Style.FILL_AND_STROKE =>
                 c.beginPath()
                 c.fillText(label, position[0] - xOffset,
                     if (this.mViewPortHandler.isSome()) {
@@ -508,8 +536,24 @@ public open class XAxisRenderer <: AxisRenderer {
                 } - yOffset)
                 c.closePath()
 
-            case Style.FILL => ()
-            case Style.FILL_AND_STROKE => ()
+            case Style.FILL =>
+                                c.beginPath()
+                c.fillText(label, position[0] - xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentBottom()
+                } else {
+                    0.0
+                } - yOffset)
+                c.closePath()
+            case Style.FILL_AND_STROKE =>
+                                c.beginPath()
+                c.fillText(label, position[0] - xOffset,
+                    if (this.mViewPortHandler.isSome()) {
+                    this.mViewPortHandler().contentBottom()
+                } else {
+                    0.0
+                } - yOffset)
+                c.closePath()
             case _ =>
                 c.beginPath()
                 c.fillText(label, position[0] - xOffset,
@@ -532,7 +576,6 @@ public open class XAxisRenderer <: AxisRenderer {
             this.mLimitLinePaint.setColor(limitLine.getTextColor())
             this.mLimitLinePaint.setStrokeWidth(0.5)
             this.mLimitLinePaint.setTextSize(limitLine.getTextSize())
-
             let xOffset = limitLine.getLineWidth() + limitLine.getXOffset()
 
             let labelPosition: LimitLabelPosition = limitLine.getLabelPosition()

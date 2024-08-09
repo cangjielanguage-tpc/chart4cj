@@ -57,7 +57,8 @@ public class LegendRenderer <: Renderer {
         let entryCount: Int64 = dataSet().getEntryCount()
         match (dataSet) {
             case Some(pieDataSet: IPieDataSet) =>
-                for (j in 0..entryCount) {
+                let entryCounts: Int64 = min(clrs.size, entryCount)
+                for (j in 0..entryCounts) {
                     this.computedEntries.append(
                         LegendEntry(
                             pieDataSet.getEntryForIndex(j).getLabel(),
@@ -227,9 +228,6 @@ public class LegendRenderer <: Renderer {
         // 计算标签行高
 
         let labelLineHeight: Float64 = Utils.getLineHeight(this.mLegendLabelPaint, c)
-//        let tm: TextMetrics = c.measureText("Test")
-//
-//        let labelLineHeight: Float64 = 61.0
         // 计算标签行间距，包括额外的垂直空间
         let labelLineSpacing: Float64 = Utils.getLineSpacing(this.mLegendLabelPaint, c)
             + Utils.handleDataValues(this.mLegend().getYEntrySpace())
@@ -268,7 +266,6 @@ public class LegendRenderer <: Renderer {
 
         // 设置原点的X坐标
         var originPosX: Float64 = 0.0
-
         match (horizontalAlignment) {
             case LegendHorizontalAlignment.LEFT =>
                 if (orientation == LegendOrientation.VERTICAL) {
@@ -327,7 +324,6 @@ public class LegendRenderer <: Renderer {
                     }
                 }
         }
-
         match (orientation) { // "HORIZONTAL"
             case LegendOrientation.HORIZONTAL =>
                 let calculatedLineSizes: ArrayList<FSize> = this.mLegend().getCalculatedLineSizes()
@@ -356,7 +352,6 @@ public class LegendRenderer <: Renderer {
                         )
                     }
                 }
-
                 var lineIndex: Int64 = 0
 
                 for (i in 0..entries.size) {
@@ -367,7 +362,6 @@ public class LegendRenderer <: Renderer {
                     } else {
                         Utils.handleDataValues(e.formSize)
                     }
-
                     if (i < calculatedLabelBreakPoints.size && calculatedLabelBreakPoints.get(i)()) {
                         posX = originPosX
                         posY += labelLineHeight + labelLineSpacing
@@ -387,7 +381,6 @@ public class LegendRenderer <: Renderer {
 
                         lineIndex++
                     }
-
                     let isStacked: Bool = e.label.isEmpty() // grouped forms have null labels
 
                     if (drawingForm) {
@@ -403,7 +396,6 @@ public class LegendRenderer <: Renderer {
                             posX += formSize
                         }
                     }
-
                     if (!isStacked) {
                         if (drawingForm) {
                             AppLog.info("3.3 i(${i}) posX(${posX})+=formToTextSpace(${formToTextSpace})")
@@ -413,7 +405,6 @@ public class LegendRenderer <: Renderer {
                                 formToTextSpace
                             }
                         }
-
                         if (direction == LegendDirection.RIGHT_TO_LEFT) {
                             posX -= calculatedLabelSizes.get(i)().width
                         }
@@ -441,7 +432,6 @@ public class LegendRenderer <: Renderer {
                         }
                     }
                 }
-
             case LegendOrientation.VERTICAL =>
                 // contains the stacked legend size in pixels
                 var stack: Float64 = 0.0

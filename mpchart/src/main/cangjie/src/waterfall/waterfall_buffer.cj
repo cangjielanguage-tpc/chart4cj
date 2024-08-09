@@ -18,12 +18,11 @@ public class WaterfallBuffer <: BarBuffer {
     }
 
     public func feed(data: IWaterfallDataSet): Unit {
-        let size: Int64 = data.getEntryCount() * Int64(this.phaseX)
-        let barWidthHalf: Float64 = this.mBarWidth / 2.0
 
+        var size: Int64 = Int64(ceil(Float64(data.getEntryCount()) * this.phaseX))
+        let barWidthHalf: Float64 = this.mBarWidth / 2.0
         for (i in 0..size) {
             let e: ?WaterfallEntry = data.getEntryForIndex(i) as WaterfallEntry
-
             if (e.isNone()) {
                 continue
             }
@@ -56,10 +55,14 @@ public class WaterfallBuffer <: BarBuffer {
     }
 
     protected func addWaterfall(left: Float64, top: Float64, right: Float64, bottom: Float64): Unit {
-        this.buffer.append(left)
-        this.buffer.append(top)
-        this.buffer.append(right)
-        this.buffer.append(bottom)
+        Utils.newSet(this.buffer, this.index, left)
+        this.index ++
+        Utils.newSet(this.buffer, this.index, top)
+        this.index ++
+        Utils.newSet(this.buffer, this.index, right)
+        this.index ++
+        Utils.newSet(this.buffer, this.index, bottom)
+        this.index ++
     }
 
     private func waterfallSortBy(waterfallArray: ArrayList<Float64>) {

@@ -225,12 +225,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                         if (!this.mViewPortHandler().isInBoundsTop(buffer.buffer[j + 1])) {
                             break
                         }
-                        if (!this.mViewPortHandler().isInBoundsX(buffer.buffer[j])) {
-                            continue
-                        }
-                        if (!this.mViewPortHandler().isInBoundsBottom(buffer.buffer[j + 1])) {
-                            continue
-                        }
+
                         let entry: BarEntry = dataSet.getEntryForIndex(j / 4)
                         let val: Float64 = entry.getY()
                         var formattedValue: String = ""

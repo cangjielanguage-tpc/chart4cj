@@ -84,7 +84,6 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         	buffer.setBarWidth(bar.getBarWidth())
         }
         let drawBorder: Bool = dataSet.getBarBorderWidth() > 0.0
-
         buffer.feed(dataSet)
         let tempArray: Array<Float64> = buffer.buffer.toArray()
 
@@ -141,6 +140,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                     }
                 }
             }
+
 
             if (isCustomFill) {
                 let fill: Fill = dataSet.getFill(pos)

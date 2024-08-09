@@ -20,7 +20,7 @@ class LineChartNotAxisConfigPageReadme {
             v.setDrawInside(true)
             v.setYOffset(-10.0)
         }
-
+        this.model.animateXY(2000, 2000);
         this.model.setMaxVisibleValueCount(60)
         let lineData: LineData = this.getLineData()
         lineData.setValueTextSize(10.0)
