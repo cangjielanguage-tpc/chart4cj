@@ -1,0 +1,50 @@
+package ohos_app_cangjie_entry.LEVEL_1.LEVEL_1_BarPage.LEVEL_1_Bar_level
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+@Entry
+@Component
+class L1_level_bar_setGradientColor_page {
+
+    private var title: String = "L1_bar_chart_pag1e"
+    private var model: HorizontalBarChartModel = HorizontalBarChartModel.build()
+    var barntry:BarEntry=BarEntry(20.0,2.0)
+    var barntry1:BarEntry=BarEntry(30.0,3.0)
+    var barntry2:BarEntry=BarEntry(40.0,4.0)
+    private var ListbareEntry:ArrayList<BarEntry>=ArrayList<BarEntry>(barntry,barntry1,barntry2)
+    private var ListbareEntry1:ArrayList<BarEntry>=ArrayList<BarEntry>(barntry,barntry2)
+    private var ListbareEntry2:ArrayList<BarEntry>=ArrayList<BarEntry>(barntry,barntry1)
+//不同的构造方法，缺少icon的构造方法后续待测试
+
+
+    func DataSet(): BarData{
+            var barDataSet:BarDataSet=BarDataSet(ListbareEntry,"大or小")
+            var barDataSet1:BarDataSet=BarDataSet(ListbareEntry,"左or右")
+            var barDataSet2:BarDataSet=BarDataSet(ListbareEntry,"前or后")
+            barDataSet.setGradientColor(0xFFFFB6C1,0xFFFF0F5)
+            barDataSet1.setGradientColor(0xFF4B0082,0xFF00008B)
+            barDataSet2.setGradientColor(0xFFADFF2F,0xFF808080)
+            var arrybarDataSet:Array<IBarDataSet>=Array<IBarDataSet>([barDataSet,barDataSet1,barDataSet2])
+            var barData:BarData=BarData(arrybarDataSet)
+            return barData
+            }
+
+
+    func aboutToAppear(): BarChartModel {
+            let data: BarData = DataSet()
+            this.model.setData(data)
+            return  this.model
+
+        }
+
+
+
+
+    func build() {
+        Column {
+            Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
+            BarChart(model: aboutToAppear())
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+    }
+}

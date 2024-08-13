@@ -1,0 +1,55 @@
+package ohos_app_cangjie_entry.LEVEL_1.LEVEL_1_BarPage.LEVEL_1_Bar_vertical
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+@Entry
+@Component
+class L1_vertical_BarChartModel33 {
+
+    private var title: String = "L1_bar_chart_pag1e"
+    private var model: BarChartModel = BarChartModel.build()
+    var barntry:BarEntry=BarEntry(-20.0,20.0)
+    var barntry1:BarEntry=BarEntry(30.0,-30.0)
+    var barntry2:BarEntry=BarEntry(40.0,40.0)
+    private var ListbareEntry:ArrayList<BarEntry>=ArrayList<BarEntry>(barntry,barntry1,barntry2)
+//X轴相关设置
+
+
+    func DataSet(): BarData{
+            var barDataSet:BarDataSet=BarDataSet(ListbareEntry,"男or女")
+            var arrybarDataSet:Array<IBarDataSet>=Array<IBarDataSet>([barDataSet])
+            var barData:BarData=BarData(arrybarDataSet)
+            return barData
+            }
+
+
+    func aboutToAppear(): BarChartModel {
+            let data: BarData = DataSet()
+            var xAxis = this.model.getXAxis().getOrThrow();   //获取X轴
+            xAxis.setDrawAxisLine(true)             //是否设置轴线。
+            xAxis.setCenterAxisLabels(true)         //设置轴标签是否居中显示。
+            xAxis.setAxisLineColor(Color.RED)    // 设置轴线颜色        猩红
+            xAxis.setAxisLineWidth(2.0)            // 设置轴线宽度
+            xAxis.setGranularityEnabled(true)     // 是否设置轴上的粒度显示
+            xAxis.setGranularity(10.0)             // 放大时设置轴上的最小间隔
+            xAxis.disableAxisLineDashedLine()               //禁用以虚线模式绘制轴线
+            xAxis.setAxisMinimum(-30.0)                            //设置轴线最小值
+            xAxis.setAxisMaximum(50.0)                            //设置轴线的最大值
+            xAxis.setSpaceMin(0.2)                 //设置额外最小间距*
+            xAxis.setSpaceMax(0.4)                       //设置额外最大间距*
+            this.model.setData(data)
+            return  this.model
+
+        }
+
+
+
+
+    func build() {
+        Column {
+            Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
+            BarChart(model: aboutToAppear())
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+    }
+}
