@@ -44,7 +44,7 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
         super(label: label)
         this.mEntries = entries
         if (this.mEntries.isNone()) {
-        	this.mEntries = ArrayList<E>()
+            this.mEntries = ArrayList<E>()
         }
     }
 
@@ -57,18 +57,12 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
             return
         }
         for (entry in this.mEntries()) {
-            if (entry is BubblesEntry) {
-                let t: ?BubblesEntry = entry as BubblesEntry
-                this.myCalcMinMaxBubble(t())
-            } else if (entry is WaterfallEntry) {
-                let t: ?WaterfallEntry = entry as WaterfallEntry
-                this.myCalcMinMaxWaterfall(t())
-            } else if (entry is BarEntry) {
-                let t: ?BarEntry = entry as BarEntry
-                this.myBarCalcMinMax(t())
-            } else {
-                this.myCalcMinMax(entry)
-
+            match (entry) {
+            	case bubblesEntry: BubblesEntry => this.myCalcMinMaxBubble(bubblesEntry)
+            	case waterfallEntry: WaterfallEntry => this.myCalcMinMaxWaterfall(waterfallEntry)
+            	case barEntry: BarEntry => this.myBarCalcMinMax(barEntry)
+            	case candleEntry: CandleEntry => this.myCandleCalcMinMax(candleEntry)
+            	case _ => this.myCalcMinMax(entry)
             }
         }
     }
@@ -90,10 +84,27 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
         }
     }
     public open func myCalcMinMaxWaterfall(e: WaterfallEntry): Unit {
-
     }
 
-    public  func myBarCalcMinMax(e: BarEntry) : Unit {
+    public open func myCandleCalcMinMax(e: CandleEntry): Unit {
+        if (e.getLow() < this.mYMin) {
+            this.mYMin = e.getLow()
+        }
+
+        if (e.getHigh() > this.mYMax) {
+            this.mYMax = e.getHigh()
+        }
+
+        if (e.getX() < this.mXMin) {
+            this.mXMin = e.getX()
+        }
+
+        if (e.getX() > this.mXMax) {
+            this.mXMax = e.getX()
+        }
+    }
+
+    public func myBarCalcMinMax(e: BarEntry): Unit {
         if (!e.getY().isNaN()) {
             if (e.getYVals().size <= 0) {
                 if (e.getY() < this.mYMin) {
@@ -126,8 +137,30 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
         match (e) {
             case Some(t) =>
                 this.calcMinMaxX(t)
-                this.myCalcMinMaxY(t)
+                match (t) {
+                    case v: CandleEntry => this.candleCalcMinMaxY(v)
+                    case _ => this.myCalcMinMaxY(t)
+                }
+
             case None => return
+        }
+    }
+
+    public open func candleCalcMinMaxY(e: CandleEntry): Unit {
+        if (e.getHigh() < this.mYMin) {
+            this.mYMin = e.getHigh()
+        }
+
+        if (e.getHigh() > this.mYMax) {
+            this.mYMax = e.getHigh()
+        }
+
+        if (e.getLow() < this.mYMin) {
+            this.mYMin = e.getLow()
+        }
+
+        if (e.getLow() > this.mYMax) {
+            this.mYMax = e.getLow()
         }
     }
 
@@ -322,7 +355,7 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
 
     public func getEntryForXValue(xValue: Float64, closestToY: Float64, rounding!: Rounding = Rounding.CLOSEST): ?E {
         var myRounding: Rounding = rounding
-        
+
         let index: Int64 = this.getEntryIndex(xValue, closestToY, myRounding)
         if (index > -1) {
             if (let Some(entries) <- this.mEntries) {

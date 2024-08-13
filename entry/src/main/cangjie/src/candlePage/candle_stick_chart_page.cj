@@ -18,7 +18,7 @@ class CandlestickChartPage {
         if (let Some(legend) <- l) {
             legend.setEnabled(true)
         }
-
+        this.model.animateXY(2000, 2000)
         let description: Description = this.model.getDescription()
         description.setEnabled(true)
 
@@ -62,7 +62,6 @@ class CandlestickChartPage {
 
         this.setData(40, 100.0)
         this.model.notifyDataSetChanged()
-        this.model.setVisibleXRangeMaximum(7.0)
         return this.model
     }
 

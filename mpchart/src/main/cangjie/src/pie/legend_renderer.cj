@@ -129,6 +129,32 @@ public class LegendRenderer <: Renderer {
                         )
                     );
                 }
+            case Some(candleDataSet: ICandleDataSet) => if (candleDataSet.getDecreasingColor() != ColorTemplate.
+                COLOR_NONE) {
+                let decreasingColor: UInt32 = candleDataSet.getDecreasingColor()
+                let increasingColor: UInt32 = candleDataSet.getIncreasingColor()
+                this.computedEntries.append(
+                    LegendEntry(
+                        "",
+                        dataSet().getForm(),
+                        dataSet().getFormSize(),
+                        dataSet().getFormLineWidth(),
+                        dataSet().getFormLineDashEffect(),
+                        decreasingColor
+                    )
+                )
+
+                this.computedEntries.append(
+                    LegendEntry(
+                        dataSet().getLabel(),
+                        dataSet().getForm(),
+                        dataSet().getFormSize(),
+                        dataSet().getFormLineWidth(),
+                        dataSet().getFormLineDashEffect(),
+                        increasingColor
+                    )
+                )
+            }
             case _ =>
                 var j: Int64 = 0;
                 while (j < clrs.size && j < entryCount) {

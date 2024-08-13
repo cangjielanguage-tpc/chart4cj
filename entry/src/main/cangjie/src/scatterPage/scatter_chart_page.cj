@@ -25,7 +25,7 @@ class ScatterChartPage {
         this.model.setMaxVisibleValueCount(160);
         this.model.setPinchZoom(false);
         this.model.setDrawGridBackground(false);
-        //  this.model.animateXY(2000, 2000)
+        this.model.animateXY(2000, 2000)
 
         let xAxis: ?XAxis = this.model.getXAxis()
         if (let Some(xAxis) <- xAxis) {
@@ -64,7 +64,7 @@ class ScatterChartPage {
             }
         }
 
-        this.setData(20.0, 100.0)
+        this.setData(20.0, 10.0)
         this.model.notifyDataSetChanged()
         return this.model
     }
@@ -86,7 +86,7 @@ class ScatterChartPage {
 
         let set3 = ScatterDataSet(values3, "DS 3");
         set3.setShapeRenderer(CustomScatterShapeRenderer());
-        set3.setColorByColor(0xFFFF00);
+        set3.setColorByColor(0xFF0000);
 
         set1.setScatterShapeSize(8.0);
         set2.setScatterShapeSize(8.0);

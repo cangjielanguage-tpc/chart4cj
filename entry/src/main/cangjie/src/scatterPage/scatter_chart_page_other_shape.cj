@@ -33,7 +33,7 @@ class ScatterChartPageOtherShape {
             }
         }
 
-        this.setData(20.0, 100.0)
+        this.setData(20.0, 10.0)
         this.model.notifyDataSetChanged()
         return this.model
     }
@@ -55,7 +55,7 @@ class ScatterChartPageOtherShape {
 
         let set3 = ScatterDataSet(values3, "DS 3");
         set3.setScatterShape(ChartShape.CHEVRON_DOWN);
-        set3.setColorByColor(0xFFFF00);
+        set3.setColorByColor(0xFF0000);
 
         set1.setScatterShapeSize(8.0);
         set2.setScatterShapeSize(8.0);
