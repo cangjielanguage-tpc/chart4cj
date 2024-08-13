@@ -22,6 +22,8 @@ chart4cj 是一个包含各种类型图表的图表库，主要用于业务数�
 - 支持气泡图
 - 支持瀑布图
 - 支持线形图(暂不支持曲线及其填充)
+- 支持蜡烛图
+- 支持散点图
 
 ### 软件架构
 
@@ -72,10 +74,12 @@ flowchart TD
 │          │      ├─bar
 │          │      ├─basedata
 │          │      ├─bubble
+│          │      ├─candle
 │          │      ├─charts
 │          │      ├─components
 │          │      ├─line
 │          │      ├─pie
+│          │      ├─scatter
 │          │      ├─utild
 │          │      ├─waterfall
 │          └─resources
@@ -765,6 +769,284 @@ class LineChartNotAxisConfigPageReadme {
 <img src="./doc/assets/liner.png" width="30%" >
 </p>
 
+#### 蜡烛图
+
+```cangjie
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+
+@Entry
+@Component
+class CandlestickChartPage {
+    private var model: CandleStickChartModel = CandleStickChartModel.build()
+
+    func aboutToAppear(): CandleStickChartModel {
+        let l: ?Legend = this.model.getLegend()
+        if (let Some(legend) <- l) {
+            legend.setEnabled(true)
+        }
+
+        let description: Description = this.model.getDescription()
+        description.setEnabled(true)
+
+        this.model.setMaxVisibleValueCount(60)
+        this.model.setDrawGridBackground(true)
+        this.model.setGridBackgroundColor(0xffffff)
+
+        let xAxis: ?XAxis = this.model.getXAxis()
+        if (let Some(x) <- xAxis) {
+            x.setPosition(XAxisPosition.BOTTOM)
+            x.setDrawGridLines(true)
+        }
+
+        let leftAxis: ?YAxis = this.model.getAxisLeft()
+        if (let Some(ly) <- leftAxis) {
+            ly.setLabelCount(7, false)
+            ly.setDrawGridLines(true)
+            ly.setDrawAxisLine(true)
+        }
+
+        let rightAxis: ?YAxis = this.model.getAxisRight()
+        if (let Some(ry) <- rightAxis) {
+            ry.setLabelCount(7, false)
+            ry.setDrawGridLines(true)
+            ry.setDrawAxisLine(true)
+        }
+
+        let start: Int64 = 1
+        let values: ArrayList<BubblesEntry> = ArrayList<BubblesEntry>()
+
+        for (i in start..20) {
+            let val = (Random().nextFloat64() * 41.0)
+
+            if (Random().nextFloat64() * 100.0 < 25.0) {
+                values.append(BubblesEntry(Float64(i), val))
+            } else {
+                values.append(BubblesEntry(Float64(i), val))
+            }
+        }
+
+        this.setData(40, 100.0)
+        this.model.notifyDataSetChanged()
+        return this.model
+    }
+
+    private func setData(count: Int64, range: Float64): Unit {
+        let values = ArrayList<CandleEntry>()
+
+        for (i in 0..count) {
+            let val: Float64 = (Random().nextFloat64() * 40.0) + (range + 3.0)
+
+            let high: Float64 = (Random().nextFloat64() * 9.0) + 8.0
+            let low: Float64 = (Random().nextFloat64() * 9.0) + 8.0
+
+            let open: Float64 = (Random().nextFloat64() * 6.0) + 1.0
+            let close: Float64 = (Random().nextFloat64() * 6.0) + 1.0
+
+            let even: Bool = i % 2 == 0
+
+            values.append(
+                CandleEntry(
+                    Float64(i),
+                    shadowH: val + high,
+                    shadowL: val - low,
+                    open: if (even) {
+                        val + open
+                    } else {
+                        val - open
+                    },
+                    close: if (even) {
+                        val - close
+                    } else {
+                        val + close
+                    },
+                )
+            )
+        }
+
+        let dataSet: CandleDataSet = CandleDataSet(values, "candle data set")
+        dataSet.setDrawIcons(false)
+        dataSet.setAxisDependency(AxisDependency.LEFT)
+        dataSet.setShadowColor(0x808080)
+        dataSet.setShadowWidth(0.7)
+        dataSet.setDecreasingPaintStyle(Style.FILL)
+        dataSet.setDecreasingColor(0xff0000)
+        dataSet.setIncreasingColor(0x008000)
+        dataSet.setIncreasingPaintStyle(Style.STROKE)
+        dataSet.setNeutralColor(0x0000ff)
+
+        let data: CandleData = CandleData([dataSet])
+        data.setValueTextSize(7.0)
+
+        this.model.resetTracking()
+        this.model.setData(data)
+        this.model.invalidate()
+    }
+
+    func build() {
+        Column() {
+            Column() {
+                CandleStickChart(model: aboutToAppear())
+            }
+        }
+    }
+}
+
+```
+
+<p align="left">
+<img src="./doc/assets/candle.png" width="30%" >
+</p>
+
+#### 散点图
+
+```cangjie
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+
+@Entry
+@Component
+class ScatterChartPage {
+    private var model: ScatterChartModel = ScatterChartModel.build()
+
+    func aboutToAppear(): ScatterChartModel {
+        let l: ?Legend = this.model.getLegend()
+        if (let Some(legend) <- l) {
+            legend.setEnabled(true)
+        }
+
+        let description: Description = this.model.getDescription()
+        description.setEnabled(true)
+
+        this.model.setMaxVisibleValueCount(160);
+        this.model.setDrawGridBackground(false);
+        //  this.model.animateXY(2000, 2000)
+
+        let xAxis: ?XAxis = this.model.getXAxis()
+        if (let Some(xAxis) <- xAxis) {
+            xAxis.setPosition(XAxisPosition.BOTTOM);
+            xAxis.setDrawGridLines(false);
+            xAxis.setGranularity(1.0);
+            xAxis.setLabelCount(7, false);
+        }
+
+        let leftAxis: ?YAxis = this.model.getAxisLeft()
+        if (let Some(leftAxis) <- leftAxis) {
+            leftAxis.setLabelCount(8, false);
+            leftAxis.setPosition(YAxisLabelPosition.OUTSIDE_CHART)
+            leftAxis.setSpaceTop(15.0);
+            leftAxis.setAxisMinimum(0.0);
+        }
+
+        let rightAxis: ?YAxis = this.model.getAxisRight()
+        if (let Some(rightAxis) <- rightAxis) {
+            rightAxis.setLabelCount(8, false);
+            rightAxis.setDrawGridLines(false);
+            rightAxis.setSpaceTop(15.0);
+            rightAxis.setAxisMinimum(0.0);
+        }
+
+        let start: Int64 = 1
+        let values: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
+
+        for (i in start..20) {
+            let val = (Random().nextFloat64() * 41.0)
+
+            if (Random().nextFloat64() * 100.0 < 25.0) {
+                values.append(EntryOhos(Float64(i), val))
+            } else {
+                values.append(EntryOhos(Float64(i), val))
+            }
+        }
+
+        this.setData(20.0, 100.0)
+        this.model.notifyDataSetChanged()
+        return this.model
+    }
+
+    private func setData(xRange: Float64, yRange: Float64): Unit {
+        let values1 = this.generateRandomData(xRange, yRange);
+        let values2 = this.generateRandomData(xRange, yRange);
+        let values3 = this.generateRandomData(xRange, yRange);
+
+        let set1 = ScatterDataSet(values1, "DS 1");
+        set1.setScatterShape(ChartShape.SQUARE);
+        set1.setColorByColor(0x008000);
+
+        let set2 = ScatterDataSet(values2, "DS 2");
+        set2.setScatterShape(ChartShape.CIRCLE);
+        set2.setScatterShapeHoleColor(0xD2691E);
+        set2.setScatterShapeHoleRadius(3.0);
+        set2.setColorByColor(0x3333CC);
+
+        let set3 = ScatterDataSet(values3, "DS 3");
+        set3.setShapeRenderer(CustomScatterShapeRenderer());
+        set3.setColorByColor(0xFFFF00);
+
+        set1.setScatterShapeSize(8.0);
+        set2.setScatterShapeSize(8.0);
+        set3.setScatterShapeSize(8.0);
+
+        let dataSets: ArrayList<IScatterDataSet> = ArrayList<IScatterDataSet>()
+        dataSets.append(set1); // add the data sets
+        dataSets.append(set2);
+        dataSets.append(set3);
+
+        let dataResult: ScatterData = ScatterData(dataSets);
+        dataResult.setDrawValues(true);
+        dataResult.setValueTextSize(8.0);
+        dataResult.setHighlightEnabled(true);
+        dataResult.setValueTextSize(10.0);
+
+        this.model.setData(dataResult)
+        dataResult.notifyDataChanged();
+    }
+
+    private func generateRandomData(xRange: Float64, yRange: Float64): ArrayList<EntryOhos> {
+        let values = ArrayList<EntryOhos>();
+
+        for (i in 0..Int64(xRange)) {
+            let x = Float64(i); // Random x value within specified count.
+            let y = Random().nextFloat64() * yRange; // Random y value within specified range.
+            values.append(EntryOhos(x, y));
+        }
+        return values;
+    }
+
+    func build() {
+        Column() {
+            Column() {
+                ScatterChart(model: aboutToAppear())
+            }
+        }
+    }
+}
+
+public class CustomScatterShapeRenderer <: IShapeRenderer {
+    public func renderShape(c: CanvasRenderingContext2D, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler,
+        posX: Float64, posY: Float64, renderPaint: Paint): Unit {
+        let shapeHalf: Float64 = dataSet.getScatterShapeSize() / 2.0;
+
+        renderPaint.setStyle(Style.STROKE);
+        renderPaint.setStrokeWidth(Utils.handleDataValues(1.0));
+        Utils.resetContext2DStyle(c, renderPaint);
+        c.beginPath();
+        c.moveTo(posX - shapeHalf, posY - shapeHalf);
+        c.lineTo(posX + shapeHalf, posY + shapeHalf);
+        c.stroke();
+        c.closePath();
+    }
+}
+```
+
+<p align="left">
+<img src="./doc/assets/scatter.png" width="30%" >
+</p>
+
 ## 约束与限制
 
 在下述版本验证通过：
@@ -776,6 +1058,7 @@ class LineChartNotAxisConfigPageReadme {
     2. 线形图曲线模式暂不支持；
     3. 饼状图、线形图填充效果暂不支持；
     4. 受仓颉 UI 画布组件 CanvasRenderingContext2D 的 measureText(String) 接口的影响，凡涉及到文本的地方都有距离误差；
+    5. 散点图的的散布形状不支持实心圆，仅支持空心圆；
 
 ## 开源协议
 

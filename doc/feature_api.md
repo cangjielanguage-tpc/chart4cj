@@ -2336,7 +2336,7 @@ class PieChartPage {
         this.model.setUsePercentValues(true);  // 使用百分比值
         this.model.getDescription().setEnabled(false)  // 禁用描述信息
         this.model.setExtraOffsets(5.0, 10.0, 5.0, 5.0); // 设置额外偏移量
-        
+
         this.model.setCenterText("mpchart"); // 设置中心文本
         this.model.setCenterTextSize(22.0) // 设置中心文本大小
 
@@ -4593,8 +4593,8 @@ class BubbleChartPage {
 
     /**
      * 初始化数据
-     * @param count  曲线图点的个数
-     * @param range  y轴范围
+     * 参数 count  曲线图点的个数
+     * 参数 range  y轴范围
      */
     private func setData(count: Int64, range: Float64): Unit {
         let values1 = ArrayList<BubblesEntry>()
@@ -6085,3 +6085,855 @@ class LineChartNotAxisConfigPage {
 }
 
 ```
+
+### 1.16 蜡烛图 CandleStickChart
+
+#### 1.16.1 CandleEntry Class API Description
+
+蜡烛图数据结构
+
+```cangjie
+public class CandleEntry<: EntryOhos {
+    
+    /*
+     * 数据结构构造函数
+     * 
+     * 参数 x - x 值
+     * 参数 shadowH - 最高价
+     * 参数 shadowL - 最低价
+     * 参数 open - 开盘价
+     * 参数 close - 收盘价
+     * 参数 icon - 图标，可选参数，默认 None
+     * 参数 data - 额外参数，可选参数，默认值 None
+     */
+    public init(x: Float64, shadowH!: Float64 = 0.0, shadowL!: Float64 = 0.0, open!: Float64 = 0.0,
+    close!: Float64 = 0.0, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: Any = Option<Any>.None)
+    
+    /*
+     * 创建一个蜡烛图数据结构副本
+     * 
+     * 返回值 BubblesEntry - 蜡烛图数据结构
+     */
+    public func copy (): CandleEntry
+    
+    /*
+     * 设置最高价
+     * 
+     * 参数 shadowH - 最高价
+     * 返回值 Unit
+     */
+    public func setHigh(shadowH: Float64): Unit
+
+    /*
+     * 设置最低价
+     * 
+     * 参数 shadowL - 最低价
+     * 返回值 Unit
+     */
+    public func setLow(shadowL: Float64): Unit
+
+    /*
+     * 设置收盘价
+     * 
+     * 参数 close - 收盘价
+     * 返回值 Unit
+     */
+    public func setClose(close: Float64): Unit
+
+    /*
+     * 设置开盘价
+     * 
+     * 参数 open - 开盘价
+     * 返回值 Unit
+     */
+    public func setOpen(open: Float64): Unit
+}
+```
+
+#### 1.16.2 ICandleDataSet Interface API Description
+
+蜡烛图数据对象
+
+```cangjie
+public interface ICandleDataSet <: ILineScatterCandleRadarDataSet<CandleEntry> {
+
+    /**
+     * 获取每个蜡烛左右两侧留出的空间
+     *
+     * 返回值 Float64 - 两侧空间
+     */
+    func getBarSpace(): Float64
+
+    /**
+     * 获取蜡烛是否显示，默认 true
+     *
+     * 返回值 Bool - true/false
+     */
+    func getShowCandleBar(): Bool
+
+    /**
+     * 获取蜡烛影线宽度
+     *
+     * 返回值 Float64 - 宽度
+     */
+    func getShadowWidth(): Float64
+
+    /**
+     * 获取蜡烛影线颜色
+     *
+     * 返回值 UInt32 - 颜色
+     */
+    func getShadowColor(): UInt32
+
+    /**
+     * 返回开盘价 = 收盘价时蜡烛颜色
+     * 
+     * 返回值 UInt32 - 颜色
+     */
+    func getNeutralColor(): UInt32
+
+    /**
+     * 返回开盘价 < 收盘价时蜡烛颜色
+     *
+     * 返回值 UInt32 - 颜色
+     */
+    func getIncreasingColor(): UInt32
+
+    /**
+     * 返回开盘价 > 收盘价时蜡烛颜色
+     *
+     * 返回值 UInt32 - 颜色
+     */
+    func getDecreasingColor(): UInt32
+
+    /**
+     * 返回开盘价 < 收盘价时绘图样式
+     *
+     * 返回值 Style - 样式
+     */
+    func getIncreasingPaintStyle(): Style
+
+    /**
+     * 返回开盘价 > 收盘价时绘图样式
+     *
+     * 返回值 Style - 样式
+     */
+    func getDecreasingPaintStyle(): Style
+
+    /**
+     * 判断上下影线和蜡烛的颜色一样吗
+     * 
+     * 返回值 Bool - true/false
+     */
+    func getShadowColorSameAsCandle(): Bool
+}
+```
+
+
+#### 1.16.3 CandleDataSet Class API Description
+
+蜡烛图数据对象
+
+```cangjie
+public class CandleDataSet<: LineScatterCandleRadarDataSet<CandleEntry> & ICandleDataSet {
+    
+    /*
+     * 蜡烛图数据对象构造 
+     * 
+     * 参数 yVals - 蜡烛图数据结构集合
+     * 参数 label - 标签
+     */
+    public init (yVals: ArrayList<CandleEntry>, label: String)
+    
+    /*
+     * 创建蜡烛图数据对象副本
+     * 
+     * 返回值 DataSet<CandleEntry> - 蜡烛图数据结构集合
+     */
+    public func copy (): DataSet<CandleEntry>
+       
+    /*
+     * 设置每个蜡烛左右两侧留出的空间，默认0.1，最大 0.45，最小 0.0
+     * 设置越大，蜡烛越细
+     *
+     * 参数 space - 空间
+     * 返回值 Unit 
+     */
+    public func setBarSpace (space: Float64): Unit
+       
+    /*
+     * 设置蜡烛-影线的宽度(以像素为单位),默认值为 0.5
+     * 
+     * 参数 width - 宽度
+     * 返回值 Unit
+     */
+    public func setShadowWidth (width: Float64): Unit
+    
+    /*
+     * 设置蜡烛条是否显示，默认 true
+     * 
+     * 参数 showCandleBar - true/false
+     * 返回值 Unit
+     */
+    public func setShowCandleBar (showCandleBar: Bool): Unit
+        
+    /*
+     * 设置开盘价 = 收盘价时，数据对象集合使用的唯一颜色,默认 0x00112234
+     * 
+     * 参数 color - 颜色
+     * 返回值 Unit
+     */
+    public func setNeutralColor (color: UInt32): Unit
+      
+    /*
+     * 设置开盘价 < 收盘价时，数据对象集合使用的唯一颜色,默认 0x00112234
+     * 
+     * 参数 color - 颜色
+     * 返回值 Unit
+     */
+    public func setIncreasingColor (color: UInt32): Unit
+    
+    /*
+     * 设置开盘价 > 收盘价时，数据对象集合使用的唯一颜色,默认 0x00112234
+     * 
+     * 参数 color - 颜色
+     * 返回值 Unit
+     */
+    public func setDecreasingColor (color: UInt32): Unit
+    
+    /*
+     * 设置开盘价 < 收盘价 时绘图样式，默认 STROKE
+     * 
+     * 参数 paintStyle - 绘图样式
+     * 返回值 Unit
+     */
+    public func setIncreasingPaintStyle (paintStyle: Style): Unit
+   
+    /*
+     * 设置开盘价 > 收盘价 时绘图样式，默认 STROKE
+     * 
+     * 参数 decreasingPaintStyle - 时绘图样式
+     * 返回值 Unit
+     */
+    public func setDecreasingPaintStyle (decreasingPaintStyle: Style): Unit
+   
+    /*
+     * 设置影线的颜色,默认 0x00112234
+     * 
+     * 参数 shadowColor  -颜色 
+     * 返回值 Unit
+     */
+    public func setShadowColor (shadowColor: UInt32): Unit
+       
+    /*
+     * 将影线设置为何蜡烛一样的颜色，默认 false
+     * 
+     * 参数 shadowColorSameAsCandle - true/false
+     * 返回值 Unit
+     */
+    public func setShadowColorSameAsCandle (shadowColorSameAsCandle: Bool): Unit
+}
+```
+
+#### 1.16.4  CandleData Class API Description
+
+蜡烛图数据包
+
+```cangjie
+public class CandleData<: BarLineScatterCandleBubbleData<ICandleDataSet,CandleEntry> {
+    
+    /*
+     * 蜡烛图数据包构造函数
+     * 
+     */
+    public init ()
+    
+    /*
+     * 蜡烛图数据包构造函数
+     * 
+     * 参数 dataSets - 蜡烛图数据对象包集合
+     */
+    public init (dataSets: Array<ICandleDataSet>)
+    
+    /*
+     * 蜡烛图数据包构造函数
+     * 
+     * 参数 dataSets - 蜡烛图数据对象包集合
+     */
+    public init (dataSets: ArrayList<ICandleDataSet>)
+}
+```
+
+#### 1.16.5 CandleStickChartModel Class API Description
+
+蜡烛图配置构建类
+
+```cangjie
+public class CandleStickChartModel<: BarLineChartBaseModel<CandleData,ICandleDataSet,CandleEntry>&CandleDataProvider {
+    
+    /*
+     * 蜡烛图配置构建类 
+     * 
+     * 返回值 CandleStickChartModel - 蜡烛图配置构建类 
+     */
+    public static func build (): CandleStickChartModel
+    
+    /*
+     * 重绘图表。
+     * 
+     * 返回值 Unit
+     */
+    public func invalidate (): Unit
+    
+    /*
+     * 设置图表绘制的上下文。
+     * 
+     * 参数 context2d - 图表绘制的上下文。
+     * 返回值 Unit 
+     */
+    public func setContext2D (context2d: CanvasRenderingContext2D): Unit
+    
+    /*
+     * 更新图表正确Size。
+     * 
+     * 参数 newWidth - 图表当前显示的宽。
+     * 参数 newHeight - 图表当前显示的高。
+     * 参数 oldWidth - 图表改变Size前显示的宽。
+     * 参数 oldHeight - 图表改变Size前显示的高。
+     * 返回值 Unit 
+     */
+    public func onChartSizeChanged (newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64): Unit
+    
+    /*
+     * 图表绘制方法。
+     * 
+     * 参数 c - 图表绘制的上下文。
+     * 返回值 Unit 
+     */
+    public func onDraw (c: CanvasRenderingContext2D): Unit
+    
+    /*
+     * 获取蜡烛图数据包
+     * 
+     * 返回值 ?CandleData - 蜡烛图数据包
+     */
+    public func getCandleData (): ?CandleData
+}
+```
+
+#### 1.16.6 CandleStickChart Component
+
+蜡烛图组件
+
+```cangjie
+@Component
+public class CandleStickChart {}
+```
+
+#### 1.16.7 蜡烛图父类
+
+##### 1.16.7.1 ILineScatterCandleRadarDataSet Interface API Description
+
+```cangjie
+public interface ILineScatterCandleRadarDataSet<E> <: IBarLineScatterCandleBubbleDataSet<E> where E <: EntryOhos {}
+```
+##### 1.16.7.2 CandleDataProvider Interface API Description
+
+```cangjie
+public interface CandleDataProvider <: BarLineScatterCandleBubbleDataProvider<CandleData, ICandleDataSet, CandleEntry> {
+    /*
+     * 获取蜡烛图数据包
+     * 
+     * 返回值 ?CandleData - 蜡烛图数据包
+     */
+    func getCandleData(): ?CandleData
+}
+```
+
+#### 1.16.8 蜡烛图示例
+
+```cangjie
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+
+@Entry
+@Component
+class CandlestickChartPage {
+    private var model: CandleStickChartModel = CandleStickChartModel.build()
+
+    func aboutToAppear(): CandleStickChartModel {
+        let l: ?Legend = this.model.getLegend()
+        if (let Some(legend) <- l) {
+            legend.setEnabled(true)
+        }
+
+        let description: Description = this.model.getDescription()
+        description.setEnabled(true)
+
+        this.model.setMaxVisibleValueCount(60)
+        this.model.setDrawGridBackground(true)
+        this.model.setGridBackgroundColor(0xffffff)
+
+        let xAxis: ?XAxis = this.model.getXAxis()
+        if (let Some(x) <- xAxis) {
+            x.setPosition(XAxisPosition.BOTTOM)
+            x.setDrawGridLines(true)
+        }
+
+        let leftAxis: ?YAxis = this.model.getAxisLeft()
+        if (let Some(ly) <- leftAxis) {
+            ly.setLabelCount(7, false)
+            ly.setDrawGridLines(true)
+            ly.setDrawAxisLine(true)
+        }
+
+        let rightAxis: ?YAxis = this.model.getAxisRight()
+        if (let Some(ry) <- rightAxis) {
+            ry.setLabelCount(7, false)
+            ry.setDrawGridLines(true)
+            ry.setDrawAxisLine(true)
+        }
+
+        let start: Int64 = 1
+        let values: ArrayList<BubblesEntry> = ArrayList<BubblesEntry>()
+
+        for (i in start..20) {
+            let val = (Random().nextFloat64() * 41.0)
+
+            if (Random().nextFloat64() * 100.0 < 25.0) {
+                values.append(BubblesEntry(Float64(i), val))
+            } else {
+                values.append(BubblesEntry(Float64(i), val))
+            }
+        }
+
+        this.setData(40, 100.0)
+        this.model.notifyDataSetChanged()
+        return this.model
+    }
+
+    private func setData(count: Int64, range: Float64): Unit {
+        let values = ArrayList<CandleEntry>()
+
+        for (i in 0..count) {
+            let val: Float64 = (Random().nextFloat64() * 40.0) + (range + 3.0)
+
+            let high: Float64 = (Random().nextFloat64() * 9.0) + 8.0
+            let low: Float64 = (Random().nextFloat64() * 9.0) + 8.0
+
+            let open: Float64 = (Random().nextFloat64() * 6.0) + 1.0
+            let close: Float64 = (Random().nextFloat64() * 6.0) + 1.0
+
+            let even: Bool = i % 2 == 0
+
+            values.append(
+                CandleEntry(
+                    Float64(i),
+                    shadowH: val + high,
+                    shadowL: val - low,
+                    open: if (even) {
+                        val + open
+                    } else {
+                        val - open
+                    },
+                    close: if (even) {
+                        val - close
+                    } else {
+                        val + close
+                    },
+                )
+            )
+        }
+
+        let dataSet: CandleDataSet = CandleDataSet(values, "candle data set")
+        dataSet.setDrawIcons(false)
+        dataSet.setAxisDependency(AxisDependency.LEFT)
+        dataSet.setShadowColor(0x808080)
+        dataSet.setShadowWidth(0.7)
+        dataSet.setDecreasingPaintStyle(Style.FILL)
+        dataSet.setDecreasingColor(0xff0000)
+        dataSet.setIncreasingColor(0x008000)
+        dataSet.setIncreasingPaintStyle(Style.STROKE)
+        dataSet.setNeutralColor(0x0000ff)
+
+        let data: CandleData = CandleData([dataSet])
+        data.setValueTextSize(7.0)
+
+        this.model.resetTracking()
+        this.model.setData(data)
+        this.model.invalidate()
+    }
+
+    func build() {
+        Column() {
+            Column() {
+                CandleStickChart(model: aboutToAppear())
+            }
+        }
+    }
+}
+
+```
+
+### 1.17 散点图 ScatterChart
+
+#### 1.17.1 IScatterDataSet Interface API Description
+
+散点图数据集
+
+```cangjie
+public interface IScatterDataSet <: ILineScatterCandleRadarDataSet<EntryOhos> {
+
+    /**
+     * 返回当前设置的散点图形状大小
+     *
+     * 返回值 Float64 - 散点图形状大小
+     */
+    func getScatterShapeSize(): Float64
+
+    /**
+     * 返回形状是圆时孔的半径
+     *
+     * 返回值 Float64 - 孔的半径
+     */
+    func getScatterShapeHoleRadius(): Float64
+
+    /**
+     * 返回形状是圆时孔的颜色
+     *
+     * 返回值 UInt32 - 颜色
+     */
+    func getScatterShapeHoleColor(): UInt32
+
+    /**
+     * 返回渲染数据集的渲染器
+     *
+     * 返回值 IShapeRenderer - 渲染器
+     */
+    func getShapeRenderer(): IShapeRenderer
+}
+```
+
+#### 1.17.2 ScatterDataSet Class API Description
+
+散点图数据集
+
+```cangjie
+public class ScatterDataSet<: LineScatterCandleRadarDataSet<EntryOhos>&IScatterDataSet {
+    
+    /*
+     * 构造 
+     * 
+     * 参数 yVals - 散点图数据结构集合
+     * 参数 label - 标签
+     */
+    public init (yVals: ArrayList<EntryOhos>, label: String)
+        
+    /*
+     * 设置散点图形状大小，默认 15.0
+     * 
+     * 参数 size - 形状大小
+     */
+    public func setScatterShapeSize (size: Float64)
+    
+   
+    /*
+     * 设置散点的散射形状
+     * 
+     * 参数 shape - 形状
+     * 返回值 Unit
+     */
+    public func setScatterShape (shape: ChartShape): Unit
+    
+    /*
+     * 设置负责绘制此 DataSet的新 IShapeRenderer。
+     * 这也可用于设置自定义 IShapeRenderer 而不是默认IShapeRenderer。
+     * 
+     * 参数 shapeRenderer - IShapeRenderer 渲染器
+     * 返回值 Unit
+     */
+    public func setShapeRenderer (shapeRenderer: IShapeRenderer): Unit
+        
+    /*
+     * 设置孔的半径(适用于方形、圆形和三角形)，默认 0.0
+     * 将此设置为 < 0 以删除孔
+     * 
+     * 参数 holeRadius - 孔的半径
+     * 返回值 Unit
+     */
+    public func setScatterShapeHoleRadius (holeRadius: Float64): Unit
+       
+    /*
+     * 设置孔的颜色，默认 0x00112233
+     * 
+     * 参数 holeColor - 孔的颜色
+     * 返回值 Unit
+     */
+    
+    public func setScatterShapeHoleColor (holeColor: UInt32): Unit
+
+}
+```
+
+#### 1.17.3 ScatterData Class API Description
+
+散点图数据包
+
+```cangjie
+public class ScatterData<: BarLineScatterCandleBubbleData<IScatterDataSet,EntryOhos> {
+    
+    /*
+     * 散点图数据构造 
+     * 
+     * 参数 dataSets - 散点图数据集合
+     */
+    public init (dataSets: ArrayList<IScatterDataSet>)
+}
+```
+
+#### 1.17.4 ScatterChartModel Class API Description
+
+散点图构造类
+
+```cangjie
+public class ScatterChartModel<: BarLineChartBaseModel<ScatterData,IScatterDataSet,EntryOhos>&ScatterDataProvider {
+    
+    /*
+     * 散点图构造类
+     * 
+     * 返回值 ScatterChartModel - 散点图构造类
+     */
+    public static func build (): ScatterChartModel
+    
+    /*
+     * 重绘图表。
+     * 
+     * 返回值 Unit
+     */
+    public func invalidate (): Unit
+    
+    /*
+     * 设置图表绘制的上下文。
+     * 
+     * 参数 context2d - 图表绘制的上下文。
+     * 返回值 Unit 
+     */
+    public func setContext2D (context2d: CanvasRenderingContext2D): Unit
+    
+    /*
+     * 更新图表正确Size。
+     * 
+     * 参数 newWidth - 图表当前显示的宽。
+     * 参数 newHeight - 图表当前显示的高。
+     * 参数 oldWidth - 图表改变Size前显示的宽。
+     * 参数 oldHeight - 图表改变Size前显示的高。
+     * 返回值 Unit 
+     */
+    public func onChartSizeChanged (newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64): Unit
+    
+    /*
+     * 图表绘制方法。
+     * 
+     * 参数 c - 图表绘制的上下文。
+     * 返回值 Unit 
+     */
+    public func onDraw (c: CanvasRenderingContext2D): Unit
+    
+    /*
+     * 获取散点图数据包
+     * 
+     * 返回值 ?ScatterData - 散点图数据包
+     */
+    public func getScatterData (): ?ScatterData
+}
+```
+
+#### 1.17.5 ScatterChart Component
+
+散点图组件
+
+```cangjie
+@Component
+public class ScatterChart {}
+```
+
+#### 1.17.6 ChartShape Enum
+
+散点图预定义散布形状
+
+```cangjie
+public enum ChartShape {
+    | SQUARE  //正方形
+    | CIRCLE  //圆
+    | TRIANGLE  //三角形
+    | CROSS   //十字
+    | X    //x
+    | CHEVRON_UP   //山峰
+    | CHEVRON_DOWN //低洼
+}
+```
+#### 1.17.7 IShapeRenderer Interface 
+
+散点图形状渲染接口
+
+```cangjie
+public interface IShapeRenderer {
+    /**
+     * 散点图数据集渲染器
+     *
+     * 参数 c -  CanvasRenderingContext2D
+     * 参数 dataSet - 散点图数据集
+     * 参数 viewPortHandler -  视图状态信息
+     * 参数 posX - 绘制散点图形状的 X 位置
+     * 参数 posY - 绘制散点图形状的 Y 位置
+     * 参数 renderPaint - 绘图对象
+     */
+    func renderShape(context2d: CanvasRenderingContext2D, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler,
+        posX: Float64, posY: Float64, renderPaint: Paint): Unit
+}
+```
+#### 1.17.8 散点图示例
+
+```cangjie
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+
+@Entry
+@Component
+class ScatterChartPage {
+    private var model: ScatterChartModel = ScatterChartModel.build()
+
+    func aboutToAppear(): ScatterChartModel {
+        let l: ?Legend = this.model.getLegend()
+        if (let Some(legend) <- l) {
+            legend.setEnabled(true)
+        }
+
+        let description: Description = this.model.getDescription()
+        description.setEnabled(true)
+
+        this.model.setMaxVisibleValueCount(160);
+        this.model.setDrawGridBackground(false);
+        //  this.model.animateXY(2000, 2000)
+
+        let xAxis: ?XAxis = this.model.getXAxis()
+        if (let Some(xAxis) <- xAxis) {
+            xAxis.setPosition(XAxisPosition.BOTTOM);
+            xAxis.setDrawGridLines(false);
+            xAxis.setGranularity(1.0);
+            xAxis.setLabelCount(7, false);
+        }
+
+        let leftAxis: ?YAxis = this.model.getAxisLeft()
+        if (let Some(leftAxis) <- leftAxis) {
+            leftAxis.setLabelCount(8, false);
+            leftAxis.setPosition(YAxisLabelPosition.OUTSIDE_CHART)
+            leftAxis.setSpaceTop(15.0);
+            leftAxis.setAxisMinimum(0.0);
+        }
+
+        let rightAxis: ?YAxis = this.model.getAxisRight()
+        if (let Some(rightAxis) <- rightAxis) {
+            rightAxis.setLabelCount(8, false);
+            rightAxis.setDrawGridLines(false);
+            rightAxis.setSpaceTop(15.0);
+            rightAxis.setAxisMinimum(0.0);
+        }
+
+        let start: Int64 = 1
+        let values: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
+
+        for (i in start..20) {
+            let val = (Random().nextFloat64() * 41.0)
+
+            if (Random().nextFloat64() * 100.0 < 25.0) {
+                values.append(EntryOhos(Float64(i), val))
+            } else {
+                values.append(EntryOhos(Float64(i), val))
+            }
+        }
+
+        this.setData(20.0, 100.0)
+        this.model.notifyDataSetChanged()
+        return this.model
+    }
+
+    private func setData(xRange: Float64, yRange: Float64): Unit {
+        let values1 = this.generateRandomData(xRange, yRange);
+        let values2 = this.generateRandomData(xRange, yRange);
+        let values3 = this.generateRandomData(xRange, yRange);
+
+        let set1 = ScatterDataSet(values1, "DS 1");
+        set1.setScatterShape(ChartShape.SQUARE);
+        set1.setColorByColor(0x008000);
+
+        let set2 = ScatterDataSet(values2, "DS 2");
+        set2.setScatterShape(ChartShape.CIRCLE);
+        set2.setScatterShapeHoleColor(0xD2691E);
+        set2.setScatterShapeHoleRadius(3.0);
+        set2.setColorByColor(0x3333CC);
+
+        let set3 = ScatterDataSet(values3, "DS 3");
+        set3.setShapeRenderer(CustomScatterShapeRenderer());
+        set3.setColorByColor(0xFFFF00);
+
+        set1.setScatterShapeSize(8.0);
+        set2.setScatterShapeSize(8.0);
+        set3.setScatterShapeSize(8.0);
+
+        let dataSets: ArrayList<IScatterDataSet> = ArrayList<IScatterDataSet>()
+        dataSets.append(set1); // add the data sets
+        dataSets.append(set2);
+        dataSets.append(set3);
+
+        let dataResult: ScatterData = ScatterData(dataSets);
+        dataResult.setDrawValues(true);
+        dataResult.setValueTextSize(8.0);
+        dataResult.setHighlightEnabled(true);
+        dataResult.setValueTextSize(10.0);
+
+        this.model.setData(dataResult)
+        dataResult.notifyDataChanged();
+    }
+
+    private func generateRandomData(xRange: Float64, yRange: Float64): ArrayList<EntryOhos> {
+        let values = ArrayList<EntryOhos>();
+
+        for (i in 0..Int64(xRange)) {
+            let x = Float64(i); // Random x value within specified count.
+            let y = Random().nextFloat64() * yRange; // Random y value within specified range.
+            values.append(EntryOhos(x, y));
+        }
+        return values;
+    }
+
+    func build() {
+        Column() {
+            Column() {
+                ScatterChart(model: aboutToAppear())
+            }
+        }
+    }
+}
+
+public class CustomScatterShapeRenderer <: IShapeRenderer {
+    public func renderShape(c: CanvasRenderingContext2D, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler,
+        posX: Float64, posY: Float64, renderPaint: Paint): Unit {
+        let shapeHalf: Float64 = dataSet.getScatterShapeSize() / 2.0;
+
+        renderPaint.setStyle(Style.STROKE);
+        renderPaint.setStrokeWidth(Utils.handleDataValues(1.0));
+        Utils.resetContext2DStyle(c, renderPaint);
+        c.beginPath();
+        c.moveTo(posX - shapeHalf, posY - shapeHalf);
+        c.lineTo(posX + shapeHalf, posY + shapeHalf);
+        c.stroke();
+        c.closePath();
+    }
+}
+```
+
