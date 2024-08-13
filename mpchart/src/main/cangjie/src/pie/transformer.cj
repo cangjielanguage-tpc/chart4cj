@@ -60,7 +60,34 @@ public open class Transformer {
         }
     }
 
-    protected var valuePointsForGenerateTransformedValuesScatter: Array<Float64> = Array<Float64>(1, item: 0.0)
+    protected var valuePointsForGenerateTransformedValuesScatter: ArrayList<Float64> = ArrayList<Float64>(1)
+
+     public func generateTransformedValuesScatter(data: IScatterDataSet, phaseX: Float64, phaseY: Float64, from: Int64, to: Int64): Array<Float64> {
+
+         let count: Int64  = Int64(floor((Float64 (to - from) * phaseX + 1.0) * 2.0))
+
+         if (this.valuePointsForGenerateTransformedValuesScatter.size != count) {
+            this.valuePointsForGenerateTransformedValuesScatter = ArrayList<Float64>(count)
+         }
+         let valuePoints: ArrayList<Float64> = this.valuePointsForGenerateTransformedValuesScatter
+
+         for (j in 0..count:2) {
+
+            let e: ?EntryOhos = data.getEntryForIndex(j / 2 + from)
+
+            if (let Some(e) <- e) {
+                Utils.newSet(valuePoints, j, e.getX())
+                Utils.newSet(valuePoints, j + 1, e.getY() * phaseY)
+            } else {
+                Utils.newSet(valuePoints, j, 0.0)
+                Utils.newSet(valuePoints, j + 1, 0.0)
+            }
+         }
+
+         var tmpArray = valuePoints.toArray()
+         this.getValueToPixelMatrix().mapPoints(tmpArray);
+         return tmpArray
+     }
 
     public var mMBuffer1: Matrix = Matrix()
     public func getValueToPixelMatrix(): Matrix {
