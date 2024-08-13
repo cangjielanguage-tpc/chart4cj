@@ -53,7 +53,7 @@ class BubbleChartPageReadme {
         if (let Some(legend) <- l) {
             legend.setEnabled(true)
         }
-        this.model.animateXY(2000, 2000);
+
         let description: Description = this.model.getDescription()
         description.setEnabled(false)
 
