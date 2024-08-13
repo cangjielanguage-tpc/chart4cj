@@ -85,36 +85,6 @@ public class CandleDataSet <: LineScatterCandleRadarDataSet<CandleEntry> & ICand
         candleDataSet.mDecreasingColor = this.mDecreasingColor
         candleDataSet.mShadowColor = this.mShadowColor
     }
-    //todo
-    public func myCalcMinMax(e: CandleEntry): Unit {
-        if (e.getLow() < this.mYMin) {
-            this.mYMin = e.getLow()
-        }
-
-        if (e.getHigh() > this.mYMax) {
-            this.mYMax = e.getHigh()
-        }
-
-        this.calcMinMaxX(e)
-    }
-
-    protected func myCalcMinMaxY(e: CandleEntry): Unit {
-        if (e.getHigh() < this.mYMin) {
-            this.mYMin = e.getHigh()
-        }
-
-        if (e.getHigh() > this.mYMax) {
-            this.mYMax = e.getHigh()
-        }
-
-        if (e.getLow() < this.mYMin) {
-            this.mYMin = e.getLow()
-        }
-
-        if (e.getLow() > this.mYMax) {
-            this.mYMax = e.getLow()
-        }
-    }
 
     /**
      * Sets the space that is left out on the left and right side of each
@@ -170,6 +140,8 @@ public class CandleDataSet <: LineScatterCandleRadarDataSet<CandleEntry> & ICand
      * colors list functionality, because It's wrong to copy paste setColor,
      * addColor, ... resetColors for each time when we want to add a coloring
      * options for one of objects
+     *
+     *
      */
 
     /** BELOW THIS COLOR HANDLING */

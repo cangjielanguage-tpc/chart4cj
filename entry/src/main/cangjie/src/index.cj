@@ -2,6 +2,7 @@
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
  */
 package ohos_app_cangjie_entry
+
 internal import ohos.base.LengthProp
 internal import ohos.component.Column
 internal import ohos.component.Scroll
@@ -42,7 +43,7 @@ import ohos.component.*
 import ohos.state_manage.*
 
 class MyTestRunner <: TestRunner {
-    private let driver:Driver = Driver.create()
+    private let driver: Driver = Driver.create()
     public func onRun() {
         UITest.setup()
     }
@@ -51,67 +52,70 @@ class MyTestRunner <: TestRunner {
         AppLog.info("CJTestRunner onPrepare")
     }
 
-    public func chart_click(name:String) {
+    public func chart_click(name: String) {
         AppLog.info("CJTestRunner onPrepare")
-//        let driver:Driver = Driver.create()
+        //        let driver:Driver = Driver.create()
         let button1: UIComponent = driver.findComponent(On().onType("柱状图"))
         button1.click()
         for (i in getnamebar()) {
             let button2: UIComponent = driver.findComponent(On().onType(i))
             button2.click()
-            driver.screenCap("/data/storage/el2/base/cache/"+i+".png")
+            driver.screenCap("/data/storage/el2/base/cache/" + i + ".png")
             let button3: UIComponent = driver.findComponent(On().onType("回退"))
             button3.click()
         }
-
     }
 }
+
 @Entry
 @Component
 class MyView {
     let scroller = Scroller()
     func build() {
-            Scroll(this.scroller){
-                Column {
-                    Button("柱状图")
-                        .height(40)
-                        .margin(top: 5, bottom: 5)
-                        .fontSize(16)
-                        .shape(ShapeType.Capsule)
-                        .onClick {Router.push(url: "index_bar")}
+        Scroll(this.scroller) {
+            Column {
+                Button("柱状图").height(40).margin(top: 5, bottom: 5).fontSize(16).shape(ShapeType.Capsule).onClick {
+                    Router.push(url: "index_bar")
+                }
 
+                Button("气泡图").height(40).margin(top: 5, bottom: 5).fontSize(16).shape(ShapeType.Capsule).onClick {
+                    Router.push(url: "index_Bubble")
+                }
 
-                    Button("气泡图")
-                        .height(40)
-                        .margin(top: 5, bottom: 5)
-                        .fontSize(16)
-                        .shape(ShapeType.Capsule)
-                        .onClick {Router.push(url: "index_Bubble")}
+                Button("线形图").height(40).margin(top: 5, bottom: 5).fontSize(16).shape(ShapeType.Capsule).onClick {
+                    Router.push(url: "index_Line")
+                }
 
+                Button("饼状图").height(40).margin(top: 5, bottom: 5).fontSize(16).shape(ShapeType.Capsule).onClick {
+                    Router.push(url: "index_pie")
+                }
 
-                    Button("线形图")
-                        .height(40)
-                        .margin(top: 5, bottom: 5)
-                        .fontSize(16)
-                        .shape(ShapeType.Capsule)
-                        .onClick {Router.push(url: "index_Line")}
+                Button("瀑布图").height(40).margin(top: 5, bottom: 5).fontSize(16).shape(ShapeType.Capsule).onClick {
+                    Router.push(url: "index_water")
+                }
 
+                Button("CandlestickChartPage").onClick {
+                    Router.push(url: "CandlestickChartPage")
+                }
+                Button("BubbleChartPage").onClick {
+                    Router.push(url: "BubbleChartPage")
+                }
+                Button("LineChartNotAxisConfigPage").onClick {
+                    Router.push(url: "LineChartNotAxisConfigPage")
+                }
 
-                    Button("饼状图")
-                        .height(40)
-                        .margin(top: 5, bottom: 5)
-                        .fontSize(16)
-                        .shape(ShapeType.Capsule)
-                        .onClick {Router.push(url: "index_pie")}
+                Button("CustomScatterShapeRenderer").onClick {
+                    Router.push(url: "CustomScatterShapeRenderer")
+                }
 
+                Button("ScatterChartPage").onClick {
+                    Router.push(url: "ScatterChartPage")
+                }
 
-                    Button("瀑布图")
-                        .height(40)
-                        .margin(top: 5, bottom: 5)
-                        .fontSize(16)
-                        .shape(ShapeType.Capsule)
-                        .onClick {Router.push(url: "index_water")}
-                }.width(100.percent).margin(top: 5)
-            }
+                Button("ScatterChartPageOtherShape").onClick {
+                    Router.push(url: "ScatterChartPageOtherShape")
+                }
+            }.width(100.percent).margin(top: 5)
         }
+    }
 }
