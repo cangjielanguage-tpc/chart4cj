@@ -26,6 +26,7 @@ internal import mpchart.bar.*
 internal import mpchart.bubble.*
 internal import mpchart.waterfall.*
 internal import mpchart.line.*
+internal import mpchart.candle.*
 
 
 extend<T> Option<T> {
