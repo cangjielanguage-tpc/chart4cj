@@ -6,11 +6,12 @@ package mpchart.pie
 public open class EntryOhos <: BaseEntry {
     private var x: Float64 = 0.0
 
-    public init (x: Float64, y: Float64, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: ?Any = Option<Any>.None) {
+    public init(x: Float64, y: Float64, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None,
+        data!: ?Any = Option<Any>.None) {
         super(y, icon, data);
         this.x = x
     }
-    public func getX(): Float64 {
+    public open func getX(): Float64 {
         return this.x
     }
 
@@ -19,7 +20,7 @@ public open class EntryOhos <: BaseEntry {
      *
      * @param x
      */
-    public func setX(x: Float64): Unit {
+    public open func setX(x: Float64): Unit {
         this.x = x
     }
 
@@ -32,7 +33,6 @@ public open class EntryOhos <: BaseEntry {
         let data: ?Any = this.getData()
 
         return EntryOhos(this.x, this.getY(), data: data)
-
     }
 
     /**

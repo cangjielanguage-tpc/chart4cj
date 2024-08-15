@@ -7,7 +7,7 @@ public open class YAxisRenderer <: AxisRenderer {
     protected var mYAxis: YAxis
     protected var mZeroLinePaint: Paint = Paint()
 
-    public init(viewPortHandler: ViewPortHandler, yAxis: YAxis, trans: Transformer) {
+    public init(viewPortHandler: ViewPortHandler, yAxis: YAxis, trans: ?Transformer) {
         super(viewPortHandler, yAxis, trans)
         this.mYAxis = yAxis
 
@@ -233,8 +233,9 @@ public open class YAxisRenderer <: AxisRenderer {
             positions[i + 1] = this.mYAxis.mEntries[i / 2]
             i += 2
         }
-
-        this.mTrans.pointValuesToPixel(positions)
+        if (let Some(mTrans) <- this.mTrans) {
+            mTrans.pointValuesToPixel(positions)
+        }
 
         return positions
     }
@@ -247,30 +248,31 @@ public open class YAxisRenderer <: AxisRenderer {
      */
     protected open func drawZeroLine(c: CanvasRenderingContext2D): Unit {
         c.save()
+        if (this.mViewPortHandler.isSome() && this.mTrans.isSome()) {
+            this.mZeroLineClippingRect.set(this.mViewPortHandler().getContentRect().left,
+                this.mViewPortHandler().getContentRect().top, this.mViewPortHandler().getContentRect().right,
+                this.mViewPortHandler().getContentRect().bottom)
+            this.mZeroLineClippingRect.inset(0.0, -this.mYAxis.getZeroLineWidth(), 0.0, -this.mYAxis.getZeroLineWidth())
 
-        this.mZeroLineClippingRect.set(this.mViewPortHandler().getContentRect().left,
-            this.mViewPortHandler().getContentRect().top, this.mViewPortHandler().getContentRect().right,
-            this.mViewPortHandler().getContentRect().bottom)
-        this.mZeroLineClippingRect.inset(0.0, -this.mYAxis.getZeroLineWidth(), 0.0, -this.mYAxis.getZeroLineWidth())
+            c.rect(this.mZeroLineClippingRect.left, this.mZeroLineClippingRect.top,
+                this.mZeroLineClippingRect.right - this.mZeroLineClippingRect.left,
+                this.mZeroLineClippingRect.bottom - this.mZeroLineClippingRect.top)
+            c.clip()
 
-        c.rect(this.mZeroLineClippingRect.left, this.mZeroLineClippingRect.top,
-            this.mZeroLineClippingRect.right - this.mZeroLineClippingRect.left,
-            this.mZeroLineClippingRect.bottom - this.mZeroLineClippingRect.top)
-        c.clip()
+            // draw zero line
+            let pos: MPPointD = this.mTrans().getPixelForValues(0.0, 0.0)
 
-        // draw zero line
-        let pos: MPPointD = this.mTrans.getPixelForValues(0.0, 0.0)
+            this.mZeroLinePaint.setColor(this.mYAxis.getZeroLineColor())
+            this.mZeroLinePaint.setStrokeWidth(this.mYAxis.getZeroLineWidth())
 
-        this.mZeroLinePaint.setColor(this.mYAxis.getZeroLineColor())
-        this.mZeroLinePaint.setStrokeWidth(this.mYAxis.getZeroLineWidth())
+            c.beginPath()
+            c.moveTo(this.mViewPortHandler().contentLeft(), pos.y)
+            c.lineTo(this.mViewPortHandler().contentRight(), pos.y)
 
-        c.beginPath()
-        c.moveTo(this.mViewPortHandler().contentLeft(), pos.y)
-        c.lineTo(this.mViewPortHandler().contentRight(), pos.y)
-
-        c.stroke()
-        c.closePath()
-        c.restore()
+            c.stroke()
+            c.closePath()
+            c.restore()
+        }
     }
 
     var mRenderLimitLinesBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
@@ -294,8 +296,10 @@ public open class YAxisRenderer <: AxisRenderer {
         this.mLimitLinePaint.setDashPathEffect(dashEffect)
 
         this.mRenderLimitLinesBuffer[1] = l.getLimit()
+        if (let Some(mTrans) <- this.mTrans) {
+            mTrans.pointValuesToPixel(this.mRenderLimitLinesBuffer)
+        }
 
-        this.mTrans.pointValuesToPixel(this.mRenderLimitLinesBuffer)
         Utils.resetContext2DStyle(c, this.mLimitLinePaint)
         c.beginPath()
         c.moveTo(this.mViewPortHandler().contentLeft(), this.mRenderLimitLinesBuffer[1])
@@ -375,19 +379,16 @@ public open class YAxisRenderer <: AxisRenderer {
                             c.closePath()
 
                         case Style.FILL =>
-
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentRight() - xOffset,
                                 pts[1] - yOffset + labelLineHeight)
                             c.closePath()
                         case Style.FILL_AND_STROKE =>
-
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentRight() - xOffset,
                                 pts[1] - yOffset + labelLineHeight)
                             c.closePath()
                         case _ =>
-
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentRight() - xOffset,
                                 pts[1] - yOffset + labelLineHeight)
@@ -404,19 +405,16 @@ public open class YAxisRenderer <: AxisRenderer {
                             c.closePath()
 
                         case Style.FILL =>
-
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentRight() - xOffset,
                                 pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
                             c.closePath()
                         case Style.FILL_AND_STROKE =>
-
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentRight() - xOffset,
                                 pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
                             c.closePath()
                         case _ =>
-
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentRight() - xOffset,
                                 pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
@@ -433,13 +431,11 @@ public open class YAxisRenderer <: AxisRenderer {
                             c.closePath()
 
                         case Style.FILL =>
-
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentLeft() + xOffset,
                                 pts[1] - yOffset + labelLineHeight)
                             c.closePath()
                         case Style.FILL_AND_STROKE =>
-
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentLeft() + xOffset,
                                 pts[1] - yOffset + labelLineHeight)
@@ -461,13 +457,11 @@ public open class YAxisRenderer <: AxisRenderer {
                             c.closePath()
 
                         case Style.FILL =>
-
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentLeft() + xOffset,
                                 pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)
                             c.closePath()
                         case Style.FILL_AND_STROKE =>
-
                             c.beginPath()
                             c.fillText(label, this.mViewPortHandler().contentLeft() + xOffset,
                                 pts[1] + yOffset - Utils.calcTextHeight(c, this.mLimitLinePaint, label) / 2.0)

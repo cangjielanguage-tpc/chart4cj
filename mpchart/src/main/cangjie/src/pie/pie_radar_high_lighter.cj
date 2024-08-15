@@ -49,5 +49,5 @@ public abstract class PieRadarHighlighter<T, D, S, E> <: IHighlighter where T <:
      * @param y
      * @return
      */
-    protected func getClosestHighlight(index: Int64, x: Float64, y: Float64): Highlight
+    protected open func getClosestHighlight(index: Int64, x: Float64, y: Float64): Highlight
 }

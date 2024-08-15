@@ -10,7 +10,7 @@ public abstract class AxisRenderer <: Renderer {
     /** base axis this axis renderer works with */
     protected var mAxis: AxisBase
     /** transformer to transform values to screen pixels and return */
-    protected var mTrans: Transformer
+    protected var mTrans: ?Transformer = None
     /**
      * paint object for the grid lines
      */
@@ -28,7 +28,7 @@ public abstract class AxisRenderer <: Renderer {
      */
     protected var mLimitLinePaint: Paint = Paint()
 
-    public init(viewPortHandler: ViewPortHandler, axis: AxisBase, trans: Transformer) {
+    public init(viewPortHandler: ViewPortHandler, axis: AxisBase, trans: ?Transformer) {
         super(viewPortHandler)
         this.mTrans = trans
         this.mAxis = axis
@@ -86,7 +86,7 @@ public abstract class AxisRenderer <: Renderer {
      *
      * @return
      */
-    public func getTransformer(): Transformer {
+    public func getTransformer(): ?Transformer {
         return this.mTrans
     }
 
@@ -101,14 +101,17 @@ public abstract class AxisRenderer <: Renderer {
         var maxs: Float64 = max
         // calculate the starting and entry point of the y-labels (depending on
         // zoom / contentrect bounds)
+        if (this.mTrans.isNone()) {
+            return
+        }
         if (let Some(v) <- this.mViewPortHandler) {
             if (v.contentWidth() > 10.0 && !v.isFullyZoomedOutY()) {
-                let p1: MPPointD = this.mTrans.getValuesByTouchPoint(
+                let p1: MPPointD = this.mTrans().getValuesByTouchPoint(
                     v.contentLeft(),
                     v.contentTop(),
                     Option<MPPointD>.None
                 )
-                let p2: MPPointD = this.mTrans.getValuesByTouchPoint(
+                let p2: MPPointD = this.mTrans().getValuesByTouchPoint(
                     v.contentLeft(),
                     v.contentBottom(),
                     Option<MPPointD>.None

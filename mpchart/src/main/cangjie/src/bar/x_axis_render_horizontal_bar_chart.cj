@@ -14,13 +14,16 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
     public func computeAxis(min: Float64, max: Float64, inverted: Bool): Unit {
         var mins: Float64 = min
         var maxs: Float64 = max
+        if (this.mTrans.isNone() || this.mViewPortHandler.isNone()) {
+            return;
+        }
         if (let Some(handle) <- this.mViewPortHandler) {
             // calculate the starting and entry point of the y-labels (depending on
             // zoom / contentrect bounds)
             if (handle.contentWidth() > 10.0 && !handle.isFullyZoomedOutY()) {
-                let p1: MPPointD = this.mTrans.getValuesByTouchPoint(handle.contentLeft(), handle.contentBottom(),
+                let p1: MPPointD = this.mTrans().getValuesByTouchPoint(handle.contentLeft(), handle.contentBottom(),
                     Option<MPPointD>.None)
-                let p2: MPPointD = this.mTrans.getValuesByTouchPoint(handle.contentLeft(), handle.contentTop(),
+                let p2: MPPointD = this.mTrans().getValuesByTouchPoint(handle.contentLeft(), handle.contentTop(),
                     Option<MPPointD>.None)
 
                 if (inverted) {
@@ -47,7 +50,8 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
 
         let longest: String = this.mXAxis.getLongestLabel()
 
-        let labelSize: FSize = Utils.calcTextSize(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), this.mAxisLabelPaint, longest)
+        let labelSize: FSize = Utils.calcTextSize(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)),
+            this.mAxisLabelPaint, longest)
 
         let labelWidth: Float64 = round(labelSize.width + this.mXAxis.getXOffset() * 3.5)
         let labelHeight: Float64 = labelSize.height
@@ -113,7 +117,7 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
 
         let positions: Array<Float64> = Array(Int64(this.mXAxis.mEntryCount * 2.0), item: 0.0)
 
-        for (i in 0..positions.size: 2) {
+        for (i in 0..positions.size : 2) {
 
             // only fill x values
             if (centeringEnabled) {
@@ -122,8 +126,9 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
                 positions[i + 1] = this.mXAxis.mEntries[i / 2]
             }
         }
-
-        this.mTrans.pointValuesToPixel(positions)
+        if (let Some(mTrans) <- this.mTrans) {
+            mTrans.pointValuesToPixel(positions)
+        }
 
         var j: Int64 = 0
         while (j < positions.size) {
@@ -230,7 +235,9 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
 
             pts[1] = l.getLimit()
 
-            this.mTrans.pointValuesToPixel(pts)
+            if (let Some(mTrans) <- this.mTrans) {
+                mTrans.pointValuesToPixel(pts)
+            }
 
             limitLinePath.moveTo(this.mViewPortHandler().contentLeft(), pts[1])
             limitLinePath.lineTo(this.mViewPortHandler().contentRight(), pts[1])
