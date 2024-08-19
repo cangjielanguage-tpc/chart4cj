@@ -48,7 +48,7 @@ class BubbleChartPageReadme {
         }
     }
 
-    func aboutToAppear(): BubbleChartModel {
+    protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
         if (let Some(legend) <- l) {
             legend.setEnabled(true)
@@ -108,7 +108,6 @@ class BubbleChartPageReadme {
         this.model.notifyDataSetChanged()
         this.model.setVisibleXRangeMaximum(7.0)
         this.model.setExtraOffsets(20.0,20.0,20.0,20.0)
-        return this.model
     }
 
     private func setData(count: Int64, range: Float64): Unit {
@@ -161,7 +160,7 @@ class BubbleChartPageReadme {
     func build() {
         Column() {
             Column() {
-                BubbleChart(model: aboutToAppear())
+                BubbleChart(model: this.model)
             }
         }
     }

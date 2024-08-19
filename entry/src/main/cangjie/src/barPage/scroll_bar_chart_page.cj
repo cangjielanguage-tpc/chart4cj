@@ -28,7 +28,7 @@ class ScrollBarChartPage {
     //private var stackMarker: CustomMarkerView
     private var isChangedMaxVisibleXCount: Bool = false
 
-    func aboutToAppear(): BarChartModel {
+    protected override func aboutToAppear() {
         this.model.setDragEnabled(false) //禁用滑动
         this.model.setScaleEnabled(false) //禁用缩放
 
@@ -93,7 +93,6 @@ class ScrollBarChartPage {
         this.model.setData(this.barData)
         this.model.setVisibleXRangeMaximum(20.0)
 
-        return this.model
     }
 
     private func getNormalData(): BarData {
@@ -222,7 +221,7 @@ class ScrollBarChartPage {
     func build() {
         Column {
             Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
-            BarChart(model: aboutToAppear())
+            BarChart(model: this.model)
             Divider().width(1).padding(top: 5)
             Scroll() {
                 Stack() {

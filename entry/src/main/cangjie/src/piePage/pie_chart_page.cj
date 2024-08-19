@@ -22,7 +22,7 @@ class PieChartPage {
 
     var pieData: PieData = PieData()
 
-    func aboutToAppear(): PieChartModel {
+    protected override  func aboutToAppear() {
 
 
         let l: ?Legend = this.model.getLegend()
@@ -38,8 +38,6 @@ class PieChartPage {
         this.model.setUsePercentValues(true);
         this.model.getDescription().setEnabled(false)
         this.model.setExtraOffsets(5.0, 10.0, 5.0, 5.0);
-
-//        this.model.setOnChartGestureListener(this.chartGestureListener);
 
         this.model.setDragDecelerationFrictionCoef(0.95);
 
@@ -63,7 +61,6 @@ class PieChartPage {
         this.model.setHighlightPerTapEnabled(true);
 
         this.setData(4, 10);
-        return  this.model
     }
     //初始化饼状图数据
     private func setData(count: Int64, range: Int64): Unit {
@@ -107,14 +104,9 @@ class PieChartPage {
     }
 
 
-func build() {
-       // title(model: this.titleModel )
+    func build() {
         Column {
-            PieChart(model: aboutToAppear())
-//            Column() {
-//                SeekBar( model: this.seekBarX )
-//                SeekBar(model: this.seekBarY )
-//            }
+            PieChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
 
     }

@@ -17,7 +17,7 @@ class MultiplePage {
     var rightAxis: ?YAxis = None
     var lineData: LineData = LineData()
 
-    func aboutToAppear(): LineChartModel {
+    protected override func aboutToAppear(){
         let legend: ?Legend = this.model.getLegend()
         if (let Some(legend) <- legend) {
             legend.setEnabled(true)
@@ -39,7 +39,6 @@ class MultiplePage {
         this.lineData = this.setData(20, 100.0)
         this.model.setData(this.lineData)
 
-        return this.model
     }
 
     private func setData(count: Int64, range: Float64): LineData {
@@ -115,7 +114,7 @@ class MultiplePage {
 
     func build() {
         Column {
-            LineChart(model: aboutToAppear())
+            LineChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }

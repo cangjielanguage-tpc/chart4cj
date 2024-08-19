@@ -17,7 +17,7 @@ class HorizontalBarChartPage {
     private var rightAxis: ?YAxis = Option<YAxis>.None
     private var xAxis: ?XAxis = Option<XAxis>.None
 
-    func aboutToAppear(): HorizontalBarChartModel {
+    protected override func aboutToAppear() {
         this.model = HorizontalBarChartModel.build()
         this.model.animateX(1000, easing: "linear")
 
@@ -60,7 +60,6 @@ class HorizontalBarChartPage {
         }
         this.model.setFitBars(true)
         this.setData(10, 50)
-        return this.model
     }
 
     private func setData(count: Int64, range: Int64): Unit {
@@ -92,7 +91,7 @@ class HorizontalBarChartPage {
     func build() {
         Column {
             Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
-            HorizontalBarChart(model: aboutToAppear())
+            HorizontalBarChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }

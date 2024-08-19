@@ -73,7 +73,7 @@ class DualAxisPage {
         this.model.setData(lineData)
     }
 
-    func aboutToAppear(): LineChartModel {
+    protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
 
         description.setEnabled(false)
@@ -120,13 +120,11 @@ class DualAxisPage {
         this.setData(18, 30.0) //数据点的个数太多会导致数据不能显示
 
         this.model.setVisibleXRangeMaximum(50.0) //会影响数据点的显示，太大也不会显示
-
-        return this.model
     }
 
     func build() {
         Column {
-            LineChart(model: aboutToAppear())
+            LineChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }

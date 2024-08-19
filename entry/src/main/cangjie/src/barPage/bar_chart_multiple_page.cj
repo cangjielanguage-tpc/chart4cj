@@ -20,7 +20,7 @@ class BarChartMultiplePage {
     private var barData: BarData = BarData()
     private var normalMarker: MarkerView = MarkerView()
 
-    func aboutToAppear(): BarChartModel {
+    protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
         description.setEnabled(false)
 
@@ -74,8 +74,6 @@ class BarChartMultiplePage {
         if (this.xAxis.isSome() && this.leftAxis.isSome()) {
             this.setData(5, 110)
         }
-
-        return this.model
     }
 
     private func setData(count: Int64, range: Int64): Unit {
@@ -147,7 +145,7 @@ class BarChartMultiplePage {
     func build() {
         Column {
             Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
-            BarChart(model: aboutToAppear())
+            BarChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }

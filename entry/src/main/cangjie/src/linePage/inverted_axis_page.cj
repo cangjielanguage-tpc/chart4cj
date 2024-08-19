@@ -13,7 +13,7 @@ class InvertedAxisPage {
     private var xAxis: ?XAxis = None
     private var dataSet: LineDataSet = LineDataSet(ArrayList<EntryOhos>(), "")
 
-    func aboutToAppear(): LineChartModel {
+    protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
         description.setEnabled(false)
 
@@ -53,7 +53,6 @@ class InvertedAxisPage {
         }
 
         this.setData(40, 125.0)
-        return this.model
     }
 
     private func setData(count: Int64, range: Float64): Unit {
@@ -88,7 +87,7 @@ class InvertedAxisPage {
 
     func build() {
         Column {
-            LineChart(model: aboutToAppear())
+            LineChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }

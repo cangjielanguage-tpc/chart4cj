@@ -43,7 +43,7 @@ class PieChartPageReadme {
 
     var pieData: PieData = PieData()
 
-    func aboutToAppear(): PieChartModel {
+    protected override func aboutToAppear() {
         // Step2：配置图表的特定样式，各部件间没有先后之分
         let l: ?Legend = this.model.getLegend()
         if (let Some(v) <- l) {
@@ -84,7 +84,6 @@ class PieChartPageReadme {
         this.model.setHighlightPerTapEnabled(true); // 启用点击高亮效果
 
         this.setData(4, 10);  // 设置图表数据
-        return this.model
     }
 
     //初始化饼状图数据
@@ -142,7 +141,7 @@ func build() {
             // 可通过this.model.notifyDataSetChanged();来触发坐标轴数据更新，
             // 可通过this.model.invalidate();来触发绘制更新。
 
-            PieChart(model: aboutToAppear())
+            PieChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }

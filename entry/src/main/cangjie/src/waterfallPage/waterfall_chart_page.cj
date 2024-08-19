@@ -33,7 +33,7 @@ class SimpleWaterfallChartPage {
 
     private var valueSelectedListener: OnChartValueSelectedListener = MyOnChartValueSelectedListener()
 
-    func aboutToAppear(): WaterfallChartModel {
+    protected override func aboutToAppear() {
         this.model.setOnChartValueSelectedListener(this.valueSelectedListener);
 
         let description: ?Description = this.model.getDescription()
@@ -101,7 +101,6 @@ class SimpleWaterfallChartPage {
         this.data = this.getNormalData()
         this.model.setData(this.data);
         this.model.setVisibleXRangeMaximum(5.0);
-        return this.model
     }
 
     private func getNormalData(): WaterfallData {
@@ -202,7 +201,7 @@ class SimpleWaterfallChartPage {
     func build() {
         Column() {
             Column() {
-                WaterfallChart(model: aboutToAppear())
+                WaterfallChart(model: this.model)
             }
             Row() {
                 Row() {

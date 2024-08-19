@@ -13,7 +13,7 @@ import ohos.state_macro_manage.*
 class ScatterChartPageOtherShape {
     private var model: ScatterChartModel = ScatterChartModel.build()
 
-    func aboutToAppear(): ScatterChartModel {
+    protected override func aboutToAppear() {
 
         this.model.setMaxVisibleValueCount(160);
         this.model.setPinchZoom(false);
@@ -35,7 +35,6 @@ class ScatterChartPageOtherShape {
 
         this.setData(20.0, 10.0)
         this.model.notifyDataSetChanged()
-        return this.model
     }
 
     private func setData(xRange: Float64, yRange: Float64): Unit {
@@ -90,7 +89,7 @@ class ScatterChartPageOtherShape {
     func build() {
         Column() {
             Column() {
-                ScatterChart(model: aboutToAppear())
+                ScatterChart(model: this.model)
             }
         }
     }

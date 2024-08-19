@@ -61,7 +61,7 @@ class FilledAxisPage {
         this.model.setData(lineData)
     }
 
-    func aboutToAppear(): LineChartModel {
+    protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
 
         description.setEnabled(false)
@@ -110,12 +110,11 @@ class FilledAxisPage {
 
         this.model.setMinOffset(15.0)
         this.model.setVisibleXRangeMaximum(50.0)
-        return this.model
     }
 
     func build() {
         Column {
-            LineChart(model: aboutToAppear())
+            LineChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }

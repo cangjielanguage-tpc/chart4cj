@@ -10,7 +10,7 @@ class LineChartNotAxisConfigPage {
     private var model: LineChartModel = LineChartModel.build()
     private var dataSet: LineDataSet = LineDataSet(ArrayList<EntryOhos>(), "Data Set")
 
-    func aboutToAppear(): LineChartModel {
+    protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
         if (let Some(v) <- l) {
             v.setEnabled(true)
@@ -28,7 +28,6 @@ class LineChartNotAxisConfigPage {
 //        this.model.setVisibleXRangeMaximum(7.0)
 //        this.model.moveViewToX(10.0)
         this.model.invalidate()
-        return this.model
     }
 
     private func getLineData(): LineData {
@@ -69,7 +68,7 @@ class LineChartNotAxisConfigPage {
 
     func build() {
         Column {
-            LineChart(model: aboutToAppear())
+            LineChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }

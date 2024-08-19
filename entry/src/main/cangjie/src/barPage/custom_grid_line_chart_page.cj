@@ -58,7 +58,7 @@ class CustomGridLineChartPage {
         XAxisColorSetter("蓝色:", UInt32 (0x00ff000), UInt32 (0x00ff000))
     ]
 
-    func aboutToAppear(): BarChartModel {
+    protected override func aboutToAppear() {
         this.model.setDragEnabled(false)
         this.model.setScaleEnabled(false)
 
@@ -92,8 +92,6 @@ class CustomGridLineChartPage {
         this.barData = this.getNormalData()
         this.model.setData(this.barData)
         this.model.setVisibleXRangeMaximum(20.0)
-
-        return this.model
     }
 
     private func getNormalData(): BarData {
@@ -193,7 +191,7 @@ class CustomGridLineChartPage {
     func build() {
         Column {
             Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
-            BarChart(model: aboutToAppear())
+            BarChart(model: this.model)
             Divider().width(1).padding(top: 5)
             Scroll() {
                 Stack() {

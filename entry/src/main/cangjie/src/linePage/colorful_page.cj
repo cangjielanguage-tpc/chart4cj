@@ -13,7 +13,7 @@ class ColorfulPage {
     var lineChartModel3: LineChartModel = LineChartModel.build()
     var lineChartModel4: LineChartModel = LineChartModel.build()
 
-    func aboutToAppear() {
+    protected override func aboutToAppear() {
         this.initialLineChartModel(this.lineChartModel1)
 
         this.initialLineChartModel(this.lineChartModel2)

@@ -13,7 +13,7 @@ import ohos.state_macro_manage.*
 class ScatterChartPage {
     private var model: ScatterChartModel = ScatterChartModel.build()
 
-    func aboutToAppear(): ScatterChartModel {
+    protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
         if (let Some(legend) <- l) {
             legend.setEnabled(true)
@@ -66,7 +66,6 @@ class ScatterChartPage {
 
         this.setData(20.0, 10.0)
         this.model.notifyDataSetChanged()
-        return this.model
     }
 
     private func setData(xRange: Float64, yRange: Float64): Unit {
@@ -121,7 +120,7 @@ class ScatterChartPage {
     func build() {
         Column() {
             Column() {
-                ScatterChart(model: aboutToAppear())
+                ScatterChart(model: this.model)
             }
         }
     }

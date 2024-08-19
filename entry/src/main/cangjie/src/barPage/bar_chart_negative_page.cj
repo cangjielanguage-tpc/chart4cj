@@ -20,7 +20,7 @@ class BarChartNegativePage {
     private var barData: BarData = BarData()
     private var normalMarker: MarkerView = MarkerView()
 
-    func aboutToAppear(): BarChartModel {
+    protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
         description.setEnabled(false)
 
@@ -75,8 +75,6 @@ class BarChartNegativePage {
         this.model.setMarker(this.normalMarker)
 
         this.setData(4, 110)
-
-        return this.model
     }
 
     private func setData(count: Int64, range: Int64): Unit {
@@ -114,7 +112,7 @@ class BarChartNegativePage {
     func build() {
         Column {
             Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
-            BarChart(model: aboutToAppear())
+            BarChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }
