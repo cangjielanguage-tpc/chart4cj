@@ -35,7 +35,7 @@ public class CircleShapeRenderer <: IShapeRenderer {
                 c.beginPath()
                 let path: Path2D = Path2D()
                 path.arc(posX, posY, shapeHoleSizeHalf, 0.0, 2.0 * Float64.PI)
-                //c.fill(path) todo
+                //TODO c.fill(path)
                 c.stroke(path)
                 c.closePath()
             }

@@ -28,6 +28,7 @@ internal import mpchart.waterfall.*
 internal import mpchart.line.*
 internal import mpchart.candle.*
 internal import mpchart.scatter.*
+internal import mpchart.radar.*
 
 
 extend<T> Option<T> {

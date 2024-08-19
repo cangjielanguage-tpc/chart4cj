@@ -1020,12 +1020,10 @@ public class PieChartRenderer <: DataRenderer {
             }
 
             this.mPathBuffer.closePath()
-            //todo
-            // this.mBitmapCanvas.drawPath(this.mPathBuffer, this.mRenderPaint)
+            //TODO  this.mBitmapCanvas.drawPath(this.mPathBuffer, this.mRenderPaint)
             Utils.resetContext2DStyle(c, this.mRenderPaint)
             c.beginPath()
-            // c.stroke(this.mPathBuffer)
-            // c.fill(this.mPathBuffer) 未实现
+            //TODO c.stroke(this.mPathBuffer) c.fill(this.mPathBuffer) 未实现
             c.fill()
             c.closePath()
         }

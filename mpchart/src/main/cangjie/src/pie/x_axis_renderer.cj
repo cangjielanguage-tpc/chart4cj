@@ -9,7 +9,7 @@ package mpchart.pie
 public open class XAxisRenderer <: AxisRenderer {
     protected var mXAxis: XAxis
 
-    public init(viewPortHandler: ViewPortHandler, xAxis: XAxis, trans: Transformer) {
+    public init(viewPortHandler: ViewPortHandler, xAxis: XAxis, trans: ?Transformer) {
         super(viewPortHandler, xAxis, trans)
         this.mXAxis = xAxis
         this.mAxisLabelPaint.setColor(Color.BLACK)
@@ -26,13 +26,16 @@ public open class XAxisRenderer <: AxisRenderer {
     public open func computeAxis(min: Float64, max: Float64, inverted: Bool) {
         var mins: Float64 = min
         var maxs: Float64 = max
+        if (this.mViewPortHandler.isNone() || this.mTrans.isNone()) {
+            return
+        }
         if (this.mViewPortHandler().contentWidth() > 10.0 && !this.mViewPortHandler().isFullyZoomedOutX()) {
-            let p1: MPPointD = this.mTrans.getValuesByTouchPoint(
+            let p1: MPPointD = this.mTrans().getValuesByTouchPoint(
                 this.mViewPortHandler().contentLeft(),
                 this.mViewPortHandler().contentTop(),
                 Option<MPPointD>.None
             )
-            let p2: MPPointD = this.mTrans.getValuesByTouchPoint(
+            let p2: MPPointD = this.mTrans().getValuesByTouchPoint(
                 this.mViewPortHandler().contentRight(),
                 this.mViewPortHandler().contentTop(),
                 Option<MPPointD>.None
@@ -52,7 +55,7 @@ public open class XAxisRenderer <: AxisRenderer {
 
         this.computeAxisValues(mins, maxs)
     }
-    
+
     protected func computeAxisValues(min: Float64, max: Float64) {
         if (this.mXAxis.isDrawCustomLabels()) {
             let labels = (this.mXAxis as XAxis)().getCustomLabels()
@@ -71,10 +74,12 @@ public open class XAxisRenderer <: AxisRenderer {
         this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface())
         this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize())
 
-        let labelSize: FSize = Utils.calcTextSize(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), this.mAxisLabelPaint, longest)
+        let labelSize: FSize = Utils.calcTextSize(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)),
+            this.mAxisLabelPaint, longest)
 
         let labelWidth = labelSize.width
-        let labelHeight = Utils.calcTextHeight(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), this.mAxisLabelPaint, "Q")
+        let labelHeight = Utils.calcTextHeight(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)),
+            this.mAxisLabelPaint, "Q")
 
         let labelRotatedSize: FSize = Utils.getSizeOfRotatedRectangleByDegrees(
             labelWidth,
@@ -187,8 +192,9 @@ public open class XAxisRenderer <: AxisRenderer {
             }
             i += 2
         }
-
-        this.mTrans.pointValuesToPixel(positions)
+        if (let Some(mTrans) <- this.mTrans) {
+            mTrans.pointValuesToPixel(positions)
+        }
 
         let xOffset: Float64 = Float64(this.mXAxis.getLabelXOffset())
         i = 0
@@ -254,8 +260,9 @@ public open class XAxisRenderer <: AxisRenderer {
             positions[i + 1] = this.mXAxis.mEntries[i / 2]
             i += 2
         }
-
-        this.mTrans.pointValuesToPixel(positions)
+        if (let Some(mTrans) <- this.mTrans) {
+            mTrans.pointValuesToPixel(positions)
+        }
 
         this.setupGridPaint()
 
@@ -336,7 +343,10 @@ public open class XAxisRenderer <: AxisRenderer {
 
             position[0] = l.getLimit()
             position[1] = 0.0
-            this.mTrans.pointValuesToPixel(position)
+            if (let Some(mTrans) <- this.mTrans) {
+                mTrans.pointValuesToPixel(position)
+            }
+
             this.renderLimitLineLine(c, l, position)
             this.renderLimitLineLabel(c, l, position, 2.0 + l.getYOffset())
             c.restore()
@@ -414,7 +424,7 @@ public open class XAxisRenderer <: AxisRenderer {
                 c.closePath()
 
             case Style.FILL =>
-                                c.beginPath()
+                c.beginPath()
                 c.fillText(label, position[0] + xOffset,
                     if (this.mViewPortHandler.isSome()) {
                     this.mViewPortHandler().contentTop()
@@ -423,7 +433,7 @@ public open class XAxisRenderer <: AxisRenderer {
                 } + yOffset + labelLineHeight)
                 c.closePath()
             case Style.FILL_AND_STROKE =>
-                                c.beginPath()
+                c.beginPath()
                 c.fillText(label, position[0] + xOffset,
                     if (this.mViewPortHandler.isSome()) {
                     this.mViewPortHandler().contentTop()
@@ -460,7 +470,7 @@ public open class XAxisRenderer <: AxisRenderer {
                 c.closePath()
 
             case Style.FILL =>
-                                c.beginPath()
+                c.beginPath()
                 c.fillText(label, position[0] + xOffset,
                     if (this.mViewPortHandler.isSome()) {
                     this.mViewPortHandler().contentBottom()
@@ -469,7 +479,6 @@ public open class XAxisRenderer <: AxisRenderer {
                 } - yOffset)
                 c.closePath()
             case Style.FILL_AND_STROKE =>
-
                 c.beginPath()
                 c.fillText(label, position[0] + xOffset,
                     if (this.mViewPortHandler.isSome()) {
@@ -499,7 +508,6 @@ public open class XAxisRenderer <: AxisRenderer {
                 c.closePath()
 
             case Style.FILL =>
-
                 c.beginPath()
                 c.fillText(label, position[0] - xOffset,
                     if (this.mViewPortHandler.isSome()) {
@@ -537,7 +545,7 @@ public open class XAxisRenderer <: AxisRenderer {
                 c.closePath()
 
             case Style.FILL =>
-                                c.beginPath()
+                c.beginPath()
                 c.fillText(label, position[0] - xOffset,
                     if (this.mViewPortHandler.isSome()) {
                     this.mViewPortHandler().contentBottom()
@@ -546,7 +554,7 @@ public open class XAxisRenderer <: AxisRenderer {
                 } - yOffset)
                 c.closePath()
             case Style.FILL_AND_STROKE =>
-                                c.beginPath()
+                c.beginPath()
                 c.fillText(label, position[0] - xOffset,
                     if (this.mViewPortHandler.isSome()) {
                     this.mViewPortHandler().contentBottom()

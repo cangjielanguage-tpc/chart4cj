@@ -96,7 +96,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
     /**
      * Calc minimum and maximum values (both x and y) over all DataSets.
      */
-    public func calcMinMax(): Unit {
+    public open func calcMinMax(): Unit {
         this.mYMax = -Float64.Max
         this.mYMin = Float64.Max
         this.mXMax = -Float64.Max
@@ -114,7 +114,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
         // left axis
         let firstLeft: ?S = this.getFirstLeft(this.mDataSets)
 
-        if ( let Some(f) <- firstLeft) {
+        if (let Some(f) <- firstLeft) {
             this.mLeftAxisMax = f.getYMax()
             this.mLeftAxisMin = f.getYMin()
 
@@ -134,7 +134,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
         // right axis
         let firstRight: ?S = this.getFirstRight(this.mDataSets)
 
-        if ( let Some(f) <- firstRight) {
+        if (let Some(f) <- firstRight) {
             this.mRightAxisMax = f.getYMax()
             this.mRightAxisMin = f.getYMin()
 
@@ -174,10 +174,8 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
     }
 
     public func getYMin(axis: AxisDependency): Float64 {
-
         if (axis == AxisDependency.LEFT) {
             if (this.mLeftAxisMin == Float64.Max) {
-
                 return this.mRightAxisMin
             } else {
                 return this.mLeftAxisMin

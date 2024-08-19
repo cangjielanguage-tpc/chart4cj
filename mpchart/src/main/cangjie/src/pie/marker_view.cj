@@ -70,8 +70,8 @@ public class MarkerView <: IMarker {
         c.fill()
         c.closePath()
 
-        //c.fillStyle = Color.Black //todo 标准库不支持
-        //c.textAlignStyle = Center
+        c.fillStyle(Color.BLACK)
+        //TODO c.textAlignStyle = Center
         c.fillText(text, left, top - 3.0 * padding)
         c.closePath()
         c.restore()

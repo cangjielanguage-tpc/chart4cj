@@ -81,7 +81,7 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
         }
     }
 
-    public func notifyDataSetChanged() {
+    public open func notifyDataSetChanged() {
         if (let Some(md: ChartData<IPieDataSet, PiEntry>) <- this.mData) {
             this.calcMinMax()
 
@@ -309,7 +309,7 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
      * @param angle
      * @return
      */
-    public func getIndexForAngle(angle: Float64): Int64
+    public open func getIndexForAngle(angle: Float64): Int64
 
     /**
      * Set an offset for the rotation of the RadarChart in degrees. Default 270f
@@ -413,11 +413,11 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
      */
     protected func getRequiredBaseOffset(): Float64
 
-    public func getYChartMin(): Float64 {
+    public open func getYChartMin(): Float64 {
         return 0.0
     }
 
-    public func getYChartMax(): Float64 {
+    public open func getYChartMax(): Float64 {
         return 0.0
     }
 

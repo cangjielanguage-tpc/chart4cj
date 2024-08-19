@@ -10,15 +10,18 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
     }
 
     public func computeAxis(yMin: Float64, yMax: Float64, inverted: Bool): Unit {
+        if (this.mTrans.isNone() || this.mViewPortHandler.isNone()) {
+            return;
+        }
         var mins: Float64 = yMin
         var maxs: Float64 = yMax
         if (let Some(handle) <- this.mViewPortHandler) {
             // calculate the starting and entry point of the y-labels (depending on
             // zoom / contentrect bounds)
             if (handle.contentHeight() > 10.0 && !handle.isFullyZoomedOutX()) {
-                let p1: MPPointD = this.mTrans.getValuesByTouchPoint(handle.contentLeft(), handle.contentTop(),
+                let p1: MPPointD = this.mTrans().getValuesByTouchPoint(handle.contentLeft(), handle.contentTop(),
                     Option<MPPointD>.None)
-                let p2: MPPointD = this.mTrans.getValuesByTouchPoint(handle.contentRight(), handle.contentTop(),
+                let p2: MPPointD = this.mTrans().getValuesByTouchPoint(handle.contentRight(), handle.contentTop(),
                     Option<MPPointD>.None)
 
                 if (!inverted) {
@@ -144,8 +147,10 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
             positions[i] = this.mYAxis.mEntries[i / 2]
             i += 2
         }
+        if (let Some(mTrans) <- this.mTrans) {
+            mTrans.pointValuesToPixel(positions)
+        }
 
-        this.mTrans.pointValuesToPixel(positions)
         return positions
     }
 
@@ -187,7 +192,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
     protected var mDrawZeroLinePathBuffer: Path2D = Path2D()
 
     protected func drawZeroLine(c: CanvasRenderingContext2D): Unit {
-        if (this.mViewPortHandler.isNone()) {
+        if (this.mViewPortHandler.isNone() || this.mTrans.isNone()) {
             return
         }
         c.save()
@@ -202,8 +207,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
             this.mLimitLineClippingRect.bottom - this.mLimitLineClippingRect.top)
         c.clip()
 
-        // draw zero line
-        let pos: MPPointD = this.mTrans.getPixelForValues(0.0, 0.0)
+        let pos: MPPointD = this.mTrans().getPixelForValues(0.0, 0.0)
 
         this.mZeroLinePaint.setColor(this.mYAxis.getZeroLineColor())
         this.mZeroLinePaint.setStrokeWidth(this.mYAxis.getZeroLineWidth())
@@ -267,7 +271,9 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
             pts[0] = l.getLimit()
             pts[2] = l.getLimit()
 
-            this.mTrans.pointValuesToPixel(pts)
+            if (let Some(mTrans) <- this.mTrans) {
+                mTrans.pointValuesToPixel(pts)
+            }
 
             pts[1] = this.mViewPortHandler().contentTop()
             pts[3] = this.mViewPortHandler().contentBottom()

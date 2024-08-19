@@ -197,14 +197,6 @@ public open class Transformer {
     }
 
     /**
-     * transform a path with all the given matrices VERY IMPORTANT: keep order
-     * to value-touch-offset
-     *
-     * @param path
-     */
-    // todo 当前UI不支持 Matrix2D
-
-    /**
      * Transform an array of points with all matrices. VERY IMPORTANT: Keep
      * matrix order "value-touch-offset" when transforming.
      *

@@ -122,10 +122,7 @@ public class LineChartRenderer <: LineRadarRenderer {
         this.mRenderPaint.setColor(Color(dataSet.getColor()))
         this.mRenderPaint.setStyle(Style.STROKE)
 
-        // todo 当前UI不支持 Matrix2D
-        /* if (let Some(t) <- trans && trans().pathValueToPixel(cubicPath) ) {
-            cubicPath = t.pathValueToPixel(cubicPath)
-        }*/
+        // TODO 当前UI不支持 Matrix2D
         Utils.resetContext2DStyle(c, this.mRenderPaint)
         c.beginPath()
         c.stroke(cubicPath)
@@ -220,10 +217,7 @@ public class LineChartRenderer <: LineRadarRenderer {
         this.mRenderPaint.setColor(Color(dataSet.getColor()))
         this.mRenderPaint.setStyle(Style.STROKE)
 
-        // todo 当前UI不支持 Matrix2D
-        /* if (let Some(t) <- trans && trans().pathValueToPixel(cubicPath) ) {
-            cubicPath = t.pathValueToPixel(cubicPath)
-        }*/
+        // TODO 当前UI不支持 Matrix2D
         Utils.resetContext2DStyle(c, this.mRenderPaint)
         c.beginPath()
         c.stroke(cubicPath)
@@ -240,9 +234,7 @@ public class LineChartRenderer <: LineRadarRenderer {
         splineTemp.lineTo(dataSet.getEntryForIndex(bounds.mins).getX(), fillMin)
         splineTemp.closePath()
 
-        // todo 当前UI不支持 Matrix2D
-        //splineTemp = trans.pathValueToPixel(splineTemp)
-
+        // TODO 当前UI不支持 Matrix2D splineTemp = trans.pathValueToPixel(splineTemp)
         let drawable: ?ChartPixelMap = dataSet.getFillDrawable()
         let gradientFillColor: ?ArrayList<ChartColorStop> = dataSet.getGradientFillColor()
         if (let Some(d) <- drawable) {
@@ -470,8 +462,7 @@ public class LineChartRenderer <: LineRadarRenderer {
 
             if (currentStartIndex <= currentEndIndex) {
                 filled = this.generateFilledPath(dataSet, currentStartIndex, currentEndIndex, filled)
-                // todo 当前UI不支持 Matrix2D
-                //filled = trans.pathValueToPixel(filled)
+                // TODO 当前UI不支持 Matrix2D filled = trans.pathValueToPixel(filled)
 
                 let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
 
