@@ -29,7 +29,7 @@ class LineChartPage {
     private var dataSet: LineDataSet = LineDataSet(ArrayList<EntryOhos>(EntryOhos(0.0, 0.0)), "")
     private var lineData: LineData = LineData()
 
-    func aboutToAppear(): LineChartModel {
+    protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
         description.setEnabled(true)
         description.setText("this is line chart")
@@ -89,8 +89,6 @@ class LineChartPage {
         lineData.setValueTextSize(10.0)
         this.model.setData(lineData)
         this.model.setVisibleXRangeMaximum(7.0) //x 轴显示最大数量
-
-        return this.model
     }
 
     private func getLineData(): LineData {
@@ -133,7 +131,7 @@ class LineChartPage {
 
     func build() {
         Column {
-            LineChart(model: aboutToAppear())
+            LineChart(model: this.model)
             Divider().width(1).padding(top: 5)
 
             Scroll() {

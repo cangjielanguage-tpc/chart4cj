@@ -13,7 +13,7 @@ import ohos.state_macro_manage.*
 class CandlestickChartPage {
     private var model: CandleStickChartModel = CandleStickChartModel.build()
 
-    func aboutToAppear(): CandleStickChartModel {
+    protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
         if (let Some(legend) <- l) {
             legend.setEnabled(true)
@@ -62,7 +62,6 @@ class CandlestickChartPage {
 
         this.setData(40, 100.0)
         this.model.notifyDataSetChanged()
-        return this.model
     }
 
     private func setData(count: Int64, range: Float64): Unit {
@@ -120,7 +119,7 @@ class CandlestickChartPage {
     func build() {
         Column() {
             Column() {
-                CandleStickChart(model: aboutToAppear())
+                CandleStickChart(model: this.model)
             }
         }
     }

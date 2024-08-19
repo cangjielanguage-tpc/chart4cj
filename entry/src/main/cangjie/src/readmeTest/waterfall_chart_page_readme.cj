@@ -41,7 +41,7 @@ class WaterfallChartPageReadme {
     private var data: WaterfallData = WaterfallData()
     private var normalMarker: MarkerView = MarkerView()
 
-    func aboutToAppear(): WaterfallChartModel {
+    protected override func aboutToAppear() {
 
         let description: ?Description = this.model.getDescription()
         if (let Some(des) <- description) {
@@ -110,7 +110,6 @@ class WaterfallChartPageReadme {
         this.data = this.getNormalData()
         this.model.setData(this.data);
         this.model.setVisibleXRangeMaximum(5.0);
-        return this.model
     }
 
     private func getNormalData(): WaterfallData {
@@ -145,7 +144,7 @@ class WaterfallChartPageReadme {
     func build() {
         Column() {
             Column() {
-                WaterfallChart(model: aboutToAppear())
+                WaterfallChart(model: this.model)
             }
             Row() {
                 Row() {
