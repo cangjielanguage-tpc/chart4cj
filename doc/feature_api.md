@@ -6937,3 +6937,320 @@ public class CustomScatterShapeRenderer <: IShapeRenderer {
 }
 ```
 
+### 1.18 雷达图 RadarChart
+
+#### 1.18.1 RadarEntry Class API Description
+
+雷达图数据结构
+
+```cangjie
+public class RadarEntry <: EntryOhos {
+
+    /*
+     * 数据结构构造函数
+     * 
+     * 参数 value - 雷达图数值
+     * 参数 data - 额外参数，可选参数，默认值 None
+     */
+    public init(value: Float64, data!: Any = Option<Any>.None)
+
+    /*
+     * 创建雷达图数据结构副本
+     * 
+     * 返回值 RadarEntry - 雷达图数据结构副本
+     */
+    public func copy(): RadarEntry
+}
+
+```
+
+#### 1.18.2 IRadarDataSet Interface API Description
+
+雷达图数据对象
+
+```cangjie
+public interface IRadarDataSet <: ILineRadarDataSet<RadarEntry> {}
+```
+
+#### 1.18.3 RadarDataSet Class API Description
+ 
+雷达图数据结构
+
+```cangjie
+public class RadarDataSet<: LineRadarDataSet<RadarEntry>&IRadarDataSet {
+    
+    /*
+     * 雷达图数据结构构造函数
+     * 
+     * 参数 yVals - 雷达图数据对象集合
+     * 参数 label - 标签
+     */
+    public init (yVals: ArrayList<RadarEntry>, label: String)
+             
+    /*
+     * 创建雷达图数据结构副本
+     * 
+     * 返回值 DataSet<RadarEntry> - 雷达图数据结构副本
+     */
+    public func copy (): DataSet<RadarEntry>
+    
+}
+```
+
+#### 1.18.4 RadarData Class API Description
+
+雷达图数据包
+
+```cangjie
+public class RadarData<: ChartData<IRadarDataSet,RadarEntry> {
+    
+    /*
+     * 雷达图数据包构造
+     * 
+     * 参数 dataSets - 雷达图数据结构集合
+     */
+    public init (dataSets: ArrayList<IRadarDataSet>)
+}
+```
+
+#### 1.18.5 RadarChartModel Class API Description
+
+雷达图配置构建类
+
+```cangjie
+public class RadarChartModel<: PieRadarChartBaseModel<RadarData,IRadarDataSet,RadarEntry> {
+    
+    /*
+     * 雷达图构造函数
+     * 
+     * 返回值 RadarChartModel - 雷达图配置构建类
+     */
+    public static func build (): RadarChartModel
+    
+    /*
+     * 重绘图表。
+     * 
+     * 返回值 Unit
+     */
+    public func invalidate ()
+    
+    /*
+     * 设置图表绘制的上下文。
+     * 
+     * 参数 context2d - 图表绘制的上下文。
+     * 返回值 Unit 
+     */
+    public func setContext2D (context2d: CanvasRenderingContext2D)
+    
+    /*
+     * 更新图表正确Size。
+     * 
+     * 参数 newWidth - 图表当前显示的宽。
+     * 参数 newHeight - 图表当前显示的高。
+     * 参数 oldWidth - 图表改变Size前显示的宽。
+     * 参数 oldHeight - 图表改变Size前显示的高。
+     * 返回值 Unit 
+     */
+    public func onChartSizeChanged (newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64)
+       
+    /*
+     * 图表数据刷新。
+     * 
+     * 返回值 Unit
+     */
+    public func notifyDataSetChanged ()
+    
+    /*
+     * 图表绘制方法。
+     * 
+     * 参数 canvas - 图表绘制的上下文。
+     * 返回值 Unit 
+     */
+    public func onDraw (canvas: CanvasRenderingContext2D)
+        
+    /*
+     * 设置主网线的宽度，默认 2.5
+     * 
+     * 参数 width - 主网线的宽度
+     * 返回值 Unit
+     */
+    public func setWebLineWidth (width: Float64): Unit
+    
+   
+    /*
+     * 设置内部网线的宽度，默认 1.5
+     * 
+     * 参数 width - 内部网线的宽度
+     * 返回值 Unit
+     */
+    public func setWebLineWidthInner (width: Float64): Unit
+       
+    /*
+     * 设置网格的透明度，默认 150，范围 0-255
+     * 
+     * 参数 alpha - 网格的透明度
+     * 返回值 Unit
+     */
+    public func setWebAlpha (alpha: Float64): Unit
+    
+    /*
+     * 设置主网线的颜色，默认 0x7A7A7A
+     * 
+     * 参数 color - 主网线的颜色
+     */
+    public func setWebColor (color: UInt32)
+    
+    /*
+     * 设置内部网线的颜色，默认 0x7A7A7A
+     * 
+     * 参数 color - 内部网线的颜色
+     */
+    public func setWebColorInner (color: UInt32)
+    
+    /*
+     * 设置是否应该绘制网格线，默认 true
+     * 
+     * 参数 enabled - true/false
+     */
+    public func setDrawWeb (enabled: Bool)
+    
+    /*
+     * 设置在绘制下一个标签和网线之前跳过多少个标签和网线的数量，默认 0
+     * 
+     * 参数 count - 数量
+     */
+    public func setSkipWebLineCount (count: Int64)
+}
+```
+
+#### 1.18.6 RadarChart Component
+
+雷达图组件
+
+```cangjie
+public class RadarChart {}
+```
+
+#### 1.18.7 雷达图示例
+
+```cangjie
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+
+@Entry
+@Component
+class RadarChartPage {
+    private var model: RadarChartModel = RadarChartModel.build()
+
+    protected override func aboutToAppear() {
+        let description: Description = this.model.getDescription()
+        description.setEnabled(true);
+        description.setText("this is radar")
+        description.setPosition(100.0, 100.0)
+        description.setTextColor(Color(0xffffff))
+        description.setTextSize(15.0)
+
+        let l: ?Legend = this.model.getLegend()
+        if (let Some(legend) <- l) {
+            legend.setEnabled(true);
+            legend.setVerticalAlignment(LegendVerticalAlignment.TOP);
+            legend.setHorizontalAlignment(LegendHorizontalAlignment.CENTER);
+            legend.setOrientation(LegendOrientation.HORIZONTAL);
+            legend.setDrawInside(false);
+            legend.setXEntrySpace(7.0);
+            legend.setYEntrySpace(5.0);
+            legend.setTextColor(Color(0xffffff));
+        }
+
+        this.model.setWebLineWidth(0.3);
+        this.model.setWebColor(0xFFCCCCCC);
+        this.model.setWebLineWidthInner(0.3);
+        this.model.setWebColorInner(0xFFCCCCCC);
+        this.model.setExtraTopOffset(-100.0);
+        this.model.animateXY(2000, 2000)
+
+        let xAxis: ?XAxis = this.model.getXAxis()
+        if (let Some(xAxis) <- xAxis) {
+            xAxis.setPosition(XAxisPosition.BOTTOM);
+            xAxis.setDrawGridLines(false);
+            xAxis.setYOffset(0.0);
+            xAxis.setXOffset(0.0);
+            xAxis.setGranularity(1.0);
+            xAxis.setLabelCount(7, false);
+            xAxis.setValueFormatter(valueFormatter());
+            xAxis.setTextColor(Color(0xffffff));
+        }
+
+        let leftAxis: ?YAxis = this.model.getYAxis()
+        if (let Some(yAxis) <- leftAxis) {
+            yAxis.setLabelCount(5, false);
+            yAxis.setAxisMinimum(0.0);
+            yAxis.setAxisMaximum(80.0);
+            yAxis.setDrawLabels(false);
+        }
+
+        this.setData()
+    }
+
+    private func setData(): Unit {
+        let mul = 80.0;
+        let min = 20.0;
+        let cnt = 5;
+
+        let entries1: ArrayList<RadarEntry> = ArrayList<RadarEntry>();
+        let entries2: ArrayList<RadarEntry> = ArrayList<RadarEntry>();
+
+        for (i in 0..cnt) {
+            let val1 = (Random().nextFloat64() * mul) + min;
+            entries1.append(RadarEntry(val1));
+
+            let val2 = (Random().nextFloat64() * mul) + min;
+            entries2.append(RadarEntry(val2));
+        }
+
+        let set1: RadarDataSet = RadarDataSet(entries1, "Last Week");
+        set1.setFillColor(UInt32(ChartColor.rgb(103, 110, 129)));
+        set1.setDrawFilled(true);
+        set1.setFillAlpha(180.0);
+        set1.setLineWidth(2.0);
+        set1.setDrawHighlightCircleEnabled(true);
+        set1.setDrawHighlightIndicators(false);
+
+        let set2: RadarDataSet = RadarDataSet(entries2, "This Week");
+        set2.setFillColor(UInt32(ChartColor.rgb(121, 162, 175)));
+        set2.setDrawFilled(true);
+        set2.setFillAlpha(180.0);
+        set2.setLineWidth(2.0);
+        set2.setDrawHighlightCircleEnabled(true);
+        set2.setDrawHighlightIndicators(false);
+
+        let sets: ArrayList<IRadarDataSet> = ArrayList<IRadarDataSet>();
+        sets.append(set1);
+        sets.append(set2);
+
+        let data: RadarData = RadarData(sets);
+        data.setValueTextSize(20.0);
+        data.setDrawValues(false);
+        data.setValueTextColor(0xffffff);
+        this.model.setData(data);
+    }
+
+    func build() {
+        Column() {
+            Column() {
+                RadarChart(model: this.model)
+            }
+        }
+    }
+}
+
+class valueFormatter <: IAxisValueFormatter {
+    private var mActivities: Array<String> = ["Burger", "Steak", "Salad", "Pasta", "Pizza"];
+
+    public func getFormattedValue(value: Float64, axis: AxisBase): String {
+        return this.mActivities[Int64(floor(Float64(Int64(value) % (this.mActivities.size))))];
+    }
+}
+```
