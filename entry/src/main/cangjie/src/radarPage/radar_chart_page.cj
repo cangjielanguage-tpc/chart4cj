@@ -81,21 +81,11 @@ class RadarChartPage {
 
         let set1: RadarDataSet = RadarDataSet(entries1, "Last Week");
         set1.setColorByColor(UInt32(ChartColor.rgb(103, 110, 129)));
-        set1.setFillColor(UInt32(ChartColor.rgb(103, 110, 129)));
-        set1.setDrawFilled(true);
-        set1.setFillAlpha(180.0);
         set1.setLineWidth(2.0);
-        set1.setDrawHighlightCircleEnabled(true);
-        set1.setDrawHighlightIndicators(false);
 
         let set2: RadarDataSet = RadarDataSet(entries2, "This Week");
         set2.setColorByColor(UInt32(ChartColor.rgb(121, 162, 175)));
-        set2.setFillColor(UInt32(ChartColor.rgb(121, 162, 175)));
-        set2.setDrawFilled(true);
-        set2.setFillAlpha(180.0);
         set2.setLineWidth(2.0);
-        set2.setDrawHighlightCircleEnabled(true);
-        set2.setDrawHighlightIndicators(false);
 
         let sets: ArrayList<IRadarDataSet> = ArrayList<IRadarDataSet>();
         sets.append(set1);
