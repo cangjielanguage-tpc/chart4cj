@@ -134,72 +134,11 @@ class CustomGridLineChartPage {
         list.append(GridColorSetter("蓝色:", UInt32(0x0000FF), "blue"))
         return list
     }
-    @Builder
-    func gridLineSettings() {
-        Row() {
-            Text("默认网格线设置： ")
-            ForEach(
-                getArrData(),
-                itemGeneratorFunc: {
-                    item: GridColorSetter, idx: Int64 => Row() {
-                        Text(item.colorText)
-                        Radio(value: item.colorVal.toString(), group: "gridValue").checked(false).onChange(
-                            {
-                            isChecked: Bool => if (isChecked) {
-                                let yAxis = this.model.getAxisLeft()
-                                if (let Some(y) <- yAxis) {
-                                    y.setGridColor(Color(UInt32.parse(item.color)))
-                                    y.setGridLineWidth(0.6)
-                                    y.setGridDashedLine(DashPathEffect([2, 2], 1))
-                                    this.model.invalidate()
-                                }
-                            }
-                        })
-                    }
-                }
-            )
-        }.alignSelf(ItemAlign.Start)
-
-        Row() {
-            Text("自定义网格线:")
-            Checkbox(name: "customGridLine", group: "gridLine").select(false).onChange(
-                {
-                    isChecked: Bool =>
-                    if (isChecked) {
-                        // 竖向网格线，x轴刻度为8的位置
-                        this.xAxis().addGridLine(GridLineConfig(8.0, 0x0000FF, 0.6, DashPathEffectConfig(5, 10, 2)))
-                        // 横向网格线，y轴刻度为35的位置
-                        this.leftAxis().addGridLine(
-                            GridLineConfig(35.0, 0xFF0000, 1.0, Option<DashPathEffectConfig>.None))
-
-                        this.leftAxis().addGridLine(
-                            GridLineConfig(45.0, 0x999999, 1.0, Option<DashPathEffectConfig>.None))
-                        this.leftAxis().addGridLine(
-                            GridLineConfig(55.0, 0x0000FF, 1.0, Option<DashPathEffectConfig>.None))
-                    } else {
-                        let verticalLines = this.xAxis().getGridLines()
-                        let horizontalLines = this.leftAxis().getGridLines()
-                        verticalLines.clear()
-                        horizontalLines.clear()
-                    }
-                    this.model.invalidate()
-                }
-            )
-        }.alignSelf(ItemAlign.Start)
-    }
 
     func build() {
         Column {
             Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
             BarChart(model: this.model)
-            Divider().width(1).padding(top: 5)
-            Scroll() {
-                Stack() {
-                    Column() {
-                        this.gridLineSettings()
-                    }
-                }.align(Alignment.TopEnd)
-            }
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }

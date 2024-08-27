@@ -5,8 +5,6 @@
   "main": "",
   "author": "",
   "license": "",
-  "dependencies": {
-    "mpchart": "file:../mpchart"
-  }
+  "dependencies": {}
 }
 
