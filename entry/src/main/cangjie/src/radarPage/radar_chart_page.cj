@@ -16,7 +16,7 @@ class RadarChartPage {
     protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
         description.setEnabled(true);
-        description.setText("this is radar")
+        //description.setText("this is radar")
         description.setPosition(200.0, 200.0)
         description.setTextColor(Color(0xffffff))
         description.setTextSize(15.0)
@@ -38,7 +38,7 @@ class RadarChartPage {
         this.model.setWebLineWidthInner(0.3);
         this.model.setWebColorInner(0xFFCCCCCC);
         this.model.setExtraTopOffset(-100.0);
-//        this.model.animateXY(2000, 2000)
+        this.model.animateXY(2000, 2000)
 
         let xAxis: ?XAxis = this.model.getXAxis()
         if (let Some(xAxis) <- xAxis) {

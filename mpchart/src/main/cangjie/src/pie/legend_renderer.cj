@@ -220,7 +220,6 @@ public class LegendRenderer <: Renderer {
                         }
                     }
                 }
-
                 match (this.mLegend) {
                     case Some(l) =>
                         l.setEntries(this.computedEntries)
@@ -362,20 +361,13 @@ public class LegendRenderer <: Renderer {
                 match (verticalAlignment) { // "BOTTOM"
                     case LegendVerticalAlignment.TOP =>
                         posY = yoffset
-                        AppLog.info("2.0 posY(${posY})= yoffset(${yoffset})")
 
                     case LegendVerticalAlignment.BOTTOM => if (let Some(handle) <- this.mViewPortHandler) {
                         posY = handle.getChartHeight() - yoffset - this.mLegend().mNeededHeight
-                        AppLog.info(
-                            "2.1 posY(${posY})= mViewPortHandler.getChartHeight(${handle.getChartHeight()})-mNeededHeight(${this.mLegend().mNeededHeight})-yoffset(${yoffset})"
-                        )
                     }
 
                     case LegendVerticalAlignment.CENTER => if (let Some(handle) <- this.mViewPortHandler) {
                         posY = (handle.getChartHeight() - this.mLegend().mNeededHeight) / 2.0 + yoffset
-                        AppLog.info(
-                            "2.1 posY(${posY})= mViewPortHandler.getChartHeight(${handle.getChartHeight()})-mNeededHeight/2(${this.mLegend().mNeededHeight / 2.0})+yoffset(${yoffset})"
-                        )
                     }
                 }
                 var lineIndex: Int64 = 0
@@ -391,9 +383,6 @@ public class LegendRenderer <: Renderer {
                     if (i < calculatedLabelBreakPoints.size && calculatedLabelBreakPoints.get(i)()) {
                         posX = originPosX
                         posY += labelLineHeight + labelLineSpacing
-                        AppLog.info(
-                            "3.0 i(${i}) posX=${posX} posY(${posY})=labelLineHeight(${labelLineHeight})+labelLineSpacing(${labelLineSpacing})"
-                        )
                     }
 
                     if (posX == originPosX && horizontalAlignment == LegendHorizontalAlignment.CENTER && // "LEFT"
@@ -415,36 +404,38 @@ public class LegendRenderer <: Renderer {
                         }
 
                         this.drawForm(c, posX, posY + formYOffset, e, this.mLegend())
-                        AppLog.info("drawForm posX = ${posX}")
 
                         if (direction == LegendDirection.LEFT_TO_RIGHT) { // "LEFT_TO_RIGHT"
-                            AppLog.info("3.2 i(${i}) posX(${posX})+=formSize(${formSize})")
                             posX += formSize
                         }
                     }
                     if (!isStacked) {
                         if (drawingForm) {
-                            AppLog.info("3.3 i(${i}) posX(${posX})+=formToTextSpace(${formToTextSpace})")
                             posX += if (direction == LegendDirection.RIGHT_TO_LEFT) {
                                 -formToTextSpace
                             } else {
                                 formToTextSpace
                             }
                         }
+
                         if (direction == LegendDirection.RIGHT_TO_LEFT) {
-                            posX -= calculatedLabelSizes.get(i)().width
+                            if(let Some(labelSize) <- calculatedLabelSizes.get(i)) {
+                                posX -= labelSize.width
+                            } else {
+                                posX -= 0.0
+                            }
                         }
 
                         this.drawLabel(c, posX, posY + labelLineHeight, e.label)
-                        AppLog.info("drawLabel posX = ${posX}, e.label = ${e.label}}")
 
                         if (direction == LegendDirection.LEFT_TO_RIGHT) {
-                            AppLog.info(
-                                "3.5 i(${i}) posX(${posX})+=calcTextWidth(${Utils.calcTextWidth(c, this.mLegendLabelPaint, e.label)})"
-                            )
-                            posX += calculatedLabelSizes.get(i)().width
+                            if(let Some(labelSize) <- calculatedLabelSizes.get(i)) {
+                                posX += labelSize.width
+                            } else {
+                                posX += 0.0
+                            }
+
                         }
-                        AppLog.info("3.6 i(${i}) posX(${posX})+=xEntrySpace(${xEntrySpace}) stackSpace(${stackSpace})")
                         posX += if (direction == LegendDirection.RIGHT_TO_LEFT) {
                             -xEntrySpace
                         } else {
@@ -646,7 +637,6 @@ public class LegendRenderer <: Renderer {
      * @param label the label to draw
      */
     func drawLabel(c: CanvasRenderingContext2D, x: Float64, y: Float64, label: String): Unit {
-        AppLog.info("-------------------sLabels drawLabel: " + label)
         Utils.resetContext2DStyle(c, this.mLegendLabelPaint)
         c.fillText(label, x, y)
     }

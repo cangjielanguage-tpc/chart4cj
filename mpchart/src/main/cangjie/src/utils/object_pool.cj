@@ -94,16 +94,6 @@ public class ObjectPool<T> where T <: Poolable {
     }
 
     public func recycle(object: T): Unit {
-        if (object.currentOwnerId != Poolable.NO_OWNER) {
-            if (object.currentOwnerId == this.poolId) {
-                throw IllegalArgumentException("The object passed is already stored in this pool!")
-            } else {
-                throw IllegalArgumentException(
-                    "The object to recycle already belongs to poolId ${object.currentOwnerId} . Object cannot belong to two different pool instances simultaneously!"
-                )
-            }
-        }
-
         this.objectsPointer++
         if (this.objectsPointer >= objects.size) {
             this.resizePool()

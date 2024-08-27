@@ -191,8 +191,9 @@ public open class YAxisRenderer <: AxisRenderer {
         this.mGridClippingRect.set(this.mViewPortHandler().getContentRect().left,
             this.mViewPortHandler().getContentRect().top, this.mViewPortHandler().getContentRect().right,
             this.mViewPortHandler().getContentRect().bottom)
-
-        this.mGridClippingRect.inset(0.0, -this.mAxis.getGridLineWidth(), 0.0, -this.mAxis.getGridLineWidth())
+        if (let Some(mAxis) <- this.mAxis) {
+            this.mGridClippingRect.inset(0.0, -mAxis.getGridLineWidth(), 0.0, -mAxis.getGridLineWidth())
+        }
 
         return this.mGridClippingRect
     }

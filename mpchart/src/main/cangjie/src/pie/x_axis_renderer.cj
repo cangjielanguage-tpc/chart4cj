@@ -17,10 +17,12 @@ public open class XAxisRenderer <: AxisRenderer {
         this.mAxisLabelPaint.setTextSize(10.0)
     }
     protected func setupGridPaint() {
-        this.mGridPaint.setColor(this.mXAxis.getGridColor())
-        this.mGridPaint.setStrokeWidth(this.mXAxis.getGridLineWidth())
-        let dashPathEffect = this.mAxis.getGridDashPathEffect()
-        this.mGridPaint.setDashPathEffect(dashPathEffect)
+        if (let Some(mAxis) <- this.mAxis) {
+            this.mGridPaint.setColor(mXAxis.getGridColor())
+            this.mGridPaint.setStrokeWidth(mXAxis.getGridLineWidth())
+            let dashPathEffect = mAxis.getGridDashPathEffect()
+            this.mGridPaint.setDashPathEffect(dashPathEffect)
+        }
     }
 
     public open func computeAxis(min: Float64, max: Float64, inverted: Bool) {
@@ -239,7 +241,7 @@ public open class XAxisRenderer <: AxisRenderer {
     protected var mRenderGridLinesBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
 
     public func renderGridLines(c: CanvasRenderingContext2D): Unit {
-        if (!this.mXAxis.isDrawGridLinesEnabled() || !this.mXAxis.isEnabled()) {
+        if (this.mAxis.isNone() || !this.mXAxis.isDrawGridLinesEnabled() || !this.mXAxis.isEnabled()) {
             return
         }
         c.save()
@@ -249,7 +251,7 @@ public open class XAxisRenderer <: AxisRenderer {
         c.closePath()
         c.clip()
 
-        if (this.mRenderGridLinesBuffer.size != Int64(this.mAxis.mEntryCount * 2.0)) {
+        if (this.mRenderGridLinesBuffer.size != Int64(this.mAxis().mEntryCount * 2.0)) {
             this.mRenderGridLinesBuffer = Array<Float64>(Int64(this.mXAxis.mEntryCount * 2.0), item: 0.0)
         }
         let positions: Array<Float64> = this.mRenderGridLinesBuffer
@@ -283,8 +285,9 @@ public open class XAxisRenderer <: AxisRenderer {
                 m.getContentRect().right, m.getContentRect().bottom)
             case _ => ()
         }
-
-        this.mGridClippingRect.inset(-this.mAxis.getGridLineWidth(), 0.0, -this.mAxis.getGridLineWidth(), 0.0)
+        if (let Some(mAxis) <- this.mAxis) {
+            this.mGridClippingRect.inset(-mAxis.getGridLineWidth(), 0.0, -mAxis.getGridLineWidth(), 0.0)
+        }
 
         return this.mGridClippingRect
     }
@@ -338,8 +341,9 @@ public open class XAxisRenderer <: AxisRenderer {
                     this.mViewPortHandler().getContentRect().top, this.mViewPortHandler().getContentRect().right,
                     this.mViewPortHandler().getContentRect().bottom)
             }
-
-            this.mGridClippingRect.inset(-this.mAxis.getGridLineWidth(), 0.0, -this.mAxis.getGridLineWidth(), 0.0)
+            if (let Some(mAxis) <- this.mAxis) {
+                this.mGridClippingRect.inset(-mAxis.getGridLineWidth(), 0.0, -mAxis.getGridLineWidth(), 0.0)
+            }
 
             position[0] = l.getLimit()
             position[1] = 0.0

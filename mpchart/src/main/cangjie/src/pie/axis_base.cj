@@ -319,8 +319,9 @@ public abstract class AxisBase <: ComponentBase {
             countt = this.getAxisMaxLabels()
         }
         if (countt < this.getAxisMinLabels()) {
-            this.mLabelCount = countt
+            countt = this.getAxisMinLabels()
         }
+        this.mLabelCount = countt
         this.mForceLabels = false
         if (let Some(f) <- force) {
             this.mForceLabels = f

@@ -162,8 +162,10 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
                 this.mViewPortHandler().getContentRect().top, this.mViewPortHandler().getContentRect().right,
                 this.mViewPortHandler().getContentRect().bottom)
         }
+        if (let Some(mAxis) <- this.mAxis) {
+            this.mGridClippingRect.inset(-mAxis.getGridLineWidth(), 0.0, -mAxis.getGridLineWidth(), 0.0)
+        }
 
-        this.mGridClippingRect.inset(-this.mAxis.getGridLineWidth(), 0.0, -this.mAxis.getGridLineWidth(), 0.0)
         return this.mGridClippingRect
     }
 
