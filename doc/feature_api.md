@@ -1573,22 +1573,6 @@ public abstract class AxisBase<: ComponentBase {
     public func setLabelCount (count: Int64, force: ?Bool): Unit
     
     /*
-     * 是否设置轴上的粒度显示,默认false
-     * 
-     * 参数 enabled - true/false
-     * 返回值 Unit 
-     */
-    public func setGranularityEnabled (enabled: Bool): Unit
-    
-    /*
-     * 放大时设置轴上的最小间隔,默认值1.0
-     * 
-     * 参数 granularity - 最小间隔
-     * 返回值 Unit 
-     */
-    public func setGranularity (granularity: Float64): Unit
-    
-    /*
      * 添加限制线
      * 
      * 参数 l - 限制线
@@ -3572,7 +3556,6 @@ class HorizontalBarChartPage {
         if (let Some(xaxis) <- this.xAxis) {
             xaxis.setPosition(XAxisPosition.BOTTOM)
             xaxis.setDrawGridLines(false)
-            xaxis.setGranularity(1.0)
             xaxis.setLabelCount(7, Option<Bool>.None)
             xaxis.setDrawAxisLine(true)
         }
@@ -4234,7 +4217,6 @@ class BubbleChartPage {
         if (let Some(x) <- xAxis) {
             x.setPosition(XAxisPosition.BOTTOM)
             x.setDrawGridLines(false)
-            x.setGranularity(1.0)
             x.setLabelCount(7, false)
         }
 
@@ -6479,7 +6461,6 @@ class ScatterChartPage {
         if (let Some(xAxis) <- xAxis) {
             xAxis.setPosition(XAxisPosition.BOTTOM);
             xAxis.setDrawGridLines(false);
-            xAxis.setGranularity(1.0);
             xAxis.setLabelCount(7, false);
         }
 
@@ -6722,6 +6703,13 @@ public class RadarChartModel<: PieRadarChartBaseModel<RadarData,IRadarDataSet,Ra
      * 返回值 Unit 
      */
     public func onDraw (canvas: CanvasRenderingContext2D)
+    
+    /*
+     * 获取雷达图 Y轴
+     *
+     * 返回值 YAxis - Y轴
+     */
+    public getYAxis(): YAxis
         
     /*
      * 设置主网线的宽度，默认 2.5
@@ -6873,7 +6861,6 @@ class RadarChartPage {
             xAxis.setDrawGridLines(false);
             xAxis.setYOffset(0.0);
             xAxis.setXOffset(0.0);
-            xAxis.setGranularity(1.0);
             xAxis.setLabelCount(7, false);
             xAxis.setValueFormatter(valueFormatter());
             xAxis.setTextColor(Color(0xffffff));
