@@ -23,7 +23,6 @@ class ScatterChartPage {
         description.setEnabled(true)
 
         this.model.setMaxVisibleValueCount(160);
-        this.model.setPinchZoom(false);
         this.model.setDrawGridBackground(false);
         this.model.animateXY(2000, 2000)
 
@@ -31,7 +30,6 @@ class ScatterChartPage {
         if (let Some(xAxis) <- xAxis) {
             xAxis.setPosition(XAxisPosition.BOTTOM);
             xAxis.setDrawGridLines(false);
-            xAxis.setGranularity(1.0);
             xAxis.setLabelCount(7, false);
         }
 

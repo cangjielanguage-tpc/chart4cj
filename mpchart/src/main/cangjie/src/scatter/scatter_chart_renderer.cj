@@ -50,7 +50,7 @@ public class ScatterChartRenderer <: LineScatterCandleRadarRenderer {
                 ))
 
             for (i in 0..maxs) {
-                let e = dataSet.getEntryForIndex(i)
+                let e = dataSet.getEntryForIndex(i)()
 
                 this.mPixelBuffer[0] = e.getX()
                 this.mPixelBuffer[1] = e.getY() * phaseY
@@ -122,7 +122,7 @@ public class ScatterChartRenderer <: LineScatterCandleRadarRenderer {
                         continue
                     }
 
-                    let entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds().mins)
+                    let entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds().mins)()
 
                     if (dataSet.isDrawValuesEnabled()) {
                         let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()

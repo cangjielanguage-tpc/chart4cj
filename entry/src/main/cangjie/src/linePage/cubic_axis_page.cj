@@ -18,7 +18,6 @@ class CubicAxisPage {
 
         description.setEnabled(false)
 
-        this.model.setPinchZoom(false)
         this.model.setDrawGridBackground(false)
 
         this.xAxis = this.model.getXAxis()
@@ -26,7 +25,6 @@ class CubicAxisPage {
             xAxis.setEnabled(false) //X轴是否显示
             xAxis.setPosition(XAxisPosition.TOP)
             xAxis.setDrawGridLines(true) //纵向线格显示
-            xAxis.setGranularity(1.0)
             xAxis.setLabelCount(6, false) //设置X轴坐标个数
         }
 

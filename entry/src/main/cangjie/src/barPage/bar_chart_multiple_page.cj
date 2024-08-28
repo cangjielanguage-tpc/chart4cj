@@ -36,9 +36,6 @@ class BarChartMultiplePage {
         // if more than 40 entries are displayed in the this.model, no values will be drawn
         this.model.setMaxVisibleValueCount(60)
 
-        // scaling can now only be done on x- and y-axis separately
-        this.model.setPinchZoom(false)
-
         this.model.setDrawGridBackground(false)
         this.model.setGridBackgroundColor(0x500000ff)
         this.model.setDrawBarShadow(false)

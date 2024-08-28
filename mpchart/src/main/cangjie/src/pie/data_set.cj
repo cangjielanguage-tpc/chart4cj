@@ -366,8 +366,8 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
         return None
     }
 
-    public func getEntryForIndex(index: Int64): E {
-        return this.mEntries().get(index)()
+    public func getEntryForIndex(index: Int64): ?E {
+        return this.mEntries().get(index)
     }
 
     private func getEntryIndexFunc(xValue: Float64): Int64 {

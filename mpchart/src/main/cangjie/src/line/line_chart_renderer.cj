@@ -93,7 +93,7 @@ public class LineChartRenderer <: LineRadarRenderer {
         // cubicPath.reset()
 
         if (this.mXBounds().range >= 1) {
-            var prev = dataSet.getEntryForIndex(this.mXBounds().mins)
+            var prev = dataSet.getEntryForIndex(this.mXBounds().mins)()
             var cur = prev
 
             Utils.resetContext2DStyle(c, this.mRenderPaint)
@@ -102,7 +102,7 @@ public class LineChartRenderer <: LineRadarRenderer {
 
             for (j in this.mXBounds().mins + 1..=this.mXBounds().range + this.mXBounds().mins) {
                 prev = cur
-                cur = dataSet.getEntryForIndex(j)
+                cur = dataSet.getEntryForIndex(j)()
 
                 let cpx: Float64 = (prev.getX()) + (cur.getX() - prev.getX()) / 2.0
 
@@ -161,15 +161,17 @@ public class LineChartRenderer <: LineRadarRenderer {
             let firstIndex: Int64 = this.mXBounds().mins + 1
             let lastIndex: Int64 = this.mXBounds().mins + this.mXBounds().range
 
-            var prevPrev: EntryOhos
-            var prev: EntryOhos = dataSet.getEntryForIndex(max(firstIndex - 2, 0))
-            var cur: EntryOhos = dataSet.getEntryForIndex(max(firstIndex - 1, 0))
-            var next: EntryOhos = cur
+            var prevPrev: ?EntryOhos
+            var prev: ?EntryOhos = dataSet.getEntryForIndex(max(firstIndex - 2, 0))
+            var cur: ?EntryOhos = dataSet.getEntryForIndex(max(firstIndex - 1, 0))
+            var next: ?EntryOhos = cur
             var nextIndex: Int64 = -1
-
+            if(cur.isNone()) {
+                return
+            }
             Utils.resetContext2DStyle(c, this.mRenderPaint)
             // let the spline start
-            cubicPath.moveTo(cur.getX(), cur.getY() * phaseY)
+            cubicPath.moveTo(cur().getX(), cur().getY() * phaseY)
 
             for (j in this.mXBounds().mins + 1..=this.mXBounds().range + this.mXBounds().mins) {
                 prevPrev = prev
@@ -187,18 +189,18 @@ public class LineChartRenderer <: LineRadarRenderer {
                 }
                 next = dataSet.getEntryForIndex(nextIndex)
 
-                prevDx = (cur.getX() - prevPrev.getX()) * intensity
-                prevDy = (cur.getY() - prevPrev.getY()) * intensity
-                curDx = (next.getX() - prev.getX()) * intensity
-                curDy = (next.getY() - prev.getY()) * intensity
+                prevDx = (cur().getX() - prevPrev().getX()) * intensity
+                prevDy = (cur().getY() - prevPrev().getY()) * intensity
+                curDx = (next().getX() - prev().getX()) * intensity
+                curDy = (next().getY() - prev().getY()) * intensity
 
                 cubicPath.bezierCurveTo(
-                    prev.getX() + prevDx,
-                    (prev.getY() + prevDy) * phaseY,
-                    cur.getX() - curDx,
-                    (cur.getY() - curDy) * phaseY,
-                    cur.getX(),
-                    cur.getY() * phaseY
+                    prev().getX() + prevDx,
+                    (prev().getY() + prevDy) * phaseY,
+                    cur().getX() - curDx,
+                    (cur().getY() - curDy) * phaseY,
+                    cur().getX(),
+                    cur().getY() * phaseY
                 )
             }
         }
@@ -230,8 +232,8 @@ public class LineChartRenderer <: LineRadarRenderer {
         let fillMin: Float64 = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart)
         var splineTemp = spline
 
-        splineTemp.lineTo(dataSet.getEntryForIndex(bounds.mins + bounds.range).getX(), fillMin)
-        splineTemp.lineTo(dataSet.getEntryForIndex(bounds.mins).getX(), fillMin)
+        splineTemp.lineTo(dataSet.getEntryForIndex(bounds.mins + bounds.range)().getX(), fillMin)
+        splineTemp.lineTo(dataSet.getEntryForIndex(bounds.mins)().getX(), fillMin)
         splineTemp.closePath()
 
         // TODO 当前UI不支持 Matrix2D splineTemp = trans.pathValueToPixel(splineTemp)
@@ -297,24 +299,29 @@ public class LineChartRenderer <: LineRadarRenderer {
             }
             let maxs = this.mXBounds().mins + this.mXBounds().range
             for (j in this.mXBounds().mins..maxs) {
-                var e: EntryOhos = dataSet.getEntryForIndex(j)
+                var e: ?EntryOhos = dataSet.getEntryForIndex(j)
+                if(e.isNone()) {
+                    continue
+                }
 
-                this.mLineBuffer[0] = e.getX()
-                this.mLineBuffer[1] = e.getY() * phaseY
+                this.mLineBuffer[0] = e().getX()
+                this.mLineBuffer[1] = e().getY() * phaseY
 
                 if (j < this.mXBounds().maxs) {
                     e = dataSet.getEntryForIndex(j + 1)
-
+                    if(e.isNone()) {
+                        break
+                    }
                     if (isDrawSteppedEnabled) {
-                        this.mLineBuffer[2] = e.getX()
+                        this.mLineBuffer[2] = e().getX()
                         this.mLineBuffer[3] = this.mLineBuffer[1]
                         this.mLineBuffer[4] = this.mLineBuffer[2]
                         this.mLineBuffer[5] = this.mLineBuffer[3]
-                        this.mLineBuffer[6] = e.getX()
-                        this.mLineBuffer[7] = e.getY() * phaseY
+                        this.mLineBuffer[6] = e().getX()
+                        this.mLineBuffer[7] = e().getY() * phaseY
                     } else {
-                        this.mLineBuffer[2] = e.getX()
-                        this.mLineBuffer[3] = e.getY() * phaseY
+                        this.mLineBuffer[2] = e().getX()
+                        this.mLineBuffer[3] = e().getY() * phaseY
                     }
                 } else {
                     this.mLineBuffer[2] = this.mLineBuffer[0]
@@ -369,10 +376,12 @@ public class LineChartRenderer <: LineRadarRenderer {
                 )
             }
 
-            var e1: EntryOhos
-            var e2: EntryOhos
+            var e1: ?EntryOhos
+            var e2: ?EntryOhos
 
             e1 = dataSet.getEntryForIndex(this.mXBounds().mins)
+            if(e1.isSome()) {
+
 
             var j = 0
             for (x in this.mXBounds().mins..=this.mXBounds().range + this.mXBounds().mins) {
@@ -383,24 +392,28 @@ public class LineChartRenderer <: LineRadarRenderer {
                 })
                 e2 = dataSet.getEntryForIndex(x)
 
-                this.mLineBuffer[j] = e1.getX()
+                if(e1.isNone() || e2.isNone()) {
+                    continue
+                }
+
+                this.mLineBuffer[j] = e1().getX()
                 j++
-                this.mLineBuffer[j] = e1.getY() * phaseY
+                this.mLineBuffer[j] = e1().getY() * phaseY
                 j++
 
                 if (isDrawSteppedEnabled) {
-                    this.mLineBuffer[j] = e2.getX()
+                    this.mLineBuffer[j] = e2().getX()
                     j += 1
-                    this.mLineBuffer[j] = e1.getY() * phaseY
+                    this.mLineBuffer[j] = e1().getY() * phaseY
                     j += 1
-                    this.mLineBuffer[j] = e2.getX()
+                    this.mLineBuffer[j] = e2().getX()
                     j += 1
-                    this.mLineBuffer[j] = e1.getY() * phaseY
+                    this.mLineBuffer[j] = e1().getY() * phaseY
                     j += 1
                 }
-                this.mLineBuffer[j] = e2.getX()
+                this.mLineBuffer[j] = e2().getX()
                 j += 1
-                this.mLineBuffer[j] = e2.getY() * phaseY
+                this.mLineBuffer[j] = e2().getY() * phaseY
                 j += 1
             }
 
@@ -425,6 +438,7 @@ public class LineChartRenderer <: LineRadarRenderer {
                 canvas.closePath()
             }
         }
+            }
         this.mRenderPaint.setDashPathEffect(Option<DashPathEffect>.None)
     }
 
@@ -513,7 +527,7 @@ public class LineChartRenderer <: LineRadarRenderer {
 
         filled = Path2D()
 
-        let entry: EntryOhos = dataSet.getEntryForIndex(startIndex)
+        let entry: EntryOhos = dataSet.getEntryForIndex(startIndex)()
 
         filled.moveTo(entry.getX(), fillMin)
         filled.lineTo(entry.getX(), entry.getY() * phaseY)
@@ -602,7 +616,7 @@ public class LineChartRenderer <: LineRadarRenderer {
                         !this.mViewPortHandler().isInBoundsY(y)) {
                         continue
                     }
-                    let entry: EntryOhos = dataSet.getEntryForIndex(j / 2 + this.mXBounds().mins)
+                    let entry: EntryOhos = dataSet.getEntryForIndex(j / 2 + this.mXBounds().mins)()
                     if (dataSet.isDrawValuesEnabled()) {
                         let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
                         if (valueFormatter.isSome()) {
@@ -690,10 +704,13 @@ public class LineChartRenderer <: LineRadarRenderer {
             let boundsRangeCount: Int64 = this.mXBounds().range + this.mXBounds().mins
 
             for (j in this.mXBounds().mins..=boundsRangeCount) {
-                let e: EntryOhos = dataSet.getEntryForIndex(j)
+                let e: ?EntryOhos = dataSet.getEntryForIndex(j)
+                if(e.isNone()) {
+                    break
+                }
 
-                this.mCirclesBuffer[0] = e.getX()
-                this.mCirclesBuffer[1] = e.getY() * phaseY
+                this.mCirclesBuffer[0] = e().getX()
+                this.mCirclesBuffer[1] = e().getY() * phaseY
 
                 trans?.pointValuesToPixel(this.mCirclesBuffer)
 

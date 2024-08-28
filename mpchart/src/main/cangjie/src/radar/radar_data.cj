@@ -24,8 +24,13 @@ public class RadarData <: ChartData<IRadarDataSet, RadarEntry> {
         return this.mLabels
     }
 
-    public func getEntryForHighlight(highlight: Highlight): EntryOhos {
-        let dataSet = this.getDataSetByIndex(highlight.getDataSetIndex())
-        return dataSet().getEntryForIndex(Int64(floor(highlight.getX())))
+    public func getEntryForHighlight(highlight: Highlight): ?RadarEntry {
+        let dataSet: ?IRadarDataSet = this.getDataSetByIndex(highlight.getDataSetIndex())
+        if(let Some(dataSet) <- dataSet) {
+           return dataSet.getEntryForIndex(Int64(floor(highlight.getX())))
+        } else {
+            None
+        }
+
     }
 }

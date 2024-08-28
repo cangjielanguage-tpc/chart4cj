@@ -51,16 +51,18 @@ public open class BarBuffer <: AbstractBuffer<IBarDataSet> {
         let barWidthHalf: Float64 = this.mBarWidth / 2.0
 
         for (i in 0..size) {
-            let e: BarEntry = data.getEntryForIndex(i)
-
-            let x: Float64 = e.getX()
-            var y: Float64 = e.getY()
-            let values: Array<Float64> = e.getYVals()
+            let e: ?BarEntry = data.getEntryForIndex(i)
+            if(e.isNone()) {
+                continue
+            }
+            let x: Float64 = e().getX()
+            var y: Float64 = e().getY()
+            let values: Array<Float64> = e().getYVals()
 
             if (!this.mContainsStacks || values.size == 0) {
                 feedValueIsNone(x, y, barWidthHalf)
             } else {
-                feedValueIsSome(e, values, x, y, barWidthHalf)
+                feedValueIsSome(e(), values, x, y, barWidthHalf)
             }
         }
 

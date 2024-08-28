@@ -42,9 +42,6 @@ class ScrollBarChartPage {
 
         this.model.setMaxVisibleValueCount(40)
 
-        // scaling can now only be done on x- and y-axis separately
-        this.model.setPinchZoom(false)
-
         this.model.setDrawGridBackground(false)
         this.model.setGridBackgroundColor(UInt32(0x500000ff))
         this.model.setDrawBarShadow(false)
@@ -118,7 +115,6 @@ class ScrollBarChartPage {
         values.append(BarEntry(19.0, 96.9))
 
         let dataSet: BarDataSet = BarDataSet(values, "DataSet")
-        dataSet.setHighLightColor(0x000000)
         dataSet.setDrawIcons(false)
         dataSet.setColorByColor(0xFFC0CB)
 
@@ -152,7 +148,6 @@ class ScrollBarChartPage {
         values.append(BarEntry(19.0, 26.8))
 
         let dataSet: BarDataSet = BarDataSet(values, "DataSet")
-        dataSet.setHighLightColor(UInt32(0x000000))
         dataSet.setDrawIcons(false)
         let startColor1: UInt32 = UInt32(0xDC143C)
         let startColor2: UInt32 = UInt32(0xFFF0F5)

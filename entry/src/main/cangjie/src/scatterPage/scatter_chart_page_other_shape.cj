@@ -16,7 +16,6 @@ class ScatterChartPageOtherShape {
     protected override func aboutToAppear() {
 
         this.model.setMaxVisibleValueCount(160);
-        this.model.setPinchZoom(false);
         this.model.setDrawGridBackground(false);
         this.model.animateXY(2000, 2000)
 

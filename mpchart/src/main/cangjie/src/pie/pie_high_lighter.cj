@@ -15,7 +15,7 @@ public class PieHighlighter <: PieRadarHighlighter<PieChartModel, PieData, IPieD
 
         let set: PieDataSet = ((chartData as PieData)().getDataSet() as PieDataSet)()
 
-        let entry: EntryOhos = set.getEntryForIndex(index)
+        let entry: EntryOhos = set.getEntryForIndex(index)()
 
         return Highlight(Float64(index), y: entry.getY(), xPx: x, yPx: y, axis: set.getAxisDependency())
 

@@ -58,7 +58,7 @@ public class RadarHighlighter <: PieRadarHighlighter<RadarChartModel, RadarData,
 
         for (i in 0..this.mChart().getData()().getDataSetCount()) {
             if (let Some(dataSet: IRadarDataSet) <- this.mChart().getData()().getDataSetByIndex(i)) {
-                let entry = dataSet.getEntryForIndex(index)
+                let entry = dataSet.getEntryForIndex(index)()
 
                 let y = entry.getY() - this.mChart().getYChartMin()
 

@@ -9,10 +9,10 @@ public abstract class ViewPortJob <: Poolable {
     protected var xValue: Float64 = 0.0
     protected var yValue: Float64 = 0.0
     protected var mTrans: ?Transformer = Option<Transformer>.None
-    protected var view: ?ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos> = None
+    protected var view: ?ChartModel<BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>, IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos> = None
 
     public init(viewPortHandler: ?ViewPortHandler, xValue: Float64, yValue: Float64, trans: ?Transformer,
-        v: ?ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>) {
+        v: ?ChartModel<BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>, IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>) {
         super()
         this.mViewPortHandler = viewPortHandler
         this.xValue = xValue

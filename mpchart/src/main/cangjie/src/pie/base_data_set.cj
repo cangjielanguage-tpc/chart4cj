@@ -401,7 +401,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> where E <: EntryOhos {
 
     public func contains(e: E): Bool {
         for (i in 0..this.getEntryCount()) {
-            if (refEq(this.getEntryForIndex(i), e)) {
+            if (refEq(this.getEntryForIndex(i)(), e)) {
                 return true
             }
         }
@@ -444,7 +444,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> where E <: EntryOhos {
 
     public func getEntriesForXValue(xValue: Float64): ArrayList<E>
 
-    public func getEntryForIndex(index: Int64): E
+    public func getEntryForIndex(index: Int64): ?E
 
     public func getEntryIndex(xValue: Float64, closestToY: Float64, rounding: Rounding): Int64
 

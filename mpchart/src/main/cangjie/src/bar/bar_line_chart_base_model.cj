@@ -926,8 +926,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func moveViewToX(xValue: Float64): Unit {
         let transformer: ?Transformer = this.getTransformer(AxisDependency.LEFT)
         if (transformer.isSome()) {
-            let job: MoveViewJob = MoveViewJob.getInstance(this.mViewPortHandler, xValue, 0.0, transformer(),
-                (this as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)())
+            let job: MoveViewJob = MoveViewJob.getInstance(this.mViewPortHandler, xValue, 0.0, transformer(),this as ChartModel<BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>, IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>)
             this.addViewportJob(job)
         }
     }
@@ -1405,7 +1404,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func getEntryByTouchPoint(x: Float64, y: Float64): ?EntryOhos {
         let h: ?Highlight = this.getHighlightByTouchPoint(x, y)
         if (h.isSome() && this.mData.isSome()) {
-            return this.mData().getEntryForHighlight(h())
+            return this.mData().getEntryForHighlight(h()) as EntryOhos
         }
         return None
     }
@@ -1731,7 +1730,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             }
             this.mViewPortHandler.centerViewPort(
                 this.mOnSizeChangedBuffer,
-                (this as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)()
+                (this as ChartModel<BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>, IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>)()
             )
         } else {
             this.mViewPortHandler.refresh(this.mViewPortHandler.getMatrixTouch(), this, true)

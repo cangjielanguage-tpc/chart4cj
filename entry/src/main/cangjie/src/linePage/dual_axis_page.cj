@@ -78,14 +78,12 @@ class DualAxisPage {
 
         description.setEnabled(false)
 
-        this.model.setPinchZoom(false)
         this.model.setDrawGridBackground(false)
 
         this.xAxis = this.model.getXAxis()
         if (let Some(x) <- this.xAxis) {
             x.setPosition(XAxisPosition.TOP)
             x.setDrawGridLines(true) //纵向线格显示
-            x.setGranularity(1.0)
             x.setLabelCount(6, false) //设置X轴坐标个数
             x.setTextColor(Color.WHITE)
         }
@@ -97,7 +95,6 @@ class DualAxisPage {
             l.setDrawGridLines(true)
             l.setPosition(YAxisLabelPosition.OUTSIDE_CHART)
             l.setDrawAxisLine(true)
-            l.setGranularityEnabled(true)
         }
 
         this.rightAxis = this.model.getAxisRight()
@@ -109,7 +106,6 @@ class DualAxisPage {
             r.setDrawAxisLine(false)
             r.setDrawLabels(true)
             r.setDrawZeroLine(false)
-            r.setGranularityEnabled(false)
         }
 
         let legend: ?Legend = this.model.getLegend()

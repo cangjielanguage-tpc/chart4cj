@@ -201,7 +201,7 @@ public class PieChartRenderer <: DataRenderer {
         var visibleAngleCount: Int64 = 0 //可见的扇形数量
         for (j in 0..entryCount) {
             // draw only if the value is greater than zero 仅在数值大于零时绘制
-            if ((abs(dataSet.getEntryForIndex(j).getY()) > Utils.FLOAT_EPSILON)) {
+            if ((abs(dataSet.getEntryForIndex(j)().getY()) > Utils.FLOAT_EPSILON)) {
                 visibleAngleCount++
             }
         }
@@ -216,7 +216,7 @@ public class PieChartRenderer <: DataRenderer {
             let sliceAngle: Float64 = drawAngles[j] // 当前扇形的绘制角度
             var innerRadius: Float64 = userInnerRadius // 内圆环半径
 
-            let e: EntryOhos = dataSet.getEntryForIndex(j) // 数据集中的数据点
+            let e: EntryOhos = dataSet.getEntryForIndex(j)() // 数据集中的数据点
 
             // draw only if the value is greater than zero (仅在数值大于零时绘制)
             if (!(abs(e.getY()) > Utils.FLOAT_EPSILON)) {
@@ -489,7 +489,10 @@ public class PieChartRenderer <: DataRenderer {
             iconsOffset.y = Utils.handleDataValues(iconsOffset.y)
 
             for (j in 0..entryCount) {
-                let entry: PiEntry = (dataSet.getEntryForIndex(j) as PiEntry)()
+                let entry: ?PiEntry = dataSet.getEntryForIndex(j)
+                if(entry.isNone()) {
+                    continue
+                }
 
                 if (xIndex == 0) {
                     angle = 0.0
@@ -508,12 +511,12 @@ public class PieChartRenderer <: DataRenderer {
                 let transformedAngle: Float64 = rotationAngle + angle * phaseY
 
                 let value: Float64 = if (this.mChart.isUsePercentValuesEnabled()) {
-                    entry.getY() / yValueSum * 100.0
+                    entry().getY() / yValueSum * 100.0
                 } else {
-                    entry.getY()
+                    entry().getY()
                 }
 
-                let entryLabel: String = entry.getLabel()
+                let entryLabel: String = entry().getLabel()
 
                 let sliceXBase: Float64 = cos(transformedAngle * Utils.FDEG2RAD)
                 let sliceYBase: Float64 = sin(transformedAngle * Utils.FDEG2RAD)
@@ -605,7 +608,7 @@ public class PieChartRenderer <: DataRenderer {
                             c,
                             formatter(),
                             value,
-                            entry,
+                            entry(),
                             0,
                             labelPtx,
                             labelPty,
@@ -620,7 +623,7 @@ public class PieChartRenderer <: DataRenderer {
                             this.drawEntryLabel(c, entryLabel, labelPtx, labelPty + lineHeight / 2.0)
                         }
                     } else if (drawYOutside && formatter.isSome()) {
-                        this.drawValue(c, formatter(), value, entry, 0, labelPtx, labelPty + lineHeight / 2.0,
+                        this.drawValue(c, formatter(), value, entry(), 0, labelPtx, labelPty + lineHeight / 2.0,
                             Color(dataSet.getValueTextColor(j)))
                     }
                 }
@@ -634,7 +637,7 @@ public class PieChartRenderer <: DataRenderer {
 
                     // draw everything, depending on settings
                     if (drawXInside && drawYInside && formatter.isSome()) {
-                        this.drawValue(c, formatter(), value, entry, 0, x, y, Color(dataSet.getValueTextColor(j)))
+                        this.drawValue(c, formatter(), value, entry(), 0, x, y, Color(dataSet.getValueTextColor(j)))
 
                         if (j < data().getEntryCount()) {
                             this.drawEntryLabel(c, entryLabel, x, y + lineHeight)
@@ -644,13 +647,13 @@ public class PieChartRenderer <: DataRenderer {
                             this.drawEntryLabel(c, entryLabel, x, y + lineHeight / 2.0)
                         }
                     } else if (drawYInside && formatter.isSome()) {
-                        this.drawValue(c, formatter(), value, entry, 0, x, y + lineHeight / 2.0,
+                        this.drawValue(c, formatter(), value, entry(), 0, x, y + lineHeight / 2.0,
                             Color(dataSet.getValueTextColor(j)))
                     }
                 }
 
-                if (entry.getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
-                    let icon: ?ChartPixelMap = entry.getIcon()
+                if (entry().getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
+                    let icon: ?ChartPixelMap = entry().getIcon()
                     let x: Float64 = (labelRadius + iconsOffset.y) * sliceXBase + center.x
                     var y: Float64 = (labelRadius + iconsOffset.y) * sliceYBase + center.y
                     y += iconsOffset.x
@@ -864,7 +867,7 @@ public class PieChartRenderer <: DataRenderer {
             var visibleAngleCount: Int64 = 0
             for (j in 0..entryCount) {
                 // draw only if the value is greater than zero
-                if ((abs(set().getEntryForIndex(j).getY()) > Utils.FLOAT_EPSILON)) {
+                if ((abs(set().getEntryForIndex(j)().getY()) > Utils.FLOAT_EPSILON)) {
                     visibleAngleCount++
                 }
             }
@@ -1061,7 +1064,7 @@ public class PieChartRenderer <: DataRenderer {
         for (j in 0..dataSet.getEntryCount()) {
             let sliceAngle: Float64 = drawAngles[j]
 
-            let e: EntryOhos = dataSet.getEntryForIndex(j)
+            let e: EntryOhos = dataSet.getEntryForIndex(j)()
 
             // draw only if the value is greater than zero
             if ((abs(e.getY()) > Utils.FLOAT_EPSILON)) {

@@ -108,7 +108,7 @@ public interface  IDataSet<E> where E <: EntryOhos {
      * @param index
      * @return
      */
-     func getEntryForIndex(index: Int64): E
+     func getEntryForIndex(index: Int64): ?E
 
     /**
      * Returns the first Entry index found at the given x-value with binary

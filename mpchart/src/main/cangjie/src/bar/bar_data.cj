@@ -93,7 +93,7 @@ public class BarData <: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry> {
                     f += barWidthHalf
 
                     if (i < dataSet.getEntryCount() /* && dataSet != undefined*/ ) {
-                        let entry: ?BarEntry = (dataSet.getEntryForIndex(i) as BarEntry)
+                        let entry: ?BarEntry = (dataSet.getEntryForIndex(i)() as BarEntry)
 
                         if (let Some(e) <- entry) {
                             e.setX(f)

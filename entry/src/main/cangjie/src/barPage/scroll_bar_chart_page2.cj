@@ -53,8 +53,6 @@ class ScrollBarChartPage2 {
 
         this.model.setMaxVisibleValueCount(40)
 
-        this.model.setPinchZoom(false)
-
         this.model.setDrawGridBackground(false)
         this.model.setGridBackgroundColor(0x500000ff)
         this.model.setDrawBarShadow(false)
@@ -107,7 +105,6 @@ class ScrollBarChartPage2 {
         values.append(BarEntry(19.0, 96.9))
 
         let dataSet: BarDataSet = BarDataSet(values, "DataSet")
-        dataSet.setHighLightColor(0x000000)
         dataSet.setDrawIcons(false)
         dataSet.setColorByColor(0xFFC0CB)
 

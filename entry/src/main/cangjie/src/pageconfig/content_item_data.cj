@@ -83,6 +83,15 @@ public class ContentItemData {
         ContentItemData.itemData.append(ContentItem("Pie Chart", d: "Simple chart.", pagePath: "PieChartPageReadme"))
         ContentItemData.itemData.append(
             ContentItem("Waterfall Chart", d: "Simple chart.", pagePath: "WaterfallChartPageReadme"))
+        ContentItemData.itemData.append(
+            ContentItem("Scatter Chart", d: "Simple chart.", pagePath: "ScatterChartPageReadme"))
+
+        ContentItemData.itemData.append(
+            ContentItem("Candle Chart", d: "Simple chart.", pagePath: "CandleChartPageReadme"))
+
+        ContentItemData.itemData.append(
+            ContentItem("Radar Chart", d: "Simple chart.", pagePath: "RadarChartPageReadme"))
+
 
         return ContentItemData.itemData
     }

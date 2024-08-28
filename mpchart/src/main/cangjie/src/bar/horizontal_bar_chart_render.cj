@@ -58,8 +58,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
             var x: Float64 = 0.0
 
             for (i in 0..Int64(min((ceil(Float64(dataSet.getEntryCount()) * phaseX)), Float64(dataSet.getEntryCount())))) {
-                let e: BarEntry = dataSet.getEntryForIndex(i)
-
+                let e: BarEntry = dataSet.getEntryForIndex(i)()
                 x = e.getX()
 
                 this.mBarShadowRectBuffer.top = x - barWidthHalf
@@ -226,7 +225,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                             break
                         }
 
-                        let entry: BarEntry = dataSet.getEntryForIndex(j / 4)
+                        let entry: BarEntry = dataSet.getEntryForIndex(j / 4)()
                         let val: Float64 = entry.getY()
                         var formattedValue: String = ""
 
@@ -292,7 +291,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                     var index = 0
 
                     while (index < dataSet.getEntryCount() * Int64(this.mAnimator().getPhaseX())) {
-                        let entry: BarEntry = dataSet.getEntryForIndex(index)
+                        let entry: BarEntry = dataSet.getEntryForIndex(index)()
 
                         let color: UInt32 = dataSet.getValueTextColor(index)
                         let vals: Array<Float64> = entry.getYVals()
