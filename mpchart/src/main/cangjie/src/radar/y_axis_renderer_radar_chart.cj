@@ -12,16 +12,20 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
     }
 
     protected func computeAxisValues(mins: Float64, maxs: Float64): Unit {
+        if (this.mAxis.isNone()) {
+           return;
+        }
+
         let yMin: Float64 = mins
         let yMax: Float64 = maxs
 
-        let labelCount: Int64 = this.mAxis.getLabelCount()
+        let labelCount: Int64 = this.mAxis().getLabelCount()
         let range: Float64 = abs(yMax - yMin)
 
         if (labelCount == 0 || range <= 0.0 || range == Float64.Inf) {
-            this.mAxis.mEntries = ArrayList<Float64>()
-            this.mAxis.mCenteredEntries = ArrayList<Float64>()
-            this.mAxis.mEntryCount = 0.0
+            this.mAxis().mEntries = ArrayList<Float64>()
+            this.mAxis().mCenteredEntries = ArrayList<Float64>()
+            this.mAxis().mEntryCount = 0.0
             return
         }
 
@@ -31,9 +35,9 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
 
         // If granularity is enabled, then do not allow the interval to go below specified granularity.
         // This is used to aUnit repeated values when rounding values for display.
-        if (this.mAxis.isGranularityEnabled()) {
-            interval = if (interval < this.mAxis.getGranularity()) {
-                this.mAxis.getGranularity()
+        if (this.mAxis().isGranularityEnabled()) {
+            interval = if (interval < this.mAxis().getGranularity()) {
+                this.mAxis().getGranularity()
             } else {
                 interval
             }
@@ -56,7 +60,7 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
             }
         }
 
-        let centeringEnabled: Bool = this.mAxis.isCenterAxisLabelsEnabled()
+        let centeringEnabled: Bool = this.mAxis().isCenterAxisLabelsEnabled()
         var n = if (centeringEnabled) {
             1
         } else {
@@ -64,19 +68,19 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
         }
 
         // force label count
-        if (this.mAxis.isForceLabelsEnabled()) {
+        if (this.mAxis().isForceLabelsEnabled()) {
             let step: Float64 = range / Float64(labelCount - 1)
-            this.mAxis.mEntryCount = Float64(labelCount)
+            this.mAxis().mEntryCount = Float64(labelCount)
 
-            if (this.mAxis.mEntries.size < labelCount) {
+            if (this.mAxis().mEntries.size < labelCount) {
                 // Ensure stops contains at least numStops elements.
-                this.mAxis.mEntries = ArrayList<Float64>(labelCount)
+                this.mAxis().mEntries = ArrayList<Float64>(labelCount)
             }
 
             var v: Float64 = mins
 
             for (i in 0..labelCount) {
-                Utils.newSet(this.mAxis.mEntries, i, v)
+                Utils.newSet(this.mAxis().mEntries, i, v)
                 v += step
             }
 
@@ -99,21 +103,22 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
                 Utils.nextUp(floor(yMax / interval) * interval)
             }
 
-            var f: Float64
+            var f: Float64 = first
 
             if (interval != 0.0) {
-                for (f in Int64(first)..=Int64(last) : Int64(interval)) {
+                while(f <= last) {
                     n++
+                    f += interval
                 }
             }
 
             n++
 
-            this.mAxis.mEntryCount = Float64(n)
+            this.mAxis().mEntryCount = Float64(n)
 
-            if (this.mAxis.mEntries.size < n) {
+            if (this.mAxis().mEntries.size < n) {
                 // Ensure stops contains at least numStops elements.
-                this.mAxis.mEntries = ArrayList<Float64>(n)
+                this.mAxis().mEntries = ArrayList<Float64>(n)
             }
             f = first
             var i: Int64 = 0
@@ -121,7 +126,7 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
                 if (f == 0.0) {
                     f = 0.0
                 }
-                Utils.newSet(this.mAxis.mEntries, i, f)
+                Utils.newSet(this.mAxis().mEntries, i, f)
                 f += interval
                 i++
             }
@@ -129,25 +134,25 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
 
         // set decimals
         if (interval < 1.0) {
-            this.mAxis.mDecimals = Int64(ceil(-log10(interval)))
+            this.mAxis().mDecimals = Int64(ceil(-log10(interval)))
         } else {
-            this.mAxis.mDecimals = 0
+            this.mAxis().mDecimals = 0
         }
 
         if (centeringEnabled) {
-            if (this.mAxis.mCenteredEntries.size < n) {
-                this.mAxis.mCenteredEntries = ArrayList<Float64>(n)
+            if (this.mAxis().mCenteredEntries.size < n) {
+                this.mAxis().mCenteredEntries = ArrayList<Float64>(n)
             }
 
-            let offset: Float64 = (this.mAxis.mEntries[1] - this.mAxis.mEntries[0]) / 2.0
+            let offset: Float64 = (this.mAxis().mEntries[1] - this.mAxis().mEntries[0]) / 2.0
 
             for (i in 0..n) {
-                this.mAxis.mCenteredEntries[i] = this.mAxis.mEntries[i] + offset
+                this.mAxis().mCenteredEntries[i] = this.mAxis().mEntries[i] + offset
             }
         }
-        this.mAxis.mAxisMinimum = this.mAxis.mEntries[0]
-        this.mAxis.mAxisMaximum = this.mAxis.mEntries[n - 1]
-        this.mAxis.mAxisRange = abs(this.mAxis.mAxisMaximum - this.mAxis.mAxisMinimum)
+        this.mAxis().mAxisMinimum = this.mAxis().mEntries[0]
+        this.mAxis().mAxisMaximum = this.mAxis().mEntries[n - 1]
+        this.mAxis().mAxisRange = abs(this.mAxis().mAxisMaximum - this.mAxis().mAxisMinimum)
     }
 
     public func renderAxisLabels(c: CanvasRenderingContext2D) {

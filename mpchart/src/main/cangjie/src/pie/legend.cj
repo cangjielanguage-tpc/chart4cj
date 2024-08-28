@@ -207,9 +207,7 @@ public class Legend <: ComponentBase {
      */
     public func setCustom(entries: ArrayList<LegendEntry>): Unit {
         this.mEntries = []
-        for (i in 0..entries.size) {
-            this.mEntries[i] = entries[i]
-        }
+        this.mEntries = entries.toArray()
         this.mIsLegendCustom = true
     }
 
@@ -653,7 +651,6 @@ public class Legend <: ComponentBase {
         let labelLineSpacing: Float64 = Utils.getLineSpacing(labelpaint,  CanvasRenderingContext2D(RenderingContextSettings(antialias: true))) +
             yEntrySpace;
         let contentWidth: Float64 = viewPortHandler.contentWidth() * this.mMaxSizePercent;
-        AppLog.info("contentWidth = ${contentWidth}");
 
         // Start calculating layout
         var maxLineWidth: Float64 = 0.0;

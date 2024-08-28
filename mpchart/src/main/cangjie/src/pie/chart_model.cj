@@ -123,7 +123,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         this.mXAxis = XAxis()
         this.mDescPaint = Paint()
         this.mInfoPaint = Paint()
-        this.mInfoPaint.setColor(Color.RED)
+        this.mInfoPaint.setColor(Color(0xFFA500))
         this.mInfoPaint.setTextAlign(TextAlignStyle.Center)
         this.mInfoPaint.setTextSize(Utils.handleDataValues(12.0))
 
@@ -138,7 +138,6 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
 
         if (let Some(d) <- data) {
             // calculate how many digits are needed
-            // 缺失方法
             this.setupDefaultFormatter(d.getYMin(), d.getYMax())
             if (let Some(md) <- this.mData) {
                 var dataSets = md.getDataSets()
@@ -274,7 +273,6 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         if (this.mData.isNone()) {
             c.clearRect(0, 0, 0, 0)
             let hasText: Bool = !this.strIsEmpty(this.mNoDataText)
-
             if (hasText) {
                 let pt: MPPointF = this.getCenter()
 
@@ -282,11 +280,11 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
                 match (this.mInfoPaint.getTextAlign()) {
                     case TextAlignStyle.Start =>
                         pt.x = 0.0
-                        c.strokeText(this.mNoDataText, pt.x, pt.y)
+                        c.fillText(this.mNoDataText, pt.x, pt.y)
                     case TextAlignStyle.End =>
                         pt.x *= 2.0
-                        c.strokeText(this.mNoDataText, pt.x, pt.y)
-                    case _ => c.strokeText(this.mNoDataText, pt.x, pt.y)
+                        c.fillText(this.mNoDataText, pt.x, pt.y)
+                    case _ => c.fillText(this.mNoDataText, pt.x, pt.y)
                 }
                 return
             }
@@ -297,8 +295,8 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         }
     }
 
-    public func strIsEmpty(str: ?String): Bool {
-        return str.isNone() || str().size == 0
+    public func strIsEmpty(str: String): Bool {
+        return str.size == 0
     }
 
     /**

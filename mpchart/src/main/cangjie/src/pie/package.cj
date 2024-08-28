@@ -18,6 +18,8 @@ internal import std.time.*
 internal import std.convert.*
 internal import ohos.image.*
 
+internal import ohos.hilog.*
+
 extend<T> Option<T> {
     operator func ()(): T {
         this.getOrThrow()
