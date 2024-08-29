@@ -32,9 +32,6 @@ class SineBarChartPage {
         // if more than 40 entries are displayed in the this.model, no values will be drawn
         this.model.setMaxVisibleValueCount(60)
 
-        // scaling can now only be done on x- and y-axis separately
-        this.model.setPinchZoom(false)
-
         this.model.setDrawGridBackground(false)
         this.model.setDrawBarShadow(false)
 
@@ -46,8 +43,6 @@ class SineBarChartPage {
             leftaxis.setAxisMinimum(-2.5)
             leftaxis.setAxisMaximum(2.5)
             leftaxis.setLabelCount(6, false)
-            leftaxis.setGranularityEnabled(true)
-            leftaxis.setGranularity(0.1)
         }
 
         this.rightAxis = this.model.getAxisRight()
@@ -56,7 +51,6 @@ class SineBarChartPage {
             rightaxis.setLabelCount(6, false)
             rightaxis.setAxisMinimum(-2.5)
             rightaxis.setAxisMaximum(2.5)
-            rightaxis.setGranularity(0.1)
         }
 
         this.xAxis = this.model.getXAxis()

@@ -291,12 +291,11 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
      * @param highlight
      * @return the entry that is highlighted
      */
-    public open func getEntryForHighlight(highlight: Highlight): EntryOhos {
+    public open func getEntryForHighlight(highlight: Highlight): ?E {
         if (highlight.getDataSetIndex() >= this.mDataSets.size) {
-            return unsafe { zeroValue<E>() }
+            return None
         } else {
-            // return this.mDataSets[highlight.getDataSetIndex()].getEntryForXValue(highlight.getX(), highlight.getY(), rounding: Rounding.CLOSEST)
-            return unsafe { zeroValue<E>() }
+            return this.mDataSets[highlight.getDataSetIndex()].getEntryForXValue(highlight.getX(), highlight.getY(), rounding: Rounding.CLOSEST)
         }
     }
 

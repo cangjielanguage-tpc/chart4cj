@@ -304,26 +304,24 @@ class BarChartPageReadme {
     private var barData: BarData = BarData()
     private var normalMarker: MarkerView = MarkerView()
 
-    func aboutToAppear(): BarChartModel {
+    protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
         description.setEnabled(false)
 
         let l: ?Legend = this.model.getLegend()
         if (let Some(v) <- l) {
             v.setEnabled(true)
-            v.setOrientation(LegendOrientation.VERTICAL)
-            v.setVerticalAlignment(LegendVerticalAlignment.TOP)
+            v.setOrientation(LegendOrientation.HORIZONTAL)
+            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
             v.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
             v.setDrawInside(true)
         }
 
         // if more than 40 entries are displayed in the this.model, no values will be drawn
         this.model.setMaxVisibleValueCount(60)
-        
         this.model.setDrawGridBackground(false)
         this.model.setGridBackgroundColor(0x500000ff)
         this.model.setDrawBarShadow(false)
-
         this.model.setDrawValueAboveBar(true)
 
         this.leftAxis = this.model.getAxisLeft()
@@ -347,14 +345,11 @@ class BarChartPageReadme {
             xaxis.setLabelCount(5, false)
             xaxis.setPosition(XAxisPosition.BOTTOM)
         }
-
-        this.normalMarker = MarkerView()
+        this.model.setExtraOffsets(-20.0, 20.0, 20.0, 10.0)
 
         if (this.xAxis.isSome() && this.leftAxis.isSome()) {
             this.setData(5, 110)
         }
-
-        return this.model
     }
 
     private func setData(count: Int64, range: Int64): Unit {
@@ -397,13 +392,13 @@ class BarChartPageReadme {
             this.model.notifyDataSetChanged()
         } else {
             set1 = BarDataSet(values1, "Company A")
-            set1().setColorsByArr([UInt32(ChartColor.rgb(104, 241, 175))])
+            set1().setColorsByArr([0x2b89ab])
             set2 = BarDataSet(values2, "Company B")
-            set2().setColorsByArr([UInt32(ChartColor.rgb(164, 228, 251))])
+            set2().setColorsByArr([0xcd4e2e])
             set3 = BarDataSet(values3, "Company C")
-            set3().setColorsByArr([UInt32(ChartColor.rgb(242, 247, 158))])
+            set3().setColorsByArr([0xacc045])
             set4 = BarDataSet(values4, "Company D")
-            set4().setColorsByArr([UInt32(ChartColor.rgb(255, 102, 0))])
+            set4().setColorsByArr([0x224058])
 
             let dataSets: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
             dataSets.append(set1())
@@ -426,7 +421,7 @@ class BarChartPageReadme {
     func build() {
         Column {
             Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
-            BarChart(model: aboutToAppear())
+            BarChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }
@@ -449,33 +444,26 @@ class BubbleChartPageReadme {
     var isDrawValuesEnable: Bool = true
     var titleSelcetString: String = "X"
 
-    public func animate() {
-        if (this.titleSelcetString == "X") {
-            this.model.animateX(2000)
-        } else if (this.titleSelcetString == "Y") {
-            this.model.animateY(2000)
-        } else if (this.titleSelcetString == "XY") {
-            this.model.animateXY(2000, 2000)
-        }
-    }
-
-    func aboutToAppear(): BubbleChartModel {
+    protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
         if (let Some(legend) <- l) {
             legend.setEnabled(true)
+            legend.setOrientation(LegendOrientation.HORIZONTAL)
+            legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
+            legend.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
         }
 
         let description: Description = this.model.getDescription()
         description.setEnabled(false)
 
         this.model.setMaxVisibleValueCount(60)
+        this.model.setPinchZoom(false)
         this.model.setDrawGridBackground(false)
 
         let xAxis: ?XAxis = this.model.getXAxis()
         if (let Some(x) <- xAxis) {
             x.setPosition(XAxisPosition.BOTTOM)
             x.setDrawGridLines(false)
-            x.setGranularity(1.0)
             x.setLabelCount(7, false)
         }
 
@@ -516,7 +504,7 @@ class BubbleChartPageReadme {
         this.setData(5, 50.0)
         this.model.notifyDataSetChanged()
         this.model.setVisibleXRangeMaximum(7.0)
-        return this.model
+        this.model.setExtraOffsets(-20.0, 20.0, 20.0, 10.0)
     }
 
     private func setData(count: Int64, range: Float64): Unit {
@@ -525,30 +513,30 @@ class BubbleChartPageReadme {
         let values3 = ArrayList<BubblesEntry>()
 
         for (i in 0..count) {
-            values1.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
-            )
-            values2.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
-            )
-            values3.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
-            )
+            values1.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range
+            ))
+            values2.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range
+            ))
+            values3.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range
+            ))
         }
 
         let set1: BubbleDataSet = BubbleDataSet(values1, "DS 1")
         set1.setDrawIcons(false)
-        set1.setColorByColor(0x88c12552)
+        set1.setColorByColor(0x2b89ab)
         set1.setIconsOffset(MPPointF(0.0, 0.0))
         set1.setDrawValues(this.isDrawValuesEnable)
 
         let set2: BubbleDataSet = BubbleDataSet(values2, "DS 2")
         set2.setDrawIcons(false)
         set2.setIconsOffset(MPPointF(0.0, 0.0))
-        set2.setColorByColor(0x88ff6600)
+        set2.setColorByColor(0xcd4e2e)
         set2.setDrawValues(this.isDrawValuesEnable)
 
         let set3: BubbleDataSet = BubbleDataSet(values3, "DS 3")
         set3.setDrawIcons(false)
         set3.setIconsOffset(MPPointF(0.0, 0.0))
-        set3.setColorByColor(0x88f5c700)
+        set3.setColorByColor(0xacc045)
         set3.setDrawValues(this.isDrawValuesEnable)
 
         let dataSets = ArrayList<IBubbleDataSet>()
@@ -559,6 +547,8 @@ class BubbleChartPageReadme {
         dataResult.setDrawValues(this.isDrawValuesEnable)
         dataResult.setValueTextSize(8.0)
         dataResult.setValueTextColor(0xffffff)
+        dataResult.setHighlightCircleWidth(1.5)
+        dataResult.setHighlightEnabled(true)
         dataResult.notifyDataChanged()
 
         this.model.setData(dataResult)
@@ -567,7 +557,7 @@ class BubbleChartPageReadme {
     func build() {
         Column() {
             Column() {
-                BubbleChart(model: aboutToAppear())
+                BubbleChart(model: this.model)
             }
         }
     }
@@ -589,116 +579,95 @@ class WaterfallChartPageReadme {
     private var leftAxis: ?YAxis = Option<YAxis>.None
     private var rightAxis: ?YAxis = Option<YAxis>.None
     private var xAxis: ?XAxis = Option<XAxis>.None
-    private var limitLine1: LimitLine = LimitLine(100.0, "100")
-    private var limitLine2: LimitLine = LimitLine(120.0, "Average")
     private var data: WaterfallData = WaterfallData()
     private var normalMarker: MarkerView = MarkerView()
 
-    func aboutToAppear(): WaterfallChartModel {
-
+    protected override func aboutToAppear() {
         let description: ?Description = this.model.getDescription()
         if (let Some(des) <- description) {
-            des.setEnabled(false);
+            des.setEnabled(false)
         }
 
-        let l: ?Legend = this.model.getLegend();
-        if (let Some(legend) <- l) {
-            legend.setEnabled(true);
+        let l: ?Legend = this.model.getLegend()
+        if (let Some(v) <- l) {
+            v.setEnabled(true)
+            v.setOrientation(LegendOrientation.HORIZONTAL)
+            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
+            v.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
+            v.setDrawInside(true)
         }
-        
-        this.model.setMaxVisibleValueCount(40);
-        this.model.setDrawGridBackground(false);
+
+        this.model.setMaxVisibleValueCount(40)
+
+        this.model.setPinchZoom(false)
+
+        this.model.setDrawGridBackground(false)
         this.model.setGridBackgroundColor(0x500000ff)
-        this.model.setDrawBarShadow(false);
-        this.model.setDrawValueAboveBar(false);
+        this.model.setDrawBarShadow(false)
 
-        this.limitLine1 = LimitLine(120.0, "Upper Limit")
-        this.limitLine1.setLineWidth(4.0);
-        this.limitLine1.enableDashedLine(10, 10, 0);
-        this.limitLine1.setLabelPosition(LimitLabelPosition.RIGHT_TOP);
-        this.limitLine1.setTextSize(10.0);
+        this.model.setDrawValueAboveBar(false)
+        this.model.setHighlightFullBarEnabled(false)
+        this.model.setExtraOffsets(-20.0, 20.0, 20.0, 10.0)
 
-        this.limitLine2 = LimitLine(50.0, "Lower Limit")
-        this.limitLine2.setLineWidth(4.0);
-        this.limitLine2.enableDashedLine(10, 10, 0);
-        this.limitLine2.setLineColor(0xFFFF00);
-        this.limitLine2.setLabelPosition(LimitLabelPosition.RIGHT_BOTTOM);
-        this.limitLine2.setTextSize(10.0);
-        
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(laxis) <- this.leftAxis) {
-            laxis.setAxisMinimum(0.0);
-            laxis.setDrawLimitLinesBehindData(false);
-            laxis.setValueFormatter(CustomFormatter());
-            
-            laxis.addLimitLine(this.limitLine1);
-            laxis.addLimitLine(this.limitLine2);
+            laxis.setAxisMinimum(0.0)
+            laxis.setDrawLimitLinesBehindData(false)
+            laxis.setValueFormatter(CustomFormatter())
         }
 
         this.rightAxis = this.model.getAxisRight()
         if (let Some(r) <- this.rightAxis) {
-            r.setEnabled(false);
-            r.setAxisMinimum(0.0);
+            r.setEnabled(false)
+            r.setAxisMinimum(0.0)
         }
 
         this.xAxis = this.model.getXAxis()
         if (let Some(x) <- this.xAxis) {
-            x.setPosition(XAxisPosition.BOTTOM);
+            x.setPosition(XAxisPosition.BOTTOM)
         }
 
         this.normalMarker = MarkerView()
+        this.model.setMarker(this.normalMarker)
+
         this.data = this.getNormalData()
-        this.model.setData(this.data);
-        this.model.setVisibleXRangeMaximum(5.0);
-        return this.model
+        this.model.setData(this.data)
+        this.model.setVisibleXRangeMaximum(5.0)
     }
 
     private func getNormalData(): WaterfallData {
-        let values: ArrayList<WaterfallEntry> = ArrayList<WaterfallEntry>();
-        let h1 = WaterfallHighlight(20.0, 30.0, color: 0x999999);
-        let h2 = WaterfallHighlight(30.0, 40.0, color: 0x999999);
-        let h3 = WaterfallHighlight(40.0, 60.0, color: 0x339933);
-        let h4 = WaterfallHighlight(60.0, 70.0, color: 0xFF0000);
+        let values: ArrayList<WaterfallEntry> = ArrayList<WaterfallEntry>()
+        let h1 = WaterfallHighlight(20.0, 30.0, color: 0xcd4e2e)
+        let h2 = WaterfallHighlight(30.0, 40.0, color: 0xacc045)
+        let h3 = WaterfallHighlight(40.0, 60.0, color: 0x339933)
+        let h4 = WaterfallHighlight(60.0, 70.0, color: 0xacc045)
 
-        values.append(WaterfallEntry(1.0, 10.0, 30.0, highlights: [h1]));
-        values.append(WaterfallEntry(2.0, 15.0, 50.0));
-        values.append(WaterfallEntry(3.0, 20.0, 90.0));
-        values.append(WaterfallEntry(4.0, 5.0, 95.0, highlights: [h2, h3, h4]));
-        values.append(WaterfallEntry(5.0, 5.0, 50.0));
-        values.append(WaterfallEntry(6.0, 45.0, 80.0, highlights: [h2, h3]));
-        values.append(WaterfallEntry(7.0, 60.0, 70.0));
+        values.append(WaterfallEntry(1.0, 10.0, 30.0, highlights: [h1]))
+        values.append(WaterfallEntry(2.0, 15.0, 50.0))
+        values.append(WaterfallEntry(3.0, 20.0, 90.0))
+        values.append(WaterfallEntry(4.0, 5.0, 95.0, highlights: [h2, h3, h4]))
+        values.append(WaterfallEntry(5.0, 5.0, 50.0))
+        values.append(WaterfallEntry(6.0, 45.0, 80.0, highlights: [h2, h3]))
+        values.append(WaterfallEntry(7.0, 60.0, 70.0))
 
         this.dataSet = WaterfallDataSet(values, "DataSet")
-        this.dataSet.setDrawIcons(false);
-        this.dataSet.setColorByColor(0xFFC0CB);
+        this.dataSet.setDrawIcons(false)
+        this.dataSet.setColorByColor(0x2b89ab)
         this.dataSet.setValueTextSize(10.0)
 
-        let dataSetList: ArrayList<IWaterfallDataSet> = ArrayList<IWaterfallDataSet>();
-        dataSetList.append(this.dataSet);
+        let dataSetList: ArrayList<IWaterfallDataSet> = ArrayList<IWaterfallDataSet>()
+        dataSetList.append(this.dataSet)
 
-        let data: WaterfallData = WaterfallData(dataSetList);
-        data.setBarWidth(0.3);
-        return data;
+        let data: WaterfallData = WaterfallData(dataSetList)
+        data.setBarWidth(0.3)
+        return data
     }
 
     func build() {
         Column() {
             Column() {
-                WaterfallChart(model: aboutToAppear())
+                WaterfallChart(model: this.model)
             }
-            Row() {
-                Row() {
-                    Text("普通: ")
-                    Radio(value: "CUBIC_BEZIER", group: "dataType").checked(true).onChange(
-                        {
-                        isChecked: Bool => if (isChecked) {
-                            this.data = this.getNormalData()
-                            this.model.setData(this.data);
-                        }
-                    })
-                }
-                
-            }.alignSelf(ItemAlign.Center)
         }
     }
 }
@@ -706,7 +675,7 @@ class WaterfallChartPageReadme {
 class CustomFormatter <: IAxisValueFormatter {
     public func getFormattedValue(value: Float64, axis: AxisBase): String {
         let str = value.format(".0").split(".")
-        return "${str[0]}%";
+        return "${str[0]}%"
     }
 }
 ```
@@ -721,91 +690,117 @@ class CustomFormatter <: IAxisValueFormatter {
 @Component
 class LineChartNotAxisConfigPageReadme {
     private var model: LineChartModel = LineChartModel.build()
-    private var leftAxis: ?YAxis = Option<YAxis>.None
-    private var rightAxis: ?YAxis = Option<YAxis>.None
-    private var xAxis: ?XAxis = Option<XAxis>.None
-    private var dataSet: LineDataSet = LineDataSet(ArrayList<EntryOhos>(), "Data Set")
+    var minOffset: Float64 = 15.0
+    var leftAxis: ?YAxis = None
+    var rightAxis: ?YAxis = None
+    var lineData: LineData = LineData()
 
-    func aboutToAppear(): LineChartModel {
-        let l: ?Legend = this.model.getLegend()
-        if (let Some(v) <- l) {
+    protected override func aboutToAppear() {
+        let legend: ?Legend = this.model.getLegend()
+        if (let Some(v) <- legend) {
             v.setEnabled(true)
-            v.setOrientation(LegendOrientation.VERTICAL)
+            v.setOrientation(LegendOrientation.HORIZONTAL)
             v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            v.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
+            v.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
             v.setDrawInside(true)
-            v.setYOffset(-10.0)
+            v.setYOffset(-40.0)
         }
 
-        this.model.setMaxVisibleValueCount(60)
-        let lineData: LineData = this.getLineData()
-        lineData.setValueTextSize(10.0)
-        this.model.setExtraOffsets(20.0,20.0,20.0,20.0)
-        this.model.setData(lineData)
-
-        this.model.invalidate()
-        return this.model
+        this.model.setMinOffset(this.minOffset)
+        this.lineData = this.setData(10, 100.0)
+        this.model.setData(this.lineData)
     }
 
-    private func getLineData(): LineData {
-        let start: Int64 = 1
-        let values: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
+    private func setData(count: Int64, range: Float64): LineData {
+        let values1 = ArrayList<EntryOhos>()
+        let values2 = ArrayList<EntryOhos>()
+        let values3 = ArrayList<EntryOhos>()
 
-        values.append( EntryOhos(1.0, 5.0));
-        values.append( EntryOhos(2.0, 10.0));
-        values.append( EntryOhos(3.0, 4.0));
-        values.append( EntryOhos(4.0, 5.0));
+        for (i in 0..count) {
+            let val: Float64 = Random().nextFloat64() * range + 3.0
+            values1.append(EntryOhos(Float64(i), val))
+        }
 
-        this.dataSet = LineDataSet(values, "DataSet")
+        for (i in 0..count) {
+            let val: Float64 = Random().nextFloat64() * range + 3.0
+            values2.append(EntryOhos(Float64(i), val))
+        }
 
-        this.dataSet.setColorByColor(0x404040)
-        this.dataSet.setMode(Mode.LINEAR)
-        this.dataSet.setDrawCircles(true) //折线点画圆圈
-        this.dataSet.setDrawCircleHole(false) //设置内部孔
+        for (i in 0..count) {
+            let val: Float64 = Random().nextFloat64() * range + 3.0
+            values3.append(EntryOhos(Float64(i), val))
+        }
 
-        // 设置数据点的颜色
-        this.dataSet.setCircleColor(0x3333FF)
+        let dataSet = ArrayList<ILineDataSet>()
 
-        // 设置数据点的半径
-        this.dataSet.setCircleRadius(4.0) // 设置半径大小
-        this.dataSet.setCircleHoleRadius(2.0) //设置内径
+        let gradientFillColor = ArrayList<ChartColorStop>()
+        gradientFillColor.append((0xffffff, 0.3))
+        gradientFillColor.append((0x00ffff, 1.0))
 
-        let dataSetList: ArrayList<ILineDataSet> = ArrayList<ILineDataSet>()
-        dataSetList.append(this.dataSet)
+        let set1 = LineDataSet(values1, "DataSet 1")
+        set1.setDrawFilled(false)
+        set1.setDrawValues(true)
+        set1.setDrawCircles(true)
+        set1.setCircleColor(0x2b89ab)
+        set1.setCircleRadius(4.0)
+        set1.setMode(Mode.LINEAR)
+        set1.setColorByColor(0x2b89ab)
+        set1.setLineWidth(2.5)
+        dataSet.append(set1)
 
-        let lineData: LineData = LineData(dataSetList)
+        let set2 = LineDataSet(values2, "DataSet 2")
+        set2.setDrawFilled(false)
+        set2.setDrawValues(true)
+        set2.setDrawCircles(true)
+        set2.setCircleColor(0xcd4e2e)
+        set2.setCircleRadius(4.0)
+        set2.setMode(Mode.LINEAR)
+        set2.setColorByColor(0xcd4e2e)
+        set2.setLineWidth(2.5)
+        dataSet.append(set2)
+
+        let set3 = LineDataSet(values3, "DataSet 3")
+        set3.setDrawFilled(false)
+        set3.setDrawValues(true)
+        set3.setDrawCircles(true)
+        set3.setCircleColor(0xacc045)
+        set3.setCircleRadius(4.0)
+        set3.setMode(Mode.LINEAR)
+        set3.setColorByColor(0xacc045)
+        set3.setLineWidth(2.5)
+        dataSet.append(set3)
+
+        let lineData: LineData = LineData(dataSet)
+
         return lineData
     }
 
     func build() {
         Column {
-            LineChart(model: aboutToAppear())
+            LineChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }
-
 ```
 <p align="left">
-<img src="./doc/assets/liner.png" width="30%" >
+<img src="./doc/assets/line.png" width="30%" >
 </p>
 
 #### 蜡烛图
 
 ```cangjie
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
-import ohos.state_macro_manage.*
-
 @Entry
 @Component
-class CandlestickChartPage {
+class CandleChartPageReadme {
     private var model: CandleStickChartModel = CandleStickChartModel.build()
 
-    func aboutToAppear(): CandleStickChartModel {
+    protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
         if (let Some(legend) <- l) {
             legend.setEnabled(true)
+            legend.setOrientation(LegendOrientation.HORIZONTAL)
+            legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
+            legend.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
         }
 
         let description: Description = this.model.getDescription()
@@ -850,7 +845,6 @@ class CandlestickChartPage {
 
         this.setData(40, 100.0)
         this.model.notifyDataSetChanged()
-        return this.model
     }
 
     private func setData(count: Int64, range: Float64): Unit {
@@ -892,8 +886,8 @@ class CandlestickChartPage {
         dataSet.setShadowColor(0x808080)
         dataSet.setShadowWidth(0.7)
         dataSet.setDecreasingPaintStyle(Style.FILL)
-        dataSet.setDecreasingColor(0xff0000)
-        dataSet.setIncreasingColor(0x008000)
+        dataSet.setDecreasingColor(0x2b89ab)
+        dataSet.setIncreasingColor(0xcd4e2e)
         dataSet.setIncreasingPaintStyle(Style.STROKE)
         dataSet.setNeutralColor(0x0000ff)
 
@@ -908,12 +902,11 @@ class CandlestickChartPage {
     func build() {
         Column() {
             Column() {
-                CandleStickChart(model: aboutToAppear())
+                CandleStickChart(model: this.model)
             }
         }
     }
 }
-
 ```
 
 <p align="left">
@@ -923,51 +916,48 @@ class CandlestickChartPage {
 #### 散点图
 
 ```cangjie
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
-import ohos.state_macro_manage.*
-
 @Entry
 @Component
-class ScatterChartPage {
+class ScatterChartPageReadme {
     private var model: ScatterChartModel = ScatterChartModel.build()
 
-    func aboutToAppear(): ScatterChartModel {
+    protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
         if (let Some(legend) <- l) {
             legend.setEnabled(true)
+            legend.setOrientation(LegendOrientation.HORIZONTAL)
+            legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
+            legend.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
         }
 
         let description: Description = this.model.getDescription()
         description.setEnabled(true)
 
-        this.model.setMaxVisibleValueCount(160);
-        this.model.setDrawGridBackground(false);
-        //  this.model.animateXY(2000, 2000)
+        this.model.setMaxVisibleValueCount(160)
+        this.model.setDrawGridBackground(false)
+        this.model.animateXY(2000, 2000)
 
         let xAxis: ?XAxis = this.model.getXAxis()
         if (let Some(xAxis) <- xAxis) {
-            xAxis.setPosition(XAxisPosition.BOTTOM);
-            xAxis.setDrawGridLines(false);
-            xAxis.setGranularity(1.0);
-            xAxis.setLabelCount(7, false);
+            xAxis.setPosition(XAxisPosition.BOTTOM)
+            xAxis.setDrawGridLines(false)
+            xAxis.setLabelCount(7, false)
         }
 
         let leftAxis: ?YAxis = this.model.getAxisLeft()
         if (let Some(leftAxis) <- leftAxis) {
-            leftAxis.setLabelCount(8, false);
+            leftAxis.setLabelCount(8, false)
             leftAxis.setPosition(YAxisLabelPosition.OUTSIDE_CHART)
-            leftAxis.setSpaceTop(15.0);
-            leftAxis.setAxisMinimum(0.0);
+            leftAxis.setSpaceTop(15.0)
+            leftAxis.setAxisMinimum(0.0)
         }
 
         let rightAxis: ?YAxis = this.model.getAxisRight()
         if (let Some(rightAxis) <- rightAxis) {
-            rightAxis.setLabelCount(8, false);
-            rightAxis.setDrawGridLines(false);
-            rightAxis.setSpaceTop(15.0);
-            rightAxis.setAxisMinimum(0.0);
+            rightAxis.setLabelCount(8, false)
+            rightAxis.setDrawGridLines(false)
+            rightAxis.setSpaceTop(15.0)
+            rightAxis.setAxisMinimum(0.0)
         }
 
         let start: Int64 = 1
@@ -985,62 +975,60 @@ class ScatterChartPage {
 
         this.setData(20.0, 100.0)
         this.model.notifyDataSetChanged()
-        return this.model
     }
 
     private func setData(xRange: Float64, yRange: Float64): Unit {
-        let values1 = this.generateRandomData(xRange, yRange);
-        let values2 = this.generateRandomData(xRange, yRange);
-        let values3 = this.generateRandomData(xRange, yRange);
+        let values1 = this.generateRandomData(xRange, yRange)
+        let values2 = this.generateRandomData(xRange, yRange)
+        let values3 = this.generateRandomData(xRange, yRange)
 
-        let set1 = ScatterDataSet(values1, "DS 1");
-        set1.setScatterShape(ChartShape.SQUARE);
-        set1.setColorByColor(0x008000);
+        let set1 = ScatterDataSet(values1, "DS 1")
+        set1.setScatterShape(ChartShape.SQUARE)
+        set1.setColorByColor(0x2b89ab)
 
-        let set2 = ScatterDataSet(values2, "DS 2");
-        set2.setScatterShape(ChartShape.CIRCLE);
-        set2.setScatterShapeHoleColor(0xD2691E);
-        set2.setScatterShapeHoleRadius(3.0);
-        set2.setColorByColor(0x3333CC);
+        let set2 = ScatterDataSet(values2, "DS 2")
+        set2.setScatterShape(ChartShape.CIRCLE)
+        set2.setScatterShapeHoleRadius(3.0)
+        set2.setColorByColor(0xcd4e2e)
 
-        let set3 = ScatterDataSet(values3, "DS 3");
-        set3.setShapeRenderer(CustomScatterShapeRenderer());
-        set3.setColorByColor(0xFFFF00);
+        let set3 = ScatterDataSet(values3, "DS 3")
+        set3.setShapeRenderer(CustomScatterShapeRenderer())
+        set3.setColorByColor(0xacc045)
 
-        set1.setScatterShapeSize(8.0);
-        set2.setScatterShapeSize(8.0);
-        set3.setScatterShapeSize(8.0);
+        set1.setScatterShapeSize(8.0)
+        set2.setScatterShapeSize(8.0)
+        set3.setScatterShapeSize(8.0)
 
         let dataSets: ArrayList<IScatterDataSet> = ArrayList<IScatterDataSet>()
-        dataSets.append(set1); // add the data sets
-        dataSets.append(set2);
-        dataSets.append(set3);
+        dataSets.append(set1) // add the data sets
+        dataSets.append(set2)
+        dataSets.append(set3)
 
-        let dataResult: ScatterData = ScatterData(dataSets);
-        dataResult.setDrawValues(true);
-        dataResult.setValueTextSize(8.0);
-        dataResult.setHighlightEnabled(true);
-        dataResult.setValueTextSize(10.0);
+        let dataResult: ScatterData = ScatterData(dataSets)
+        dataResult.setDrawValues(true)
+        dataResult.setValueTextSize(8.0)
+        dataResult.setHighlightEnabled(true)
+        dataResult.setValueTextSize(10.0)
 
         this.model.setData(dataResult)
-        dataResult.notifyDataChanged();
+        dataResult.notifyDataChanged()
     }
 
     private func generateRandomData(xRange: Float64, yRange: Float64): ArrayList<EntryOhos> {
-        let values = ArrayList<EntryOhos>();
+        let values = ArrayList<EntryOhos>()
 
         for (i in 0..Int64(xRange)) {
-            let x = Float64(i); // Random x value within specified count.
-            let y = Random().nextFloat64() * yRange; // Random y value within specified range.
-            values.append(EntryOhos(x, y));
+            let x = Float64(i)
+            let y = Random().nextFloat64() * yRange
+            values.append(EntryOhos(x, y))
         }
-        return values;
+        return values
     }
 
     func build() {
         Column() {
             Column() {
-                ScatterChart(model: aboutToAppear())
+                ScatterChart(model: this.model)
             }
         }
     }
@@ -1049,16 +1037,16 @@ class ScatterChartPage {
 public class CustomScatterShapeRenderer <: IShapeRenderer {
     public func renderShape(c: CanvasRenderingContext2D, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler,
         posX: Float64, posY: Float64, renderPaint: Paint): Unit {
-        let shapeHalf: Float64 = dataSet.getScatterShapeSize() / 2.0;
+        let shapeHalf: Float64 = dataSet.getScatterShapeSize() / 2.0
 
-        renderPaint.setStyle(Style.STROKE);
-        renderPaint.setStrokeWidth(Utils.handleDataValues(1.0));
-        Utils.resetContext2DStyle(c, renderPaint);
-        c.beginPath();
-        c.moveTo(posX - shapeHalf, posY - shapeHalf);
-        c.lineTo(posX + shapeHalf, posY + shapeHalf);
-        c.stroke();
-        c.closePath();
+        renderPaint.setStyle(Style.STROKE)
+        renderPaint.setStrokeWidth(Utils.handleDataValues(1.0))
+        Utils.resetContext2DStyle(c, renderPaint)
+        c.beginPath()
+        c.moveTo(posX - shapeHalf, posY - shapeHalf)
+        c.lineTo(posX + shapeHalf, posY + shapeHalf)
+        c.stroke()
+        c.closePath()
     }
 }
 ```
@@ -1070,115 +1058,107 @@ public class CustomScatterShapeRenderer <: IShapeRenderer {
 #### 雷达图
 
 ```cangjie
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
-import ohos.state_macro_manage.*
-
 @Entry
 @Component
-class RadarChartPage {
+class RadarChartPageReadme {
     private var model: RadarChartModel = RadarChartModel.build()
 
     protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
-        description.setEnabled(true);
-        description.setText("this is radar")
-        description.setPosition(100.0, 100.0)
+        description.setEnabled(false)
+        description.setPosition(200.0, 200.0)
         description.setTextColor(Color(0xffffff))
         description.setTextSize(15.0)
 
         let l: ?Legend = this.model.getLegend()
         if (let Some(legend) <- l) {
-            legend.setEnabled(true);
-            legend.setVerticalAlignment(LegendVerticalAlignment.TOP);
-            legend.setHorizontalAlignment(LegendHorizontalAlignment.CENTER);
-            legend.setOrientation(LegendOrientation.HORIZONTAL);
-            legend.setDrawInside(false);
-            legend.setXEntrySpace(7.0);
-            legend.setYEntrySpace(5.0);
-            legend.setTextColor(Color(0xffffff));
+            legend.setEnabled(true)
+            legend.setOrientation(LegendOrientation.HORIZONTAL)
+            legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
+            legend.setDrawInside(false)
+            legend.setXEntrySpace(7.0)
+            legend.setYEntrySpace(5.0)
+            legend.setTextColor(Color(0xffffff))
+            legend.setYOffset(50.0)
         }
 
-        this.model.setWebLineWidth(0.3);
-        this.model.setWebColor(0xFFCCCCCC);
-        this.model.setWebLineWidthInner(0.3);
-        this.model.setWebColorInner(0xFFCCCCCC);
-        this.model.setExtraTopOffset(-100.0);
-        this.model.animateXY(2000, 2000)
+        this.model.setWebLineWidth(0.3)
+        this.model.setWebColor(0xFFCCCCCC)
+        this.model.setWebLineWidthInner(0.3)
+        this.model.setWebColorInner(0xFFCCCCCC)
+        this.model.setExtraTopOffset(-100.0)
 
         let xAxis: ?XAxis = this.model.getXAxis()
         if (let Some(xAxis) <- xAxis) {
-            xAxis.setPosition(XAxisPosition.BOTTOM);
-            xAxis.setDrawGridLines(false);
-            xAxis.setYOffset(0.0);
-            xAxis.setXOffset(0.0);
-            xAxis.setGranularity(1.0);
-            xAxis.setLabelCount(7, false);
-            xAxis.setValueFormatter(valueFormatter());
-            xAxis.setTextColor(Color(0xffffff));
+            xAxis.setPosition(XAxisPosition.BOTTOM)
+            xAxis.setDrawGridLines(false)
+            xAxis.setYOffset(0.0)
+            xAxis.setXOffset(0.0)
+            xAxis.setLabelCount(7, false)
+            xAxis.setValueFormatter(valueFormatter())
+            xAxis.setTextColor(Color(0xffffff))
         }
 
         let leftAxis: ?YAxis = this.model.getYAxis()
         if (let Some(yAxis) <- leftAxis) {
-            yAxis.setLabelCount(5, false);
-            yAxis.setAxisMinimum(0.0);
-            yAxis.setAxisMaximum(80.0);
-            yAxis.setDrawLabels(false);
+            yAxis.setLabelCount(5, false)
+            yAxis.setAxisMinimum(0.0)
+            yAxis.setAxisMaximum(80.0)
+            yAxis.setDrawLabels(false)
         }
 
         this.setData()
     }
 
     private func setData(): Unit {
-        let mul = 80.0;
-        let min = 20.0;
-        let cnt = 5;
+        let mul = 80.0
+        let min = 20.0
+        let cnt = 5
 
-        let entries1: ArrayList<RadarEntry> = ArrayList<RadarEntry>();
-        let entries2: ArrayList<RadarEntry> = ArrayList<RadarEntry>();
+        let entries1: ArrayList<RadarEntry> = ArrayList<RadarEntry>()
+        let entries2: ArrayList<RadarEntry> = ArrayList<RadarEntry>()
 
         for (i in 0..cnt) {
-            let val1 = (Random().nextFloat64() * mul) + min;
-            entries1.append(RadarEntry(val1));
+            let val1 = (Random().nextFloat64() * mul) + min
+            entries1.append(RadarEntry(val1))
 
-            let val2 = (Random().nextFloat64() * mul) + min;
-            entries2.append(RadarEntry(val2));
+            let val2 = (Random().nextFloat64() * mul) + min
+            entries2.append(RadarEntry(val2))
         }
 
-        let set1: RadarDataSet = RadarDataSet(entries1, "Last Week");
-        set1.setColorByColor(UInt32(ChartColor.rgb(103, 110, 129)));
-        set1.setLineWidth(2.0);
+        let set1: RadarDataSet = RadarDataSet(entries1, "Last Week")
+        set1.setColorByColor(UInt32(ChartColor.rgb(103, 110, 129)))
+        set1.setLineWidth(2.0)
 
-        let set2: RadarDataSet = RadarDataSet(entries2, "This Week");
-        set2.setColorByColor(UInt32(ChartColor.rgb(121, 162, 175)));
-        set2.setLineWidth(2.0);
+        let set2: RadarDataSet = RadarDataSet(entries2, "This Week")
+        set2.setColorByColor(UInt32(ChartColor.rgb(121, 162, 175)))
+        set2.setLineWidth(2.0)
 
-        let sets: ArrayList<IRadarDataSet> = ArrayList<IRadarDataSet>();
-        sets.append(set1);
-        sets.append(set2);
+        let sets: ArrayList<IRadarDataSet> = ArrayList<IRadarDataSet>()
+        sets.append(set1)
+        sets.append(set2)
 
-        let data: RadarData = RadarData(sets);
-        data.setValueTextSize(20.0);
-        data.setDrawValues(false);
-        data.setValueTextColor(0xffffff);
-        this.model.setData(data);
+        let data: RadarData = RadarData(sets)
+        data.setValueTextSize(20.0)
+        data.setDrawValues(false)
+        data.setValueTextColor(0xffffff)
+        this.model.setData(data)
     }
 
     func build() {
         Column() {
             Column() {
                 RadarChart(model: this.model)
-            }
+            }.backgroundColor(0x3C4152)
         }
     }
 }
 
 class valueFormatter <: IAxisValueFormatter {
-    private var mActivities: Array<String> = ["Burger", "Steak", "Salad", "Pasta", "Pizza"];
+    private var mActivities: Array<String> = ["Burger", "Steak", "Salad", "Pasta", "Pizza"]
 
     public func getFormattedValue(value: Float64, axis: AxisBase): String {
-        return this.mActivities[Int64(floor(Float64(Int64(value) % (this.mActivities.size))))];
+        return this.mActivities[Int64(floor(Float64(Int64(value) % (this.mActivities.size))))]
     }
 }
 ```

@@ -115,7 +115,7 @@ public open class Transformer {
         let valuePoints: Array<Float64> = this.valuePointsForGenerateTransformedValuesBubble
 
         for (j in 0..count : 2) {
-            let e: ?EntryOhos = data.getEntryForIndex(j / 2 + froms)
+            let e: ?BubblesEntry = data.getEntryForIndex(j / 2 + froms)
 
             match (e) {
                 case Some(entryOhos) =>
@@ -186,9 +186,16 @@ public open class Transformer {
         let valuePoints: ArrayList<Float64> = this.valuePointsForGenerateTransformedValuesCandle
 
         for (j in 0..count : 2) {
-            let e: CandleEntry = data.getEntryForIndex(j / 2 + fromValue)
-            Utils.newSet(valuePoints, j, e.getX())
-            Utils.newSet(valuePoints, j+1, e.getHigh() * phaseY)
+            let e: ?CandleEntry = data.getEntryForIndex(j / 2 + fromValue)
+            match (e) {
+                case Some(entryOhos) =>
+                    Utils.newSet(valuePoints, j, entryOhos.getX())
+                    Utils.newSet(valuePoints, j + 1, entryOhos.getHigh() * phaseY)
+
+                case None =>
+                    Utils.newSet(valuePoints, j, 0.0)
+                    Utils.newSet(valuePoints, j + 1, 0.0)
+            }
         }
 
         var tmpArray = valuePoints.toArray()

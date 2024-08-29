@@ -61,7 +61,7 @@ public class LegendRenderer <: Renderer {
                 for (j in 0..entryCounts) {
                     this.computedEntries.append(
                         LegendEntry(
-                            pieDataSet.getEntryForIndex(j).getLabel(),
+                            pieDataSet.getEntryForIndex(j)().getLabel(),
                             dataSet().getForm(),
                             dataSet().getFormSize(),
                             dataSet().getFormLineWidth(),

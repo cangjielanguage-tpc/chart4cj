@@ -20,13 +20,13 @@ import ohos.state_macro_manage.State
 import ohos.state_macro_manage.r
 import ohos.base.*
 import ohos.component.*
-
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
 import mpchart.pie.*
 import mpchart.utils.*
 import mpchart.components.*
+
 @Entry
 @Component
 class BarChartPageReadme {
@@ -45,24 +45,18 @@ class BarChartPageReadme {
         let l: ?Legend = this.model.getLegend()
         if (let Some(v) <- l) {
             v.setEnabled(true)
-            v.setOrientation(LegendOrientation.VERTICAL)
-            v.setVerticalAlignment(LegendVerticalAlignment.TOP)
+            v.setOrientation(LegendOrientation.HORIZONTAL)
+            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
             v.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
             v.setDrawInside(true)
         }
 
         // if more than 40 entries are displayed in the this.model, no values will be drawn
         this.model.setMaxVisibleValueCount(60)
-
-        // scaling can now only be done on x- and y-axis separately
-        this.model.setPinchZoom(false)
-
         this.model.setDrawGridBackground(false)
         this.model.setGridBackgroundColor(0x500000ff)
         this.model.setDrawBarShadow(false)
-
         this.model.setDrawValueAboveBar(true)
-        this.model.setHighlightFullBarEnabled(false)
 
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(leftaxis) <- this.leftAxis) {
@@ -85,10 +79,7 @@ class BarChartPageReadme {
             xaxis.setLabelCount(5, false)
             xaxis.setPosition(XAxisPosition.BOTTOM)
         }
-
-        this.normalMarker = MarkerView()
-        this.model.setMarker(this.normalMarker)
-        this.model.setExtraOffsets(20.0,20.0,20.0,20.0)
+        this.model.setExtraOffsets(-20.0, 20.0, 20.0, 10.0)
 
         if (this.xAxis.isSome() && this.leftAxis.isSome()) {
             this.setData(5, 110)
@@ -135,13 +126,13 @@ class BarChartPageReadme {
             this.model.notifyDataSetChanged()
         } else {
             set1 = BarDataSet(values1, "Company A")
-            set1().setColorsByArr([UInt32(ChartColor.rgb(104, 241, 175))])
+            set1().setColorsByArr([0x2b89ab])
             set2 = BarDataSet(values2, "Company B")
-            set2().setColorsByArr([UInt32(ChartColor.rgb(164, 228, 251))])
+            set2().setColorsByArr([0xcd4e2e])
             set3 = BarDataSet(values3, "Company C")
-            set3().setColorsByArr([UInt32(ChartColor.rgb(242, 247, 158))])
+            set3().setColorsByArr([0xacc045])
             set4 = BarDataSet(values4, "Company D")
-            set4().setColorsByArr([UInt32(ChartColor.rgb(255, 102, 0))])
+            set4().setColorsByArr([0x224058])
 
             let dataSets: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
             dataSets.append(set1())

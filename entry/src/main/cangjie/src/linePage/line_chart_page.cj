@@ -35,7 +35,6 @@ class LineChartPage {
         description.setText("this is line chart")
 
         this.model.setMaxVisibleValueCount(60)
-        this.model.setPinchZoom(false)
         this.model.setDrawGridBackground(false)
 
         this.limitLine1 = LimitLine(120.0, "Upper Limit")
@@ -55,7 +54,6 @@ class LineChartPage {
         if (let Some(x) <- this.xAxis) {
             x.setPosition(XAxisPosition.BOTTOM)
             x.setDrawGridLines(false)
-            x.setGranularity(1.0) //放大时为轴设置最小间隔
             x.setLabelCount(7, false)
             x.setValueFormatter(DefaultAxisValueFormatter(1))
         }
@@ -100,7 +98,6 @@ class LineChartPage {
         }
 
         this.dataSet = LineDataSet(values, "DataSet")
-        this.dataSet.setHighLightColor(0x000000)
         this.dataSet.setDrawIcons(false)
 
         this.dataSet.setMode(Mode.LINEAR)

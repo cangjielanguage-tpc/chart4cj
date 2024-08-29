@@ -50,14 +50,12 @@ class BubbleChartPage {
         description.setEnabled(false)
 
         this.model.setMaxVisibleValueCount(60)
-        this.model.setPinchZoom(false)
         this.model.setDrawGridBackground(false)
 
         let xAxis: ?XAxis = this.model.getXAxis()
         if (let Some(x) <- xAxis) {
             x.setPosition(XAxisPosition.BOTTOM)
             x.setDrawGridLines(false)
-            x.setGranularity(1.0)
             x.setLabelCount(7, false)
         }
 
@@ -90,7 +88,6 @@ class BubbleChartPage {
         }
 
         let dataSet: BubbleDataSet = BubbleDataSet(values, "DataSet")
-        dataSet.setHighLightColor(0x000000)
         dataSet.setDrawIcons(false)
 
         let dataSetList: ArrayList<BubbleDataSet> = ArrayList<BubbleDataSet>()

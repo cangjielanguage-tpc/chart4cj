@@ -49,9 +49,6 @@ class SimpleWaterfallChartPage {
         // if more than 40 entries are displayed in the this.model, no values will be drawn
         this.model.setMaxVisibleValueCount(40);
 
-        // scaling can now only be done on x- and y-axis separately
-        this.model.setPinchZoom(false);
-
         this.model.setDrawGridBackground(false);
         this.model.setGridBackgroundColor(0x500000ff)
         this.model.setDrawBarShadow(false);
@@ -119,7 +116,6 @@ class SimpleWaterfallChartPage {
         values.append(WaterfallEntry(7.0, 60.0, 70.0));
 
         this.dataSet = WaterfallDataSet(values, "DataSet")
-        this.dataSet.setHighLightColor(0x999999);
         this.dataSet.setDrawIcons(false);
         this.dataSet.setColorByColor(0xFFC0CB);
         this.dataSet.setValueTextSize(10.0)
@@ -144,7 +140,6 @@ class SimpleWaterfallChartPage {
         values.append(WaterfallEntry(7.0, 60.0, 70.0));
 
         this.dataSet = WaterfallDataSet(values, "DataSet")
-        this.dataSet.setHighLightColor(0x999999);
         this.dataSet.setDrawIcons(false);
         this.dataSet.setColorByColor(0xFFC0CB);
         this.dataSet.setValueTextSize(10.0)
@@ -176,7 +171,6 @@ class SimpleWaterfallChartPage {
         values.append(WaterfallEntry(7.0, 60.0, 70.0));
 
         this.dataSet = WaterfallDataSet(values, "DataSet")
-        this.dataSet.setHighLightColor(0x999999);
         this.dataSet.setDrawIcons(false);
         this.dataSet.setColorByColor(0xFFC0CB);
         this.dataSet.setValueTextSize(10.0)

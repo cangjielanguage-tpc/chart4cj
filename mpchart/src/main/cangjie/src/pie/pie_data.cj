@@ -85,7 +85,7 @@ public class PieData <: ChartData<IPieDataSet, PiEntry> {
     }
 
     // @Override
-    public override func getEntryForHighlight(highlight: Highlight): PiEntry {
+    public override func getEntryForHighlight(highlight: Highlight): ?PiEntry {
         return this.getDataSet().getEntryForIndex(Int64(highlight.getX()))
     }
 
@@ -98,7 +98,7 @@ public class PieData <: ChartData<IPieDataSet, PiEntry> {
         var sum: Float64 = 0.0
         let index: Int64 = this.getDataSet().getEntryCount()
         for (i in 0..index) {
-            sum += this.getDataSet().getEntryForIndex(i).getY()
+            sum += this.getDataSet().getEntryForIndex(i)().getY()
         }
 
         return sum

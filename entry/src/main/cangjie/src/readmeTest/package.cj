@@ -41,6 +41,9 @@ internal import mpchart.bar.*
 internal import mpchart.charts.*
 internal import mpchart.bubble.*
 internal import mpchart.waterfall.*
+internal import mpchart.candle.*
+internal import mpchart.scatter.*
+internal import mpchart.radar.*
 internal import mpchart.line.*
 internal import ohos.router.*
 //internal import service.*

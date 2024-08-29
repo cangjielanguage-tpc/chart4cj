@@ -80,7 +80,7 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 let referenceSize: Float64 = min(maxBubbleHeight, maxBubbleWidth);
                 if (let Some(b) <- this.mXBounds) {
                     for (j in Int64(b.mins)..=Int64(b.range + b.mins)) {
-                        let entry: BubblesEntry = dataSet.getEntryForIndex(j);
+                        let entry: BubblesEntry = dataSet.getEntryForIndex(j)()
 
                         this.pointBuffer[0] = entry.getX()
                         this.pointBuffer[1] = (entry.getY()) * phaseY
@@ -165,7 +165,7 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                             continue;
                         }
 
-                        let entry: BubblesEntry = dataSet.getEntryForIndex(j / 2 + Int64(this.mXBounds().mins));
+                        let entry: BubblesEntry = dataSet.getEntryForIndex(j / 2 + Int64(this.mXBounds().mins))()
 
                         if (dataSet.isDrawValuesEnabled()) {
                             this.drawValue(c, dataSet.getValueFormatter()(), entry.getSize(), entry, i, x,

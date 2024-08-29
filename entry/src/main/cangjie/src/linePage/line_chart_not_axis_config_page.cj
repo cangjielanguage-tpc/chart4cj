@@ -44,7 +44,6 @@ class LineChartNotAxisConfigPage {
         }
 
         this.dataSet = LineDataSet(values, "DataSet")
-        this.dataSet.setHighLightColor(0x000000)
         this.dataSet.setDrawIcons(false)
 
         this.dataSet.setMode(Mode.LINEAR)

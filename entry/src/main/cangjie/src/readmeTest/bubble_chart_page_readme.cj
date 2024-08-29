@@ -4,7 +4,6 @@
 package ohos_app_cangjie_entry.readmeTest
 
 import ohos.state_macro_manage.*
-
 import ohos.base.LengthProp
 import ohos.component.Column
 import ohos.component.Row
@@ -21,13 +20,13 @@ import ohos.state_macro_manage.State
 import ohos.state_macro_manage.r
 import ohos.base.*
 import ohos.component.*
-
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
 import mpchart.pie.*
 import mpchart.utils.*
 import mpchart.components.*
+
 @Entry
 @Component
 class BubbleChartPageReadme {
@@ -38,34 +37,25 @@ class BubbleChartPageReadme {
     var isDrawValuesEnable: Bool = true
     var titleSelcetString: String = "X"
 
-    public func animate() {
-        if (this.titleSelcetString == "X") {
-            this.model.animateX(2000)
-        } else if (this.titleSelcetString == "Y") {
-            this.model.animateY(2000)
-        } else if (this.titleSelcetString == "XY") {
-            this.model.animateXY(2000, 2000)
-        }
-    }
-
     protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
         if (let Some(legend) <- l) {
             legend.setEnabled(true)
+            legend.setOrientation(LegendOrientation.HORIZONTAL)
+            legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
+            legend.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
         }
 
         let description: Description = this.model.getDescription()
         description.setEnabled(false)
 
         this.model.setMaxVisibleValueCount(60)
-        this.model.setPinchZoom(false)
         this.model.setDrawGridBackground(false)
 
         let xAxis: ?XAxis = this.model.getXAxis()
         if (let Some(x) <- xAxis) {
             x.setPosition(XAxisPosition.BOTTOM)
             x.setDrawGridLines(false)
-            x.setGranularity(1.0)
             x.setLabelCount(7, false)
         }
 
@@ -98,7 +88,6 @@ class BubbleChartPageReadme {
         }
 
         let dataSet: BubbleDataSet = BubbleDataSet(values, "DataSet")
-        dataSet.setHighLightColor(0x000000)
         dataSet.setDrawIcons(false)
 
         let dataSetList: ArrayList<BubbleDataSet> = ArrayList<BubbleDataSet>()
@@ -107,7 +96,7 @@ class BubbleChartPageReadme {
         this.setData(5, 50.0)
         this.model.notifyDataSetChanged()
         this.model.setVisibleXRangeMaximum(7.0)
-        this.model.setExtraOffsets(20.0,20.0,20.0,20.0)
+        this.model.setExtraOffsets(-20.0, 20.0, 20.0, 10.0)
     }
 
     private func setData(count: Int64, range: Float64): Unit {
@@ -116,30 +105,30 @@ class BubbleChartPageReadme {
         let values3 = ArrayList<BubblesEntry>()
 
         for (i in 0..count) {
-            values1.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
-            )
-            values2.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
-            )
-            values3.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
-            )
+            values1.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range
+            ))
+            values2.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range
+            ))
+            values3.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range
+            ))
         }
 
         let set1: BubbleDataSet = BubbleDataSet(values1, "DS 1")
         set1.setDrawIcons(false)
-        set1.setColorByColor(0x88c12552)
+        set1.setColorByColor(0x2b89ab)
         set1.setIconsOffset(MPPointF(0.0, 0.0))
         set1.setDrawValues(this.isDrawValuesEnable)
 
         let set2: BubbleDataSet = BubbleDataSet(values2, "DS 2")
         set2.setDrawIcons(false)
         set2.setIconsOffset(MPPointF(0.0, 0.0))
-        set2.setColorByColor(0x88ff6600)
+        set2.setColorByColor(0xcd4e2e)
         set2.setDrawValues(this.isDrawValuesEnable)
 
         let set3: BubbleDataSet = BubbleDataSet(values3, "DS 3")
         set3.setDrawIcons(false)
         set3.setIconsOffset(MPPointF(0.0, 0.0))
-        set3.setColorByColor(0x88f5c700)
+        set3.setColorByColor(0xacc045)
         set3.setDrawValues(this.isDrawValuesEnable)
 
         let dataSets = ArrayList<IBubbleDataSet>()

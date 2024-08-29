@@ -29,14 +29,12 @@ class HorizontalBarNegativeChartPage {
 
         description.setEnabled(false)
 
-        this.model.setPinchZoom(false)
         this.model.setDrawGridBackground(false)
 
         let xAxis: ?XAxis = this.model.getXAxis()
         if (let Some(xaxis) <- this.xAxis) {
             xaxis.setPosition(XAxisPosition.BOTTOM)
             xaxis.setDrawGridLines(false)
-            xaxis.setGranularity(1.0)
             xaxis.setLabelCount(7, Option<Bool>.None)
             xaxis.setDrawAxisLine(true)
         }
@@ -75,7 +73,6 @@ class HorizontalBarNegativeChartPage {
         }
 
         let dataSet: BarDataSet = BarDataSet(values, "DataSet")
-        dataSet.setHighLightColor(0x000000)
         dataSet.setDrawIcons(false)
 
         dataSet.setColorByColor(0x8CEAFF)

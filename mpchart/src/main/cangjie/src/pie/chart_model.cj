@@ -142,10 +142,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
             if (let Some(md) <- this.mData) {
                 var dataSets = md.getDataSets()
                 for (item in dataSets) {
-                    if (item.needsFormatter() || refEq(
-                        (item.getValueFormatter()() as DefaultValueFormatter)(),
-                        this.mDefaultValueFormatter
-                    )) {
+                    if (item.needsFormatter()) {
                         item.setValueFormatter(this.mDefaultValueFormatter)
                     }
                 }
@@ -519,7 +516,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         //    	case Some(_) => callListener()
         //        case None => false
         //    }
-        var e: ?EntryOhos = Option<EntryOhos>.None
+        var e: ?E = Option<E>.None
 
         if (highlight.isNone()) {
             this.mIndicesToHighlight = Option<Array<Highlight>>.None
@@ -648,7 +645,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
                     var dataSet: ?S = md.getDataSetByIndex(highlight.getDataSetIndex())
 
                     if (let Some(d: IDataSet<EntryOhos>) <- dataSet) {
-                        let e: ?EntryOhos = md.getEntryForHighlight(highlight)
+                        let e: ?E = md.getEntryForHighlight(highlight)
                         var entryIndex: Int64
                         if (let Some(ee) <- e) {
                             entryIndex = d.getEntryIndexByEntry(ee)
@@ -687,7 +684,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
             for (highlight in this.mIndicesToHighlight()) {
                 let dataSet = this.mData().getDataSetByIndex(highlight.getDataSetIndex())
                 if (let Some(d:IDataSet<EntryOhos>) <- dataSet) {
-                    let e: ?EntryOhos = this.mData().getEntryForHighlight(highlight)
+                    let e: ?E = this.mData().getEntryForHighlight(highlight)
                     if (e.isNone()) {
                         continue
                     }

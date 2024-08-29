@@ -20,7 +20,6 @@ import ohos.state_macro_manage.State
 import ohos.state_macro_manage.r
 import ohos.base.*
 import ohos.component.*
-
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
@@ -31,11 +30,6 @@ import mpchart.components.*
 @Entry
 @Component
 class PieChartPageReadme {
-    //标题栏标题
-    private var title: String = "PieChart"
-
-    // 图表数据初始化
-    // Step1:必须：初始化图表配置构建类
     private var model: PieChartModel = PieChartModel.build()
     protected let parties: Array<String> = ["Party A", "Party B", "Party C", "Party D", "Party E", "Party F", "Party G",
     "Party H", "Party I", "Party J", "Party K", "Party L", "Party M", "Party N", "Party O", "Party P", "Party Q",
@@ -44,46 +38,42 @@ class PieChartPageReadme {
     var pieData: PieData = PieData()
 
     protected override func aboutToAppear() {
-        // Step2：配置图表的特定样式，各部件间没有先后之分
         let l: ?Legend = this.model.getLegend()
         if (let Some(v) <- l) {
             v.setEnabled(true)
-            v.setOrientation(LegendOrientation.VERTICAL)
+            v.setOrientation(LegendOrientation.HORIZONTAL)
             v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            v.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
+            v.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
         }
 
-        this.model.animateX(1000, easing: "Sharp"); // 启用X轴动画效果，动画持续时间为1000毫秒
-        this.model.setUsePercentValues(true);  // 使用百分比值
-        this.model.getDescription().setEnabled(false)  // 禁用描述信息
-        this.model.setExtraOffsets(5.0, 10.0, 5.0, 5.0); // 设置额外偏移量
+        this.model.animateX(1000, easing: "Sharp") // 启用X轴动画效果，动画持续时间为1000毫秒
+        this.model.setUsePercentValues(true) // 使用百分比值
+        this.model.getDescription().setEnabled(false) // 禁用描述信息
+        this.model.setExtraOffsets(5.0, 10.0, 5.0, 5.0) // 设置额外偏移量
 
-        this.model.setDragDecelerationFrictionCoef(0.95); // 设置拖动减速摩擦系数
-
-        this.model.setCenterText("mpchart"); // 设置中心文本
+        this.model.setCenterText("mpchart") // 设置中心文本
         this.model.setDrawCenterText(true)
         this.model.setCenterTextSize(20.0) // 设置中心文本大小
         this.model.setCenterTextColor(0xFF3333)
 
-        this.model.setDrawHoleEnabled(true); // 启用绘制中心孔
-        this.model.setHoleColor(0xFF00FFFF);  // 设置中心孔颜色
+        this.model.setDrawHoleEnabled(true) // 启用绘制中心孔
+        this.model.setHoleColor(0xFF00FFFF) // 设置中心孔颜色
 
-        this.model.setTransparentCircleColor(0xff0000FF); // 设置透明圆环颜色
-        this.model.setTransparentCircleAlpha(110.0); // 设置透明圆环透明度
+        this.model.setTransparentCircleColor(0xff0000FF) // 设置透明圆环颜色
+        this.model.setTransparentCircleAlpha(110.0) // 设置透明圆环透明度
 
-        this.model.setHoleRadius(58.0); // 设置中心孔半径
-        this.model.setTransparentCircleRadius(61.0);  // 设置透明圆环半径
+        this.model.setHoleRadius(58.0) // 设置中心孔半径
+        this.model.setTransparentCircleRadius(61.0) // 设置透明圆环半径
 
-        this.model.setDrawCenterText(true); // 绘制中心文本
+        this.model.setDrawCenterText(true) // 绘制中心文本
         this.model.setEntryLabelColor(0xFF000000)
         this.model.setEntryLabelTextSize(30.0)
-        this.model.setRotationAngle(0.0);  // 设置旋转角度
+        this.model.setRotationAngle(0.0) // 设置旋转角度
 
         // 通过触摸启用图表的旋转
-        this.model.setRotationEnabled(true);
-        this.model.setHighlightPerTapEnabled(true); // 启用点击高亮效果
+        this.model.setRotationEnabled(true)
 
-        this.setData(4, 10);  // 设置图表数据
+        this.setData(4, 10) // 设置图表数据
     }
 
     //初始化饼状图数据
@@ -91,7 +81,8 @@ class PieChartPageReadme {
         var entries: ArrayList<PiEntry> = ArrayList<PiEntry>()
         for (i in 0..count) {
             entries.append(
-                PiEntry((Random().nextFloat64() * Float64 (range)) + Float64 (range) / 5.0, this.parties[i % this.parties.size]))
+                PiEntry((Random().nextFloat64() * Float64(range)) + Float64(range) / 5.0,
+                this.parties[i % this.parties.size]))
         }
 
         // 创建饼状图数据集对象，设置数据项和数据集名称
@@ -134,13 +125,8 @@ class PieChartPageReadme {
         this.model.setData(data)
     }
 
-func build() {
+    func build() {
         Column {
-            //图表显示
-            // 可通过dataSet.notifyDataSetChanged();来触发数据更新，
-            // 可通过this.model.notifyDataSetChanged();来触发坐标轴数据更新，
-            // 可通过this.model.invalidate();来触发绘制更新。
-
             PieChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }

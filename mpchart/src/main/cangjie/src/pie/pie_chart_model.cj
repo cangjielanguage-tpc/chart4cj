@@ -235,7 +235,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
                 let set: IPieDataSet = dataSets.get(i)()
 
                 for (j in 0..set.getEntryCount()) {
-                    let drawAngle: Float64 = this.calcAngle(abs(set.getEntryForIndex(j).getY()), yValueSum)
+                    let drawAngle: Float64 = this.calcAngle(abs(set.getEntryForIndex(j)().getY()), yValueSum)
 
                     if (hasMinAngle) {
                         let temp: Float64 = drawAngle - this.mMinAngleForSlices

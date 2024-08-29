@@ -88,7 +88,7 @@ public class RadarChartRenderer <: LineRadarRenderer {
         for (j in 0..dataSet.getEntryCount()) {
             this.mRenderPaint.setColor(Color(dataSet.getColor(j)))
 
-            let e: RadarEntry = dataSet.getEntryForIndex(j)
+            let e: RadarEntry = dataSet.getEntryForIndex(j)()
 
             if (let Some(center) <- center) {
                 pOut = Utils.getPosition(center, (e.getY() - this.mChart.getYChartMin()) * factor * phaseY,
@@ -168,7 +168,7 @@ public class RadarChartRenderer <: LineRadarRenderer {
             iconsOffset.y = Utils.handleDataValues(iconsOffset.y)
 
             for (j in 0..dataSet().getEntryCount()) {
-                let entry: RadarEntry = dataSet().getEntryForIndex(j)
+                let entry: RadarEntry = dataSet().getEntryForIndex(j)()
 
                 if (let Some(center) <- center) {
                     pOut = Utils.getPosition(

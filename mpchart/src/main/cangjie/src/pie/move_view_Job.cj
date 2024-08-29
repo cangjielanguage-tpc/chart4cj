@@ -8,7 +8,7 @@ public class MoveViewJob <: ViewPortJob {
         MoveViewJob(Option<ViewPortHandler>.None, 0.0, 0.0, Option<Transformer>.None, None)).create()
 
     public static func getInstance(viewPortHandler: ViewPortHandler, xValue: Float64, yValue: Float64,
-        trans: Transformer, v: ?ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>): MoveViewJob {
+        trans: Transformer, v: ?ChartModel<BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>, IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>): MoveViewJob {
         let result: MoveViewJob = MoveViewJob.pool.get()
         result.mViewPortHandler = viewPortHandler
         result.xValue = xValue
@@ -23,7 +23,7 @@ public class MoveViewJob <: ViewPortJob {
     }
 
     public init(viewPortHandler: ?ViewPortHandler, xValue: Float64, yValue: Float64, trans: ?Transformer,
-        v: ?ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>) {
+        v: ?ChartModel<BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>, IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>) {
         super(viewPortHandler, xValue, yValue, trans, v)
     }
 

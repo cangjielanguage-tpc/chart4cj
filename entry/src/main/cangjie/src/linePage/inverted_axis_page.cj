@@ -18,14 +18,12 @@ class InvertedAxisPage {
         description.setEnabled(false)
 
         this.model.setMaxVisibleValueCount(60)
-        this.model.setPinchZoom(false)
         this.model.setDrawGridBackground(false)
 
         this.xAxis = this.model.getXAxis()
         if (let Some(x) <- this.xAxis) {
             x.setPosition(XAxisPosition.TOP)
             x.setDrawGridLines(true) //纵向线格显示
-            x.setGranularity(1.0) //放大时轴设置的最小间隔，轴不允许低于该限制。这可用于在放大时避免标签复制。
             x.setLabelCount(6, false) //设置X轴坐标个数
         }
 

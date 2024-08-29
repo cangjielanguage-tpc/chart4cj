@@ -22,7 +22,7 @@ public class WaterfallBuffer <: BarBuffer {
         var size: Int64 = Int64(ceil(Float64(data.getEntryCount()) * this.phaseX))
         let barWidthHalf: Float64 = this.mBarWidth / 2.0
         for (i in 0..size) {
-            let e: ?WaterfallEntry = data.getEntryForIndex(i) as WaterfallEntry
+            let e: ?WaterfallEntry = data.getEntryForIndex(i)
             if (e.isNone()) {
                 continue
             }

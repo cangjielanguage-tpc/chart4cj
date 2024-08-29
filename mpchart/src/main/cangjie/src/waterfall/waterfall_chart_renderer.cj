@@ -91,7 +91,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
             var x: Float64 = 0.0;
             let count = min(Int64(ceil(Float64(dataSet.getEntryCount()) * phaseX)), dataSet.getEntryCount())
             for (i in 0..count) {
-                let e: WaterfallEntry = dataSet.getEntryForIndex(i)
+                let e: WaterfallEntry = dataSet.getEntryForIndex(i)()
 
                 x = e.getX()
 
@@ -173,7 +173,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
         }
         if (dataSet.getEnableMaxOrMinHighlightColor()) {
             for (i in 0..Int64(min((ceil(Float64(dataSet.getEntryCount()) * phaseX)), Float64(dataSet.getEntryCount())))) {
-                let e: WaterfallEntry = dataSet.getEntryForIndex(i)
+                let e: WaterfallEntry = dataSet.getEntryForIndex(i)()
                 this.initMaxAndMinHighlightData(e, dataSet, maxTop, minBottom);
             }
         }
@@ -221,7 +221,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                     this.drawCircle(c, left, top, radius);
                 }
 
-                let e: WaterfallEntry = dataSet.getEntryForIndex(j / 4)
+                let e: WaterfallEntry = dataSet.getEntryForIndex(j / 4)()
                 //绘制Y轴刻度范围图
                 for (i in 0..yAxisSegmentList.size) {
                     let h = yAxisSegmentList[i];
@@ -489,7 +489,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                         continue;
                     }
 
-                    let entry: WaterfallEntry = dataSet.getEntryForIndex(j / 4)
+                    let entry: WaterfallEntry = dataSet.getEntryForIndex(j / 4)()
                     let val: Float64 = entry.getY();
 
                     if (dataSet.isDrawValuesEnabled()) {
@@ -697,7 +697,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                             continue
                         }
 
-                        let entry: WaterfallEntry = dataSet.getEntryForIndex(j / 4)
+                        let entry: WaterfallEntry = dataSet.getEntryForIndex(j / 4)()
                         let val: Float64 = entry.getY()
 
                         if (dataSet.isDrawValuesEnabled()) {
@@ -744,7 +744,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                             } else {
                                 1.0
                             })) {
-                        let entry: WaterfallEntry = dataSet.getEntryForIndex(index)
+                        let entry: WaterfallEntry = dataSet.getEntryForIndex(index)()
 
                         let vals: Array<Float64> = entry.getYVals()
                         let x: Float64 = (buffer.buffer[bufferIndex] + buffer.buffer[bufferIndex + 2]) / 2.0

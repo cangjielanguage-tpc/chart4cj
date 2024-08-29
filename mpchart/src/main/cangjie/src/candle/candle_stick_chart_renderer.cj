@@ -49,12 +49,15 @@ public class CandleStickChartRenderer <: LineScatterCandleRadarRenderer {
 
             this.mRenderPaint.setStrokeWidth(dataSet.getShadowWidth())
             for (j in bounds.mins..=bounds.range + bounds.mins) {
-                let e: CandleEntry = dataSet.getEntryForIndex(j)
-                let xPos: Float64 = e.getX()
-                let open: Float64 = e.getOpen()
-                let close: Float64 = e.getClose()
-                let high: Float64 = e.getHigh()
-                let low: Float64 = e.getLow()
+                let e: ?CandleEntry = dataSet.getEntryForIndex(j)
+                if(e.isNone()) {
+                    continue
+                }
+                let xPos: Float64 = e().getX()
+                let open: Float64 = e().getOpen()
+                let close: Float64 = e().getClose()
+                let high: Float64 = e().getHigh()
+                let low: Float64 = e().getLow()
 
                 if (showCandleBar) {
                     this.mShadowBuffers[0] = xPos
@@ -299,22 +302,22 @@ public class CandleStickChartRenderer <: LineScatterCandleRadarRenderer {
                                 continue
                             }
 
-                            let entry: CandleEntry = dataSet.getEntryForIndex(j / 2 + xbounds.mins)
+                            let entry: ?CandleEntry = dataSet.getEntryForIndex(j / 2 + xbounds.mins)
 
                             if (dataSet.isDrawValuesEnabled()) {
                                 this.drawValue(
                                     c,
                                     dataSet.getValueFormatter()(),
-                                    entry.getHigh(),
-                                    entry,
+                                    entry().getHigh(),
+                                    entry(),
                                     i,
                                     x,
                                     y - yOffset,
                                     Color(dataSet.getValueTextColor(j / 2))
                                 )
                             }
-                            if (entry.getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
-                                let icon: ?ChartPixelMap = entry.getIcon()
+                            if (entry().getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
+                                let icon: ?ChartPixelMap = entry().getIcon()
                                 if (let Some(icon) <- icon) {
                                     Utils.drawImage(
                                         c,
