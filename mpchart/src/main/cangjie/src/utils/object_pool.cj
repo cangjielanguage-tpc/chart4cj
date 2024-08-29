@@ -47,7 +47,7 @@ public class ObjectPool<T> where T <: Poolable {
         objectsPointer = portionOfCapacity - 1
     }
 
-    public func setReplenishPercentage(percentage: Float64): Unit  {
+    public func setReplenishPercentage(percentage: Float64): Unit {
         var p: Float64 = percentage
         if (p > 1.0) {
             p = 1.0
@@ -60,7 +60,7 @@ public class ObjectPool<T> where T <: Poolable {
     public func getReplenishPercentage(): Float64 {
         return replenishPercentage
     }
-    private func refillPool():Unit  {
+    private func refillPool(): Unit {
         this.refillPool(this.replenishPercentage)
     }
     private func refillPool(percentage: Float64): Unit {
@@ -72,12 +72,19 @@ public class ObjectPool<T> where T <: Poolable {
             portionOfCapacity = desiredCapacity
         }
 
-        for (_ in 0..portionOfCapacity) {
-           this.objects.append(this.modelObject.instantiate())
+        for (i in 0..portionOfCapacity) {
+            newSet(this.objects, i, this.modelObject.instantiate())
         }
         objectsPointer = portionOfCapacity - 1
     }
 
+    private func newSet(array: ArrayList<Any>, index: Int64, value: Poolable) {
+        if (index < array.size) {
+            array.set(index, value)
+        } else {
+            array.append(value)
+        }
+    }
     public func get(): T {
         if (this.objectsPointer == -1 && this.replenishPercentage > 0.0) {
             this.refillPool()
@@ -85,7 +92,7 @@ public class ObjectPool<T> where T <: Poolable {
 
         var result: ?T = (objects[this.objectsPointer] as T)
         match (result) {
-        	case Some(r) =>
+            case Some(r) =>
                 r.currentOwnerId = Poolable.NO_OWNER
                 this.objectsPointer--
                 return r
