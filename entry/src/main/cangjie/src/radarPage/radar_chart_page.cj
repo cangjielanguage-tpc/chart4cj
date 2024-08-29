@@ -37,6 +37,7 @@ class RadarChartPage {
         this.model.setWebLineWidthInner(0.3);
         this.model.setWebColorInner(0xFFCCCCCC);
         this.model.setExtraTopOffset(-100.0);
+        this.model.animateXY(2000, 2000)
 
         let xAxis: ?XAxis = this.model.getXAxis()
         if (let Some(xAxis) <- xAxis) {
@@ -90,7 +91,7 @@ class RadarChartPage {
 
         let data: RadarData = RadarData(sets);
         data.setValueTextSize(20.0);
-        data.setDrawValues(false);
+        data.setDrawValues(true);
         data.setValueTextColor(0xffffff);
         this.model.setData(data);
     }
