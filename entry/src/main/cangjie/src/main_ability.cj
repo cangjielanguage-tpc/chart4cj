@@ -1,6 +1,12 @@
-from ohos import base.*
-from ohos import ability.*
-from ohos import window.*
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights resvered.
+ */
+package ohos_app_cangjie_entry
+
+internal import ohos.base.AppLog
+internal import ohos.ability.AbilityStage
+internal import ohos.ability.LaunchReason
+internal import cj_res_entry.app
 
 class MainAbility <: Ability {
     public init() {
@@ -9,7 +15,11 @@ class MainAbility <: Ability {
     }
 
     public override func onCreate(want: Want, launchParam: LaunchParam): Unit {
-        AppLog.info("MainAbility OnCreated.")
+        AppLog.info("MainAbility OnCreated.${want.abilityName}")
+        match (launchParam.launchReason) {
+            case LaunchReason.START_ABILITY => AppLog.info("START_ABILITY")
+            case _ => ()
+        }
     }
 
     public override func onWindowStageCreate(windowStage: WindowStage): Unit {
@@ -17,10 +27,3 @@ class MainAbility <: Ability {
         windowStage.loadContent("MyView")
     }
 }
-
-func createAbility(): MainAbility {
-    MainAbility()
-}
-
-let ABILITY_REGISTER_RESULT = Ability.registerCreator("CangjieAbility", createAbility)
-
