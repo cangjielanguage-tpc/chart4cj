@@ -41,9 +41,10 @@ class PieChartPageReadme {
         let l: ?Legend = this.model.getLegend()
         if (let Some(v) <- l) {
             v.setEnabled(true)
-            v.setOrientation(LegendOrientation.HORIZONTAL)
+            v.setOrientation(LegendOrientation.VERTICAL)
             v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            v.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
+            v.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
+            v.setYOffset(-30.0)
         }
 
         this.model.animateX(1000, easing: "Sharp") // 启用X轴动画效果，动画持续时间为1000毫秒

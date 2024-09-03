@@ -17,6 +17,9 @@ internal import std.unicode.{UnicodeExtension}
 internal import std.time.*
 internal import std.convert.*
 internal import ohos.image.*
+internal import ohos.measure.Size as MeasureSize
+internal import ohos.measure.MeasureOptions
+internal import ohos.measure.Measure
 
 internal import ohos.hilog.*
 

@@ -47,10 +47,11 @@ class WaterfallChartPageReadme {
         let l: ?Legend = this.model.getLegend()
         if (let Some(v) <- l) {
             v.setEnabled(true)
-            v.setOrientation(LegendOrientation.HORIZONTAL)
+            v.setOrientation(LegendOrientation.VERTICAL)
             v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            v.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
+            v.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
             v.setDrawInside(true)
+            v.setYOffset(-30.0)
         }
 
         this.model.setMaxVisibleValueCount(40)

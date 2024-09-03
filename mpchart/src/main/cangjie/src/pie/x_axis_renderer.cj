@@ -76,8 +76,7 @@ public open class XAxisRenderer <: AxisRenderer {
         this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface())
         this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize())
 
-        let labelSize: FSize = Utils.calcTextSize(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)),
-            this.mAxisLabelPaint, longest)
+        let labelSize: FSize = Utils.calcTextSize(this.mAxisLabelPaint, longest)
 
         let labelWidth = labelSize.width
         let labelHeight = Utils.calcTextHeight(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)),

@@ -34,11 +34,12 @@ class CandleChartPageReadme {
 
     protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
-        if (let Some(legend) <- l) {
-            legend.setEnabled(true)
-            legend.setOrientation(LegendOrientation.HORIZONTAL)
-            legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            legend.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
+        if (let Some(v) <- l) {
+            v.setEnabled(true)
+            v.setOrientation(LegendOrientation.VERTICAL)
+            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
+            v.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
+            v.setYOffset(-30.0)
         }
 
         let description: Description = this.model.getDescription()
