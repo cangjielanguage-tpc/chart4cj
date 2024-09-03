@@ -9,9 +9,9 @@ public class PieChartRenderer <: DataRenderer {
      * paint for the hole in the center of the pie chart and the transparent
      * circle
      */
-    protected var mHolePaint: Paint
-    protected var mTransparentCirclePaint: Paint
-    protected var mValueLinePaint: Paint
+    protected var mHolePaint: ChartPaint
+    protected var mTransparentCirclePaint: ChartPaint
+    protected var mValueLinePaint: ChartPaint
     /**
      * paint object for the text that can be displayed in the center of the
      * chart`
@@ -20,7 +20,7 @@ public class PieChartRenderer <: DataRenderer {
     /**
      * paint object used for drwing the slice-text
      */
-    private var mEntryLabelsPaint: Paint
+    private var mEntryLabelsPaint: ChartPaint
     private var mCenterTextLayout: String = ""
     /*StaticLayout*/
     private var mCenterTextLastValue: String = ""
@@ -36,10 +36,10 @@ public class PieChartRenderer <: DataRenderer {
     public init(chart: PieChartModel, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler)
         this.mChart = chart
-        this.mHolePaint = Paint()
+        this.mHolePaint = ChartPaint()
         this.mHolePaint.setColor(Color.WHITE)
         this.mHolePaint.setStyle(Style.FILL)
-        this.mTransparentCirclePaint = Paint()
+        this.mTransparentCirclePaint = ChartPaint()
         this.mTransparentCirclePaint.setColor(Color.WHITE)
         this.mTransparentCirclePaint.setStyle(Style.FILL)
         this.mTransparentCirclePaint.setGlobalAlpha(105.0 / 255.0)
@@ -50,11 +50,11 @@ public class PieChartRenderer <: DataRenderer {
         this.mValuePaint.setTextSize(Utils.handleDataValues(13.0))
         this.mValuePaint.setColor(Color.WHITE)
         this.mValuePaint.setTextAlign(TextAlignStyle.Center)
-        this.mEntryLabelsPaint = Paint()
+        this.mEntryLabelsPaint = ChartPaint()
         this.mEntryLabelsPaint.setColor(Color.WHITE)
         this.mEntryLabelsPaint.setTextAlign(TextAlignStyle.Center)
         this.mEntryLabelsPaint.setTextSize(Utils.handleDataValues(13.0))
-        this.mValueLinePaint = Paint()
+        this.mValueLinePaint = ChartPaint()
         this.mValueLinePaint.setStyle(Style.STROKE)
     }
 
@@ -62,7 +62,7 @@ public class PieChartRenderer <: DataRenderer {
         return this.mHolePaint
     }
 
-    public func getPaintTransparentCircle(): Paint {
+    public func getPaintTransparentCircle(): ChartPaint {
         return this.mTransparentCirclePaint
     }
 
@@ -70,7 +70,7 @@ public class PieChartRenderer <: DataRenderer {
         return this.mCenterTextPaint
     }
 
-    public func getPaintEntryLabels(): Paint {
+    public func getPaintEntryLabels(): ChartPaint {
         return this.mEntryLabelsPaint
     }
     public func initBuffers(): Unit {}

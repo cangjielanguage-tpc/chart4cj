@@ -92,12 +92,13 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             xCoordinate = touchEvent().touches[0].x
             yCoordinate = touchEvent().touches[0].y
         } else {
-            let gestureEvent = event as GestureEvent
-            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
-                return
-            }
-            xCoordinate = gestureEvent().fingerList[0].localX
-            yCoordinate = gestureEvent().fingerList[0].localY
+ //TODO
+//            let gestureEvent = event as GestureEvent
+//            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
+//                return
+//            }
+//            xCoordinate = gestureEvent().fingerList[0].localX
+//            yCoordinate = gestureEvent().fingerList[0].localY
         }
         this.mStartPointX = xCoordinate
         this.mStartPointY = yCoordinate
@@ -190,12 +191,13 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             yCoordinate = touch().touches[0].y
             return (xCoordinate, yCoordinate)
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return (xCoordinate, yCoordinate)
-            }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
+//TODO
+//            let gesture = event as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return (xCoordinate, yCoordinate)
+//            }
+//            xCoordinate = gesture().fingerList[0].localX
+//            yCoordinate = gesture().fingerList[0].localY
             return (xCoordinate, yCoordinate)
         }
     }
@@ -316,13 +318,14 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             yCoordinate = touch().touches[0].y
             gestureFingersCount = touch().touches.size
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return
-            }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
-            gestureFingersCount = gesture().fingerList.size
+  //TODO
+//            let gesture = event as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return
+//            }
+//            xCoordinate = gesture().fingerList[0].localX
+//            yCoordinate = gesture().fingerList[0].localY
+//            gestureFingersCount = gesture().fingerList.size
         }
 
         if (abs(xCoordinate) > Float64(Utils.getMinimumFlingVelocity()) || abs(yCoordinate) > Float64(Utils.
@@ -399,12 +402,13 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             this.mTouchStartPoint.x = touch().touches[0].x
             this.mTouchStartPoint.y = touch().touches[0].y
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return
-            }
-            this.mTouchStartPoint.x = gesture().fingerList[0].globalX
-            this.mTouchStartPoint.y = gesture().fingerList[0].globalY
+ //TODO
+//            let gesture = event as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return
+//            }
+//            this.mTouchStartPoint.x = gesture().fingerList[0].globalX
+//            this.mTouchStartPoint.y = gesture().fingerList[0].globalY
         }
 
         this.mClosestDataSetToTouch = (this.barChartModel.getDataSetByTouchPoint(
@@ -538,8 +542,9 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             let touch = event as TouchEvent
             gestureFingersCount = touch().touches.size
         } else {
-            let gesture = event as GestureEvent
-            gestureFingersCount = gesture().fingerList.size
+ //TODO
+//            let gesture = event as GestureEvent
+//            gestureFingersCount = gesture().fingerList.size
         }
         if (gestureFingersCount >= 2) { // two finger zoom
 
@@ -584,12 +589,13 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             xCoordinate = touch().touches[0].x
             yCoordinate = touch().touches[0].y
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return
-            }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
+ //TODO
+//            let gesture = event as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return
+//            }
+//            xCoordinate = gesture().fingerList[0].localX
+//            yCoordinate = gesture().fingerList[0].localY
         }
         let h: ?Highlight = this.barChartModel.getHighlightByTouchPoint(xCoordinate, yCoordinate)
 
@@ -629,12 +635,13 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             x = touch().touches[0].x + touch().touches[1].x
             y = touch().touches[0].y + touch().touches[1].y
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return
-            }
-            x = gesture().fingerList[0].localX + gesture().fingerList[1].localX
-            y = gesture().fingerList[0].localY + gesture().fingerList[1].localY
+ //TODO
+//            let gesture = event as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return
+//            }
+//            x = gesture().fingerList[0].localX + gesture().fingerList[1].localX
+//            y = gesture().fingerList[0].localY + gesture().fingerList[1].localY
         }
         point.x = (x / 2.0)
         point.y = (y / 2.0)
@@ -658,12 +665,13 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             x = touch().touches[0].x - touch().touches[1].x
             y = touch().touches[0].y - touch().touches[1].y
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return 0.0
-            }
-            x = gesture().fingerList[0].localX - gesture().fingerList[1].localX
-            y = gesture().fingerList[0].localY - gesture().fingerList[1].localY
+ //TODO
+//            let gesture = event as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return 0.0
+//            }
+//            x = gesture().fingerList[0].localX - gesture().fingerList[1].localX
+//            y = gesture().fingerList[0].localY - gesture().fingerList[1].localY
         }
 
         return sqrt(x * x + y * y)
@@ -685,11 +693,12 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             }
             x = abs(touch().touches[0].x - touch().touches[1].x)
         } else {
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return 0.0
-            }
-            x = abs(gesture().fingerList[0].localX - gesture().fingerList[1].localX)
+ //TODO
+//            let gesture = e as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return 0.0
+//            }
+//            x = abs(gesture().fingerList[0].localX - gesture().fingerList[1].localX)
         }
         return x
     }
@@ -710,11 +719,12 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             }
             y = abs(touch().touches[0].y - touch().touches[1].y)
         } else {
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return 0.0
-            }
-            y = abs(gesture().fingerList[0].localY - gesture().fingerList[1].localY)
+ //TODO
+//            let gesture = e as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return 0.0
+//            }
+//            y = abs(gesture().fingerList[0].localY - gesture().fingerList[1].localY)
         }
         return y
     }
@@ -790,12 +800,13 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             x = touch().touches[0].x
             y = touch().touches[0].y
         } else {
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return
-            }
-            x = gesture().fingerList[0].localX
-            y = gesture().fingerList[0].localY
+ //TODO
+//            let gesture = e as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return
+//            }
+//            x = gesture().fingerList[0].localX
+//            y = gesture().fingerList[0].localY
         }
 
         this.mLastGesture = ChartGesture.DOUBLE_TAP
@@ -863,12 +874,13 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             x = touch().touches[0].x
             y = touch().touches[0].y
         } else {
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return
-            }
-            x = gesture().fingerList[0].localX
-            y = gesture().fingerList[0].localY
+ //TODO
+//            let gesture = e as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return
+//            }
+//            x = gesture().fingerList[0].localX
+//            y = gesture().fingerList[0].localY
         }
         let h: ?Highlight = this.barChartModel.getHighlightByTouchPoint(x, y)
         if (let Some(highlight) <- h) {
@@ -887,12 +899,13 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             x = touch().touches[0].x
             y = touch().touches[0].y
         } else {
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return (0.0, 0.0)
-            }
-            x = gesture().fingerList[0].localX
-            y = gesture().fingerList[0].localY
+ //TODO
+//            let gesture = e as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return (0.0, 0.0)
+//            }
+//            x = gesture().fingerList[0].localX
+//            y = gesture().fingerList[0].localY
         }
         return (x, y)
     }
@@ -931,12 +944,13 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             x = touch().touches[0].x
             y = touch().touches[0].y
         } else {
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return
-            }
-            x = gesture().fingerList[0].localX
-            y = gesture().fingerList[0].localY
+ //TODO
+//            let gesture = e as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return
+//            }
+//            x = gesture().fingerList[0].localX
+//            y = gesture().fingerList[0].localY
         }
         let h: ?Highlight = this.barChartModel.getHighlightByTouchPoint(x, y)
         if (let Some(highlight) <- h) {

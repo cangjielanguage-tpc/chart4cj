@@ -8,23 +8,23 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
     public var mChart: WaterfallDataProvider
 
     protected var mBarRect: MyRect = MyRect()
-    protected var mShadowPaint: Paint
-    protected var mBarBorderPaint: Paint
+    protected var mShadowPaint: ChartPaint
+    protected var mBarBorderPaint: ChartPaint
 
     public init(chart: WaterfallDataProvider, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler)
         this.mChart = chart
 
-        this.mHighlightPaint = Paint()
+        this.mHighlightPaint = ChartPaint()
         this.mHighlightPaint.setStyle(Style.FILL)
         this.mHighlightPaint.setColor(Color.BLACK)
         // set alpha after color
         this.mHighlightPaint.setGlobalAlpha(120.0 / 255.0)
 
-        this.mShadowPaint = Paint()
+        this.mShadowPaint = ChartPaint()
         this.mShadowPaint.setStyle(Style.FILL)
 
-        this.mBarBorderPaint = Paint()
+        this.mBarBorderPaint = ChartPaint()
         this.mBarBorderPaint.setStyle(Style.STROKE)
     }
 

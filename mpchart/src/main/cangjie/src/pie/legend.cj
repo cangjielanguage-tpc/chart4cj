@@ -110,7 +110,7 @@ public class Legend <: ComponentBase {
      * @param p the paint object used for rendering the text
      * @return
      */
-    public func getMaximumEntryWidth(p: Paint): Float64 {
+    public func getMaximumEntryWidth(p: ChartPaint): Float64 {
         var max: Float64 = 0.0
         var maxFormSize: Float64 = 0.0
         var formToTextSpace: Float64 = Utils.handleDataValues(this.mFormToTextSpace)
@@ -147,7 +147,7 @@ public class Legend <: ComponentBase {
      * @param p the paint object used for rendering the text
      * @return
      */
-    public func getMaximumEntryHeight(p: Paint): Float64 {
+    public func getMaximumEntryHeight(p: ChartPaint): Float64 {
         var max: Float64 = 0.0
 
         for (entry in this.mEntries) {
@@ -556,7 +556,7 @@ public class Legend <: ComponentBase {
      *
      * @param labelpaint
      */
-    public func calculateDimensions(labelpaint: Paint, viewPortHandler: ViewPortHandler): Unit {
+    public func calculateDimensions(labelpaint: ChartPaint, viewPortHandler: ViewPortHandler): Unit {
         let defaultFormSize: Float64 = Utils.handleDataValues(this.mFormSize);
         let stackSpace: Float64 = Utils.handleDataValues(this.mStackSpace);
         let formToTextSpace: Float64 = Utils.handleDataValues(this.mFormToTextSpace);
@@ -582,7 +582,7 @@ public class Legend <: ComponentBase {
         this.mNeededWidth += this.mXOffset
     }
 
-    private func orientationIsVERTICAL(labelpaint: Paint, entryCount: Int64, entries: Array<LegendEntry>,
+    private func orientationIsVERTICAL(labelpaint: ChartPaint, entryCount: Int64, entries: Array<LegendEntry>,
         defaultFormSize: Float64, stackSpace: Float64, formToTextSpace: Float64, yEntrySpace: Float64) {
         var maxWidth: Float64 = 0.0;
         var maxHeight: Float64 = 0.0;
@@ -644,7 +644,7 @@ public class Legend <: ComponentBase {
         this.mNeededHeight = maxHeight
     }
 
-    private func orientationIsHORIZONTAL(labelpaint: Paint, entryCount: Int64, entries: Array<LegendEntry>,
+    private func orientationIsHORIZONTAL(labelpaint: ChartPaint, entryCount: Int64, entries: Array<LegendEntry>,
         defaultFormSize: Float64, stackSpace: Float64, formToTextSpace: Float64, yEntrySpace: Float64,
         viewPortHandler: ViewPortHandler, xEntrySpace: Float64, wordWrapEnabled: Bool) {
         let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint,  CanvasRenderingContext2D(RenderingContextSettings(antialias: true)));

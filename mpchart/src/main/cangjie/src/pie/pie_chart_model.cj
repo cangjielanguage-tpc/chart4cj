@@ -597,7 +597,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
         if (this.mRenderer.isNone()) {
             return
         }
-        let p: Paint = (this.mRenderer() as PieChartRenderer)().getPaintTransparentCircle()
+        let p: ChartPaint = (this.mRenderer() as PieChartRenderer)().getPaintTransparentCircle()
         let alpha: ?Float64 = p.getGlobalAlpha()
         p.setColor(Color(color))
         if (let Some(globalAlpha) <- alpha) {

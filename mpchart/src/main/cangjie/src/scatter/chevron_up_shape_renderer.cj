@@ -5,7 +5,7 @@ package mpchart.scatter
 
 public class ChevronUpShapeRenderer <: IShapeRenderer {
     public func renderShape(c: CanvasRenderingContext2D, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler,
-        posX: Float64, posY: Float64, renderPaint: Paint): Unit {
+        posX: Float64, posY: Float64, renderPaint: ChartPaint): Unit {
         let shapeHalf: Float64 = dataSet.getScatterShapeSize() / 2.0
 
         renderPaint.setStyle(Style.STROKE)

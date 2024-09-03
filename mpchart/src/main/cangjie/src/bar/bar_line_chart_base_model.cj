@@ -35,8 +35,8 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     /**
      * paint object for the (by default) lightgrey background of the grid
      */
-    protected var mGridBackgroundPaint: ?Paint = Option<Paint>.None
-    protected var mBorderPaint: ?Paint = Option<Paint>.None
+    protected var mGridBackgroundPaint: ?ChartPaint = Option<ChartPaint>.None
+    protected var mBorderPaint: ?ChartPaint = Option<ChartPaint>.None
     /**
      * flag indicating if the grid background should be drawn or not
      */
@@ -94,11 +94,11 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         //子类去实现
         //this.setHighlighter((ChartHighlighter(this) as ChartHighlighter<BarLineScatterCandleBubbleDataProvider<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)())
 
-        this.mGridBackgroundPaint = Paint()
+        this.mGridBackgroundPaint = ChartPaint()
         this.mGridBackgroundPaint().setStyle(Style.FILL)
         this.mGridBackgroundPaint().setColor(Color(0xf0f0f0))
         // grey
-        this.mBorderPaint = Paint()
+        this.mBorderPaint = ChartPaint()
         this.mBorderPaint().setStyle(Style.STROKE)
         this.mBorderPaint().setColor(Color.BLACK)
         this.mBorderPaint().setStrokeWidth(Utils.handleDataValues(1.0))
@@ -1357,7 +1357,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      * Returns a recyclable MPPointD instance
      * Returns the x and y values in the chart at the given touch point
      * (encapsulated in a MPPointD). This method transforms pixel coordinates to
-     * coordinates / values in the chart. This is the opposite method to
+     * coordinates / values in the .. This is the opposite method to
      * getPixelForValues(...).
      *
      * @param x
@@ -1681,15 +1681,15 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         return this.mAutoScaleMinMaxEnabled
     }
 
-    public func setPaint(p: Paint, which: Float64): Unit {
+    public func setPaint(p: ChartPaint, which: Float64): Unit {
         super.setPaint(p, Int64(which))
         if (which == 4.0) {
             this.mGridBackgroundPaint = p
         }
     }
 
-    public func getPaint(which: Float64): ?Paint {
-        let p: ?Paint = super.getPaint(Int64(which))
+    public func getPaint(which: Float64): ?ChartPaint {
+        let p: ?ChartPaint = super.getPaint(Int64(which))
         if (p.isSome()) {
             return p
         }

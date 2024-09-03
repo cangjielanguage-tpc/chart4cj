@@ -5,7 +5,7 @@ package mpchart.pie
 
 public open class YAxisRenderer <: AxisRenderer {
     protected var mYAxis: YAxis
-    protected var mZeroLinePaint: Paint = Paint()
+    protected var mZeroLinePaint: ChartPaint = ChartPaint()
 
     public init(viewPortHandler: ViewPortHandler, yAxis: YAxis, trans: ?Transformer) {
         super(viewPortHandler, yAxis, trans)
@@ -14,7 +14,7 @@ public open class YAxisRenderer <: AxisRenderer {
         this.mAxisLabelPaint.setColor(Color.BLACK)
         this.mAxisLabelPaint.setTextSize(10.0)
 
-        this.mZeroLinePaint = Paint()
+        this.mZeroLinePaint = ChartPaint()
         this.mZeroLinePaint.setColor(Color.GRAY)
         this.mZeroLinePaint.setStrokeWidth(1.0)
         this.mZeroLinePaint.setStyle(Style.STROKE)

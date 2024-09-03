@@ -275,7 +275,7 @@ public class YAxis <: AxisBase {
      * @param p
      * @return
      */
-    public func getRequiredWidthSpace(p: Paint): Float64 {
+    public func getRequiredWidthSpace(p: ChartPaint): Float64 {
         p.setTextSize(this.mTextSize)
 
         var label: String = super.getLongestLabel()
@@ -309,7 +309,7 @@ public class YAxis <: AxisBase {
      * @param p
      * @return
      */
-    public func getRequiredHeightSpace(p: Paint): Float64 {
+    public func getRequiredHeightSpace(p: ChartPaint): Float64 {
         p.setTextSize(this.mTextSize)
 
         let label: String = super.getLongestLabel()

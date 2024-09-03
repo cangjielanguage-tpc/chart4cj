@@ -43,12 +43,13 @@ public class PieRadarChartTouchListener< D, S, E> <: ChartTouchListener<D, S, E>
             x = touch().touches[0].x
             y = touch().touches[0].y
         } else {
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return;
-            }
-            x = gesture().fingerList[0].localX
-            y = gesture().fingerList[0].localY
+ //TODO
+//            let gesture = e as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return;
+//            }
+//            x = gesture().fingerList[0].localX
+//            y = gesture().fingerList[0].localY
         }
         let h: Highlight = this.pieChart.getHighlightByTouchPoint(x, y)()
         this.performHighlight(h, Option<TouchEvent>.None)
@@ -70,12 +71,13 @@ public class PieRadarChartTouchListener< D, S, E> <: ChartTouchListener<D, S, E>
             xCoordinate = touch().touches[0].x
             yCoordinate = touch().touches[0].y
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return;
-            }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
+ //TODO
+//            let gesture = event as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return;
+//            }
+//            xCoordinate = gesture().fingerList[0].localX
+//            yCoordinate = gesture().fingerList[0].localY
         }
 
         this.startAction(isTouchEvent, event)
@@ -107,12 +109,13 @@ public class PieRadarChartTouchListener< D, S, E> <: ChartTouchListener<D, S, E>
             xCoordinate = touch().touches[0].x
             yCoordinate = touch().touches[0].y
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return;
-            }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
+ //TODO
+//            let gesture = event as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return;
+//            }
+//            xCoordinate = gesture().fingerList[0].localX
+//            yCoordinate = gesture().fingerList[0].localY
         }
         if (this.pieChart.isDragDecelerationEnabled()) {
             this.sampleVelocity(xCoordinate, yCoordinate)
@@ -143,12 +146,13 @@ public class PieRadarChartTouchListener< D, S, E> <: ChartTouchListener<D, S, E>
             xCoordinate = touch().touches[0].x
             yCoordinate = touch().touches[0].y
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return;
-            }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
+ //TODO
+//            let gesture = event as GestureEvent
+//            if (gesture.isNone() || gesture().fingerList.size == 0) {
+//                return;
+//            }
+//            xCoordinate = gesture().fingerList[0].localX
+//            yCoordinate = gesture().fingerList[0].localY
         }
         if (this.pieChart.isDragDecelerationEnabled()) {
             this.stopDeceleration()

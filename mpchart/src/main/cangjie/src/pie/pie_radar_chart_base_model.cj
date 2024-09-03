@@ -52,14 +52,14 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
 
         this.mChartTouchListener().onSingleTapUp(isTouchEvent, event)
     }
-
-    public func onSingleTapUp(isTouchEvent: Bool, event: GestureEvent): Unit {
-        if (!this.mTouchEnabled) {
-            return
-        }
-
-        this.mChartTouchListener().onSingleTapUp(isTouchEvent, event)
-    }
+//TODO GestureEvent 暂未支持
+//    public func onSingleTapUp(isTouchEvent: Bool, event: GestureEvent): Unit {
+//        if (!this.mTouchEnabled) {
+//            return
+//        }
+//
+//        this.mChartTouchListener().onSingleTapUp(isTouchEvent, event)
+//    }
 
     public func onDoubleTap(isTouchEvent: Bool, event: TouchEvent): Unit {
         if (!this.mTouchEnabled) {
@@ -67,13 +67,13 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
         }
         this.mChartTouchListener().onDoubleTap(isTouchEvent, event)
     }
-
-    public func onDoubleTap(isTouchEvent: Bool, event: GestureEvent): Unit {
-        if (!this.mTouchEnabled) {
-            return
-        }
-        this.mChartTouchListener().onDoubleTap(isTouchEvent, event)
-    }
+ //TODO
+//    public func onDoubleTap(isTouchEvent: Bool, event: GestureEvent): Unit {
+//        if (!this.mTouchEnabled) {
+//            return
+//        }
+//        this.mChartTouchListener().onDoubleTap(isTouchEvent, event)
+//    }
 
     public func computeScroll(): Unit {
         if (this.mChartTouchListener is PieRadarChartTouchListener<D, S, E>) {

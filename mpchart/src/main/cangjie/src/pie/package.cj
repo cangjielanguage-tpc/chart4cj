@@ -28,5 +28,5 @@ extend<T> Option<T> {
 
 public enum Event {
     | TouchEvent
-    | GestureEvent
+    //TODO | GestureEvent
 }
