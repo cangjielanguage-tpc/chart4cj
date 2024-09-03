@@ -14,19 +14,19 @@ public abstract class AxisRenderer <: Renderer {
     /**
      * paint object for the grid lines
      */
-    protected var mGridPaint: Paint = Paint()
+    protected var mGridPaint: ChartPaint = ChartPaint()
     /**
      * paint for the x-label values
      */
-    protected var mAxisLabelPaint: Paint = Paint()
+    protected var mAxisLabelPaint: ChartPaint = ChartPaint()
     /**
      * paint for the line surrounding the chart
      */
-    protected var mAxisLinePaint: Paint = Paint()
+    protected var mAxisLinePaint: ChartPaint = ChartPaint()
     /**
      * paint used for the limit lines
      */
-    protected var mLimitLinePaint: Paint = Paint()
+    protected var mLimitLinePaint: ChartPaint = ChartPaint()
 
     public init(viewPortHandler: ViewPortHandler, axis: AxisBase, trans: ?Transformer) {
         super(viewPortHandler)
@@ -34,50 +34,50 @@ public abstract class AxisRenderer <: Renderer {
         this.mAxis = axis
 
         if (this.mViewPortHandler.isSome()) {
-            this.mAxisLabelPaint = Paint()
+            this.mAxisLabelPaint = ChartPaint()
 
-            this.mGridPaint = Paint()
+            this.mGridPaint = ChartPaint()
             this.mGridPaint.setColor(Color.GRAY)
             this.mGridPaint.setStrokeWidth(1.0)
             this.mGridPaint.setStyle(Style.STROKE)
             this.mGridPaint.setGlobalAlpha(90.0 / 255.0)
 
-            this.mAxisLinePaint = Paint()
+            this.mAxisLinePaint = ChartPaint()
             this.mAxisLinePaint.setColor(Color.BLACK)
             this.mAxisLinePaint.setStrokeWidth(1.0)
             this.mAxisLinePaint.setStyle(Style.STROKE)
 
-            this.mLimitLinePaint = Paint()
+            this.mLimitLinePaint = ChartPaint()
             this.mLimitLinePaint.setStyle(Style.STROKE)
         }
     }
 
     /**
-     * Returns the Paint object used for drawing the axis (labels).
+     * Returns the ChartPaint object used for drawing the axis (labels).
      *
      * @return
      */
-    public func getPaintAxisLabels(): Paint {
+    public func getPaintAxisLabels(): ChartPaint {
         return this.mAxisLabelPaint
     }
 
     /**
-     * Returns the Paint object that is used for drawing the grid-lines of the
+     * Returns the ChartPaint object that is used for drawing the grid-lines of the
      * axis.
      *
      * @return
      */
-    public func getPaintGrid(): Paint {
+    public func getPaintGrid(): ChartPaint {
         return this.mGridPaint
     }
 
     /**
-     * Returns the Paint object that is used for drawing the axis-line that goes
+     * Returns the ChartPaint object that is used for drawing the axis-line that goes
      * alongside the axis.
      *
      * @return
      */
-    public func getPaintAxisLine(): Paint {
+    public func getPaintAxisLine(): ChartPaint {
         return this.mAxisLinePaint
     }
 

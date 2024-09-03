@@ -8,25 +8,25 @@ public class RadarChartRenderer <: LineRadarRenderer {
     /**
      * paint for drawing the web
      */
-    public var mWebPaint: Paint
-    protected var mHighlightCirclePaint: Paint
+    public var mWebPaint: ChartPaint
+    protected var mHighlightCirclePaint: ChartPaint
 
     public init(chart: RadarChartModel, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler)
         this.mChart = chart
 
-        this.mHighlightPaint = Paint()
+        this.mHighlightPaint = ChartPaint()
         this.mHighlightPaint.setStyle(Style.STROKE)
         this.mHighlightPaint.setStrokeWidth(2.0)
         this.mHighlightPaint.setColor(Color(UInt32(ChartColor.rgb(255, 187, 115))))
 
-        this.mWebPaint = Paint()
+        this.mWebPaint = ChartPaint()
         this.mWebPaint.setStyle(Style.STROKE)
 
-        this.mHighlightCirclePaint = Paint()
+        this.mHighlightCirclePaint = ChartPaint()
     }
 
-    public func getWebPaint(): Paint {
+    public func getWebPaint(): ChartPaint {
         return this.mWebPaint
     }
 

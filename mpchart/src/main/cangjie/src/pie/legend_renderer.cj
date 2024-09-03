@@ -7,11 +7,11 @@ public class LegendRenderer <: Renderer {
     /**
      * paint for the legend labels
      */
-    protected var mLegendLabelPaint: Paint = Paint()
+    protected var mLegendLabelPaint: ChartPaint = ChartPaint()
     /**
      * paint used for the legend forms
      */
-    protected var mLegendFormPaint: Paint = Paint()
+    protected var mLegendFormPaint: ChartPaint = ChartPaint()
     /**
      * the legend object this renderer renders
      */
@@ -22,30 +22,30 @@ public class LegendRenderer <: Renderer {
 
         this.mLegend = legend
 
-        this.mLegendLabelPaint = Paint()
+        this.mLegendLabelPaint = ChartPaint()
         this.mLegendLabelPaint.setTextSize(Utils.handleDataValues(9.0))
         this.mLegendLabelPaint.setTextAlign(TextAlignStyle.Left)
         this.mLegendLabelPaint.setTextBaseline(TextBaseline.Bottom)
 
-        this.mLegendFormPaint = Paint()
+        this.mLegendFormPaint = ChartPaint()
         this.mLegendFormPaint.setStyle(Style.FILL)
     }
 
     /**
-     * Returns the Paint object used for drawing the Legend labels.
+     * Returns the ChartPaint object used for drawing the Legend labels.
      *
      * @return
      */
-    public func getLabelPaint(): Paint {
+    public func getLabelPaint(): ChartPaint {
         return this.mLegendLabelPaint
     }
 
     /**
-     * Returns the Paint object used for drawing the Legend forms.
+     * Returns the ChartPaint object used for drawing the Legend forms.
      *
      * @return
      */
-    public func getFormPaint(): Paint {
+    public func getFormPaint(): ChartPaint {
         return this.mLegendFormPaint
     }
 

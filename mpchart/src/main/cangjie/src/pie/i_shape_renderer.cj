@@ -12,8 +12,8 @@ public interface IShapeRenderer {
      * @param viewPortHandler Contains information about the current state of the view
      * @param posX            Position to draw the shape at
      * @param posY            Position to draw the shape at
-     * @param renderPaint     Paint object used for styling and drawing
+     * @param renderPaint     ChartPaint object used for styling and drawing
      */
     func renderShape(context2d: CanvasRenderingContext2D, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler,
-        posX: Float64, posY: Float64, renderPaint: Paint): Unit
+        posX: Float64, posY: Float64, renderPaint: ChartPaint): Unit
 }

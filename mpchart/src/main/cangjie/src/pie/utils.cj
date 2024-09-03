@@ -36,7 +36,7 @@ public abstract class Utils {
      * @param demoText
      * @return
      */
-    public static func calcTextWidth(c: CanvasRenderingContext2D, paint: Paint, demoText: String): Float64 {
+    public static func calcTextWidth(c: CanvasRenderingContext2D, paint: ChartPaint, demoText: String): Float64 {
         let textMetrics: TextMetrics = c.measureText(demoText)
         return 50.0
     }
@@ -51,24 +51,24 @@ public abstract class Utils {
      * @param demoText
      * @return
      */
-    public static func calcTextHeight(c: CanvasRenderingContext2D, paint: Paint, demoText: String): Float64 {
+    public static func calcTextHeight(c: CanvasRenderingContext2D, paint: ChartPaint, demoText: String): Float64 {
         let textMetrics: TextMetrics = c.measureText(demoText)
         return 50.0
     }
 
-    public static func getLineHeight(paint: Paint, c: CanvasRenderingContext2D): Float64 {
+    public static func getLineHeight(paint: ChartPaint, c: CanvasRenderingContext2D): Float64 {
         Utils.resetContext2DStyle(c, paint)
         let textMetrics: TextMetrics = c.measureText("Test")
         return 50.0
     }
 
-    public static func getLineSpacing(paint: Paint, c: CanvasRenderingContext2D): Float64 {
+    public static func getLineSpacing(paint: ChartPaint, c: CanvasRenderingContext2D): Float64 {
         Utils.resetContext2DStyle(c, paint)
         let textMetrics: TextMetrics = c.measureText("Test")
         return 20.0
     }
 
-    public static func calcTextSize(c: CanvasRenderingContext2D, paint: Paint, demoText: String): FSize {
+    public static func calcTextSize(c: CanvasRenderingContext2D, paint: ChartPaint, demoText: String): FSize {
         Utils.resetContext2DStyle(c, paint)
         let textMetrics: TextMetrics = c.measureText(demoText)
         let width: Float64 = textMetrics.width
@@ -190,7 +190,7 @@ public abstract class Utils {
 
     private static var mFontMetricsBuffer: TextMetrics = TextMetrics()
 
-    public static func drawXAxisValue(c: CanvasRenderingContext2D, text: String, x: Float64, y: Float64, paint: Paint,
+    public static func drawXAxisValue(c: CanvasRenderingContext2D, text: String, x: Float64, y: Float64, paint: ChartPaint,
         anchor: MPPointF, angleDegrees: Float64, labelPosition: XAxisLabelPosition): Unit {
         var xLabelPosition = labelPosition
 
@@ -314,7 +314,7 @@ public abstract class Utils {
         return DeviceInfo.sdkApiVersion
     }
 
-    public static func resetContext2DStyle(context2D: CanvasRenderingContext2D, paint: Paint) {
+    public static func resetContext2DStyle(context2D: CanvasRenderingContext2D, paint: ChartPaint) {
         match (paint.getStyle()) {
             case Style.FILL =>
                 let c: Color = paint.getFillStyle()
@@ -414,12 +414,12 @@ public abstract class Utils {
         }
     }
 
-    public static func drawFillRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: Paint, left: Float64,
+    public static func drawFillRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: ChartPaint, left: Float64,
         top: Float64, right: Float64, bottom: Float64, radius: Float64, cornerType: RoundCornerType) {
         Utils.drawRect(isDrawRounded, c, paint, left, top, right, bottom, radius, true, cornerType)
     }
 
-    public static func drawStrokeRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: Paint, left: Float64,
+    public static func drawStrokeRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: ChartPaint, left: Float64,
         top: Float64, right: Float64, bottom: Float64, radius: Float64, cornerType: RoundCornerType) {
         Utils.drawRect(isDrawRounded, c, paint, left, top, right, bottom, radius, false, cornerType)
     }
@@ -432,7 +432,7 @@ public abstract class Utils {
         }
     }
 
-    private static func drawRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: Paint, left: Float64,
+    private static func drawRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: ChartPaint, left: Float64,
         top: Float64, right: Float64, bottom: Float64, radius: Float64, isFill: Bool, cornerType: RoundCornerType): Unit {
         Utils.resetContext2DStyle(c, paint)
         c.beginPath()

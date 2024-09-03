@@ -11,36 +11,36 @@ public abstract class DataRenderer <: Renderer {
     /**
      * main paint object used for rendering
      */
-    protected var mRenderPaint: Paint = Paint()
+    protected var mRenderPaint: ChartPaint = ChartPaint()
 
     /**
      * paint used for highlighting values
      */
-    protected var mHighlightPaint: Paint = Paint()
-    protected var mDrawPaint: Paint = Paint()
+    protected var mHighlightPaint: ChartPaint = ChartPaint()
+    protected var mDrawPaint: ChartPaint = ChartPaint()
     /**
      * paint object for drawing values (text representing values of chart
      * entries)
      */
-    public var mValuePaint: Paint = Paint()
+    public var mValuePaint: ChartPaint = ChartPaint()
 
     public init(animator: ?ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(viewPortHandler);
 
         this.mAnimator = animator
 
-        this.mRenderPaint = Paint()
+        this.mRenderPaint = ChartPaint()
         this.mRenderPaint.setStyle(Style.FILL);
 
-        this.mDrawPaint = Paint()
+        this.mDrawPaint = ChartPaint()
 
-        this.mValuePaint = Paint()
+        this.mValuePaint = ChartPaint()
 
         this.mValuePaint.setColor("#3F3F3F")
         this.mValuePaint.setTextAlign(TextAlignStyle.Center)
         this.mValuePaint.setTextSize(9.0)
 
-        this.mHighlightPaint = Paint()
+        this.mHighlightPaint = ChartPaint()
         this.mHighlightPaint.setStyle(Style.STROKE)
         this.mHighlightPaint.setStrokeWidth(2.0)
         this.mHighlightPaint.setColor("#FFBB73")
@@ -57,31 +57,31 @@ public abstract class DataRenderer <: Renderer {
     }
 
     /**
-     * Returns the Paint object this renderer uses for drawing the values
+     * Returns the ChartPaint object this renderer uses for drawing the values
      * (value-text).
      *
      * @return
      */
-    public func getPaintValues(): Paint {
+    public func getPaintValues(): ChartPaint {
         return this.mValuePaint
     }
 
     /**
-     * Returns the Paint object this renderer uses for drawing highlight
+     * Returns the ChartPaint object this renderer uses for drawing highlight
      * indicators.
      *
      * @return
      */
-    public func getPaintHighlight(): Paint {
+    public func getPaintHighlight(): ChartPaint {
         return this.mHighlightPaint
     }
 
     /**
-     * Returns the Paint object used for rendering.
+     * Returns the ChartPaint object used for rendering.
      *
      * @return
      */
-    public func getPaintRender(): Paint {
+    public func getPaintRender(): ChartPaint {
         return this.mRenderPaint
     }
 

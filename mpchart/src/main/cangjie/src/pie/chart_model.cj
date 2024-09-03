@@ -41,12 +41,12 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      * paint object used for drawing the description text in the bottom right
      * corner of the chart
      */
-    protected var mDescPaint: Paint = Paint()
+    protected var mDescPaint: ChartPaint = ChartPaint()
     /**
      * paint object for drawing the information text when there are no values in
      * the chart
      */
-    protected var mInfoPaint: Paint = Paint()
+    protected var mInfoPaint: ChartPaint = ChartPaint()
     /**
      * the object representing the labels on the x-axis
      */
@@ -121,8 +121,8 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
 
         this.mLegendRenderer = LegendRenderer(this.mViewPortHandler, this.mLegend)
         this.mXAxis = XAxis()
-        this.mDescPaint = Paint()
-        this.mInfoPaint = Paint()
+        this.mDescPaint = ChartPaint()
+        this.mInfoPaint = ChartPaint()
         this.mInfoPaint.setColor(Color(0xFFA500))
         this.mInfoPaint.setTextAlign(TextAlignStyle.Center)
         this.mInfoPaint.setTextSize(Utils.handleDataValues(12.0))
@@ -632,7 +632,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
             case _ => return
         }
 
-        // let paints: Paint[] = []
+        // let paints: ChartPaint[] = []
 
         // if there is no marker view or drawing marker is disabled
         if (this.mMarker.isNone() || this.isDrawMarkersEnabled() || !this.valuesToHighlight()) {
@@ -1229,7 +1229,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      * @param which Chart.PAINT_VALUES, Chart.PAINT_GRID, Chart.PAINT_VALUES,
      *              ...
      */
-    public func setPaint(p: Paint, which: Int64) {
+    public func setPaint(p: ChartPaint, which: Int64) {
         if (which == PAINT_INFO) {
             this.mInfoPaint = p
         }
@@ -1244,14 +1244,14 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      * @param which e.g. Chart.PAINT_LEGEND_LABEL
      * @return
      */
-    public func getPaint(which: Int64): ?Paint {
+    public func getPaint(which: Int64): ?ChartPaint {
         if (which == PAINT_INFO) {
             return this.mInfoPaint
         }
         if (which == PAINT_DESCRIPTION) {
             return this.mDescPaint
         }
-        return Option<Paint>.None
+        return Option<ChartPaint>.None
     }
 
     public func isDrawMarkerViewsEnabled(): Bool {

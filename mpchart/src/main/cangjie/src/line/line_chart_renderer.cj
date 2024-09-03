@@ -7,7 +7,7 @@ public class LineChartRenderer <: LineRadarRenderer {
     public var mChart: LineDataProvider
     public var mDrawBitmap: ?ChartPixelMap = None
     public var mBitmapCanvas: ?CanvasRenderingContext2D = None
-    public var mCirclePaintInner: Paint
+    public var mCirclePaintInner: ChartPaint
     protected var cubicPath: Path2D = Path2D()
     protected var cubicFillPath: Path2D = Path2D()
 
@@ -15,7 +15,7 @@ public class LineChartRenderer <: LineRadarRenderer {
         super(animator, viewPortHandler)
         this.mChart = chart
 
-        this.mCirclePaintInner = Paint()
+        this.mCirclePaintInner = ChartPaint()
         this.mCirclePaintInner.setStyle(Style.FILL)
         this.mCirclePaintInner.setColor(Color(0xffffff))
     }

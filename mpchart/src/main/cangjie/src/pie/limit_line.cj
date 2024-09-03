@@ -125,7 +125,7 @@ public class LimitLine <: ComponentBase {
 
     /**
      * Sets the color of the value-text that is drawn next to the LimitLine.
-     * Default: Paint.Style.FILL_AND_STROKE
+     * Default: ChartPaint.Style.FILL_AND_STROKE
      *
      * @param style
      */

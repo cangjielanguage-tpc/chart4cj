@@ -145,7 +145,7 @@ public class Fill {
         let gradient: CanvasGradient = c.createLinearGradient(x0, y0, x1, y1)
         return gradient
     }
-    public func fillRect(c: CanvasRenderingContext2D, paint: Paint, left: Float64, top: Float64, right: Float64,
+    public func fillRect(c: CanvasRenderingContext2D, paint: ChartPaint, left: Float64, top: Float64, right: Float64,
         bottom: Float64, gradientDirection: FillDirection, radius!: Float64 = 0.0,
         cornerType!: RoundCornerType = RoundCornerType.UP): Unit {
         match (this.mType) {
@@ -208,7 +208,7 @@ public class Fill {
             }
         }
     }
-    /* public func fillPath(c: CanvasRenderingContext2D, /*path: Path2D, */paint: Paint, clipRect: ?MyRect): Unit {
+    /* public func fillPath(c: CanvasRenderingContext2D, /*path: Path2D, */paint: ChartPaint, clipRect: ?MyRect): Unit {
         match (this.mType) {
             case FillType.EMPTY => return
 

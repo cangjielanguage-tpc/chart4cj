@@ -3,7 +3,7 @@
  */
 package mpchart.utils
 
-public open class Paint {
+public open class ChartPaint {
     public var styleType: Style = Style.FILL_AND_STROKE
     public var globalAlpha: ?Float64 = Option<Float64>.None
     var globalCompositeOperation: String = "source-over"
@@ -44,7 +44,7 @@ public open class Paint {
 
     public init() {}
 
-    public init(paint: Paint) {
+    public init(paint: ChartPaint) {
         this.styleType = paint.styleType
         this.globalAlpha = paint.globalAlpha
         this.globalCompositeOperation = paint.globalCompositeOperation
@@ -391,7 +391,7 @@ public open class Paint {
     }
 }
 
-public class TextPaint <: Paint {
+public class TextPaint <: ChartPaint {
     var text: String = ""
 
     public init() {
