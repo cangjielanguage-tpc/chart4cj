@@ -65,6 +65,8 @@ public class ContentItemData {
         ContentItemData.itemData.append(ContentItem("Other Charts"))
 
         ContentItemData.itemData.append(
+            ContentItem("Combined Chart", d: "Bar and line chart together.", pagePath: "CombinedChartPage"))
+        ContentItemData.itemData.append(
             ContentItem("Scatter Plot", d: "Simple scatter plot.", pagePath: "ScatterChartPage"))
         ContentItemData.itemData.append(
             ContentItem("Bubble Chart", d: "Simple bubble chart.", pagePath: "BubbleChartPage"))

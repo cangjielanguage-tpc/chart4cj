@@ -48,7 +48,7 @@ public interface ChartInterface<D, S, E> where D <: ChartData<S, E>, S <: IDataS
 
     func getDefaultValueFormatter(): IValueFormatter
 
-    func getData(): ?D
+    func getData(): Any
 
     func getMaxVisibleCount(): Int64
 }

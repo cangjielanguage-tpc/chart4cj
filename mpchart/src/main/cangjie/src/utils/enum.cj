@@ -298,3 +298,19 @@ public enum Mode <: Equatable<Mode> {
         return !(this == b)
     }
 }
+
+public func to<T>(any: Any): T {
+    match (any) {
+        case v: T => v
+        case v: ?T => v.getOrThrow()
+        case _ => throw Exception()
+    }
+}
+
+public func tos<T>(any: Any): ?T {
+    match (any) {
+        case v: T => v
+        case v: ?T => v
+        case _ => throw Exception()
+    }
+}

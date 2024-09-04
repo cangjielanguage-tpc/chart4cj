@@ -818,7 +818,7 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         }
         let chartData = this.barChartModel.getData()
         // check if double-tap zooming is enabled
-        if (this.barChartModel.isDoubleTapToZoomEnabled() && chartData.isSome() && chartData().getEntryCount() > 0) {
+        if (this.barChartModel.isDoubleTapToZoomEnabled() && (chartData as D).isSome() && (chartData as D)().getEntryCount() > 0) {
             let trans: MPPointF = this.getTrans(x, y)
 
             let scaleX: Float64 = if (this.barChartModel.isScaleXEnabled()) {

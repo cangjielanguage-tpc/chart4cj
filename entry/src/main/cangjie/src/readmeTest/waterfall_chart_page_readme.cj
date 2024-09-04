@@ -60,7 +60,7 @@ class WaterfallChartPageReadme {
         this.model.setGridBackgroundColor(0x500000ff)
         this.model.setDrawBarShadow(false)
 
-        this.model.setDrawValueAboveBar(false)
+        this.model.setDrawValueAboveBar(true)
         this.model.setHighlightFullBarEnabled(false)
         this.model.setExtraOffsets(-20.0, 20.0, 20.0, 10.0)
 

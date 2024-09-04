@@ -152,7 +152,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         if (this.mAutoScaleMinMaxEnabled) {
             this.autoScale()
         }
-
         if (this.mAxisRendererLeft.isSome() && this.mAxisLeft.isSome() && this.mAxisLeft().isEnabled()) {
             this.mAxisRendererLeft().computeAxis(this.mAxisLeft().mAxisMinimum, this.mAxisLeft().mAxisMaximum,
                 this.mAxisLeft().isInverted())
@@ -383,7 +382,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         }
 
         if (this.mLegendRenderer.isSome()) {
-            this.mLegendRenderer().computeLegend(this.mData())
+            this.mLegendRenderer().computeLegend(this.mData)
         }
 
         this.calculateOffsets()
@@ -1422,6 +1421,10 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             return this.mData().getDataSetByIndex(h().getDataSetIndex()) as IBarLineScatterCandleBubbleDataSet<EntryOhos>
         }
         return None
+    }
+
+    public func getData(): Any {
+        return this.mData
     }
 
     /**

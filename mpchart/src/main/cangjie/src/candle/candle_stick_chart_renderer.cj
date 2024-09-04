@@ -250,7 +250,14 @@ public class CandleStickChartRenderer <: LineScatterCandleRadarRenderer {
             }
         }
     }
-
+    protected open func isDrawingValuesAllowed(chart: CandleDataProvider): Bool {
+        let chartData: ?CandleData = chart.getCandleData()
+        if (this.mViewPortHandler.isSome() && chartData.isSome()) {
+            return Float64(chartData().getEntryCount()) < Float64(chart.getMaxVisibleCount()) *
+                this.mViewPortHandler().getScaleX()
+        }
+        return false
+    }
     public func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool): Unit {
         if (this.isDrawingValuesAllowed(this.mChart)) {
             let chartData: ?CandleData = this.mChart.getCandleData()

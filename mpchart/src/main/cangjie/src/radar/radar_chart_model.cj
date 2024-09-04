@@ -358,4 +358,8 @@ public class RadarChartModel <: PieRadarChartBaseModel<RadarData, IRadarDataSet,
     public func getYRange(): Float64 {
         return this.mYAxis.mAxisRange
     }
+
+    public func getRadarData():?RadarData {
+        return this.mData
+    }
 }

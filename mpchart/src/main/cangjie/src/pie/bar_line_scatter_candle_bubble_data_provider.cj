@@ -12,5 +12,5 @@ public interface BarLineScatterCandleBubbleDataProvider<D, S, E> <: ChartInterfa
 
     func getHighestVisibleX(): Float64
 
-    func getData(): ?D
+    func getData(): Any
 }

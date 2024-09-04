@@ -128,12 +128,11 @@ public open class ChartHighlighter<P, D, S, E> <: IHighlighter where P <: BarLin
     protected func getHighlightsAtXValue(xVal: Float64, x: Float64, y: Float64): ArrayList<Highlight> {
         this.mHighlightBuffer.clear()
 
-        let data: ?BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos> = this.
-            getDatas()
+        let data: ?D = this.mChart.getData() as D
         if (let Some(d) <- data) {
             let dataSetCount: Int64 = d.getDataSetCount()
             for (i in 0..dataSetCount) {
-                let dataSet: ?IBarLineScatterCandleBubbleDataSet<EntryOhos> = d.getDataSetByIndex(i)
+                let dataSet: ?S = d.getDataSetByIndex(i)
                 if(let Some(s) <- dataSet) {
                     if(!dataSet().isHighlightEnabled()) {
                        continue
@@ -155,15 +154,15 @@ public open class ChartHighlighter<P, D, S, E> <: IHighlighter where P <: BarLin
      * @param rounding
      * @return
      */
-    protected open func buildHighlights(set: IDataSet<EntryOhos>, dataSetIndex: Int64, xVal: Float64, rounding: Rounding): ArrayList<Highlight> {
+    protected open func buildHighlights(set: S, dataSetIndex: Int64, xVal: Float64, rounding: Rounding): ArrayList<Highlight> {
         let highlights: ArrayList<Highlight> = ArrayList<Highlight>()
 
         //noinspection unchecked
-        var entries: ArrayList<EntryOhos> = set.getEntriesForXValue(xVal)
+        var entries: ArrayList<E> = set.getEntriesForXValue(xVal)
 
         if (entries.size == 0) {
             // Try to find closest x-value and take all entries for that x-value
-            let closest: ?EntryOhos = set.getEntryForXValue(xVal, Float64.NaN, rounding: rounding)
+            let closest: ?E = set.getEntryForXValue(xVal, Float64.NaN, rounding: rounding)
             if ( let Some(c) <- closest) {
                 //noinspection unchecked
                 entries = set.getEntriesForXValue(c.getX())
@@ -211,7 +210,7 @@ public open class ChartHighlighter<P, D, S, E> <: IHighlighter where P <: BarLin
 
             if (axis.isNone() || high.getAxis()() == axis()) {
                 var cDistance: Float64 = 0.0
-                if (this.mChart.getData()().isHighlightByXDistance()) {
+                if ((this.mChart.getData() as D)().isHighlightByXDistance()) {
                     cDistance = abs(x - high.getXPx())
                 } else {
                     cDistance = this.getDistance(x, y, high.getXPx(), high.getYPx())
@@ -239,13 +238,5 @@ public open class ChartHighlighter<P, D, S, E> <: IHighlighter where P <: BarLin
     protected open func getDistance(x1: Float64, y1: Float64, x2: Float64, y2: Float64): Float64 {
         let sun: Float64 = pow(x1 - x2, 2) + pow(y1 - y2, 2)
         return sqrt(sun)
-    }
-
-    protected func getDatas(): ?BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
-                                           EntryOhos> {
-        if(let Some(d: BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>,EntryOhos>) <- this.mChart.getData()) {
-            return  d
-        }
-       return None
     }
 }

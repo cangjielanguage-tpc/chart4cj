@@ -29,6 +29,7 @@ internal import mpchart.line.*
 internal import mpchart.candle.*
 internal import mpchart.scatter.*
 internal import mpchart.radar.*
+internal import mpchart.combine.*
 
 
 extend<T> Option<T> {

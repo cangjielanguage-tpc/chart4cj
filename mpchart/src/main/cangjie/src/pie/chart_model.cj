@@ -132,7 +132,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         }
     }
 
-    public func setData(data: ?D): Unit {
+    public open func setData(data: ?D): Unit {
         this.mData = data
         this.mOffsetsCalculated = false
 
@@ -626,7 +626,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
     /**
      * draws all MarkerViews on the highlighted positions
      */
-    protected func drawMarkers(c: CanvasRenderingContext2D): Unit {
+    protected open func drawMarkers(c: CanvasRenderingContext2D): Unit {
         match (mLastGesture) {
             case LastGesture.SINGLE_TAP => ()
             case _ => return
@@ -1292,15 +1292,6 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
     }
 
     /**
-     * Returns the ChartData object that has been set for the chart.
-     *
-     * @return
-     */
-    public func getData(): ?D {
-        return this.mData
-    }
-
-    /**
      * Returns the ViewPortHandler of the chart that is responsible for the
      * content area of the chart and its offsets and dimensions.
      *
@@ -1357,13 +1348,13 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
             AppLog.info(LOG_TAG + "OnSizeChanged()")
         }
         this.mChartSizeCorrected = true
-        this.width = Float64(w)
-        this.height = Float64(h)
+        this.width = w
+        this.height = h
         if (w > 0.0 && h > 0.0 && w < 10000.0 && h < 10000.0) {
             if (this.mLogEnabled) {
                 AppLog.info(LOG_TAG + "Setting chart dimens, width: ${w}, height: ${h}")
             }
-            this.mViewPortHandler.setChartDimens(Float64(w), Float64(h))
+            this.mViewPortHandler.setChartDimens(w, h)
         } else {
             if (this.mLogEnabled) {
                 AppLog.info(LOG_TAG + "*Avoiding* setting chart dimens! width: ${w}, height: ${h}")
@@ -1373,17 +1364,8 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         // This may cause the chart view to mutate properties affecting the view port --
         //   lets do this before we try to run any pending jobs on the view port itself
         this.notifyDataSetChanged()
-
-        // for (Runnable r : mJobs) {
-        //     post(r)
-        // }
-        //
-        // mJobs.clear()
-
-        // super.onSizeChanged(w, h, oldw, oldh)
     }
 
-    //
     /**
      * Setting this to true will set the layer-type HARDWARE for the view, false
      * will set layer-type SOFTWARE.

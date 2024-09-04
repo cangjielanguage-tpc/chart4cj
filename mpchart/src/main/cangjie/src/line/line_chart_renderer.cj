@@ -166,7 +166,7 @@ public class LineChartRenderer <: LineRadarRenderer {
             var cur: ?EntryOhos = dataSet.getEntryForIndex(max(firstIndex - 1, 0))
             var next: ?EntryOhos = cur
             var nextIndex: Int64 = -1
-            if(cur.isNone()) {
+            if (cur.isNone()) {
                 return
             }
             Utils.resetContext2DStyle(c, this.mRenderPaint)
@@ -553,6 +553,15 @@ public class LineChartRenderer <: LineRadarRenderer {
 
         filled.closePath()
         return filled
+    }
+
+     protected func isDrawingValuesAllowed(chart: LineDataProvider): Bool {
+        let chartData: ?LineData = chart.getLineData()
+        if (this.mViewPortHandler.isSome() && chartData.isSome()) {
+            return Float64(chartData().getEntryCount()) < Float64(chart.getMaxVisibleCount()) *
+                this.mViewPortHandler().getScaleX()
+        }
+        return false
     }
 
     public func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool) {

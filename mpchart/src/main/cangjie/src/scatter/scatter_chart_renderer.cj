@@ -75,6 +75,14 @@ public class ScatterChartRenderer <: LineScatterCandleRadarRenderer {
             }
         }
     }
+    protected open func isDrawingValuesAllowed(chart: ScatterDataProvider): Bool {
+        let chartData: ?ScatterData = chart.getScatterData()
+        if (this.mViewPortHandler.isSome() && chartData.isSome()) {
+            return Float64(chartData().getEntryCount()) < Float64(chart.getMaxVisibleCount()) *
+                this.mViewPortHandler().getScaleX()
+        }
+        return false
+    }
 
     public func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool) {
 

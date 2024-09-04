@@ -51,11 +51,104 @@ public class LegendRenderer <: Renderer {
 
     protected var computedEntries: ArrayList<LegendEntry> = ArrayList<LegendEntry>()
 
+    func computeLegendMatchCandleDataSet(dataSet: ICandleDataSet): Unit {
+        let decreasingColor: UInt32 = dataSet.getDecreasingColor()
+        let increasingColor: UInt32 = dataSet.getIncreasingColor()
+
+        this.computedEntries.append(
+            LegendEntry(
+                "",
+                dataSet.getForm(),
+                dataSet.getFormSize(),
+                dataSet.getFormLineWidth(),
+                dataSet.getFormLineDashEffect(),
+                decreasingColor
+            )
+        )
+
+        this.computedEntries.append(
+            LegendEntry(
+                dataSet.getLabel(),
+                dataSet.getForm(),
+                dataSet.getFormSize(),
+                dataSet.getFormLineWidth(),
+                dataSet.getFormLineDashEffect(),
+                increasingColor
+            )
+        )
+    }
+
+    func computeLegendMatchBarSet(dataSet: IBarDataSet, clrs: ArrayList<UInt32>): Unit {
+        Hilog.error(0x0000,"test","computeLegendMatchBarSet--1")
+        let sLabels: Array<String> = dataSet.getStackLabels();
+        let minEntries: Int64 = min(clrs.size, dataSet.getStackSize());
+        for (j in 0..minEntries) {
+            var label: String = ""
+            if (sLabels.size > 0) {
+                let labelIndex: Int64 = j % minEntries;
+                label = if (labelIndex < sLabels.size) {
+                    sLabels[labelIndex]
+                } else {
+                    ""
+                }
+            } else {
+                label = ""
+            }
+
+            let dashEffect = dataSet.getFormLineDashEffect(); // 使用空对象作为默认值
+            this.computedEntries.append(
+                LegendEntry(
+                    label,
+                    dataSet.getForm(),
+                    dataSet.getFormSize(),
+                    dataSet.getFormLineWidth(),
+                    dashEffect,
+                    clrs[j]
+                )
+            );
+        }
+
+        let label = dataSet.getLabel();
+        if (label != "") {
+
+            // add the legend description label
+            let dashEffect = dataSet.getFormLineDashEffect();
+            this.computedEntries.append(
+                LegendEntry(
+                    dataSet.getLabel(),
+                    LegendForm.NONE,
+                    Float64.NaN,
+                    Float64.NaN,
+                    dashEffect,
+                    ColorTemplate.COLOR_NONE
+                )
+            )
+        }
+    }
+
     private func computeLegendMatchDataSet<D, S, E>(dataSet: ?S, data: ?D, i: Int64): Unit where D <: ChartData<S, E>,
         S <: IDataSet<E>, E <: EntryOhos {
         let clrs: ArrayList<UInt32> = dataSet().getColors()
         let entryCount: Int64 = dataSet().getEntryCount()
+
         match (dataSet) {
+            case Some(wrapper: CombinedDataSetWrapper<CandleEntry>) => match (wrapper.inner) {
+                case candleDataSet: ICandleDataSet => if (candleDataSet.getDecreasingColor() != ColorTemplate.COLOR_NONE) {
+                    computeLegendMatchCandleDataSet(candleDataSet)
+                } else {
+                    addComputedEntries(clrs, entryCount, dataSet, data, i)
+                }
+                case _ => addComputedEntries(clrs, entryCount, dataSet, data, i)
+            }
+            case Some(wrapper: CombinedDataSetWrapper<BarEntry>) => match (wrapper.inner) {
+                case barDataSet: IBarDataSet => if (barDataSet.isStacked()) {
+                    computeLegendMatchBarSet(barDataSet, clrs)
+                } else {
+                    addComputedEntries(clrs, entryCount, dataSet, data, i)
+                }
+
+                case _ => addComputedEntries(clrs, entryCount, dataSet, data, i)
+            }
             case Some(pieDataSet: IPieDataSet) =>
                 let entryCounts: Int64 = min(clrs.size, entryCount)
                 for (j in 0..entryCounts) {
@@ -84,79 +177,15 @@ public class LegendRenderer <: Renderer {
                     )
                 }
             case Some(barDataSet: IBarDataSet) => if (barDataSet.isStacked()) {
-                let sLabels: Array<String> = barDataSet.getStackLabels();
-                let minEntries: Int64 = min(clrs.size, barDataSet.getStackSize());
-                for (j in 0..minEntries) {
-                    var label: String = ""
-                    if (sLabels.size > 0) {
-                        let labelIndex: Int64 = j % minEntries;
-                        label = if (labelIndex < sLabels.size) {
-                            sLabels[labelIndex]
-                        } else {
-                            ""
-                        }
-                    } else {
-                        label = ""
-                    }
-
-                    let dashEffect = dataSet().getFormLineDashEffect(); // 使用空对象作为默认值
-                    this.computedEntries.append(
-                        LegendEntry(
-                            label,
-                            dataSet().getForm(),
-                            dataSet().getFormSize(),
-                            dataSet().getFormLineWidth(),
-                            dashEffect,
-                            clrs[j]
-                        )
-                    );
-                }
-
-                let label = barDataSet.getLabel();
-                if (label != "") {
-
-                    // add the legend description label
-                    let dashEffect = dataSet().getFormLineDashEffect();
-                    this.computedEntries.append(
-                        LegendEntry(
-                            dataSet().getLabel(),
-                            LegendForm.NONE,
-                            Float64.NaN,
-                            Float64.NaN,
-                            dashEffect,
-                            ColorTemplate.COLOR_NONE
-                        )
-                    );
-                }
+                computeLegendMatchBarSet(barDataSet, clrs)
             } else {
                 addComputedEntries(clrs, entryCount, dataSet, data, i)
             }
-
             case Some(candleDataSet: ICandleDataSet) => if (candleDataSet.getDecreasingColor() != ColorTemplate.
                 COLOR_NONE) {
-                let decreasingColor: UInt32 = candleDataSet.getDecreasingColor()
-                let increasingColor: UInt32 = candleDataSet.getIncreasingColor()
-                this.computedEntries.append(
-                    LegendEntry(
-                        "",
-                        dataSet().getForm(),
-                        dataSet().getFormSize(),
-                        dataSet().getFormLineWidth(),
-                        dataSet().getFormLineDashEffect(),
-                        decreasingColor
-                    )
-                )
-
-                this.computedEntries.append(
-                    LegendEntry(
-                        dataSet().getLabel(),
-                        dataSet().getForm(),
-                        dataSet().getFormSize(),
-                        dataSet().getFormLineWidth(),
-                        dataSet().getFormLineDashEffect(),
-                        increasingColor
-                    )
-                )
+                computeLegendMatchCandleDataSet(candleDataSet)
+            } else {
+                addComputedEntries(clrs, entryCount, dataSet, data, i)
             }
             case _ => addComputedEntries(clrs, entryCount, dataSet, data, i)
         }
