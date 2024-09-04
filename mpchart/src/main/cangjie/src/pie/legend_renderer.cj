@@ -83,11 +83,9 @@ public class LegendRenderer <: Renderer {
                         )
                     )
                 }
-            case Some(barDataSet: IBarDataSet) =>
+            case Some(barDataSet: IBarDataSet) => if (barDataSet.isStacked()) {
                 let sLabels: Array<String> = barDataSet.getStackLabels();
-
                 let minEntries: Int64 = min(clrs.size, barDataSet.getStackSize());
-
                 for (j in 0..minEntries) {
                     var label: String = ""
                     if (sLabels.size > 0) {
@@ -116,6 +114,7 @@ public class LegendRenderer <: Renderer {
 
                 let label = barDataSet.getLabel();
                 if (label != "") {
+
                     // add the legend description label
                     let dashEffect = dataSet().getFormLineDashEffect();
                     this.computedEntries.append(
@@ -129,6 +128,10 @@ public class LegendRenderer <: Renderer {
                         )
                     );
                 }
+            } else {
+                addComputedEntries(clrs, entryCount, dataSet, data, i)
+            }
+
             case Some(candleDataSet: ICandleDataSet) => if (candleDataSet.getDecreasingColor() != ColorTemplate.
                 COLOR_NONE) {
                 let decreasingColor: UInt32 = candleDataSet.getDecreasingColor()
@@ -155,43 +158,47 @@ public class LegendRenderer <: Renderer {
                     )
                 )
             }
-            case _ =>
-                var j: Int64 = 0;
-                while (j < clrs.size && j < entryCount) {
-                    var label: String = ""
+            case _ => addComputedEntries(clrs, entryCount, dataSet, data, i)
+        }
+    }
 
-                    // if multiple colors are set for a DataSet, group them
-                    if (j < clrs.size - 1 && j < entryCount - 1) {
-                        label = ""
-                    } else { // add label to the last entry
-                        if (data.isNone()) {
-                            label = ""
-                        }
-                        let dataObj = data().getDataSetByIndex(i);
-                        if (dataObj.isNone()) {
-                            label = ""
-                        } else {
-                            label = dataObj().getLabel()
-                        }
-                    }
-                    var clrsData: UInt32 = 0;
-                    if (clrs.isEmpty()) {
-                        clrsData = 0
-                    }
-                    clrsData = (clrs[j])
-                    let dashEffect = dataSet().getFormLineDashEffect(); // 使用空对象作为默认值
-                    this.computedEntries.append(
-                        LegendEntry(
-                            label,
-                            dataSet().getForm(),
-                            dataSet().getFormSize(),
-                            dataSet().getFormLineWidth(),
-                            dashEffect,
-                            clrsData
-                        )
-                    );
-                    j ++
+    private func addComputedEntries<D, S, E>(clrs: ArrayList<UInt32>, entryCount: Int64, dataSet: ?S, data: ?D, i: Int64): Unit where D <: ChartData<S,
+    E>, S <: IDataSet<E>, E <: EntryOhos {
+        var j: Int64 = 0;
+        while (j < clrs.size && j < entryCount) {
+            var label: String = ""
+
+            // if multiple colors are set for a DataSet, group them
+            if (j < clrs.size - 1 && j < entryCount - 1) {
+                label = ""
+            } else { // add label to the last entry
+                if (data.isNone()) {
+                    label = ""
                 }
+                let dataObj = data().getDataSetByIndex(i);
+                if (dataObj.isNone()) {
+                    label = ""
+                } else {
+                    label = dataObj().getLabel()
+                }
+            }
+            var clrsData: UInt32 = 0;
+            if (clrs.isEmpty()) {
+                clrsData = 0
+            }
+            clrsData = (clrs[j])
+            let dashEffect = dataSet().getFormLineDashEffect(); // 使用空对象作为默认值
+            this.computedEntries.append(
+                LegendEntry(
+                    label,
+                    dataSet().getForm(),
+                    dataSet().getFormSize(),
+                    dataSet().getFormLineWidth(),
+                    dashEffect,
+                    clrsData
+                )
+            );
+            j++
         }
     }
     /**
@@ -253,9 +260,11 @@ public class LegendRenderer <: Renderer {
         // 计算标签行高
 
         let labelLineHeight: Float64 = Utils.getLineHeight(this.mLegendLabelPaint, c)
+
         // 计算标签行间距，包括额外的垂直空间
         let labelLineSpacing: Float64 = Utils.getLineSpacing(this.mLegendLabelPaint, c)
             + Utils.handleDataValues(this.mLegend().getYEntrySpace())
+
         // 计算形状偏移以使其与文本垂直居中
         let formYOffset: Float64 = labelLineHeight - Utils.calcTextHeight(c, this.mLegendLabelPaint, "ABC") / 2.0
         // 获取图例条目
@@ -283,12 +292,11 @@ public class LegendRenderer <: Renderer {
 
         // 条目之间的空间
         let stackSpace: Float64 = Utils.handleDataValues(this.mLegend().getStackSpace())
+
         // 获取垂直偏移量
         let yoffset: Float64 = this.mLegend().getYOffset()
-
         // 获取水平偏移量
         let xoffset: Float64 = this.mLegend().getXOffset()
-
         // 设置原点的X坐标
         var originPosX: Float64 = 0.0
         match (horizontalAlignment) {
@@ -309,7 +317,6 @@ public class LegendRenderer <: Renderer {
                 if (direction == LegendDirection.RIGHT_TO_LEFT) {
                     originPosX += this.mLegend().mNeededWidth
                 }
-
             case LegendHorizontalAlignment.RIGHT =>
                 if (let Some(handle) <- this.mViewPortHandler) {
                     if (orientation == LegendOrientation.VERTICAL) {
@@ -349,6 +356,7 @@ public class LegendRenderer <: Renderer {
                     }
                 }
         }
+
         match (orientation) { // "HORIZONTAL"
             case LegendOrientation.HORIZONTAL =>
                 let calculatedLineSizes: ArrayList<FSize> = this.mLegend().getCalculatedLineSizes()
@@ -359,8 +367,7 @@ public class LegendRenderer <: Renderer {
                 var posY: Float64 = 0.0
 
                 match (verticalAlignment) { // "BOTTOM"
-                    case LegendVerticalAlignment.TOP =>
-                        posY = yoffset
+                    case LegendVerticalAlignment.TOP => posY = yoffset
 
                     case LegendVerticalAlignment.BOTTOM => if (let Some(handle) <- this.mViewPortHandler) {
                         posY = handle.getChartHeight() - yoffset - this.mLegend().mNeededHeight
@@ -419,22 +426,21 @@ public class LegendRenderer <: Renderer {
                         }
 
                         if (direction == LegendDirection.RIGHT_TO_LEFT) {
-                            if(let Some(labelSize) <- calculatedLabelSizes.get(i)) {
+                            if (let Some(labelSize) <- calculatedLabelSizes.get(i)) {
                                 posX -= labelSize.width
                             } else {
-                                posX -= 0.0
+                                posX
                             }
                         }
 
                         this.drawLabel(c, posX, posY + labelLineHeight, e.label)
 
                         if (direction == LegendDirection.LEFT_TO_RIGHT) {
-                            if(let Some(labelSize) <- calculatedLabelSizes.get(i)) {
+                            if (let Some(labelSize) <- calculatedLabelSizes.get(i)) {
                                 posX += labelSize.width
                             } else {
-                                posX += 0.0
+                                posX
                             }
-
                         }
                         posX += if (direction == LegendDirection.RIGHT_TO_LEFT) {
                             -xEntrySpace
@@ -467,7 +473,6 @@ public class LegendRenderer <: Renderer {
                             }
                         }
                         posY += yoffset
-
                     case LegendVerticalAlignment.BOTTOM =>
                         posY = if (horizontalAlignment == LegendHorizontalAlignment.CENTER) {
                             if (let Some(handle) <- this.mViewPortHandler) {
@@ -482,15 +487,12 @@ public class LegendRenderer <: Renderer {
                                 0.0
                             }
                         }
-
                         posY -= this.mLegend().mNeededHeight + yoffset
-
                     case LegendVerticalAlignment.CENTER => if (let Some(handle) <- this.mViewPortHandler) {
                         posY = handle.getChartHeight() / 2.0 - this.mLegend().mNeededHeight / 2.0 +
                             this.mLegend().getYOffset()
                     }
                 }
-
                 for (i in 0..entries.size) {
                     let e: LegendEntry = entries[i]
                     let drawingForm: Bool = e.form != LegendForm.NONE
@@ -501,7 +503,6 @@ public class LegendRenderer <: Renderer {
                     }
 
                     var posX: Float64 = originPosX
-
                     if (drawingForm) {
                         if (direction == LegendDirection.LEFT_TO_RIGHT) {
                             posX += stack
@@ -530,7 +531,6 @@ public class LegendRenderer <: Renderer {
                         if (direction == LegendDirection.RIGHT_TO_LEFT) {
                             posX -= Utils.calcTextWidth(c, this.mLegendLabelPaint, e.label)
                         }
-
                         if (!wasStacked) {
                             this.drawLabel(c, posX, posY + labelLineHeight, e.label)
                         } else {

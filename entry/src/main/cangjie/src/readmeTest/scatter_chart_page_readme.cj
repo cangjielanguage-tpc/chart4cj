@@ -36,9 +36,10 @@ class ScatterChartPageReadme {
         let l: ?Legend = this.model.getLegend()
         if (let Some(legend) <- l) {
             legend.setEnabled(true)
-            legend.setOrientation(LegendOrientation.HORIZONTAL)
+            legend.setOrientation(LegendOrientation.VERTICAL)
             legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            legend.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
+            legend.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
+            legend.setYOffset(-30.0)
         }
 
         let description: Description = this.model.getDescription()

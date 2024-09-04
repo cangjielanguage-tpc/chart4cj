@@ -42,13 +42,13 @@ class RadarChartPageReadme {
         let l: ?Legend = this.model.getLegend()
         if (let Some(legend) <- l) {
             legend.setEnabled(true)
-            legend.setOrientation(LegendOrientation.HORIZONTAL)
+            legend.setOrientation(LegendOrientation.VERTICAL)
             legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
+            legend.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
             legend.setDrawInside(false)
             legend.setXEntrySpace(7.0)
             legend.setYEntrySpace(5.0)
             legend.setTextColor(Color(0xffffff))
-            legend.setYOffset(50.0)
         }
 
         this.model.setWebLineWidth(0.3)

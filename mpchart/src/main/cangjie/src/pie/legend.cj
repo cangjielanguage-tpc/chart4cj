@@ -675,7 +675,7 @@ public class Legend <: ComponentBase {
 
             // grouped forms have null labels
             if (label != "") {
-                this.mCalculatedLabelSizes.append(Utils.calcTextSize(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), labelpaint, label));
+                this.mCalculatedLabelSizes.append(Utils.calcTextSize(labelpaint, label));
                 requiredWidth += if (drawingForm) {
                     formToTextSpace + formSize
                 } else {

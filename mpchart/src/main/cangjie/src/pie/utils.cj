@@ -38,7 +38,7 @@ public abstract class Utils {
      */
     public static func calcTextWidth(c: CanvasRenderingContext2D, paint: ChartPaint, demoText: String): Float64 {
         let textMetrics: TextMetrics = c.measureText(demoText)
-        return 50.0
+        return textMetrics.width
     }
 
     private static var mCalcTextHeightRect: MyRect = MyRect()
@@ -53,26 +53,26 @@ public abstract class Utils {
      */
     public static func calcTextHeight(c: CanvasRenderingContext2D, paint: ChartPaint, demoText: String): Float64 {
         let textMetrics: TextMetrics = c.measureText(demoText)
-        return 50.0
+        return textMetrics.height
     }
 
     public static func getLineHeight(paint: ChartPaint, c: CanvasRenderingContext2D): Float64 {
         Utils.resetContext2DStyle(c, paint)
         let textMetrics: TextMetrics = c.measureText("Test")
-        return 50.0
+        return textMetrics.height
     }
 
     public static func getLineSpacing(paint: ChartPaint, c: CanvasRenderingContext2D): Float64 {
         Utils.resetContext2DStyle(c, paint)
         let textMetrics: TextMetrics = c.measureText("Test")
-        return 20.0
+        return textMetrics.height * 0.3
     }
 
-    public static func calcTextSize(c: CanvasRenderingContext2D, paint: ChartPaint, demoText: String): FSize {
-        Utils.resetContext2DStyle(c, paint)
-        let textMetrics: TextMetrics = c.measureText(demoText)
-        let width: Float64 = textMetrics.width
-        let height: Float64 = textMetrics.height
+    public static func calcTextSize(paint: ChartPaint, demoText: String): FSize {
+        let context2: MeasureOptions = MeasureOptions(textContent: demoText)
+        let textSize: MeasureSize = Measure.MeasureTextSize(context2)
+        let width: Float64 = px2vp(textSize.width.px)().value
+        let height: Float64 = px2vp(textSize.height.px)().value
         let fsize: FSize = FSize(width, height)
         return fsize
     }
