@@ -558,7 +558,7 @@ public class LegendRenderer <: Renderer {
                         }
 
                         if (direction == LegendDirection.RIGHT_TO_LEFT) {
-                            posX -= Utils.calcTextWidth(c, this.mLegendLabelPaint, e.label)
+                            posX -= Utils.calcTextWidth(this.mLegendLabelPaint, e.label)
                         }
                         if (!wasStacked) {
                             this.drawLabel(c, posX, posY + labelLineHeight, e.label)

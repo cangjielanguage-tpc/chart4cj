@@ -234,7 +234,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                         }
 
                         // calculate the correct offset depending on the draw position of the value
-                        let valueTextWidth: Float64 = Utils.calcTextWidth(c, this.mValuePaint, formattedValue)
+                        let valueTextWidth: Float64 = Utils.calcTextWidth(this.mValuePaint, formattedValue)
                         posOffset = if (drawValueAboveBar) {
                             valueOffsetPlus
                         } else {
@@ -319,7 +319,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                             }
 
                             // calculate the correct offset depending on the draw position of the value
-                            let valueTextWidth: Float64 = Utils.calcTextWidth(c, this.mValuePaint, formattedValue)
+                            let valueTextWidth: Float64 = Utils.calcTextWidth(this.mValuePaint, formattedValue)
                             posOffset = if (drawValueAboveBar) {
                                 valueOffsetPlus
                             } else {
@@ -408,7 +408,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                                 }
 
                                 // calculate the correct offset depending on the draw position of the value
-                                let valueTextWidth: Float64 = Utils.calcTextWidth(c, this.mValuePaint, formattedValue)
+                                let valueTextWidth: Float64 = Utils.calcTextWidth(this.mValuePaint, formattedValue)
                                 posOffset = if (drawValueAboveBar) {
                                     valueOffsetPlus
                                 } else {

@@ -26,12 +26,6 @@ class MultiplePage {
             legend.setHorizontalAlignment(LegendHorizontalAlignment.CENTER)
             legend.setOrientation(LegendOrientation.HORIZONTAL)
             legend.setDrawInside(false)
-
-            // 设置图例的样式和大小
-            legend.setForm(LegendForm.DEFAULT)
-
-            // 设置图例的颜色
-            legend.setTextColor(Color(0x000000))
         }
 
         this.model.setMinOffset(this.minOffset)

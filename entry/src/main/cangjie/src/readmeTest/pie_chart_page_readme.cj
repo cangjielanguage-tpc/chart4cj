@@ -56,7 +56,7 @@ class PieChartPageReadme {
 
         this.model.setDrawCenterText(true) // 绘制中心文本
         this.model.setEntryLabelColor(0xFF000000)
-        this.model.setEntryLabelTextSize(30.0)
+        this.model.setEntryLabelTextSize(80.0)
         this.model.setRotationAngle(0.0) // 设置旋转角度
 
         // 通过触摸启用图表的旋转

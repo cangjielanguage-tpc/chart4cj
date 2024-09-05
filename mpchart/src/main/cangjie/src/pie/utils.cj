@@ -36,9 +36,10 @@ public abstract class Utils {
      * @param demoText
      * @return
      */
-    public static func calcTextWidth(c: CanvasRenderingContext2D, paint: ChartPaint, demoText: String): Float64 {
-        let textMetrics: TextMetrics = c.measureText(demoText)
-        return textMetrics.width
+    public static func calcTextWidth(paint: ChartPaint, demoText: String): Float64 {
+        let context2: MeasureOptions = MeasureOptions(textContent: demoText)
+        let textSize: MeasureSize = Measure.MeasureTextSize(context2)
+        return px2vp(textSize.width.px)().value
     }
 
     private static var mCalcTextHeightRect: MyRect = MyRect()
@@ -51,21 +52,44 @@ public abstract class Utils {
      * @param demoText
      * @return
      */
+    public static func calcTextHeight(paint: ChartPaint, demoText: String): Float64 {
+        let context2: MeasureOptions = MeasureOptions(textContent: demoText)
+        let textSize: MeasureSize = Measure.MeasureTextSize(context2)
+        return px2vp(textSize.height.px)().value
+    }
+
     public static func calcTextHeight(c: CanvasRenderingContext2D, paint: ChartPaint, demoText: String): Float64 {
+        Utils.resetContext2DStyle(c, paint)
         let textMetrics: TextMetrics = c.measureText(demoText)
         return textMetrics.height
     }
 
-    public static func getLineHeight(paint: ChartPaint, c: CanvasRenderingContext2D): Float64 {
-        Utils.resetContext2DStyle(c, paint)
-        let textMetrics: TextMetrics = c.measureText("Test")
-        return textMetrics.height
+    public static func getLineHeight(paint: ChartPaint, c: ?CanvasRenderingContext2D): Float64 {
+        var lineHeight: Float64 = 0.0
+        if (let Some(canvas) <- c) {
+            Utils.resetContext2DStyle(canvas, paint)
+            let textMetrics: TextMetrics = canvas.measureText("Test")
+            lineHeight = textMetrics.height
+        } else {
+            let context2: MeasureOptions = MeasureOptions(textContent: "Test")
+            let textSize: MeasureSize = Measure.MeasureTextSize(context2)
+            lineHeight = px2vp(textSize.height.px)().value
+        }
+        return lineHeight
     }
 
-    public static func getLineSpacing(paint: ChartPaint, c: CanvasRenderingContext2D): Float64 {
-        Utils.resetContext2DStyle(c, paint)
-        let textMetrics: TextMetrics = c.measureText("Test")
-        return textMetrics.height * 0.3
+    public static func getLineSpacing(paint: ChartPaint, c: ?CanvasRenderingContext2D): Float64 {
+        var lineSpacing: Float64 = 0.0
+        if (let Some(canvas) <- c) {
+            Utils.resetContext2DStyle(canvas, paint)
+            let textMetrics: TextMetrics = canvas.measureText("Test")
+            lineSpacing = textMetrics.height * 0.3
+        } else {
+            let context2: MeasureOptions = MeasureOptions(textContent: "Test")
+            let textSize: MeasureSize = Measure.MeasureTextSize(context2)
+            lineSpacing = px2vp(textSize.height.px)().value * 0.3
+        }
+        return lineSpacing
     }
 
     public static func calcTextSize(paint: ChartPaint, demoText: String): FSize {
@@ -190,8 +214,8 @@ public abstract class Utils {
 
     private static var mFontMetricsBuffer: TextMetrics = TextMetrics()
 
-    public static func drawXAxisValue(c: CanvasRenderingContext2D, text: String, x: Float64, y: Float64, paint: ChartPaint,
-        anchor: MPPointF, angleDegrees: Float64, labelPosition: XAxisLabelPosition): Unit {
+    public static func drawXAxisValue(c: CanvasRenderingContext2D, text: String, x: Float64, y: Float64,
+        paint: ChartPaint, anchor: MPPointF, angleDegrees: Float64, labelPosition: XAxisLabelPosition): Unit {
         var xLabelPosition = labelPosition
 
         var drawOffsetX: Float64 = 0.0
@@ -419,8 +443,8 @@ public abstract class Utils {
         Utils.drawRect(isDrawRounded, c, paint, left, top, right, bottom, radius, true, cornerType)
     }
 
-    public static func drawStrokeRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: ChartPaint, left: Float64,
-        top: Float64, right: Float64, bottom: Float64, radius: Float64, cornerType: RoundCornerType) {
+    public static func drawStrokeRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: ChartPaint,
+        left: Float64, top: Float64, right: Float64, bottom: Float64, radius: Float64, cornerType: RoundCornerType) {
         Utils.drawRect(isDrawRounded, c, paint, left, top, right, bottom, radius, false, cornerType)
     }
 
