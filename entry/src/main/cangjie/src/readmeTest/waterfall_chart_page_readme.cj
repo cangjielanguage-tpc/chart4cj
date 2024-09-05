@@ -3,29 +3,19 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.state_macro_manage.*
-import ohos.base.LengthProp
-import ohos.component.Column
-import ohos.component.Row
-import ohos.component.Button
-import ohos.component.Text
-import ohos.component.CustomView
-import ohos.component.CJEntry
-import ohos.component.loadNativeView
-import ohos.state_manage.SubscriberManager
-import ohos.state_manage.ObservedProperty
-import ohos.state_macro_manage.Entry
-import ohos.state_macro_manage.Component
-import ohos.state_macro_manage.State
-import ohos.state_macro_manage.r
 import ohos.base.*
 import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
+import std.format.*
 import mpchart.pie.*
 import mpchart.utils.*
 import mpchart.components.*
+import mpchart.charts.*
+import mpchart.waterfall.*
 
 @Entry
 @Component
@@ -39,30 +29,34 @@ class WaterfallChartPageReadme {
     private var normalMarker: MarkerView = MarkerView()
 
     protected override func aboutToAppear() {
+        // 获取图表描述部件，设置图表描述部件不可用，即图表不进行绘制描述部件
         let description: ?Description = this.model.getDescription()
         if (let Some(des) <- description) {
             des.setEnabled(false)
         }
 
+        // 获取图表图例部件，设置图表图例部件不可用
         let l: ?Legend = this.model.getLegend()
         if (let Some(v) <- l) {
             v.setEnabled(true)
-            v.setOrientation(LegendOrientation.VERTICAL)
+            v.setOrientation(LegendOrientation.HORIZONTAL)
             v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            v.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
+            v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER)
             v.setDrawInside(true)
-            v.setYOffset(-30.0)
+            v.setYOffset(-10.0)
         }
 
+        // 设置图表数据最大的绘制数，如果超过该数值，则不进行绘制图表的数值标签
         this.model.setMaxVisibleValueCount(40)
-
+        // 是否绘制图表的背景色，绘制范围为图表瀑布图的绘制范围，不包含轴线之外的部分
         this.model.setDrawGridBackground(false)
+        // 设置图表的背景色
         this.model.setGridBackgroundColor(0x500000ff)
+        // 设置不绘制瀑布图的柱体阴影背景
         this.model.setDrawBarShadow(false)
-
+        // 设置瀑布图的数值在柱体上方
         this.model.setDrawValueAboveBar(true)
-        this.model.setHighlightFullBarEnabled(false)
-        this.model.setExtraOffsets(-20.0, 20.0, 20.0, 10.0)
+        this.model.setExtraOffsets(20.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
 
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(laxis) <- this.leftAxis) {
@@ -92,6 +86,7 @@ class WaterfallChartPageReadme {
 
     private func getNormalData(): WaterfallData {
         let values: ArrayList<WaterfallEntry> = ArrayList<WaterfallEntry>()
+        // 设置标记点位置及颜色
         let h1 = WaterfallHighlight(20.0, 30.0, color: 0xcd4e2e)
         let h2 = WaterfallHighlight(30.0, 40.0, color: 0xacc045)
         let h3 = WaterfallHighlight(40.0, 60.0, color: 0x339933)
@@ -107,6 +102,7 @@ class WaterfallChartPageReadme {
 
         this.dataSet = WaterfallDataSet(values, "DataSet")
         this.dataSet.setDrawIcons(false)
+        // 为柱体添加颜色信息
         this.dataSet.setColorByColor(0x2b89ab)
         this.dataSet.setValueTextSize(10.0)
 

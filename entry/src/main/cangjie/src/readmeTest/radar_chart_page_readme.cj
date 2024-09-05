@@ -3,29 +3,18 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.state_macro_manage.*
-import ohos.base.LengthProp
-import ohos.component.Column
-import ohos.component.Row
-import ohos.component.Button
-import ohos.component.Text
-import ohos.component.CustomView
-import ohos.component.CJEntry
-import ohos.component.loadNativeView
-import ohos.state_manage.SubscriberManager
-import ohos.state_manage.ObservedProperty
-import ohos.state_macro_manage.Entry
-import ohos.state_macro_manage.Component
-import ohos.state_macro_manage.State
-import ohos.state_macro_manage.r
 import ohos.base.*
 import ohos.component.*
-import std.collection.{ArrayList}
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+import std.collection.*
 import std.math.*
 import std.random.*
-import mpchart.pie.*
 import mpchart.utils.*
+import mpchart.charts.*
+import mpchart.radar.*
 import mpchart.components.*
+import mpchart.pie.*
 
 @Entry
 @Component
@@ -35,58 +24,59 @@ class RadarChartPageReadme {
     protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
         description.setEnabled(false)
-        description.setPosition(200.0, 200.0)
-        description.setTextColor(Color(0xffffff))
-        description.setTextSize(15.0)
 
-        let l: ?Legend = this.model.getLegend()
+        let l: ?Legend = this.model.getLegend() //设置图例
         if (let Some(legend) <- l) {
-            legend.setEnabled(true)
-            legend.setOrientation(LegendOrientation.VERTICAL)
-            legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            legend.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
-            legend.setDrawInside(false)
-            legend.setXEntrySpace(7.0)
-            legend.setYEntrySpace(5.0)
-            legend.setTextColor(Color(0xffffff))
+            legend.setEnabled(true) //设置图例显示
+            legend.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为水平
+            legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
+            legend.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为居中
+            legend.setTextColor(Color(0xffffff)) // 设置文本颜色
+            legend.setDrawInside(true) // 设置图例绘制在图表内部
+            legend.setXOffset(30.0) // 设置 X 轴方向的偏移量
+            legend.setYOffset(20.0) // 设置 Y 轴方向的偏移量
         }
 
+        // 设置雷达图网格线宽度、颜色和透明度
         this.model.setWebLineWidth(0.3)
         this.model.setWebColor(0xFFCCCCCC)
         this.model.setWebLineWidthInner(0.3)
         this.model.setWebColorInner(0xFFCCCCCC)
         this.model.setExtraTopOffset(-100.0)
 
-        let xAxis: ?XAxis = this.model.getXAxis()
+        let xAxis: ?XAxis = this.model.getXAxis() // 获取 X 轴对象
         if (let Some(xAxis) <- xAxis) {
-            xAxis.setPosition(XAxisPosition.BOTTOM)
-            xAxis.setDrawGridLines(false)
+            xAxis.setPosition(XAxisPosition.BOTTOM) // 设置X轴位置在底部
+            xAxis.setDrawGridLines(false) // 不绘制X轴网格线
+            xAxis.setLabelCount(7, false) // 设置X轴标签数量为7
             xAxis.setYOffset(0.0)
             xAxis.setXOffset(0.0)
-            xAxis.setLabelCount(7, false)
-            xAxis.setValueFormatter(valueFormatter())
-            xAxis.setTextColor(Color(0xffffff))
+            xAxis.setValueFormatter(valueFormatter()) // 设置X轴标签值格式
+            xAxis.setTextColor(Color(0xffffff)) // 设置X轴标签颜色
         }
 
-        let leftAxis: ?YAxis = this.model.getYAxis()
+        let leftAxis: ?YAxis = this.model.getYAxis() // 获取左侧Y轴对象
         if (let Some(yAxis) <- leftAxis) {
-            yAxis.setLabelCount(5, false)
+            yAxis.setLabelCount(5, false) // 设置Y轴标签数量为5，不强制使用整数标签
+            yAxis.setDrawLabels(false) // 不绘制Y轴标签
             yAxis.setAxisMinimum(0.0)
             yAxis.setAxisMaximum(80.0)
-            yAxis.setDrawLabels(false)
         }
 
+        // 设置雷达图数据
         this.setData()
     }
 
     private func setData(): Unit {
-        let mul = 80.0
-        let min = 20.0
-        let cnt = 5
+        let mul = 80.0 // 随机值的放大倍数
+        let min = 20.0 // 随机值的最小基准
+        let cnt = 5 // 数据点数量
 
+        // 创建雷达图数据点集合
         let entries1: ArrayList<RadarEntry> = ArrayList<RadarEntry>()
         let entries2: ArrayList<RadarEntry> = ArrayList<RadarEntry>()
 
+        // 注意: 将数据点添加到数据点数组中的顺序决定它们在图表中心周围的位置。
         for (i in 0..cnt) {
             let val1 = (Random().nextFloat64() * mul) + min
             entries1.append(RadarEntry(val1))
@@ -95,23 +85,26 @@ class RadarChartPageReadme {
             entries2.append(RadarEntry(val2))
         }
 
+        // 创建雷达图数据集
         let set1: RadarDataSet = RadarDataSet(entries1, "Last Week")
         set1.setColorByColor(UInt32(ChartColor.rgb(103, 110, 129)))
         set1.setLineWidth(2.0)
 
+        // 创建雷达图数据集
         let set2: RadarDataSet = RadarDataSet(entries2, "This Week")
         set2.setColorByColor(UInt32(ChartColor.rgb(121, 162, 175)))
         set2.setLineWidth(2.0)
 
+        // 创建雷达图数据集合
         let sets: ArrayList<IRadarDataSet> = ArrayList<IRadarDataSet>()
         sets.append(set1)
         sets.append(set2)
 
+        // 创建雷达图数据对象
         let data: RadarData = RadarData(sets)
-        data.setValueTextSize(20.0)
-        data.setDrawValues(false)
-        data.setValueTextColor(0xffffff)
-        this.model.setData(data)
+        data.setDrawValues(false) // 不绘制数据值
+        data.setValueTextColor(0xffffff) // 设置数据值文字颜色为白色
+        this.model.setData(data) // 设置图表数据
     }
 
     func build() {

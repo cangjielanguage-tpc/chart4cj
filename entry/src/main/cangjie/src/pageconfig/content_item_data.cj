@@ -93,6 +93,8 @@ public class ContentItemData {
 
         ContentItemData.itemData.append(
             ContentItem("Radar Chart", d: "Simple chart.", pagePath: "RadarChartPageReadme"))
+        ContentItemData.itemData.append(
+            ContentItem("Combined Chart", d: "Combined chart.", pagePath: "CombinedChartPageReadme"))
 
 
         return ContentItemData.itemData

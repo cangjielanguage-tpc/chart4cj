@@ -2836,6 +2836,19 @@ class PieChart {
 #### 8.1.7 饼图示例
 
 ```cangjie
+
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+import std.collection.{ArrayList}
+import std.math.*
+import std.random.*
+import mpchart.charts.*
+import mpchart.pie.*
+import mpchart.utils.*
+import mpchart.components.*
+
 @Entry
 @Component
 class PieChartPageReadme {
@@ -2847,12 +2860,13 @@ class PieChartPageReadme {
     var pieData: PieData = PieData()
 
     protected override func aboutToAppear() {
-        let l: ?Legend = this.model.getLegend()
+        let l: ?Legend = this.model.getLegend() //设置图例
         if (let Some(v) <- l) {
-            v.setEnabled(true)
-            v.setOrientation(LegendOrientation.HORIZONTAL)
-            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            v.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
+            v.setEnabled(true) //设置图例显示
+            v.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为水平
+            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
+            v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为居中
+            v.setYOffset(-10.0)
         }
 
         this.model.animateX(1000, easing: "Sharp") // 启用X轴动画效果，动画持续时间为1000毫秒
@@ -2890,8 +2904,11 @@ class PieChartPageReadme {
         var entries: ArrayList<PiEntry> = ArrayList<PiEntry>()
         for (i in 0..count) {
             entries.append(
-                PiEntry((Random().nextFloat64() * Float64(range)) + Float64(range) / 5.0,
-                this.parties[i % this.parties.size]))
+                PiEntry(
+                    (Random().nextFloat64() * Float64(range)) + Float64(range) / 5.0,
+                    this.parties[i % this.parties.size]
+                )
+            )
         }
 
         // 创建饼状图数据集对象，设置数据项和数据集名称
@@ -2936,6 +2953,11 @@ class PieChartPageReadme {
 
     func build() {
         Column {
+            // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+            // 如果在之后通过事件触发，
+            // 可通过dataSet.notifyDataSetChanged() 来触发数据更新，
+            // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+            // 可通过this.model.invalidate() 来触发绘制更新。
             PieChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
@@ -3290,59 +3312,70 @@ public class BarChart {}
 ##### 8.2.1.7 垂直柱状图示例
 
 ```cangjie
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+import std.collection.{ArrayList}
+import std.math.*
+import std.random.*
+import mpchart.pie.*
+import mpchart.utils.*
+import mpchart.bar.*
+import mpchart.charts.*
+import mpchart.components.*
+
 @Entry
 @Component
 class BarChartPageReadme {
-    private var title: String = "Negative"
     private var model: BarChartModel = BarChartModel.build()
     private var leftAxis: ?YAxis = Option<YAxis>.None
     private var rightAxis: ?YAxis = Option<YAxis>.None
     private var xAxis: ?XAxis = Option<XAxis>.None
     private var barData: BarData = BarData()
-    private var normalMarker: MarkerView = MarkerView()
 
     protected override func aboutToAppear() {
-        let description: Description = this.model.getDescription()
-        description.setEnabled(false)
+        let description: Description = this.model.getDescription() // 获取图表描述部件
+        description.setEnabled(false) //设置图表描述部件不可用
 
-        let l: ?Legend = this.model.getLegend()
+        let l: ?Legend = this.model.getLegend() // 获取图表图例部件，设置图表图例部件不可用
         if (let Some(v) <- l) {
-            v.setEnabled(true)
-            v.setOrientation(LegendOrientation.HORIZONTAL)
-            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            v.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
-            v.setDrawInside(true)
+            v.setEnabled(true) //设置图表图例部件可用
+            v.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为垂直
+            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
+            v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为左侧
+            v.setDrawInside(true) // 设置图例绘制在图表内部
+            v.setYOffset(-10.0) // 设置图例Y轴偏移
         }
 
-        // if more than 40 entries are displayed in the this.model, no values will be drawn
-        this.model.setMaxVisibleValueCount(60)
-        this.model.setDrawGridBackground(false)
-        this.model.setGridBackgroundColor(0x500000ff)
-        this.model.setDrawBarShadow(false)
-        this.model.setDrawValueAboveBar(true)
+        this.model.setMaxVisibleValueCount(60) // 设置图表最大可见数值数量
+        this.model.setDrawGridBackground(false) // 设置图表网格背景色
+        this.model.setGridBackgroundColor(0x500000ff) // 设置图表网格背景颜色
+        this.model.setDrawBarShadow(false) // 设置不绘制图的柱体阴影背景
+        this.model.setDrawValueAboveBar(true) // 设置瀑布图的数值在柱体上方
+        this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
 
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(leftaxis) <- this.leftAxis) {
-            leftaxis.setAxisMinimum(0.0)
-            leftaxis.setDrawLimitLinesBehindData(false)
-            leftaxis.setSpaceTop(30.0)
-            leftaxis.enableGridDashedLine(10, 10, 0)
+            leftaxis.setAxisMinimum(0.0) // 设置左侧Y轴的最小值为 0
+            leftaxis.setDrawLimitLinesBehindData(true) // 设置是否在数据后绘制限制线
+            leftaxis.setSpaceTop(30.0) //设置距离顶部距离
+            leftaxis.enableGridDashedLine(10, 10, 0) //设置网格样式
         }
 
         this.rightAxis = this.model.getAxisRight()
         if (let Some(rightaxis) <- this.rightAxis) {
-            rightaxis.setEnabled(false)
-            rightaxis.setDrawGridLines(false)
-            rightaxis.setLabelCount(6, false)
-            rightaxis.setSpaceTop(11.0)
+            rightaxis.setEnabled(false) // 设置右侧 Y 轴是否显示
+            rightaxis.setDrawGridLines(false) //不绘制 Y 轴网格线
+            rightaxis.setLabelCount(6, false) // 设置右侧 Y 轴标签数量
+            rightaxis.setSpaceTop(11.0) //设置距离顶部距离
         }
 
         this.xAxis = this.model.getXAxis()
         if (let Some(xaxis) <- this.xAxis) {
-            xaxis.setLabelCount(5, false)
-            xaxis.setPosition(XAxisPosition.BOTTOM)
+            xaxis.setLabelCount(5, false) // 设置 X 轴标签数量
+            xaxis.setPosition(XAxisPosition.BOTTOM) // 设置X轴位置在底部
         }
-        this.model.setExtraOffsets(-20.0, 20.0, 20.0, 10.0)
 
         if (this.xAxis.isSome() && this.leftAxis.isSome()) {
             this.setData(5, 110)
@@ -3389,7 +3422,7 @@ class BarChartPageReadme {
             this.model.notifyDataSetChanged()
         } else {
             set1 = BarDataSet(values1, "Company A")
-            set1().setColorsByArr([0x2b89ab])
+            set1().setColorsByArr([0x2b89ab]) // 设置柱状图颜色
             set2 = BarDataSet(values2, "Company B")
             set2().setColorsByArr([0xcd4e2e])
             set3 = BarDataSet(values3, "Company C")
@@ -3407,19 +3440,28 @@ class BarChartPageReadme {
             this.model.setData(data)
         }
 
-        this.model.getBarData()().setBarWidth(barWidth)
-        this.xAxis().setAxisMinimum(Float64(startYear))
+        this.model.getBarData()().setBarWidth(barWidth) // 设置柱状图宽度
+        this.xAxis().setAxisMinimum(Float64(startYear)) // 设置轴最小值
         this.xAxis().setAxisMaximum(
-            Float64(startYear) + this.model.getBarData()().getGroupWidth(groupSpace, barSpace) * Float64(count))
-        this.model.groupBars(Float64(startYear), groupSpace, barSpace)
-        this.model.invalidate()
+            Float64(startYear) + this.model.getBarData()().getGroupWidth(groupSpace, barSpace) * Float64(count)) // 设置轴最大值
+        this.model.groupBars(Float64(startYear), groupSpace, barSpace) // 设置柱状图分组
+        this.model.invalidate() //手动触发图表重新绘制
     }
 
     func build() {
         Column {
-            Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
+            // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+            // 如果在之后通过事件触发，
+            // 可通过 barData.notifyDataSetChanged() 来触发数据更新，
+            // 可通过 this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+            // 可通过 this.model.invalidate() 来触发绘制更新。
             BarChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+    }
+}
+extend<T> Option<T> {
+    operator func ()(): T {
+        this.getOrThrow()
     }
 }
 ```
@@ -4143,53 +4185,62 @@ public class BubbleChart {}
 #### 1.11.7 示例
 
 ```cangjie
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+import std.collection.{ArrayList}
+import std.math.*
+import std.random.*
+import mpchart.pie.*
+import mpchart.utils.*
+import mpchart.bubble.*
+import mpchart.charts.*
+import mpchart.components.*
+
 @Entry
 @Component
 class BubbleChartPageReadme {
-    private var menuItemArr: Array<String> = ["Animate X", "Animate Y", "Animate XY"]
-    private var title: String = "BubbleChartPage"
     private var model: BubbleChartModel = BubbleChartModel.build()
-
     var isDrawValuesEnable: Bool = true
-    var titleSelcetString: String = "X"
 
     protected override func aboutToAppear() {
-        let l: ?Legend = this.model.getLegend()
-        if (let Some(legend) <- l) {
-            legend.setEnabled(true)
-            legend.setOrientation(LegendOrientation.HORIZONTAL)
-            legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            legend.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
+        let l: ?Legend = this.model.getLegend() //设置图例
+        if (let Some(v) <- l) {
+            v.setEnabled(true) //设置图例显示
+            v.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为水平
+            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
+            v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为居中
+            v.setYOffset(-10.0) // 设置 Y 轴方向的偏移量
         }
 
-        let description: Description = this.model.getDescription()
-        description.setEnabled(false)
+        let description: Description = this.model.getDescription() // 获取描述对象
+        description.setEnabled(false) // 禁用图表描述
 
-        this.model.setMaxVisibleValueCount(60)
-        this.model.setPinchZoom(false)
-        this.model.setDrawGridBackground(false)
+        this.model.setMaxVisibleValueCount(60) // 设置图表最大可见数值数量
+        this.model.setDrawGridBackground(false) // 设置不绘制网格背景
 
-        let xAxis: ?XAxis = this.model.getXAxis()
+        let xAxis: ?XAxis = this.model.getXAxis() // 获取 X 轴对象
         if (let Some(x) <- xAxis) {
-            x.setPosition(XAxisPosition.BOTTOM)
-            x.setDrawGridLines(false)
-            x.setLabelCount(7, false)
+            x.setPosition(XAxisPosition.BOTTOM) // 设置X轴位置在底部
+            x.setDrawGridLines(false) // 不绘制X轴网格线
+            x.setLabelCount(7, false) // 设置X轴标签数量为7
         }
 
-        let leftAxis: ?YAxis = this.model.getAxisLeft()
+        let leftAxis: ?YAxis = this.model.getAxisLeft() // 获取左侧Y轴对象
         if (let Some(ly) <- leftAxis) {
-            ly.setLabelCount(8, false)
-            ly.setPosition(YAxisLabelPosition.OUTSIDE_CHART)
-            ly.setSpaceTop(15.0)
-            ly.setAxisMinimum(0.0)
+            ly.setLabelCount(8, false) // 设置左侧 Y 轴标签数量为 8，不强制使用整数标签
+            ly.setPosition(YAxisLabelPosition.OUTSIDE_CHART) // 设置左侧 Y 轴标签位置在图表外部
+            ly.setSpaceTop(15.0) // 设置左侧 Y 轴顶部空白区域大小
+            ly.setAxisMinimum(0.0) // 设置左侧 Y 轴的最小值为 0
         }
 
-        let rightAxis: ?YAxis = this.model.getAxisRight()
+        let rightAxis: ?YAxis = this.model.getAxisRight() // 获取右侧Y轴对象
         if (let Some(ry) <- rightAxis) {
-            ry.setLabelCount(8, false)
-            ry.setDrawGridLines(false)
-            ry.setSpaceTop(15.0)
-            ry.setAxisMinimum(0.0)
+            ry.setLabelCount(8, false) // 设置右侧Y轴标签数量为 8
+            ry.setDrawGridLines(false) //，不绘制右侧Y轴网格线
+            ry.setSpaceTop(15.0) // 设置右侧Y轴顶部空白区域大小
+            ry.setAxisMinimum(0.0) // 设置右侧Y轴的最小值为 0
         }
 
         let start: Int64 = 1
@@ -4203,20 +4254,23 @@ class BubbleChartPageReadme {
                 values.append(BubblesEntry(Float64(i), val))
             }
         }
-
+        // 创建散点图数据集
         let dataSet: BubbleDataSet = BubbleDataSet(values, "DataSet")
         dataSet.setDrawIcons(false)
 
+        // 创建散点图数据集合
         let dataSetList: ArrayList<BubbleDataSet> = ArrayList<BubbleDataSet>()
         dataSetList.append(dataSet)
 
+        // 设置图表数据
         this.setData(5, 50.0)
         this.model.notifyDataSetChanged()
         this.model.setVisibleXRangeMaximum(7.0)
-        this.model.setExtraOffsets(-20.0, 20.0, 20.0, 10.0)
+        this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
     }
 
     private func setData(count: Int64, range: Float64): Unit {
+        // 生成随机数据集合
         let values1 = ArrayList<BubblesEntry>()
         let values2 = ArrayList<BubblesEntry>()
         let values3 = ArrayList<BubblesEntry>()
@@ -4229,35 +4283,38 @@ class BubbleChartPageReadme {
             values3.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range
             ))
         }
-
+        // 创建散点图数据集1
         let set1: BubbleDataSet = BubbleDataSet(values1, "DS 1")
         set1.setDrawIcons(false)
         set1.setColorByColor(0x2b89ab)
         set1.setIconsOffset(MPPointF(0.0, 0.0))
         set1.setDrawValues(this.isDrawValuesEnable)
 
+        // 创建散点图数据集2
         let set2: BubbleDataSet = BubbleDataSet(values2, "DS 2")
         set2.setDrawIcons(false)
         set2.setIconsOffset(MPPointF(0.0, 0.0))
         set2.setColorByColor(0xcd4e2e)
         set2.setDrawValues(this.isDrawValuesEnable)
 
+        // 创建散点图数据集3
         let set3: BubbleDataSet = BubbleDataSet(values3, "DS 3")
         set3.setDrawIcons(false)
         set3.setIconsOffset(MPPointF(0.0, 0.0))
         set3.setColorByColor(0xacc045)
         set3.setDrawValues(this.isDrawValuesEnable)
 
+        // 创建散点图数据集合
         let dataSets = ArrayList<IBubbleDataSet>()
         dataSets.append(set1)
         dataSets.append(set2)
         dataSets.append(set3)
+
+        // 创建散点图数据
         let dataResult: BubbleData = BubbleData(dataSets)
-        dataResult.setDrawValues(this.isDrawValuesEnable)
-        dataResult.setValueTextSize(8.0)
-        dataResult.setValueTextColor(0xffffff)
-        dataResult.setHighlightCircleWidth(1.5)
-        dataResult.setHighlightEnabled(true)
+        dataResult.setDrawValues(this.isDrawValuesEnable) // 设置显示数据项文本
+        dataResult.setValueTextSize(8.0) // 设置数据项文本大小
+        dataResult.setValueTextColor(0xffffff) // 设置数据项文本颜色
         dataResult.notifyDataChanged()
 
         this.model.setData(dataResult)
@@ -4266,12 +4323,16 @@ class BubbleChartPageReadme {
     func build() {
         Column() {
             Column() {
+                // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+                // 如果在之后通过事件触发，
+                // 可通过dataResult.notifyDataSetChanged() 来触发数据更新，
+                // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+                // 可通过this.model.invalidate() 来触发绘制更新。
                 BubbleChart(model: this.model)
             }
         }
     }
 }
-
 ```
 
 
@@ -4826,6 +4887,20 @@ public class WaterfallChart {}
 #### 1.12.9 示例
 
 ```cangjie
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+import std.collection.{ArrayList}
+import std.math.*
+import std.random.*
+import std.format.*
+import mpchart.pie.*
+import mpchart.utils.*
+import mpchart.components.*
+import mpchart.charts.*
+import mpchart.waterfall.*
+
 @Entry
 @Component
 class WaterfallChartPageReadme {
@@ -4838,31 +4913,34 @@ class WaterfallChartPageReadme {
     private var normalMarker: MarkerView = MarkerView()
 
     protected override func aboutToAppear() {
+        // 获取图表描述部件，设置图表描述部件不可用，即图表不进行绘制描述部件
         let description: ?Description = this.model.getDescription()
         if (let Some(des) <- description) {
             des.setEnabled(false)
         }
 
+        // 获取图表图例部件，设置图表图例部件不可用
         let l: ?Legend = this.model.getLegend()
         if (let Some(v) <- l) {
             v.setEnabled(true)
             v.setOrientation(LegendOrientation.HORIZONTAL)
             v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            v.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
+            v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER)
             v.setDrawInside(true)
+            v.setYOffset(-10.0)
         }
 
+        // 设置图表数据最大的绘制数，如果超过该数值，则不进行绘制图表的数值标签
         this.model.setMaxVisibleValueCount(40)
-
-        this.model.setPinchZoom(false)
-
+        // 是否绘制图表的背景色，绘制范围为图表瀑布图的绘制范围，不包含轴线之外的部分
         this.model.setDrawGridBackground(false)
+        // 设置图表的背景色
         this.model.setGridBackgroundColor(0x500000ff)
+        // 设置不绘制瀑布图的柱体阴影背景
         this.model.setDrawBarShadow(false)
-
-        this.model.setDrawValueAboveBar(false)
-        this.model.setHighlightFullBarEnabled(false)
-        this.model.setExtraOffsets(-20.0, 20.0, 20.0, 10.0)
+        // 设置瀑布图的数值在柱体上方
+        this.model.setDrawValueAboveBar(true)
+        this.model.setExtraOffsets(20.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
 
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(laxis) <- this.leftAxis) {
@@ -4892,6 +4970,7 @@ class WaterfallChartPageReadme {
 
     private func getNormalData(): WaterfallData {
         let values: ArrayList<WaterfallEntry> = ArrayList<WaterfallEntry>()
+        // 设置标记点位置及颜色
         let h1 = WaterfallHighlight(20.0, 30.0, color: 0xcd4e2e)
         let h2 = WaterfallHighlight(30.0, 40.0, color: 0xacc045)
         let h3 = WaterfallHighlight(40.0, 60.0, color: 0x339933)
@@ -4907,6 +4986,7 @@ class WaterfallChartPageReadme {
 
         this.dataSet = WaterfallDataSet(values, "DataSet")
         this.dataSet.setDrawIcons(false)
+        // 为柱体添加颜色信息
         this.dataSet.setColorByColor(0x2b89ab)
         this.dataSet.setValueTextSize(10.0)
 
@@ -5593,6 +5673,19 @@ public type ChartColorStop = (UInt32, Float64)
 #### 8.5.9 线形图示例
 
 ```cangjie
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+import std.collection.*
+import std.math.*
+import std.random.*
+import mpchart.pie.*
+import mpchart.utils.{Mode, AxisDependency, ColorTemplate, ChartColor}
+import mpchart.charts.*
+import mpchart.line.*
+import mpchart.components.*
+
 @Entry
 @Component
 class LineChartNotAxisConfigPageReadme {
@@ -5603,17 +5696,17 @@ class LineChartNotAxisConfigPageReadme {
     var lineData: LineData = LineData()
 
     protected override func aboutToAppear() {
-        let legend: ?Legend = this.model.getLegend()
+        let legend: ?Legend = this.model.getLegend() //设置图例
         if (let Some(v) <- legend) {
-            v.setEnabled(true)
-            v.setOrientation(LegendOrientation.HORIZONTAL)
-            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            v.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
-            v.setDrawInside(true)
-            v.setYOffset(-40.0)
+            v.setEnabled(true) //设置图例显示
+            v.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为水平
+            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
+            v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为居中
+            v.setDrawInside(true) // 设置图例绘制在图表内侧
+            v.setYOffset(-10.0) // 设置 Y 轴方向的偏移量
         }
 
-        this.model.setMinOffset(this.minOffset)
+        this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
         this.lineData = this.setData(10, 100.0)
         this.model.setData(this.lineData)
     }
@@ -5645,36 +5738,36 @@ class LineChartNotAxisConfigPageReadme {
         gradientFillColor.append((0x00ffff, 1.0))
 
         let set1 = LineDataSet(values1, "DataSet 1")
-        set1.setDrawFilled(false)
-        set1.setDrawValues(true)
-        set1.setDrawCircles(true)
-        set1.setCircleColor(0x2b89ab)
-        set1.setCircleRadius(4.0)
-        set1.setMode(Mode.LINEAR)
-        set1.setColorByColor(0x2b89ab)
-        set1.setLineWidth(2.5)
+        set1.setDrawFilled(false) //设置不渐变色填充
+        set1.setDrawValues(true) //设置数据标签显示
+        set1.setDrawCircles(true) //折线点画圆圈
+        set1.setCircleColor(0x2b89ab) // 设置数据点的颜色
+        set1.setCircleRadius(4.0) // 设置半径大小
+        set1.setMode(Mode.LINEAR) //直线模式
+        set1.setColorByColor(0x2b89ab) //设置折线颜色
+        set1.setLineWidth(2.5) //设置线宽
         dataSet.append(set1)
 
         let set2 = LineDataSet(values2, "DataSet 2")
-        set2.setDrawFilled(false)
-        set2.setDrawValues(true)
-        set2.setDrawCircles(true)
-        set2.setCircleColor(0xcd4e2e)
-        set2.setCircleRadius(4.0)
-        set2.setMode(Mode.LINEAR)
-        set2.setColorByColor(0xcd4e2e)
-        set2.setLineWidth(2.5)
+        set2.setDrawFilled(false) //设置不渐变色填充
+        set2.setDrawValues(true) //设置数据标签显示
+        set2.setDrawCircles(true) //折线点画圆圈
+        set2.setCircleColor(0xcd4e2e) // 设置数据点的颜色
+        set2.setCircleRadius(4.0) // 设置半径大小
+        set2.setMode(Mode.STEPPED) //90度线模式
+        set2.setColorByColor(0xcd4e2e) //设置折线颜色
+        set2.setLineWidth(2.5) //设置线宽
         dataSet.append(set2)
 
         let set3 = LineDataSet(values3, "DataSet 3")
-        set3.setDrawFilled(false)
-        set3.setDrawValues(true)
-        set3.setDrawCircles(true)
-        set3.setCircleColor(0xacc045)
-        set3.setCircleRadius(4.0)
-        set3.setMode(Mode.LINEAR)
-        set3.setColorByColor(0xacc045)
-        set3.setLineWidth(2.5)
+        set3.setDrawFilled(false) //设置不渐变色填充
+        set3.setDrawValues(true) //设置数据标签显示
+        set3.setDrawCircles(true) //折线点画圆圈
+        set3.setCircleColor(0xacc045) // 设置数据点的颜色
+        set3.setCircleRadius(4.0) // 设置半径大小
+        set3.setMode(Mode.LINEAR) //直线模式
+        set3.setColorByColor(0xacc045) //设置折线颜色
+        set3.setLineWidth(2.5) //设置线宽
         dataSet.append(set3)
 
         let lineData: LineData = LineData(dataSet)
@@ -5684,6 +5777,11 @@ class LineChartNotAxisConfigPageReadme {
 
     func build() {
         Column {
+            // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+            // 如果在之后通过事件触发，
+            // 可通过lineData.notifyDataSetChanged() 来触发数据更新，
+            // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+            // 可通过this.model.invalidate() 来触发绘制更新。
             LineChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
@@ -6058,58 +6156,61 @@ public interface CandleDataProvider <: BarLineScatterCandleBubbleDataProvider<Ca
 #### 8.6.8 蜡烛图示例
 
 ```cangjie
+
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+import std.collection.{ArrayList}
+import std.math.*
+import std.random.*
+import mpchart.pie.*
+import mpchart.utils.*
+import mpchart.candle.*
+import mpchart.charts.*
+import mpchart.components.*
+
 @Entry
 @Component
 class CandleChartPageReadme {
     private var model: CandleStickChartModel = CandleStickChartModel.build()
 
     protected override func aboutToAppear() {
-        let l: ?Legend = this.model.getLegend()
-        if (let Some(legend) <- l) {
-            legend.setEnabled(true)
-            legend.setOrientation(LegendOrientation.HORIZONTAL)
-            legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            legend.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
+        let l: ?Legend = this.model.getLegend() //设置图例
+        if (let Some(v) <- l) {
+            v.setEnabled(true) //设置图例显示
+            v.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为水平
+            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
+            v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为居中
+            v.setYOffset(-10.0) // 设置 Y 轴方向的偏移量
         }
 
-        let description: Description = this.model.getDescription()
-        description.setEnabled(true)
+        let description: Description = this.model.getDescription() // 获取描述对象
+        description.setEnabled(true) // 禁用图表描述
 
-        this.model.setMaxVisibleValueCount(60)
-        this.model.setDrawGridBackground(true)
-        this.model.setGridBackgroundColor(0xffffff)
+        this.model.setMaxVisibleValueCount(60) // 设置图表最大可见数值数量
+        this.model.setDrawGridBackground(true) // 设置绘制网格背景
+        this.model.setGridBackgroundColor(0xffffff) // 设置绘制网格背景颜色
+        this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
 
-        let xAxis: ?XAxis = this.model.getXAxis()
+        let xAxis: ?XAxis = this.model.getXAxis() // 获取 X 轴对象
         if (let Some(x) <- xAxis) {
-            x.setPosition(XAxisPosition.BOTTOM)
-            x.setDrawGridLines(true)
+            x.setPosition(XAxisPosition.BOTTOM) // 设置X轴位置在底部
+            x.setDrawGridLines(true) // 绘制 X 轴网格线
         }
 
-        let leftAxis: ?YAxis = this.model.getAxisLeft()
+        let leftAxis: ?YAxis = this.model.getAxisLeft() // 获取左侧Y轴对象
         if (let Some(ly) <- leftAxis) {
-            ly.setLabelCount(7, false)
-            ly.setDrawGridLines(true)
-            ly.setDrawAxisLine(true)
+            ly.setLabelCount(7, false) // 设置左侧 Y 轴标签数量为 7，不强制使用整数标签
+            ly.setDrawGridLines(true) // 绘制左侧 Y 轴网格线
+            ly.setDrawAxisLine(true) // 绘制左侧 Y 轴线
         }
 
-        let rightAxis: ?YAxis = this.model.getAxisRight()
+        let rightAxis: ?YAxis = this.model.getAxisRight() // 获取右侧Y轴对象
         if (let Some(ry) <- rightAxis) {
-            ry.setLabelCount(7, false)
-            ry.setDrawGridLines(true)
-            ry.setDrawAxisLine(true)
-        }
-
-        let start: Int64 = 1
-        let values: ArrayList<BubblesEntry> = ArrayList<BubblesEntry>()
-
-        for (i in start..20) {
-            let val = (Random().nextFloat64() * 41.0)
-
-            if (Random().nextFloat64() * 100.0 < 25.0) {
-                values.append(BubblesEntry(Float64(i), val))
-            } else {
-                values.append(BubblesEntry(Float64(i), val))
-            }
+            ry.setLabelCount(7, false) // 设置右侧 Y 轴标签数量为 7，不强制使用整数标签
+            ry.setDrawGridLines(true) // 绘制右侧 Y 轴网格线
+            ry.setDrawAxisLine(true) // 绘制右侧 Y 轴线
         }
 
         this.setData(40, 100.0)
@@ -6117,6 +6218,7 @@ class CandleChartPageReadme {
     }
 
     private func setData(count: Int64, range: Float64): Unit {
+        // 生成随机数据集合
         let values = ArrayList<CandleEntry>()
 
         for (i in 0..count) {
@@ -6148,22 +6250,22 @@ class CandleChartPageReadme {
                 )
             )
         }
-
+        // 创建蜡烛图数据集，并设置数据集的名称为 "candle data set"
         let dataSet: CandleDataSet = CandleDataSet(values, "candle data set")
-        dataSet.setDrawIcons(false)
-        dataSet.setAxisDependency(AxisDependency.LEFT)
-        dataSet.setShadowColor(0x808080)
-        dataSet.setShadowWidth(0.7)
-        dataSet.setDecreasingPaintStyle(Style.FILL)
-        dataSet.setDecreasingColor(0x2b89ab)
-        dataSet.setIncreasingColor(0xcd4e2e)
-        dataSet.setIncreasingPaintStyle(Style.STROKE)
-        dataSet.setNeutralColor(0x0000ff)
+        dataSet.setDrawIcons(false) // 设置是否绘制图标为 false
+        dataSet.setAxisDependency(AxisDependency.LEFT) // 设置数据集的轴依赖为左侧Y轴
+        dataSet.setShadowColor(0x808080) // 设置蜡烛图阴影颜色
+        dataSet.setShadowWidth(0.7) // 设置蜡烛图阴影宽度为 0.7
+        dataSet.setDecreasingPaintStyle(Style.FILL) // 设置蜡烛图下跌蜡烛的绘制样式为填充
+        dataSet.setDecreasingColor(0x2b89ab) // 设置蜡烛图下跌蜡烛的颜色
+        dataSet.setIncreasingColor(0xcd4e2e) // 设置蜡烛图上涨蜡烛的颜色
+        dataSet.setIncreasingPaintStyle(Style.STROKE) // 设置蜡烛图上涨蜡烛的绘制样式为描边
+        dataSet.setNeutralColor(0x0000ff) // 设置蜡烛图中性蜡烛的颜色
 
+        // 创建蜡烛图数据
         let data: CandleData = CandleData([dataSet])
         data.setValueTextSize(7.0)
 
-        this.model.resetTracking()
         this.model.setData(data)
         this.model.invalidate()
     }
@@ -6400,6 +6502,19 @@ public interface IShapeRenderer {
 #### 8.7.8 散点图示例
 
 ```cangjie
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+import std.collection.{ArrayList}
+import std.math.*
+import std.random.*
+import mpchart.pie.*
+import mpchart.utils.*
+import mpchart.charts.*
+import mpchart.components.*
+import mpchart.scatter.*
+
 @Entry
 @Component
 class ScatterChartPageReadme {
@@ -6408,53 +6523,43 @@ class ScatterChartPageReadme {
     protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
         if (let Some(legend) <- l) {
-            legend.setEnabled(true)
+            legend.setEnabled(true) // 启用图例
             legend.setOrientation(LegendOrientation.HORIZONTAL)
             legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            legend.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
+            legend.setHorizontalAlignment(LegendHorizontalAlignment.CENTER)
+            legend.setYOffset(-10.0)
         }
 
-        let description: Description = this.model.getDescription()
+        let description: Description = this.model.getDescription() // 获取描述对象
         description.setEnabled(true)
 
+        // 设置图表最大可见数值数量、是否支持缩放、是否绘制网格背景
         this.model.setMaxVisibleValueCount(160)
         this.model.setDrawGridBackground(false)
+        this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
         this.model.animateXY(2000, 2000)
 
-        let xAxis: ?XAxis = this.model.getXAxis()
+        let xAxis: ?XAxis = this.model.getXAxis() // 获取X轴对象
         if (let Some(xAxis) <- xAxis) {
-            xAxis.setPosition(XAxisPosition.BOTTOM)
-            xAxis.setDrawGridLines(false)
-            xAxis.setLabelCount(7, false)
+            xAxis.setPosition(XAxisPosition.BOTTOM) // 设置X轴位置在底部
+            xAxis.setDrawGridLines(false) // 不绘制X轴网格线
+            xAxis.setLabelCount(7, false) // 设置X轴标签数量为7
         }
 
-        let leftAxis: ?YAxis = this.model.getAxisLeft()
+        let leftAxis: ?YAxis = this.model.getAxisLeft() // 获取左侧Y轴对象
         if (let Some(leftAxis) <- leftAxis) {
-            leftAxis.setLabelCount(8, false)
-            leftAxis.setPosition(YAxisLabelPosition.OUTSIDE_CHART)
-            leftAxis.setSpaceTop(15.0)
-            leftAxis.setAxisMinimum(0.0)
+            leftAxis.setLabelCount(8, false) // 设置左侧Y轴标签数量为8，不强制使用整数标签
+            leftAxis.setPosition(YAxisLabelPosition.OUTSIDE_CHART) // 设置左侧Y轴标签位置在图表外部
+            leftAxis.setSpaceTop(15.0) // 设置左侧Y轴顶部空白区域大小
+            leftAxis.setAxisMinimum(0.0) // 设置左侧Y轴的最小值为0
         }
 
-        let rightAxis: ?YAxis = this.model.getAxisRight()
+        let rightAxis: ?YAxis = this.model.getAxisRight() // 获取右侧Y轴对象
         if (let Some(rightAxis) <- rightAxis) {
-            rightAxis.setLabelCount(8, false)
-            rightAxis.setDrawGridLines(false)
-            rightAxis.setSpaceTop(15.0)
-            rightAxis.setAxisMinimum(0.0)
-        }
-
-        let start: Int64 = 1
-        let values: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
-
-        for (i in start..20) {
-            let val = (Random().nextFloat64() * 41.0)
-
-            if (Random().nextFloat64() * 100.0 < 25.0) {
-                values.append(EntryOhos(Float64(i), val))
-            } else {
-                values.append(EntryOhos(Float64(i), val))
-            }
+            rightAxis.setLabelCount(8, false) // 设置右侧Y轴标签数量为8
+            rightAxis.setDrawGridLines(false) //不绘制右侧Y轴网格线
+            rightAxis.setSpaceTop(15.0) // 设置右侧Y轴顶部空白区域大小
+            rightAxis.setAxisMinimum(0.0) // 设置右侧Y轴的最小值为0
         }
 
         this.setData(20.0, 100.0)
@@ -6462,39 +6567,46 @@ class ScatterChartPageReadme {
     }
 
     private func setData(xRange: Float64, yRange: Float64): Unit {
+        // 生成随机数据集合
         let values1 = this.generateRandomData(xRange, yRange)
         let values2 = this.generateRandomData(xRange, yRange)
         let values3 = this.generateRandomData(xRange, yRange)
 
+        // 创建散点图数据集1
         let set1 = ScatterDataSet(values1, "DS 1")
         set1.setScatterShape(ChartShape.SQUARE)
         set1.setColorByColor(0x2b89ab)
 
+        // 创建散点图数据集2
         let set2 = ScatterDataSet(values2, "DS 2")
         set2.setScatterShape(ChartShape.CIRCLE)
         set2.setScatterShapeHoleRadius(3.0)
         set2.setColorByColor(0xcd4e2e)
 
+        // 创建散点图数据集3
         let set3 = ScatterDataSet(values3, "DS 3")
         set3.setShapeRenderer(CustomScatterShapeRenderer())
         set3.setColorByColor(0xacc045)
 
+        // 设置散点图数据集形状大小
         set1.setScatterShapeSize(8.0)
         set2.setScatterShapeSize(8.0)
         set3.setScatterShapeSize(8.0)
 
+        // 创建散点图数据集合
         let dataSets: ArrayList<IScatterDataSet> = ArrayList<IScatterDataSet>()
         dataSets.append(set1) // add the data sets
         dataSets.append(set2)
         dataSets.append(set3)
 
+        // 创建散点图数据
         let dataResult: ScatterData = ScatterData(dataSets)
         dataResult.setDrawValues(true)
-        dataResult.setValueTextSize(8.0)
+        dataResult.setValueTextSize(8.0) // 设置数据项文本大小
         dataResult.setHighlightEnabled(true)
         dataResult.setValueTextSize(10.0)
 
-        this.model.setData(dataResult)
+        this.model.setData(dataResult) // 设置图表数据
         dataResult.notifyDataChanged()
     }
 
@@ -6512,12 +6624,18 @@ class ScatterChartPageReadme {
     func build() {
         Column() {
             Column() {
+                // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+                // 如果在之后通过事件触发，
+                // 可通过dataResult.notifyDataSetChanged() 来触发数据更新，
+                // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+                // 可通过this.model.invalidate() 来触发绘制更新。
                 ScatterChart(model: this.model)
             }
         }
     }
 }
 
+// 自定义散点形状
 public class CustomScatterShapeRenderer <: IShapeRenderer {
     public func renderShape(c: CanvasRenderingContext2D, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler,
         posX: Float64, posY: Float64, renderPaint: ChartPaint): Unit {
@@ -6780,6 +6898,19 @@ public class RadarChart {}
 #### 8.8.8 雷达图示例
 
 ```cangjie
+import ohos.base.*
+import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
+import std.collection.*
+import std.math.*
+import std.random.*
+import mpchart.utils.*
+import mpchart.charts.*
+import mpchart.radar.*
+import mpchart.components.*
+import mpchart.pie.*
+
 @Entry
 @Component
 class RadarChartPageReadme {
@@ -6788,58 +6919,59 @@ class RadarChartPageReadme {
     protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
         description.setEnabled(false)
-        description.setPosition(200.0, 200.0)
-        description.setTextColor(Color(0xffffff))
-        description.setTextSize(15.0)
 
-        let l: ?Legend = this.model.getLegend()
+        let l: ?Legend = this.model.getLegend() //设置图例
         if (let Some(legend) <- l) {
-            legend.setEnabled(true)
-            legend.setOrientation(LegendOrientation.HORIZONTAL)
-            legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            legend.setDrawInside(false)
-            legend.setXEntrySpace(7.0)
-            legend.setYEntrySpace(5.0)
-            legend.setTextColor(Color(0xffffff))
-            legend.setYOffset(50.0)
+            legend.setEnabled(true) //设置图例显示
+            legend.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为水平
+            legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
+            legend.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为居中
+            legend.setTextColor(Color(0xffffff)) // 设置文本颜色
+            legend.setDrawInside(true) // 设置图例绘制在图表内部
+            legend.setXOffset(30.0) // 设置 X 轴方向的偏移量
+            legend.setYOffset(20.0) // 设置 Y 轴方向的偏移量
         }
 
+        // 设置雷达图网格线宽度、颜色和透明度
         this.model.setWebLineWidth(0.3)
         this.model.setWebColor(0xFFCCCCCC)
         this.model.setWebLineWidthInner(0.3)
         this.model.setWebColorInner(0xFFCCCCCC)
         this.model.setExtraTopOffset(-100.0)
 
-        let xAxis: ?XAxis = this.model.getXAxis()
+        let xAxis: ?XAxis = this.model.getXAxis() // 获取 X 轴对象
         if (let Some(xAxis) <- xAxis) {
-            xAxis.setPosition(XAxisPosition.BOTTOM)
-            xAxis.setDrawGridLines(false)
+            xAxis.setPosition(XAxisPosition.BOTTOM) // 设置X轴位置在底部
+            xAxis.setDrawGridLines(false) // 不绘制X轴网格线
+            xAxis.setLabelCount(7, false) // 设置X轴标签数量为7
             xAxis.setYOffset(0.0)
             xAxis.setXOffset(0.0)
-            xAxis.setLabelCount(7, false)
-            xAxis.setValueFormatter(valueFormatter())
-            xAxis.setTextColor(Color(0xffffff))
+            xAxis.setValueFormatter(valueFormatter()) // 设置X轴标签值格式
+            xAxis.setTextColor(Color(0xffffff)) // 设置X轴标签颜色
         }
 
-        let leftAxis: ?YAxis = this.model.getYAxis()
+        let leftAxis: ?YAxis = this.model.getYAxis() // 获取左侧Y轴对象
         if (let Some(yAxis) <- leftAxis) {
-            yAxis.setLabelCount(5, false)
+            yAxis.setLabelCount(5, false) // 设置Y轴标签数量为5，不强制使用整数标签
+            yAxis.setDrawLabels(false) // 不绘制Y轴标签
             yAxis.setAxisMinimum(0.0)
             yAxis.setAxisMaximum(80.0)
-            yAxis.setDrawLabels(false)
         }
 
+        // 设置雷达图数据
         this.setData()
     }
 
     private func setData(): Unit {
-        let mul = 80.0
-        let min = 20.0
-        let cnt = 5
+        let mul = 80.0 // 随机值的放大倍数
+        let min = 20.0 // 随机值的最小基准
+        let cnt = 5 // 数据点数量
 
+        // 创建雷达图数据点集合
         let entries1: ArrayList<RadarEntry> = ArrayList<RadarEntry>()
         let entries2: ArrayList<RadarEntry> = ArrayList<RadarEntry>()
 
+        // 注意: 将数据点添加到数据点数组中的顺序决定它们在图表中心周围的位置。
         for (i in 0..cnt) {
             let val1 = (Random().nextFloat64() * mul) + min
             entries1.append(RadarEntry(val1))
@@ -6848,23 +6980,26 @@ class RadarChartPageReadme {
             entries2.append(RadarEntry(val2))
         }
 
+        // 创建雷达图数据集
         let set1: RadarDataSet = RadarDataSet(entries1, "Last Week")
         set1.setColorByColor(UInt32(ChartColor.rgb(103, 110, 129)))
         set1.setLineWidth(2.0)
 
+        // 创建雷达图数据集
         let set2: RadarDataSet = RadarDataSet(entries2, "This Week")
         set2.setColorByColor(UInt32(ChartColor.rgb(121, 162, 175)))
         set2.setLineWidth(2.0)
 
+        // 创建雷达图数据集合
         let sets: ArrayList<IRadarDataSet> = ArrayList<IRadarDataSet>()
         sets.append(set1)
         sets.append(set2)
 
+        // 创建雷达图数据对象
         let data: RadarData = RadarData(sets)
-        data.setValueTextSize(20.0)
-        data.setDrawValues(false)
-        data.setValueTextColor(0xffffff)
-        this.model.setData(data)
+        data.setDrawValues(false) // 不绘制数据值
+        data.setValueTextColor(0xffffff) // 设置数据值文字颜色为白色
+        this.model.setData(data) // 设置图表数据
     }
 
     func build() {
@@ -6885,14 +7020,177 @@ class valueFormatter <: IAxisValueFormatter {
 }
 ```
 
+### 8.9 组合图表 CombinedChart
 
+支持 柱状图、瀑布图、散点图、蜡烛图、气泡图、线形图 组合。
 
+#### 8.9.1 CombinedData  Class API Description
 
+组合图表数据集合
 
+```cangjie
+public class CombinedData <: BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos> {
+    
+    /*
+     * 组合图表数据包类初始化构造
+     */
+    public init()
 
+    /*
+     * 设置线形图数据包
+     * 
+     * 参数 data - 线形图数据包
+     */
+    public func setLineData(data: LineData)
 
+    /*
+     * 设置柱状图数据包
+     * 
+     * 参数 data - 柱状图数据包
+     */
+    public func setBarData(data: BarData)
 
+    /*
+     * 设置蜡烛图数据包
+     * 
+     * 参数 data - 蜡烛图数据包
+     */
+    public func setCandleData(data: CandleData)
 
+    /*
+     * 设置气泡图数据包
+     * 
+     * 参数 data - 气泡图数据包
+     */
+    public func setBubbleData(data: BubbleData)
+
+    /*
+     * 设置散点图数据包
+     * 
+     * 参数 data - 散点图数据包
+     */
+    public func setScatterData(data: ScatterData)
+
+    /*
+     * 设置瀑布图数据包
+     * 
+     * 参数 data - 瀑布图数据包
+     */
+    public func setWaterfallData(data: WaterfallData)
+
+    /*
+     * 调用此方法以让 ChartData 知道基础数据已更改。当包含的数据发生更改时，调用此函数将重新计算。
+     * 
+     * 返回值 Unit 
+     */    
+    public func notifyDataChanged(): Unit
+}
+
+```
+#### 8.9.2 CombinedDataProvider  Class API Description
+
+```cangjie
+public interface CombinedDataProvider <: LineDataProvider & BarDataProvider & BubbleDataProvider & CandleDataProvider & ScatterDataProvider & WaterfallDataProvider {
+    /*
+     * 获取组合图数据包
+     * 
+     * 返回值 ?CombinedData -  CombinedData
+     *                      -  Option<CombinedData>.None
+     */
+    func getCombinedData(): ?CombinedData
+}
+```
+
+#### 8.9.3 CombinedChartModel  Class API Description
+
+组合图配置构建类
+
+```cangjie
+public class CombinedChartModel <: BarLineChartBaseModel<CombinedData, IBarLineScatterCandleBubbleDataSet<EntryOhos>,
+    EntryOhos> & CombinedDataProvider {
+
+    /*
+     * 组合图配置构建
+     * 
+     * 返回值 CombinedChartModel -  组合图配置构建类
+     */    
+    public static func build(): CombinedChartModel
+
+    /*
+     * 重绘图表
+     * 
+     * 返回值 Unit
+     */
+    public func invalidate(): Unit
+
+    /*
+     * 设置图表绘制的上下文。
+     * 
+     * 参数 context2d - 图表绘制的上下文
+     */
+    public func setContext2D(context2d: CanvasRenderingContext2D)
+
+    /*
+     * 更新图表正确 size
+     * 
+     * 参数 newWidth - 图表当前显示的宽。
+     * 参数 newHeight - 图表当前显示的高。
+     * 参数 oldWidth - 图表改变Size前显示的宽。
+     * 参数 oldHeight - 图表改变Size前显示的高。
+     * 返回值 Unit 
+     */
+    public func onChartSizeChanged(newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64)
+    
+    /*
+     * 设置组合图表数据包
+     * 
+     * 参数 data - 组合图表数据包
+     * 返回值 Unit 
+     */
+    public func setData(data: ?CombinedData): Unit
+    
+    /**
+     * 将所有值绘制在条形图上方，而不是在其顶部下方，默认 true，适用于柱状图和瀑布图
+     *
+     * 参数 enabled - true/false
+     * 返回值 Unit 
+     */
+    public func setDrawValueAboveBar(enabled: Bool): Unit 
+
+    /**
+     * 每个条形图后面都会画一个灰色区域，表示极大值，默认 false
+     *
+     * 参数 enabled - true/false
+     * 返回值 Unit 
+     */
+    public func setDrawBarShadow(enabled: Bool): Unit
+
+    /**
+     * 设置绘制所提供的数据对象的顺序。例如： [DrawOrder.LINE, DrawOrder.BAR]，条形图将被画在线形图后面。
+     *
+     * 参数 order - 顺序对象数组
+     * 返回值 Unit 
+     */
+    public func setDrawOrder(order: Array<DrawOrder>): Unit
+    
+}
+
+```
+
+#### 8.9.4 CombinedChart Component  API Description
+
+组合图组件
+
+```cangjie
+@Component
+public class CombinedChart {}
+```
+
+#### 8.9.5 组合图示例
+
+```cangjie
+
+```
 
 
 

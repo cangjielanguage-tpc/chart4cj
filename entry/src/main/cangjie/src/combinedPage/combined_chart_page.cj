@@ -30,7 +30,6 @@ class CombinedChartPage {
         }
 
         this.model.setMaxVisibleValueCount(60)
-        this.model.setPinchZoom(false)
         this.model.setDrawGridBackground(false)
 
         let xAxis: ?XAxis = this.model.getXAxis()
@@ -103,6 +102,7 @@ class CombinedChartPage {
         dataSet.setDrawIcons(false)
         dataSet.setColorByColor(UInt32(ColorTemplate.COLORFUL_COLORS[0]))
         dataSet.setValueTextSize(8.0)
+        dataSet.setDrawValues(true)
 
         let dataSetList: ArrayList<IWaterfallDataSet> = ArrayList<IWaterfallDataSet>()
         dataSetList.append(dataSet)
@@ -128,6 +128,7 @@ class CombinedChartPage {
         set1.setValueTextColor(0x328fb8)
         set1.setValueTextSize(8.0)
         set1.setAxisDependency(AxisDependency.LEFT)
+        set1.setDrawValues(true)
 
         let set2: BarDataSet = BarDataSet(entries2, "")
         set2.setStackLabels(["Stack 1", "Stack 2"])
@@ -135,6 +136,7 @@ class CombinedChartPage {
         set2.setValueTextColor(0x219ea4)
         set2.setValueTextSize(8.0)
         set2.setAxisDependency(AxisDependency.LEFT)
+        set2.setDrawValues(true)
 
         let groupSpace = 0.06
         let barSpace = 0.02 // x2 dataset
@@ -163,7 +165,7 @@ class CombinedChartPage {
         let set: ScatterDataSet = ScatterDataSet(entries, "Scatter DataSet")
         set.setColorsByArr([0x2ecc71, 0xf1c40f, 0xe74c3c, 0x3498db])
         set.setScatterShapeSize(7.5)
-        set.setDrawValues(false)
+        set.setDrawValues(true)
         set.setValueTextSize(10.0)
         d.addDataSet(set)
         data.setScatterData(d)
@@ -183,7 +185,7 @@ class CombinedChartPage {
         set.setShadowColor(ColorTemplate.DKGRAY)
         set.setBarSpace(0.3)
         set.setValueTextSize(10.0)
-        set.setDrawValues(false)
+        set.setDrawValues(true)
         d.addDataSet(set)
         data.setCandleData(d)
     }
