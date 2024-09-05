@@ -232,7 +232,7 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
 
             this.mRenderLimitLinesPathBuffer
 
-            let modeData: ?RadarData = this.mChart.getData()
+            let modeData: ?RadarData = this.mChart.getRadarData()
             if (let Some(modeData) <- modeData) {
                 let entrySet: ?IRadarDataSet = modeData.getMaxEntryCountSet()
                 if (let Some(entrySet) <- entrySet) {

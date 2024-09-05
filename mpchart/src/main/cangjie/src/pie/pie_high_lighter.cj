@@ -11,7 +11,7 @@ public class PieHighlighter <: PieRadarHighlighter<PieChartModel, PieData, IPieD
     }
 
     public func getClosestHighlight(index: Int64, x: Float64, y: Float64): Highlight {
-        let chartData: ChartData<IPieDataSet, PiEntry> = this.pieChartModel.getData()()
+        let chartData: ChartData<IPieDataSet, PiEntry> = (this.pieChartModel.getData() as ChartData<IPieDataSet, PiEntry>)()
 
         let set: PieDataSet = ((chartData as PieData)().getDataSet() as PieDataSet)()
 

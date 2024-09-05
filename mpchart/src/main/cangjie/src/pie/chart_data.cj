@@ -74,7 +74,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
      * changed. Calling this performs all necessary recalculations needed when
      * the contained data has changed.
      */
-    public func notifyDataChanged(): Unit {
+    public open func notifyDataChanged(): Unit {
         this.calcMinMax()
     }
 
@@ -169,11 +169,11 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
      * @param axis
      * @return
      */
-    public func getYMin(): Float64 {
+    public open func getYMin(): Float64 {
         return mYMin
     }
 
-    public func getYMin(axis: AxisDependency): Float64 {
+    public open func getYMin(axis: AxisDependency): Float64 {
         if (axis == AxisDependency.LEFT) {
             if (this.mLeftAxisMin == Float64.Max) {
                 return this.mRightAxisMin
@@ -195,7 +195,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
      * @param axis
      * @return
      */
-    public func getYMax(): Float64 {
+    public open func getYMax(): Float64 {
         return mYMax
     }
 
@@ -220,7 +220,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
      *
      * @return
      */
-    public func getXMin(): Float64 {
+    public open func getXMin(): Float64 {
         return this.mXMin
     }
 
@@ -229,7 +229,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
      *
      * @return
      */
-    public func getXMax(): Float64 {
+    public open func getXMax(): Float64 {
         return this.mXMax
     }
 
@@ -342,7 +342,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
      *
      * @param d
      */
-    public func removeDataSet(d: S): Bool {
+    public open func removeDataSet(d: S): Bool {
         let index: Int64 = findIndex(d)
         if (index == -1) {
             return false

@@ -6,7 +6,7 @@ package mpchart.pie
 internal import mpchart.utils.*
 internal import mpchart.components.*
 internal import mpchart.basedata.*
-internal import std.collection.{ArrayList, HashSet, EquatableCollection, HashMap}
+internal import std.collection.{ArrayList, HashSet, EquatableCollection, HashMap,map,collectArrayList}
 internal import std.format.{Formatter}
 internal import std.math.*
 internal import ohos.component.*

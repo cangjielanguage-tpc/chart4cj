@@ -250,6 +250,15 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         )
     }
 
+    protected open func isDrawingValuesAllowed(chart: BarDataProvider): Bool {
+        let chartData: ?BarData = chart.getBarData()
+        if (this.mViewPortHandler.isSome() && chartData.isSome()) {
+            return Float64(chartData().getEntryCount()) < Float64(chart.getMaxVisibleCount()) *
+                this.mViewPortHandler().getScaleX()
+        }
+        return false
+    }
+
     public open func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool): Unit {
         if (this.mChart.getBarData().isNone()) {
             return

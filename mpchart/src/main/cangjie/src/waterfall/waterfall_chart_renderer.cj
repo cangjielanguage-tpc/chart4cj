@@ -415,8 +415,15 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
             e.setHighlights(WaterfallHighlight(minBottom, minBottom, color:dataSet.getMinyHighlightColor()));
         }
     }
-
-    public func drawValues(c: CanvasRenderingContext2D): Unit {
+    protected open func isDrawingValuesAllowed(chart: WaterfallDataProvider): Bool {
+        let chartData: ?WaterfallData = chart.getWaterfallData()
+        if (this.mViewPortHandler.isSome() && chartData.isSome()) {
+            return Float64(chartData().getEntryCount()) < Float64(chart.getMaxVisibleCount()) *
+                this.mViewPortHandler().getScaleX()
+        }
+        return false
+    }
+    public func drawValues(c: CanvasRenderingContext2D,isHorizontalFlip!: Bool = false): Unit {
         if (this.mChart.getWaterfallData().isNone()) {
             return;
         }
@@ -495,7 +502,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                     if (dataSet.isDrawValuesEnabled()) {
                         let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter();
                         if (let Some(format) <- valueFormatter) {
-                            this.drawValue(c, format, val, entry, i, x, (buffer.buffer[j + 3] + posOffset),
+                             this.drawValue(c, format, val, entry, i, x, (buffer.buffer[j + 3] + posOffset),
                                 Color(dataSet.getValueTextColor(j / 4)));
                         }
                     }
@@ -619,269 +626,5 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
     }
 
     public func drawExtras(c: CanvasRenderingContext2D): Unit {}
-
-    public func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool = false): Unit {
-        if (this.mChart.getWaterfallData().isNone()) {
-            return
-        }
-        // if values are drawn
-        if (this.isDrawingValuesAllowed(this.mChart)) {
-            let barData: ?WaterfallData = this.mChart.getWaterfallData()
-
-            let dataSets: ArrayList<IWaterfallDataSet> = barData().getDataSets()
-
-            const valueOffsetPlus: Float64 = 0.0
-            var posOffset: Float64 = 0.0
-            var negOffset: Float64 = 0.0
-            let drawValueAboveBar: Bool = this.mChart.isDrawValueAboveBarEnabled()
-
-            for (i in 0..barData().getDataSetCount()) {
-                let dataSet: IWaterfallDataSet = dataSets[i]
-
-                if (!this.shouldDrawValues(dataSet)) {
-                    continue
-                }
-
-                // apply the text-styling defined by the DataSet
-                this.applyValueTextStyle(dataSet)
-
-                let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
-
-                // calculate the correct offset depending on the draw position of
-                // the value
-                let valueTextHeight: Float64 = Utils.calcTextHeight(c, this.mValuePaint, "8")
-                posOffset = if (drawValueAboveBar) {
-                    -valueOffsetPlus
-                } else {
-                    valueTextHeight + valueOffsetPlus
-                }
-                negOffset = if (drawValueAboveBar) {
-                    valueTextHeight + valueOffsetPlus
-                } else {
-                    -valueOffsetPlus
-                }
-
-                if (isInverted) {
-                    posOffset = -posOffset - valueTextHeight
-                    negOffset = -negOffset - valueTextHeight
-                }
-
-                // get the buffer
-                let buffer: BarBuffer = this.mBarBuffers[i]
-
-                let phaseY: Float64 = if (let Some(m) <- this.mAnimator) {
-                    m.getPhaseY()
-                } else {
-                    1.0
-                }
-
-                let iconsOffset: MPPointF = MPPointF.getInstance(dataSet.getIconsOffset())
-                iconsOffset.x = Utils.handleDataValues(iconsOffset.x)
-                iconsOffset.y = Utils.handleDataValues(iconsOffset.y)
-
-                // if only single values are drawn (sum)
-                if (!dataSet.isStacked()) {
-                    for (j in 0..buffer.buffer.size * Int64(if (let Some(animator) <- this.mAnimator) {
-                                animator.getPhaseX()
-                            } else {
-                                1.0
-                            }):4) {
-                        let x: Float64 = (buffer.buffer[j] + buffer.buffer[j + 2]) / 2.0
-
-                        if (!this.mViewPortHandler().isInBoundsRight(x)) {
-                            break
-                        }
-
-                        if (!this.mViewPortHandler().isInBoundsY(buffer.buffer[j + 1]) ||
-                            !this.mViewPortHandler().isInBoundsLeft(x)) {
-                            continue
-                        }
-
-                        let entry: WaterfallEntry = dataSet.getEntryForIndex(j / 4)()
-                        let val: Float64 = entry.getY()
-
-                        if (dataSet.isDrawValuesEnabled()) {
-                            let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
-                            if (let Some(formatter) <- valueFormatter) {
-                                this.drawValue(c, formatter, val, entry, i, x,
-                                    if (val >= 0.0) {
-                                    (buffer.buffer[j + 1] + posOffset)
-                                } else {
-                                    (buffer.buffer[j + 3] + negOffset)
-                                }, Color(dataSet.getValueTextColor(j / 4)))
-                            }
-                        }
-                        let icon: ?ChartPixelMap = entry.getIcon()
-                        if (icon.isSome() && dataSet.isDrawIconsEnabled()) {
-                            var px: Float64 = x
-                            var py: Float64 = if (val >= 0.0) {
-                                (buffer.buffer[j + 1] + posOffset)
-                            } else {
-                                (buffer.buffer[j + 3] + negOffset)
-                            }
-
-                            px += iconsOffset.x
-                            py += iconsOffset.y
-
-                            Utils.drawImage(
-                                c,
-                                icon(),
-                                Utils.parseInt(px),
-                                Utils.parseInt(py)
-                            )
-                        }
-                    }
-
-                // if we have stacks
-                } else {
-                    let trans: ?Transformer = this.mChart.getTransformer(dataSet.getAxisDependency())
-
-                    var bufferIndex: Int64 = 0
-                    var index: Int64 = 0
-
-                    while (index < dataSet.getEntryCount() * Int64(if (let Some(animator) <- this.mAnimator) {
-                                animator.getPhaseX()
-                            } else {
-                                1.0
-                            })) {
-                        let entry: WaterfallEntry = dataSet.getEntryForIndex(index)()
-
-                        let vals: Array<Float64> = entry.getYVals()
-                        let x: Float64 = (buffer.buffer[bufferIndex] + buffer.buffer[bufferIndex + 2]) / 2.0
-
-                        let color: UInt32 = dataSet.getValueTextColor(index)
-
-                        // we still draw stacked bars, but there is one
-                        // non-stacked
-                        // in between
-                        if (vals.size == 0) {
-                            if (!this.mViewPortHandler().isInBoundsRight(x)) {
-                                break
-                            }
-
-                            if (!this.mViewPortHandler().isInBoundsY(buffer.buffer[bufferIndex + 1]) ||
-                                !this.mViewPortHandler().isInBoundsLeft(x)) {
-                                continue
-                            }
-
-                            if (dataSet.isDrawValuesEnabled()) {
-                                let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
-                                if (let Some(formatter) <- valueFormatter) {
-                                    this.drawValue(c, formatter, entry.getY(), entry, i, x,
-                                        buffer.buffer[bufferIndex + 1] + (if (entry.getY() >= 0.0) {
-                                        posOffset
-                                    } else {
-                                        negOffset
-                                    }), Color(color))
-                                }
-                            }
-
-                            let icon: ?ChartPixelMap = entry.getIcon()
-                            if (icon.isSome() && dataSet.isDrawIconsEnabled()) {
-                                var px: Float64 = x
-                                var py: Float64 = buffer.buffer[bufferIndex + 1] + (if (entry.getY() >= 0.0) {
-                                    posOffset
-                                } else {
-                                    negOffset
-                                })
-
-                                px += iconsOffset.x
-                                py += iconsOffset.y
-
-                                Utils.drawImage(
-                                    c,
-                                    icon(),
-                                    Utils.parseInt(px),
-                                    Utils.parseInt(py)
-                                )
-                            }
-
-                        // draw stack values
-                        } else {
-                            var transformed: Array<Float64> = Array<Float64>(vals.size * 2, item: 0.0)
-                            var posY: Float64 = 0.0
-                            var negY: Float64 = -entry.getNegativeSum()
-                            var k: Int64 = 0
-                            var idx: Int64 = 0
-                            while (k < transformed.size) {
-                                let value: Float64 = vals[idx]
-                                var y: Float64 = 0.0
-                                if (value == 0.0 && (posY == 0.0 || negY == 0.0)) {
-                                    // Take care of the situation of a 0.0 value, which overlaps a non-zero bar
-                                    y = value
-                                } else if (value >= 0.0) {
-                                    posY += value
-                                    y = posY
-                                } else {
-                                    y = negY
-                                    negY -= value
-                                }
-
-                                transformed[k + 1] = y * phaseY
-                                k += 2
-                                idx++
-                            }
-                            if (let Some(tran) <- trans) {
-                                tran.pointValuesToPixel(transformed)
-                            }
-
-                            for (m in 0..transformed.size: 2) {
-                                var val: Float64 = vals[m / 2]
-                                let drawBelow: Bool = (val == 0.0 && negY == 0.0 && posY > 0.0) || val < 0.0
-                                let y: Float64 = transformed[m + 1] + if (drawBelow) {
-                                    negOffset
-                                } else {
-                                    posOffset
-                                }
-
-                                if (!this.mViewPortHandler().isInBoundsRight(x)) {
-                                    break
-                                }
-
-                                if (!this.mViewPortHandler().isInBoundsY(y) ||
-                                    !this.mViewPortHandler().isInBoundsLeft(x)) {
-                                    continue
-                                }
-
-                                if (dataSet.isDrawValuesEnabled()) {
-                                    let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
-                                    if (let Some(formatter) <- valueFormatter) {
-                                        this.drawValue(
-                                            c,
-                                            formatter,
-                                            vals[m / 2],
-                                            entry,
-                                            i,
-                                            x,
-                                            y,
-                                            Color(color)
-                                        )
-                                    }
-                                }
-                                let icon: ?ChartPixelMap = entry.getIcon()
-                                if (icon.isSome() && dataSet.isDrawIconsEnabled()) {
-                                    Utils.drawImage(
-                                        c,
-                                        icon(),
-                                        (x + iconsOffset.x),
-                                        (y + iconsOffset.y)
-                                    )
-                                }
-                            }
-                        }
-
-                        bufferIndex = if (vals.size == 0) {
-                            bufferIndex + 4
-                        } else {
-                            bufferIndex + 4 * vals.size
-                        }
-                        index++
-                    }
-                }
-
-                MPPointF.recycleInstance(iconsOffset)
-            }
-        }
-    }
 
 }

@@ -117,11 +117,20 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
         }
     }
 
+    protected open func isDrawingValuesAllowed(chart: BubbleDataProvider): Bool {
+        let chartData: ?BubbleData = chart.getBubbleData()
+        if (this.mViewPortHandler.isSome() && chartData.isSome()) {
+            return Float64(chartData().getEntryCount()) < Float64(chart.getMaxVisibleCount()) *
+                this.mViewPortHandler().getScaleX()
+        }
+        return false
+    }
+
     public func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool): Unit {
         let bubbleData: ?BubbleData = this.mChart.getBubbleData();
 
         if (let Some(b) <- bubbleData) {
-            if ((this as DataRenderer)().isDrawingValuesAllowed(this.mChart) && this.mXBounds.isSome()) {
+            if (this.isDrawingValuesAllowed(this.mChart) && this.mXBounds.isSome()) {
                 let dataSets: ArrayList<IBubbleDataSet> = b.getDataSets();
                 let lineHeight: Float64 = Utils.calcTextHeight(c, this.mValuePaint, "1");
                 for (i in 0..dataSets.size) {

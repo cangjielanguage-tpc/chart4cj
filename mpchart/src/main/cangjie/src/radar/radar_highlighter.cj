@@ -40,7 +40,7 @@ public class RadarHighlighter <: PieRadarHighlighter<RadarChartModel, RadarData,
      * @return
      */
     protected func getHighlightsAtIndex(index: Int64): ArrayList<Highlight> {
-        if (this.mChart().getData().isNone()) {
+        if ((this.mChart().getData() as RadarData).isNone()) {
             return ArrayList<Highlight>([])
         }
         var highlightBuffer: ArrayList<Highlight> = ArrayList<Highlight>([])
@@ -56,8 +56,8 @@ public class RadarHighlighter <: PieRadarHighlighter<RadarChartModel, RadarData,
 
         var pOut = MPPointF.getInstance(0.0, 0.0)
 
-        for (i in 0..this.mChart().getData()().getDataSetCount()) {
-            if (let Some(dataSet: IRadarDataSet) <- this.mChart().getData()().getDataSetByIndex(i)) {
+        for (i in 0..(this.mChart().getData() as RadarData)().getDataSetCount()) {
+            if (let Some(dataSet: IRadarDataSet) <- (this.mChart().getData() as RadarData)().getDataSetByIndex(i)) {
                 let entry = dataSet.getEntryForIndex(index)()
 
                 let y = entry.getY() - this.mChart().getYChartMin()

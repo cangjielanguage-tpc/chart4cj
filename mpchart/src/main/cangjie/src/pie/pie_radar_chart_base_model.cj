@@ -75,6 +75,10 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
 //        this.mChartTouchListener().onDoubleTap(isTouchEvent, event)
 //    }
 
+    public func getData(): Any {
+        return this.mData
+    }
+
     public func computeScroll(): Unit {
         if (this.mChartTouchListener is PieRadarChartTouchListener<D, S, E>) {
             (this.mChartTouchListener as PieRadarChartTouchListener<D, S, E>)().computeScroll()

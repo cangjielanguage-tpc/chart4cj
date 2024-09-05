@@ -1172,8 +1172,8 @@ class valueFormatter <: IAxisValueFormatter {
 
 在下述版本验证通过：
 
-    DevEco Studio NEXT Developer Beta2(5.0.3.700) 
-    Cangjie Support Plugin 5.0.3.700
+    DevEco Studio NEXT Developer Beta2(5.0.3.706) 
+    Cangjie Support Plugin 5.0.3.800
 
     1. 仓颉 UI 未支持手势组件，影响图表手势操作后的高亮、缩放、平移、旋转功能；
     2. 线形图曲线模式暂不支持；

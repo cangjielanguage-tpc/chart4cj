@@ -503,13 +503,13 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
         high.setDraw(bar.centerY(), bar.right)
     }
 
-    public func isDrawingValuesAllowed(chart: BarDataProvider) {
-        let chartData: ?BarData = chart.getData()
-        if (chartData.isSome() && this.mViewPortHandler.isSome()) {
-            return chartData().getEntryCount() < chart.getMaxVisibleCount()
-                * Int64(this.mViewPortHandler().getScaleY())
-        } else {
-            return false
-        }
-    }
+//    public func isDrawingValuesAllowed(chart: BarDataProvider) {
+//        let chartData: ?BarData = chart.getBarData()
+//        if (chartData.isSome() && this.mViewPortHandler.isSome()) {
+//            return chartData().getEntryCount() < chart.getMaxVisibleCount()
+//                * Int64(this.mViewPortHandler().getScaleY())
+//        } else {
+//            return false
+//        }
+//    }
 }

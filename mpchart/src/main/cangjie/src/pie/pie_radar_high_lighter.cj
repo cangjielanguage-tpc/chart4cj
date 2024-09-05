@@ -16,7 +16,7 @@ public abstract class PieRadarHighlighter<T, D, S, E> <: IHighlighter where T <:
     }
 
     public func getHighlight(x: Float64, y: Float64): ?Highlight {
-        if (this.mChart.isNone() || this.mChart().getData()().getMaxEntryCountSet().isNone()) {
+        if (this.mChart.isNone() || (this.mChart().getData() as D)().getMaxEntryCountSet().isNone()) {
             return None
         }
 
@@ -33,7 +33,7 @@ public abstract class PieRadarHighlighter<T, D, S, E> <: IHighlighter where T <:
             let index = Int64(this.mChart().getIndexForAngle(angle))
 
             // check if the index could be found
-            if (index < 0 || index >= this.mChart().getData()().getMaxEntryCountSet()().getEntryCount()) {
+            if (index < 0 || index >= (this.mChart().getData() as D)().getMaxEntryCountSet()().getEntryCount()) {
                 return None
             } else {
                 return this.getClosestHighlight(index, x, y)

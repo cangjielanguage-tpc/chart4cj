@@ -82,7 +82,7 @@ class HorizontalBarNegativeChartPage {
 
         let barData: BarData = BarData(dataSetList)
         barData.setValueTextSize(10.0)
-        barData.setBarWidth(0.9)
+        barData.setBarWidth(9.0)
 
         this.model.setData(barData)
     }

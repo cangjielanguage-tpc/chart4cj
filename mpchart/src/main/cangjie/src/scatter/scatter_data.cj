@@ -4,6 +4,10 @@
 package mpchart.scatter
 
 public class ScatterData <: BarLineScatterCandleBubbleData<IScatterDataSet, EntryOhos> {
+    public init() {
+        super()
+    }
+
     public init(dataSets: ArrayList<IScatterDataSet>) {
         super(dataSets)
         this.notifyDataChanged()

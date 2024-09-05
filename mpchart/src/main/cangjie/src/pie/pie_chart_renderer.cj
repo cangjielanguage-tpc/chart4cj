@@ -80,7 +80,7 @@ public class PieChartRenderer <: DataRenderer {
         //CanvasRenderingContext2D 未实现属性 width heigth
         c.clearRect(0.0, 0.0, 500.0, 500.0)
 
-        let pieData: ?PieData = this.mChart.getData()() as PieData
+        let pieData: ?PieData = this.mChart.getPieData()
 
         if (pieData.isSome()) {
             let dataSets = pieData().getDataSets()
@@ -149,7 +149,7 @@ public class PieChartRenderer <: DataRenderer {
      * @return
      */
     protected func getSliceSpace(dataSet: IPieDataSet): Float64 {
-        let chartData: ?PieData = this.mChart.getData()() as PieData
+        let chartData: ?PieData = this.mChart.getPieData()
 
         if (chartData.isNone() || this.mViewPortHandler.isNone()) {
             return -1.0
@@ -439,7 +439,7 @@ public class PieChartRenderer <: DataRenderer {
 
         let labelRadius: Float64 = radius - labelRadiusOffset
 
-        let data: ?PieData = this.mChart.getData()() as PieData
+        let data: ?PieData = this.mChart.getPieData()
         if (data.isNone()) {
             return
         }
@@ -852,12 +852,16 @@ public class PieChartRenderer <: DataRenderer {
                 continue
             }
 
-            let chartData = this.mChart.getData()
+            let chartData: ?PieData = this.mChart.getPieData()
             if (chartData.isNone()) {
                 continue
             }
 
-            let set: ?IPieDataSet = chartData().getDataSetByIndex(indices[i].getDataSetIndex())
+            let set: ?IPieDataSet = if(let Some(chartData: PieData) <- chartData) {
+                 chartData.getDataSetByIndex(indices[i].getDataSetIndex())
+            } else {
+                None
+            }
 
             if (set.isNone() || set().isHighlightEnabled()) {
                 continue
@@ -1039,11 +1043,11 @@ public class PieChartRenderer <: DataRenderer {
      * @param c
      */
     protected func drawRoundedSlices(c: CanvasRenderingContext2D): Unit {
-        if (!this.mChart.isDrawRoundedSlicesEnabled() || this.mAnimator.isNone() || this.mChart.getData().isNone()) {
+        if (!this.mChart.isDrawRoundedSlicesEnabled() || this.mAnimator.isNone() || this.mChart.getPieData().isNone()) {
             return
         }
 
-        let dataSet: IPieDataSet = (this.mChart.getData()() as PieData)().getDataSet()
+        let dataSet: IPieDataSet = this.mChart.getPieData()().getDataSet()
 
         if (!dataSet.isVisible()) {
             return

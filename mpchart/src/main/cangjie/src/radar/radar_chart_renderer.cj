@@ -34,10 +34,10 @@ public class RadarChartRenderer <: LineRadarRenderer {
     }
 
     public func drawData(c: CanvasRenderingContext2D) {
-        if (this.mChart.getData().isNone()) {
+        if (this.mChart.getRadarData().isNone()) {
             return
         }
-        let radarData: ?RadarData = this.mChart.getData()
+        let radarData: ?RadarData = this.mChart.getRadarData()
         if (let Some(radarData) <- radarData) {
             let countSet: ?IRadarDataSet = radarData.getMaxEntryCountSet()
             if (countSet.isNone()) {
@@ -135,7 +135,7 @@ public class RadarChartRenderer <: LineRadarRenderer {
     }
 
     public func drawValues(c: CanvasRenderingContext2D, isHorizontalFlip!: Bool) {
-        if (this.mChart.getData().isNone() || this.mAnimator.isNone()) {
+        if (this.mChart.getRadarData().isNone() || this.mAnimator.isNone()) {
             return
         }
         let phaseX = this.mAnimator().getPhaseX()
@@ -153,8 +153,8 @@ public class RadarChartRenderer <: LineRadarRenderer {
 
         let yoffset = Utils.handleDataValues(5.0)
 
-        for (i in 0..this.mChart.getData()().getDataSetCount()) {
-            let dataSet: ?IRadarDataSet = this.mChart.getData()().getDataSetByIndex(i)
+        for (i in 0..(this.mChart.getRadarData())().getDataSetCount()) {
+            let dataSet: ?IRadarDataSet =( this.mChart.getRadarData())().getDataSetByIndex(i)
 
             if (dataSet.isNone() || !this.shouldDrawValues(dataSet())) {
                 continue
@@ -234,7 +234,7 @@ public class RadarChartRenderer <: LineRadarRenderer {
     }
 
     protected func drawWeb(c: CanvasRenderingContext2D) {
-        if (this.mChart.getData().isNone()) {
+        if ((this.mChart.getRadarData()).isNone()) {
             return
         }
         let sliceangle: Float64 = this.mChart.getSliceAngle()
@@ -252,7 +252,7 @@ public class RadarChartRenderer <: LineRadarRenderer {
         this.mWebPaint.setGlobalAlpha(this.mChart.getWebAlpha() / 255.0)
 
         let xIncrements: Int64 = 1 + this.mChart.getSkipWebLineCount()
-        let maxCountEntrySet: ?IRadarDataSet = this.mChart.getData()().getMaxEntryCountSet()
+        let maxCountEntrySet: ?IRadarDataSet = (this.mChart.getRadarData())().getMaxEntryCountSet()
 
         c.save()
         if (let Some(maxCountEntrySet) <- maxCountEntrySet) {
@@ -289,7 +289,7 @@ public class RadarChartRenderer <: LineRadarRenderer {
         var p1out: MPPointF = MPPointF.getInstance(0.0, 0.0)
         var p2out: MPPointF = MPPointF.getInstance(0.0, 0.0)
         for (j in 0..labelCount) {
-            for (i in 0..this.mChart.getData()().getEntryCount()) {
+            for (i in 0..(this.mChart.getRadarData())().getEntryCount()) {
                 let r: Float64 = (yAxis.mEntries[j] - this.mChart.getYChartMin()) * factor
                 if (let Some(center) <- center) {
                     p1out = Utils.getPosition(center, r, sliceangle * Float64(i) + rotationangle, p1out)
@@ -322,7 +322,7 @@ public class RadarChartRenderer <: LineRadarRenderer {
         let center: ?MPPointF = this.mChart.getCenterOffsets()
         var pOut: MPPointF = MPPointF.getInstance(0.0, 0.0)
 
-        let radarData: ?RadarData = this.mChart.getData()
+        let radarData: ?RadarData = this.mChart.getRadarData()
         if (let Some(radarData) <- radarData) {
             for (high in indices) {
                 let set: ?IRadarDataSet = radarData.getDataSetByIndex(high.getDataSetIndex())

@@ -793,4 +793,8 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
 
         this.mMinAngleForSlices = m
     }
+
+    public func getPieData(): ?PieData {
+        return this.mData
+    }
 }

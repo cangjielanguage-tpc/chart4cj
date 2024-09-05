@@ -182,9 +182,9 @@ public abstract class BaseDataSet<E> <: IDataSet<E> where E <: EntryOhos {
      */
     public func setColorsByArrAndAlpha(colors: Array<UInt32>, alpha: Float64): Unit {
         this.resetColors()
-        for (i in 0..colors.size) {
+        for (i in colors) {
             this.addColor(
-                UInt32(ColorTemplate.argb(alpha, ColorTemplate.red(i), ColorTemplate.green(i), ColorTemplate.blue(i))))
+                UInt32(ColorTemplate.argb(alpha, ColorTemplate.red(Int64(i)), ColorTemplate.green(Int64(i)), ColorTemplate.blue(Int64(i)))))
         }
     }
 

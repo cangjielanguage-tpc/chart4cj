@@ -12,7 +12,7 @@ public class XAxisRendererRadarChart <: XAxisRenderer {
     }
 
     public func renderAxisLabels(c: CanvasRenderingContext2D) {
-        if (this.mChart.getData().isNone() || !this.mXAxis.isEnabled() || !this.mXAxis.isDrawLabelsEnabled()) {
+        if (this.mChart.getRadarData().isNone() || !this.mXAxis.isEnabled() || !this.mXAxis.isDrawLabelsEnabled()) {
             return;
         }
 
@@ -30,7 +30,7 @@ public class XAxisRendererRadarChart <: XAxisRenderer {
         let center: ?MPPointF = this.mChart.getCenterOffsets();
         var pOut: MPPointF = MPPointF.getInstance(0.0, 0.0);
 
-        let maxCountEntrySet: ?IRadarDataSet = this.mChart.getData()().getMaxEntryCountSet();
+        let maxCountEntrySet: ?IRadarDataSet = this.mChart.getRadarData()().getMaxEntryCountSet();
         if (let Some(maxCountEntrySet) <- maxCountEntrySet) {
             for (i in 0..maxCountEntrySet.getEntryCount()) {
                 let label: String = this.mXAxis.getValueFormatter()().getFormattedValue(Float64(i), this.mXAxis);
