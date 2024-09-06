@@ -10,11 +10,11 @@ import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
-import mpchart.pie.*
-import mpchart.utils.*
-import mpchart.bar.*
-import mpchart.charts.*
-import mpchart.components.*
+import chart.pie.*
+import chart.utils.*
+import chart.bar.*
+import chart.charts.*
+import chart.components.*
 
 @Entry
 @Component
@@ -35,8 +35,7 @@ class BarChartPageReadme {
             v.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为垂直
             v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
             v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为左侧
-            v.setDrawInside(true) // 设置图例绘制在图表内部
-            v.setYOffset(-10.0) // 设置图例Y轴偏移
+            v.setDrawInside(false) // 设置图例绘制在图表外部
         }
 
         this.model.setMaxVisibleValueCount(60) // 设置图表最大可见数值数量
@@ -44,7 +43,6 @@ class BarChartPageReadme {
         this.model.setGridBackgroundColor(0x500000ff) // 设置图表网格背景颜色
         this.model.setDrawBarShadow(false) // 设置不绘制图的柱体阴影背景
         this.model.setDrawValueAboveBar(true) // 设置瀑布图的数值在柱体上方
-        this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
 
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(leftaxis) <- this.leftAxis) {

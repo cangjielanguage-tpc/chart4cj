@@ -30,7 +30,7 @@ import ohos_app_cangjie_entry.pageconfig.*
 @Entry
 @Component
 class MyView {
-    private let title: String = "mpchart Example"
+    private let title: String = "chart Example"
     var scroller: Scroller = Scroller()
     @State
     var message: String = "Hello Cangjie"

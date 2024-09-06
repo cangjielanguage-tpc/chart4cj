@@ -37,8 +37,8 @@
       ]
     },
     {
-      "name": "mpchart",
-      "srcPath": "./mpchart"
+      "name": "chart",
+      "srcPath": "./chart"
     }
   ]
 }

@@ -10,10 +10,10 @@ import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
-import mpchart.charts.*
-import mpchart.pie.*
-import mpchart.utils.*
-import mpchart.components.*
+import chart.charts.*
+import chart.pie.*
+import chart.utils.*
+import chart.components.*
 
 @Entry
 @Component
@@ -32,15 +32,14 @@ class PieChartPageReadme {
             v.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为水平
             v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
             v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为居中
-            v.setYOffset(-10.0)
+            v.setDrawInside(false) // 设置图例绘制在图表外部
         }
 
         this.model.animateX(1000, easing: "Sharp") // 启用X轴动画效果，动画持续时间为1000毫秒
         this.model.setUsePercentValues(true) // 使用百分比值
         this.model.getDescription().setEnabled(false) // 禁用描述信息
-        this.model.setExtraOffsets(5.0, 10.0, 5.0, 5.0) // 设置额外偏移量
 
-        this.model.setCenterText("mpchart") // 设置中心文本
+        this.model.setCenterText("chart") // 设置中心文本
         this.model.setDrawCenterText(true)
         this.model.setCenterTextSize(20.0) // 设置中心文本大小
         this.model.setCenterTextColor(0xFF3333)
@@ -56,7 +55,7 @@ class PieChartPageReadme {
 
         this.model.setDrawCenterText(true) // 绘制中心文本
         this.model.setEntryLabelColor(0xFF000000)
-        this.model.setEntryLabelTextSize(80.0)
+        this.model.setEntryLabelTextSize(18.0)
         this.model.setRotationAngle(0.0) // 设置旋转角度
 
         // 通过触摸启用图表的旋转

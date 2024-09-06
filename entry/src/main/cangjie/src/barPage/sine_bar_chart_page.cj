@@ -37,6 +37,7 @@ class SineBarChartPage {
 
         this.model.setDrawValueAboveBar(true)
         this.model.setHighlightFullBarEnabled(false)
+        this.model.animateY(2000)
 
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(leftaxis) <- this.leftAxis) {

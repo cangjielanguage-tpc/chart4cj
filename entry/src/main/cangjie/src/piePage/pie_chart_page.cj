@@ -37,11 +37,10 @@ class PieChartPage {
         this.model.animateX(1000, easing: "Sharp");
         this.model.setUsePercentValues(true);
         this.model.getDescription().setEnabled(false)
-        this.model.setExtraOffsets(5.0, 10.0, 5.0, 5.0);
 
         this.model.setDragDecelerationFrictionCoef(0.95);
 
-        this.model.setCenterText("mpchart");
+        this.model.setCenterText("chart");
         this.model.setCenterTextSize(22.0)
 
         this.model.setDrawHoleEnabled(true);

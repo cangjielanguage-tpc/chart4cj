@@ -19,11 +19,11 @@ internal import std.math.*
 internal import std.random.*
 internal import std.convert.*
 internal import std.format.*
-internal import mpchart.pie.*
-internal import mpchart.utils.*
-internal import mpchart.charts.*
-internal import mpchart.waterfall.*
-internal import mpchart.components.*
+internal import chart.pie.*
+internal import chart.utils.*
+internal import chart.charts.*
+internal import chart.waterfall.*
+internal import chart.components.*
 
 extend<T> Option<T> {
     operator func ()(): T {

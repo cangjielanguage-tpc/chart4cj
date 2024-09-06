@@ -64,7 +64,7 @@ flowchart TD
 ├─AppScope
 ├─doc        # API文档和使用手册存放目录                   
 ├─entry      # 示例代码文件夹                  
-├─mpchart    # mpchart 库文件夹                   
+├─chart    # chart 库文件夹                   
 │  └─src
 │      └─main
 │          ├─cangjie
@@ -93,8 +93,8 @@ flowchart TD
 
 1. 通过 module 引入
     1. 克隆下载项目
-    2. 将 mpchart 模块拷贝到应用项目下
-    3. 修改自身应用 entry 下的 oh-package.json5 文件，在 dependencies 字段添加 "mpchart": "file:../mpchart"
+    2. 将 chart 模块拷贝到应用项目下
+    3. 修改自身应用 entry 下的 oh-package.json5 文件，在 dependencies 字段添加 "chart": "file:../chart"
       ```json
       {
          "name": "entry",
@@ -104,18 +104,18 @@ flowchart TD
          "author": "",
          "license": "",
         "dependencies": {
-            "markdown": "file:../mpchart"
+            "markdown": "file:../chart"
         }
       }
       ```
-    4. 修改自身应用 entry/src/main/cangjie 下的 cjpm.toml 文件，在 [dependencies] 字段下添加 mpchart = {path = "../../../../mpchart/src/main/cangjie", version = "1.0.0"}
+    4. 修改自身应用 entry/src/main/cangjie 下的 cjpm.toml 文件，在 [dependencies] 字段下添加 chart = {path = "../../../../chart/src/main/cangjie", version = "1.0.0"}
        ```toml
        [dependencies]
-           mpchart = {path = "../../../../mpchart/src/main/cangjie", version = "1.0.0"}
+           chart = {path = "../../../../chart/src/main/cangjie", version = "1.0.0"}
        ```
-    5. 在项目中使用 import mpchart.* 引用 mpchart 项目
+    5. 在项目中使用 import chart.* 引用 chart 项目
        ```cangjie
-       import mpchart.*
+       import chart.*
        ```
 2. 把 chart4cj 作为三方库依赖引入
     1. 目标工程把 chart4cj 依赖库作为 git submodule 引入
@@ -129,11 +129,11 @@ flowchart TD
     2. 修改自身应用 entry/src/main/cangjie 下的 cjpm.toml 文件，添加依赖
     ```toml
     [dependencies]
-        mpchart = {path = "../../../../third-party/chart4cj/mpchart/src/main/cangjie", version = "1.0.0"}
+        chart = {path = "../../../../third-party/chart4cj/chart/src/main/cangjie", version = "1.0.0"}
      ```
     3. 在项目中使用 chart 组件
        ```cangjie
-       import mpchart.*
+       import chart.*
        ```
 
 ## 功能示例
@@ -148,10 +148,10 @@ import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
-import mpchart.charts.*
-import mpchart.pie.*
-import mpchart.utils.*
-import mpchart.components.*
+import chart.charts.*
+import chart.pie.*
+import chart.utils.*
+import chart.components.*
 
 @Entry
 @Component
@@ -178,7 +178,7 @@ class PieChartPageReadme {
         this.model.getDescription().setEnabled(false) // 禁用描述信息
         this.model.setExtraOffsets(5.0, 10.0, 5.0, 5.0) // 设置额外偏移量
 
-        this.model.setCenterText("mpchart") // 设置中心文本
+        this.model.setCenterText("chart") // 设置中心文本
         this.model.setDrawCenterText(true)
         this.model.setCenterTextSize(20.0) // 设置中心文本大小
         this.model.setCenterTextColor(0xFF3333)
@@ -281,11 +281,11 @@ import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
-import mpchart.pie.*
-import mpchart.utils.*
-import mpchart.bar.*
-import mpchart.charts.*
-import mpchart.components.*
+import chart.pie.*
+import chart.utils.*
+import chart.bar.*
+import chart.charts.*
+import chart.components.*
 
 @Entry
 @Component
@@ -441,11 +441,11 @@ import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
-import mpchart.pie.*
-import mpchart.utils.*
-import mpchart.bubble.*
-import mpchart.charts.*
-import mpchart.components.*
+import chart.pie.*
+import chart.utils.*
+import chart.bubble.*
+import chart.charts.*
+import chart.components.*
 
 @Entry
 @Component
@@ -598,11 +598,11 @@ import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
 import std.format.*
-import mpchart.pie.*
-import mpchart.utils.*
-import mpchart.components.*
-import mpchart.charts.*
-import mpchart.waterfall.*
+import chart.pie.*
+import chart.utils.*
+import chart.components.*
+import chart.charts.*
+import chart.waterfall.*
 
 @Entry
 @Component
@@ -731,11 +731,11 @@ import ohos.state_macro_manage.*
 import std.collection.*
 import std.math.*
 import std.random.*
-import mpchart.pie.*
-import mpchart.utils.{Mode, AxisDependency, ColorTemplate, ChartColor}
-import mpchart.charts.*
-import mpchart.line.*
-import mpchart.components.*
+import chart.pie.*
+import chart.utils.{Mode, AxisDependency, ColorTemplate, ChartColor}
+import chart.charts.*
+import chart.line.*
+import chart.components.*
 
 @Entry
 @Component
@@ -853,11 +853,11 @@ import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
-import mpchart.pie.*
-import mpchart.utils.*
-import mpchart.candle.*
-import mpchart.charts.*
-import mpchart.components.*
+import chart.pie.*
+import chart.utils.*
+import chart.candle.*
+import chart.charts.*
+import chart.components.*
 
 @Entry
 @Component
@@ -983,11 +983,11 @@ import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
-import mpchart.pie.*
-import mpchart.utils.*
-import mpchart.charts.*
-import mpchart.components.*
-import mpchart.scatter.*
+import chart.pie.*
+import chart.utils.*
+import chart.charts.*
+import chart.components.*
+import chart.scatter.*
 
 @Entry
 @Component
@@ -1141,11 +1141,11 @@ import ohos.state_macro_manage.*
 import std.collection.*
 import std.math.*
 import std.random.*
-import mpchart.utils.*
-import mpchart.charts.*
-import mpchart.radar.*
-import mpchart.components.*
-import mpchart.pie.*
+import chart.utils.*
+import chart.charts.*
+import chart.radar.*
+import chart.components.*
+import chart.pie.*
 
 @Entry
 @Component
@@ -1270,17 +1270,17 @@ import ohos.state_macro_manage.*
 import std.collection.*
 import std.math.*
 import std.random.*
-import mpchart.pie.*
-import mpchart.utils.{Mode, AxisDependency, ColorTemplate, ChartColor}
-import mpchart.charts.*
-import mpchart.combine.*
-import mpchart.line.*
-import mpchart.waterfall.*
-import mpchart.bar.*
-import mpchart.scatter.*
-import mpchart.candle.*
-import mpchart.bubble.*
-import mpchart.components.*
+import chart.pie.*
+import chart.utils.{Mode, AxisDependency, ColorTemplate, ChartColor}
+import chart.charts.*
+import chart.combine.*
+import chart.line.*
+import chart.waterfall.*
+import chart.bar.*
+import chart.scatter.*
+import chart.candle.*
+import chart.bubble.*
+import chart.components.*
 
 @Entry
 @Component
@@ -1750,7 +1750,7 @@ class CombinedChartPageReadme {
    图表绘制基于 Canvas 组件实现，所以自定义的图表布局需要包含 Canvas 画布，在 Canvas的onReady 中开启绘制，通过 onAreaChange 回调方法校正图表 Size。
 
    ```
-   import mpchart.custom.*
+   import chart.custom.*
    
    @Component
    public class CustomChart {

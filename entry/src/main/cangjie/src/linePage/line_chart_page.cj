@@ -34,6 +34,11 @@ class LineChartPage {
         description.setEnabled(true)
         description.setText("this is line chart")
 
+        let legend: ?Legend = this.model.getLegend()
+        if (let Some(l) <- legend) {
+            l.setEnabled(true)
+        }
+
         this.model.setMaxVisibleValueCount(60)
         this.model.setDrawGridBackground(false)
 
@@ -65,6 +70,8 @@ class LineChartPage {
             ly.setSpaceTop(15.0)
             ly.setAxisMinimum(0.0)
             ly.setAxisMaximum(200.0)
+            ly.addLimitLine(this.limitLine1)
+            ly.addLimitLine(this.limitLine2)
         }
 
         this.rightAxis = this.model.getAxisRight()
@@ -77,11 +84,7 @@ class LineChartPage {
             ry.setEnabled(false)
         }
 
-        let legend: ?Legend = this.model.getLegend()
-        if (let Some(l) <- legend) {
-            l.setEnabled(true)
-            l.setForm(LegendForm.LINE)
-        }
+
 
         let lineData: LineData = this.getLineData()
         lineData.setValueTextSize(10.0)
@@ -92,7 +95,7 @@ class LineChartPage {
     private func getLineData(): LineData {
         let start: Int64 = 0
         let values: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
-        let val: Array<Float64> = [58.2, 103.8, 94.4, 62.0, 31.6, 33.3, 27.8, 114.4, 76.0, 81.8, 43.2]
+        let val: Array<Float64> = [58.2, 103.8, 94.4, 162.0, 131.6, 33.3, 27.8, 114.4, 76.0, 81.8, 43.2]
         for (i in start..=10) {
             values.append(EntryOhos(Float64(i), val[i]))
         }

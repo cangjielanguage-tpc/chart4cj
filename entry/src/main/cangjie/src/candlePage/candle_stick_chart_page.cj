@@ -118,9 +118,8 @@ class CandlestickChartPage {
 
     func build() {
         Column() {
-            Column() {
-                CandleStickChart(model: this.model)
-            }
-        }
+            CandleStickChart(model: this.model)
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+
     }
 }

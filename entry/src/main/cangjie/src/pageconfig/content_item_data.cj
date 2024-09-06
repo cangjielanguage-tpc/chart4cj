@@ -33,7 +33,10 @@ public class ContentItemData {
         ContentItemData.itemData.append(
             ContentItem("Inverted Axis  ", d: "Inverted y-axis.", pagePath: "InvertedAxisPage"))
         ContentItemData.itemData.append(
-            ContentItem("Filled  ", d: "Colored area between two lines.", pagePath: "FilledAxisPage"))
+            ContentItem("Filled", d: "Colored area between two lines.", pagePath: "FilledAxisPage"))
+        ContentItemData.itemData.append(
+            ContentItem("Colorful", d: "Colorful line chart.", pagePath: "ColorfulPage"))
+
         //Bar Charts
         ContentItemData.itemData.append(ContentItem("Bar Charts"))
 
@@ -55,11 +58,17 @@ public class ContentItemData {
             pagePath: "HorizontalBarNegativeChartPage"))
         ContentItemData.itemData.append(
             ContentItem("Sine", d: "Sine function in bar chart format.", pagePath: "SineBarChartPage"))
+        ContentItemData.itemData.append(
+            ContentItem("Stacked", d: "Stacked bar chart", pagePath: "StackedBarChartPage"))
+        ContentItemData.itemData.append(
+            ContentItem("Stacked 2", d: "Stacked bar chart with negative values", pagePath: "StackedNegativePage"))
 
         //Pie Charts
         ContentItemData.itemData.append(ContentItem("Pie Charts"))
 
         ContentItemData.itemData.append(ContentItem("Basic", d: "Simple pie1 chart.", pagePath: "PieChartPage"))
+        ContentItemData.itemData.append(ContentItem("Value Lines", d: "180° (half) pie chart.", pagePath: "HalfPieChartPage"))
+        ContentItemData.itemData.append(ContentItem("Half Pie", d: "Stylish lines drawn outward from slices.", pagePath: "PiePolylineChartPage"))
 
         //Other Charts
         ContentItemData.itemData.append(ContentItem("Other Charts"))
@@ -73,6 +82,19 @@ public class ContentItemData {
         ContentItemData.itemData.append(
             ContentItem("Candlestick", d: "Simple financial chart.", pagePath: "CandlestickChartPage"))
         ContentItemData.itemData.append(ContentItem("Radar Chart", d: "Simple web chart.", pagePath: "RadarChartPage"))
+
+         //Scrolling Charts
+        ContentItemData.itemData.append(ContentItem("Scrolling Charts"))
+
+        ContentItemData.itemData.append(
+            ContentItem("Multiple   ", d: "Various types of charts as fragments.", pagePath: "ListViewMultiChartPage"))
+
+        //Even More Line Charts
+        ContentItemData.itemData.append(ContentItem("Even More Line Charts"))
+
+        ContentItemData.itemData.append(
+            ContentItem("Dynamic", d: "Build a line chart by pushing points and sets.", pagePath: "DynamicPage"))
+
 
         //readme
         ContentItemData.itemData.append(ContentItem("Readme Charts"))

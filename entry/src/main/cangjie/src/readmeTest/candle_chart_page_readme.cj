@@ -10,11 +10,11 @@ import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
-import mpchart.pie.*
-import mpchart.utils.*
-import mpchart.candle.*
-import mpchart.charts.*
-import mpchart.components.*
+import chart.pie.*
+import chart.utils.*
+import chart.candle.*
+import chart.charts.*
+import chart.components.*
 
 @Entry
 @Component
@@ -28,7 +28,7 @@ class CandleChartPageReadme {
             v.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为水平
             v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
             v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为居中
-            v.setYOffset(-10.0) // 设置 Y 轴方向的偏移量
+            v.setDrawInside(false) // 设置图例绘制在图表外部
         }
 
         let description: Description = this.model.getDescription() // 获取描述对象
@@ -37,7 +37,6 @@ class CandleChartPageReadme {
         this.model.setMaxVisibleValueCount(60) // 设置图表最大可见数值数量
         this.model.setDrawGridBackground(true) // 设置绘制网格背景
         this.model.setGridBackgroundColor(0xffffff) // 设置绘制网格背景颜色
-        this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
 
         let xAxis: ?XAxis = this.model.getXAxis() // 获取 X 轴对象
         if (let Some(x) <- xAxis) {
@@ -118,9 +117,8 @@ class CandleChartPageReadme {
 
     func build() {
         Column() {
-            Column() {
-                CandleStickChart(model: this.model)
-            }
-        }
+            CandleStickChart(model: this.model)
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+
     }
 }

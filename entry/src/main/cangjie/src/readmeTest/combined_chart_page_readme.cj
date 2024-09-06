@@ -10,17 +10,17 @@ import ohos.state_macro_manage.*
 import std.collection.*
 import std.math.*
 import std.random.*
-import mpchart.pie.*
-import mpchart.utils.{Mode, AxisDependency, ColorTemplate, ChartColor}
-import mpchart.charts.*
-import mpchart.combine.*
-import mpchart.line.*
-import mpchart.waterfall.*
-import mpchart.bar.*
-import mpchart.scatter.*
-import mpchart.candle.*
-import mpchart.bubble.*
-import mpchart.components.*
+import chart.pie.*
+import chart.utils.{Mode, AxisDependency, ColorTemplate, ChartColor}
+import chart.charts.*
+import chart.combine.*
+import chart.line.*
+import chart.waterfall.*
+import chart.bar.*
+import chart.scatter.*
+import chart.candle.*
+import chart.bubble.*
+import chart.components.*
 
 @Entry
 @Component
@@ -79,7 +79,6 @@ class CombinedChartPageReadme {
         this.generateBarData(data) // 生成柱状图数据
         this.model.setData(data) // 设置图表数据
         this.model.invalidate() // 重绘图表
-        this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
     }
 
     // 生成线形图数据
@@ -235,14 +234,12 @@ class CombinedChartPageReadme {
 
     func build() {
         Column() {
-            Column() {
-                // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
-                // 如果在之后通过事件触发，
-                // 可通过 data.notifyDataSetChanged() 来触发数据更新，
-                // 可通过 this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
-                // 可通过 this.model.invalidate() 来触发绘制更新。
-                CombinedChart(model: this.model)
-            }
-        }
+            // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+            // 如果在之后通过事件触发，
+            // 可通过 data.notifyDataSetChanged() 来触发数据更新，
+            // 可通过 this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+            // 可通过 this.model.invalidate() 来触发绘制更新。
+            CombinedChart(model: this.model)
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }

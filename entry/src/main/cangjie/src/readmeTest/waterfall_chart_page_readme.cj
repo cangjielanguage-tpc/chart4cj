@@ -11,11 +11,11 @@ import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
 import std.format.*
-import mpchart.pie.*
-import mpchart.utils.*
-import mpchart.components.*
-import mpchart.charts.*
-import mpchart.waterfall.*
+import chart.pie.*
+import chart.utils.*
+import chart.components.*
+import chart.charts.*
+import chart.waterfall.*
 
 @Entry
 @Component
@@ -42,8 +42,7 @@ class WaterfallChartPageReadme {
             v.setOrientation(LegendOrientation.HORIZONTAL)
             v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
             v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER)
-            v.setDrawInside(true)
-            v.setYOffset(-10.0)
+            v.setDrawInside(false) // 设置图例绘制在图表外部
         }
 
         // 设置图表数据最大的绘制数，如果超过该数值，则不进行绘制图表的数值标签
@@ -56,7 +55,6 @@ class WaterfallChartPageReadme {
         this.model.setDrawBarShadow(false)
         // 设置瀑布图的数值在柱体上方
         this.model.setDrawValueAboveBar(true)
-        this.model.setExtraOffsets(20.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
 
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(laxis) <- this.leftAxis) {
@@ -116,10 +114,9 @@ class WaterfallChartPageReadme {
 
     func build() {
         Column() {
-            Column() {
-                WaterfallChart(model: this.model)
-            }
-        }
+            WaterfallChart(model: this.model)
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+
     }
 }
 
