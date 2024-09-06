@@ -131,7 +131,7 @@ public class Legend <: ComponentBase {
             let label: String = entry.label
             //if (!label) continue
 
-            let length: Float64 = Utils.calcTextWidth(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), p, label)
+            let length: Float64 = Utils.calcTextWidth(p, label)
 
             if (length > max) {
                 max = length
@@ -154,7 +154,7 @@ public class Legend <: ComponentBase {
             let label: String = entry.label
             // if (!label) continue
 
-            let length: Float64 = Utils.calcTextHeight(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), p, label)
+            let length: Float64 = Utils.calcTextHeight(p, label)
 
             if (length > max) {
                 max = length
@@ -587,7 +587,7 @@ public class Legend <: ComponentBase {
         var maxWidth: Float64 = 0.0;
         var maxHeight: Float64 = 0.0;
         var width: Float64 = 0.0;
-        let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, CanvasRenderingContext2D(RenderingContextSettings(antialias: true)))
+        let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, Option<CanvasRenderingContext2D>.None)
         var wasStacked: Bool = false;
 
         for (i in 0..entryCount) {
@@ -626,7 +626,7 @@ public class Legend <: ComponentBase {
                     wasStacked = false
                 }
 
-                width += Utils.calcTextWidth(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), labelpaint, label)
+                width += Utils.calcTextWidth(labelpaint, label)
 
                 maxHeight += labelLineHeight + yEntrySpace
             } else {
@@ -647,8 +647,8 @@ public class Legend <: ComponentBase {
     private func orientationIsHORIZONTAL(labelpaint: ChartPaint, entryCount: Int64, entries: Array<LegendEntry>,
         defaultFormSize: Float64, stackSpace: Float64, formToTextSpace: Float64, yEntrySpace: Float64,
         viewPortHandler: ViewPortHandler, xEntrySpace: Float64, wordWrapEnabled: Bool) {
-        let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint,  CanvasRenderingContext2D(RenderingContextSettings(antialias: true)));
-        let labelLineSpacing: Float64 = Utils.getLineSpacing(labelpaint,  CanvasRenderingContext2D(RenderingContextSettings(antialias: true))) +
+        let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, Option<CanvasRenderingContext2D>.None);
+        let labelLineSpacing: Float64 = Utils.getLineSpacing(labelpaint, Option<CanvasRenderingContext2D>.None) +
             yEntrySpace;
         let contentWidth: Float64 = viewPortHandler.contentWidth() * this.mMaxSizePercent;
 

@@ -291,6 +291,7 @@ public class PieChartRenderer <: DataRenderer {
             }
 
             this.mPathBuffer.closePath() // 封闭路径
+
             // 绘制路径
             Utils.resetContext2DStyle(c, this.mRenderPaint)
             c.stroke(this.mPathBuffer)
@@ -490,7 +491,7 @@ public class PieChartRenderer <: DataRenderer {
 
             for (j in 0..entryCount) {
                 let entry: ?PiEntry = dataSet.getEntryForIndex(j)
-                if(entry.isNone()) {
+                if (entry.isNone()) {
                     continue
                 }
 
@@ -797,8 +798,8 @@ public class PieChartRenderer <: DataRenderer {
                 this.mCenterTextLastValue = centerText
             }
 
-            let textHeight: Float64 = Utils.calcTextHeight(c, this.mCenterTextPaint, centerText)
-            let textWidth: Float64 = Utils.calcTextWidth(c, this.mCenterTextPaint, centerText)
+            let textHeight: Float64 = Utils.calcTextHeight(this.mCenterTextPaint, centerText)
+            let textWidth: Float64 = Utils.calcTextWidth(this.mCenterTextPaint, centerText)
             c.save()
             Utils.resetContext2DStyle(c, this.mCenterTextPaint)
 
@@ -857,8 +858,8 @@ public class PieChartRenderer <: DataRenderer {
                 continue
             }
 
-            let set: ?IPieDataSet = if(let Some(chartData: PieData) <- chartData) {
-                 chartData.getDataSetByIndex(indices[i].getDataSetIndex())
+            let set: ?IPieDataSet = if (let Some(chartData: PieData) <- chartData) {
+                chartData.getDataSetByIndex(indices[i].getDataSetIndex())
             } else {
                 None
             }

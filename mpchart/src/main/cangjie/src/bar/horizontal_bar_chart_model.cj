@@ -6,7 +6,6 @@ package mpchart.bar
 public class HorizontalBarChartModel <: BarChartModel {
     protected  init() {
         super()
-        this.mViewPortHandler = HorizontalViewPortHandler()
         this.mLeftAxisTransformer = TransformerHorizontalBarChart(this.mViewPortHandler)
         this.mRightAxisTransformer = TransformerHorizontalBarChart(this.mViewPortHandler)
         this.mAnimator = ChartAnimator(this)

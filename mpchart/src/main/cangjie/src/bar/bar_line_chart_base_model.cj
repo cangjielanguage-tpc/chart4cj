@@ -308,7 +308,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         if (render.isSome()) {
             if (this.mXAxis.isSome()) {
                 extensionLength = Int64(this.mXAxis().getYOffset()) + this.mXAxis().mLabelRotatedHeight / 2 + Int64(Utils.
-                        calcTextHeight(CanvasRenderingContext2D(RenderingContextSettings(antialias: true)), render().getPaintAxisLine(), "0"))
+                        calcTextHeight(render().getPaintAxisLine(), "0"))
             }
         }
         return extensionLength
