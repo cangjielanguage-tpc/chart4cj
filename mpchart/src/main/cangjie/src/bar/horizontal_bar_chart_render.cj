@@ -241,11 +241,11 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                             -(valueTextWidth + valueOffsetPlus)
                         }
                         negOffset = if (drawValueAboveBar) {
-                            -(valueTextWidth + valueOffsetPlus)
+                            -(valueTextWidth + valueOffsetPlus) - (buffer.buffer[j + 2] - buffer.buffer[j])
                         } else {
-                            valueOffsetPlus
+                            valueOffsetPlus - (buffer.buffer[j + 2] - buffer.buffer[j])
                         }
-                        -(buffer.buffer[j + 2] - buffer.buffer[j])
+
                         if (isInverted) {
                             posOffset = -posOffset - valueTextWidth
                             negOffset = -negOffset - valueTextWidth
