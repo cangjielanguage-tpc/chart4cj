@@ -90,7 +90,7 @@ class RadarChartPage {
         sets.append(set2);
 
         let data: RadarData = RadarData(sets);
-        data.setValueTextSize(20.0);
+        data.setValueTextSize(10.0);
         data.setDrawValues(true);
         data.setValueTextColor(0xffffff);
         this.model.setData(data);

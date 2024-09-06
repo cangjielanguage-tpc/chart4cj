@@ -3,29 +3,18 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.state_macro_manage.*
-import ohos.base.LengthProp
-import ohos.component.Column
-import ohos.component.Row
-import ohos.component.Button
-import ohos.component.Text
-import ohos.component.CustomView
-import ohos.component.CJEntry
-import ohos.component.loadNativeView
-import ohos.state_manage.SubscriberManager
-import ohos.state_manage.ObservedProperty
-import ohos.state_macro_manage.Entry
-import ohos.state_macro_manage.Component
-import ohos.state_macro_manage.State
-import ohos.state_macro_manage.r
 import ohos.base.*
 import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
 import mpchart.pie.*
 import mpchart.utils.*
+import mpchart.charts.*
 import mpchart.components.*
+import mpchart.scatter.*
 
 @Entry
 @Component
@@ -35,54 +24,43 @@ class ScatterChartPageReadme {
     protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
         if (let Some(legend) <- l) {
-            legend.setEnabled(true)
-            legend.setOrientation(LegendOrientation.VERTICAL)
+            legend.setEnabled(true) // 启用图例
+            legend.setOrientation(LegendOrientation.HORIZONTAL)
             legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            legend.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
-            legend.setYOffset(-30.0)
+            legend.setHorizontalAlignment(LegendHorizontalAlignment.CENTER)
+            legend.setYOffset(-10.0)
         }
 
-        let description: Description = this.model.getDescription()
+        let description: Description = this.model.getDescription() // 获取描述对象
         description.setEnabled(true)
 
+        // 设置图表最大可见数值数量、是否支持缩放、是否绘制网格背景
         this.model.setMaxVisibleValueCount(160)
         this.model.setDrawGridBackground(false)
+        this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
         this.model.animateXY(2000, 2000)
 
-        let xAxis: ?XAxis = this.model.getXAxis()
+        let xAxis: ?XAxis = this.model.getXAxis() // 获取X轴对象
         if (let Some(xAxis) <- xAxis) {
-            xAxis.setPosition(XAxisPosition.BOTTOM)
-            xAxis.setDrawGridLines(false)
-            xAxis.setLabelCount(7, false)
+            xAxis.setPosition(XAxisPosition.BOTTOM) // 设置X轴位置在底部
+            xAxis.setDrawGridLines(false) // 不绘制X轴网格线
+            xAxis.setLabelCount(7, false) // 设置X轴标签数量为7
         }
 
-        let leftAxis: ?YAxis = this.model.getAxisLeft()
+        let leftAxis: ?YAxis = this.model.getAxisLeft() // 获取左侧Y轴对象
         if (let Some(leftAxis) <- leftAxis) {
-            leftAxis.setLabelCount(8, false)
-            leftAxis.setPosition(YAxisLabelPosition.OUTSIDE_CHART)
-            leftAxis.setSpaceTop(15.0)
-            leftAxis.setAxisMinimum(0.0)
+            leftAxis.setLabelCount(8, false) // 设置左侧Y轴标签数量为8，不强制使用整数标签
+            leftAxis.setPosition(YAxisLabelPosition.OUTSIDE_CHART) // 设置左侧Y轴标签位置在图表外部
+            leftAxis.setSpaceTop(15.0) // 设置左侧Y轴顶部空白区域大小
+            leftAxis.setAxisMinimum(0.0) // 设置左侧Y轴的最小值为0
         }
 
-        let rightAxis: ?YAxis = this.model.getAxisRight()
+        let rightAxis: ?YAxis = this.model.getAxisRight() // 获取右侧Y轴对象
         if (let Some(rightAxis) <- rightAxis) {
-            rightAxis.setLabelCount(8, false)
-            rightAxis.setDrawGridLines(false)
-            rightAxis.setSpaceTop(15.0)
-            rightAxis.setAxisMinimum(0.0)
-        }
-
-        let start: Int64 = 1
-        let values: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
-
-        for (i in start..20) {
-            let val = (Random().nextFloat64() * 41.0)
-
-            if (Random().nextFloat64() * 100.0 < 25.0) {
-                values.append(EntryOhos(Float64(i), val))
-            } else {
-                values.append(EntryOhos(Float64(i), val))
-            }
+            rightAxis.setLabelCount(8, false) // 设置右侧Y轴标签数量为8
+            rightAxis.setDrawGridLines(false) //不绘制右侧Y轴网格线
+            rightAxis.setSpaceTop(15.0) // 设置右侧Y轴顶部空白区域大小
+            rightAxis.setAxisMinimum(0.0) // 设置右侧Y轴的最小值为0
         }
 
         this.setData(20.0, 100.0)
@@ -90,39 +68,46 @@ class ScatterChartPageReadme {
     }
 
     private func setData(xRange: Float64, yRange: Float64): Unit {
+        // 生成随机数据集合
         let values1 = this.generateRandomData(xRange, yRange)
         let values2 = this.generateRandomData(xRange, yRange)
         let values3 = this.generateRandomData(xRange, yRange)
 
+        // 创建散点图数据集1
         let set1 = ScatterDataSet(values1, "DS 1")
         set1.setScatterShape(ChartShape.SQUARE)
         set1.setColorByColor(0x2b89ab)
 
+        // 创建散点图数据集2
         let set2 = ScatterDataSet(values2, "DS 2")
         set2.setScatterShape(ChartShape.CIRCLE)
         set2.setScatterShapeHoleRadius(3.0)
         set2.setColorByColor(0xcd4e2e)
 
+        // 创建散点图数据集3
         let set3 = ScatterDataSet(values3, "DS 3")
         set3.setShapeRenderer(CustomScatterShapeRenderer())
         set3.setColorByColor(0xacc045)
 
+        // 设置散点图数据集形状大小
         set1.setScatterShapeSize(8.0)
         set2.setScatterShapeSize(8.0)
         set3.setScatterShapeSize(8.0)
 
+        // 创建散点图数据集合
         let dataSets: ArrayList<IScatterDataSet> = ArrayList<IScatterDataSet>()
         dataSets.append(set1) // add the data sets
         dataSets.append(set2)
         dataSets.append(set3)
 
+        // 创建散点图数据
         let dataResult: ScatterData = ScatterData(dataSets)
         dataResult.setDrawValues(true)
-        dataResult.setValueTextSize(8.0)
+        dataResult.setValueTextSize(8.0) // 设置数据项文本大小
         dataResult.setHighlightEnabled(true)
         dataResult.setValueTextSize(10.0)
 
-        this.model.setData(dataResult)
+        this.model.setData(dataResult) // 设置图表数据
         dataResult.notifyDataChanged()
     }
 
@@ -140,12 +125,18 @@ class ScatterChartPageReadme {
     func build() {
         Column() {
             Column() {
+                // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+                // 如果在之后通过事件触发，
+                // 可通过dataResult.notifyDataSetChanged() 来触发数据更新，
+                // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+                // 可通过this.model.invalidate() 来触发绘制更新。
                 ScatterChart(model: this.model)
             }
         }
     }
 }
 
+// 自定义散点形状
 public class CustomScatterShapeRenderer <: IShapeRenderer {
     public func renderShape(c: CanvasRenderingContext2D, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler,
         posX: Float64, posY: Float64, renderPaint: ChartPaint): Unit {

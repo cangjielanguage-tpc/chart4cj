@@ -3,28 +3,17 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.state_macro_manage.*
-import ohos.base.LengthProp
-import ohos.component.Column
-import ohos.component.Row
-import ohos.component.Button
-import ohos.component.Text
-import ohos.component.CustomView
-import ohos.component.CJEntry
-import ohos.component.loadNativeView
-import ohos.state_manage.SubscriberManager
-import ohos.state_manage.ObservedProperty
-import ohos.state_macro_manage.Entry
-import ohos.state_macro_manage.Component
-import ohos.state_macro_manage.State
-import ohos.state_macro_manage.r
 import ohos.base.*
 import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
 import mpchart.pie.*
 import mpchart.utils.*
+import mpchart.candle.*
+import mpchart.charts.*
 import mpchart.components.*
 
 @Entry
@@ -33,53 +22,41 @@ class CandleChartPageReadme {
     private var model: CandleStickChartModel = CandleStickChartModel.build()
 
     protected override func aboutToAppear() {
-        let l: ?Legend = this.model.getLegend()
+        let l: ?Legend = this.model.getLegend() //设置图例
         if (let Some(v) <- l) {
-            v.setEnabled(true)
-            v.setOrientation(LegendOrientation.VERTICAL)
-            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            v.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
-            v.setYOffset(-30.0)
+            v.setEnabled(true) //设置图例显示
+            v.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为水平
+            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
+            v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为居中
+            v.setYOffset(-10.0) // 设置 Y 轴方向的偏移量
         }
 
-        let description: Description = this.model.getDescription()
-        description.setEnabled(true)
+        let description: Description = this.model.getDescription() // 获取描述对象
+        description.setEnabled(true) // 禁用图表描述
 
-        this.model.setMaxVisibleValueCount(60)
-        this.model.setDrawGridBackground(true)
-        this.model.setGridBackgroundColor(0xffffff)
+        this.model.setMaxVisibleValueCount(60) // 设置图表最大可见数值数量
+        this.model.setDrawGridBackground(true) // 设置绘制网格背景
+        this.model.setGridBackgroundColor(0xffffff) // 设置绘制网格背景颜色
+        this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
 
-        let xAxis: ?XAxis = this.model.getXAxis()
+        let xAxis: ?XAxis = this.model.getXAxis() // 获取 X 轴对象
         if (let Some(x) <- xAxis) {
-            x.setPosition(XAxisPosition.BOTTOM)
-            x.setDrawGridLines(true)
+            x.setPosition(XAxisPosition.BOTTOM) // 设置X轴位置在底部
+            x.setDrawGridLines(true) // 绘制 X 轴网格线
         }
 
-        let leftAxis: ?YAxis = this.model.getAxisLeft()
+        let leftAxis: ?YAxis = this.model.getAxisLeft() // 获取左侧Y轴对象
         if (let Some(ly) <- leftAxis) {
-            ly.setLabelCount(7, false)
-            ly.setDrawGridLines(true)
-            ly.setDrawAxisLine(true)
+            ly.setLabelCount(7, false) // 设置左侧 Y 轴标签数量为 7，不强制使用整数标签
+            ly.setDrawGridLines(true) // 绘制左侧 Y 轴网格线
+            ly.setDrawAxisLine(true) // 绘制左侧 Y 轴线
         }
 
-        let rightAxis: ?YAxis = this.model.getAxisRight()
+        let rightAxis: ?YAxis = this.model.getAxisRight() // 获取右侧Y轴对象
         if (let Some(ry) <- rightAxis) {
-            ry.setLabelCount(7, false)
-            ry.setDrawGridLines(true)
-            ry.setDrawAxisLine(true)
-        }
-
-        let start: Int64 = 1
-        let values: ArrayList<BubblesEntry> = ArrayList<BubblesEntry>()
-
-        for (i in start..20) {
-            let val = (Random().nextFloat64() * 41.0)
-
-            if (Random().nextFloat64() * 100.0 < 25.0) {
-                values.append(BubblesEntry(Float64(i), val))
-            } else {
-                values.append(BubblesEntry(Float64(i), val))
-            }
+            ry.setLabelCount(7, false) // 设置右侧 Y 轴标签数量为 7，不强制使用整数标签
+            ry.setDrawGridLines(true) // 绘制右侧 Y 轴网格线
+            ry.setDrawAxisLine(true) // 绘制右侧 Y 轴线
         }
 
         this.setData(40, 100.0)
@@ -87,6 +64,7 @@ class CandleChartPageReadme {
     }
 
     private func setData(count: Int64, range: Float64): Unit {
+        // 生成随机数据集合
         let values = ArrayList<CandleEntry>()
 
         for (i in 0..count) {
@@ -118,22 +96,22 @@ class CandleChartPageReadme {
                 )
             )
         }
-
+        // 创建蜡烛图数据集，并设置数据集的名称为 "candle data set"
         let dataSet: CandleDataSet = CandleDataSet(values, "candle data set")
-        dataSet.setDrawIcons(false)
-        dataSet.setAxisDependency(AxisDependency.LEFT)
-        dataSet.setShadowColor(0x808080)
-        dataSet.setShadowWidth(0.7)
-        dataSet.setDecreasingPaintStyle(Style.FILL)
-        dataSet.setDecreasingColor(0x2b89ab)
-        dataSet.setIncreasingColor(0xcd4e2e)
-        dataSet.setIncreasingPaintStyle(Style.STROKE)
-        dataSet.setNeutralColor(0x0000ff)
+        dataSet.setDrawIcons(false) // 设置是否绘制图标为 false
+        dataSet.setAxisDependency(AxisDependency.LEFT) // 设置数据集的轴依赖为左侧Y轴
+        dataSet.setShadowColor(0x808080) // 设置蜡烛图阴影颜色
+        dataSet.setShadowWidth(0.7) // 设置蜡烛图阴影宽度为 0.7
+        dataSet.setDecreasingPaintStyle(Style.FILL) // 设置蜡烛图下跌蜡烛的绘制样式为填充
+        dataSet.setDecreasingColor(0x2b89ab) // 设置蜡烛图下跌蜡烛的颜色
+        dataSet.setIncreasingColor(0xcd4e2e) // 设置蜡烛图上涨蜡烛的颜色
+        dataSet.setIncreasingPaintStyle(Style.STROKE) // 设置蜡烛图上涨蜡烛的绘制样式为描边
+        dataSet.setNeutralColor(0x0000ff) // 设置蜡烛图中性蜡烛的颜色
 
+        // 创建蜡烛图数据
         let data: CandleData = CandleData([dataSet])
         data.setValueTextSize(7.0)
 
-        this.model.resetTracking()
         this.model.setData(data)
         this.model.invalidate()
     }

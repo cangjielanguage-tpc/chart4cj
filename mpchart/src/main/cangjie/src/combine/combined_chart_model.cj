@@ -25,8 +25,7 @@ public class CombinedChartModel <: BarLineChartBaseModel<CombinedData, IBarLineS
 
     init() {
         super()
-        this.mDrawOrder = [DrawOrder.LINE, DrawOrder.WATERFALL, DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.CANDLE,
-        DrawOrder.SCATTER]
+        this.mDrawOrder = [DrawOrder.WATERFALL, DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.LINE, DrawOrder.CANDLE, DrawOrder.SCATTER]
         //this.setHighlighter(CombinedHighlighter(this, this, this))
         //this.setHighlightFullBarEnabled(true)
     }

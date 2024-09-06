@@ -3,26 +3,14 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.state_macro_manage.*
-import ohos.base.LengthProp
-import ohos.component.Column
-import ohos.component.Row
-import ohos.component.Button
-import ohos.component.Text
-import ohos.component.CustomView
-import ohos.component.CJEntry
-import ohos.component.loadNativeView
-import ohos.state_manage.SubscriberManager
-import ohos.state_manage.ObservedProperty
-import ohos.state_macro_manage.Entry
-import ohos.state_macro_manage.Component
-import ohos.state_macro_manage.State
-import ohos.state_macro_manage.r
 import ohos.base.*
 import ohos.component.*
+import ohos.state_manage.*
+import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
+import mpchart.charts.*
 import mpchart.pie.*
 import mpchart.utils.*
 import mpchart.components.*
@@ -38,13 +26,13 @@ class PieChartPageReadme {
     var pieData: PieData = PieData()
 
     protected override func aboutToAppear() {
-        let l: ?Legend = this.model.getLegend()
+        let l: ?Legend = this.model.getLegend() //设置图例
         if (let Some(v) <- l) {
-            v.setEnabled(true)
-            v.setOrientation(LegendOrientation.VERTICAL)
-            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            v.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
-            v.setYOffset(-30.0)
+            v.setEnabled(true) //设置图例显示
+            v.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为水平
+            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
+            v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为居中
+            v.setYOffset(-10.0)
         }
 
         this.model.animateX(1000, easing: "Sharp") // 启用X轴动画效果，动画持续时间为1000毫秒
@@ -82,8 +70,11 @@ class PieChartPageReadme {
         var entries: ArrayList<PiEntry> = ArrayList<PiEntry>()
         for (i in 0..count) {
             entries.append(
-                PiEntry((Random().nextFloat64() * Float64(range)) + Float64(range) / 5.0,
-                this.parties[i % this.parties.size]))
+                PiEntry(
+                    (Random().nextFloat64() * Float64(range)) + Float64(range) / 5.0,
+                    this.parties[i % this.parties.size]
+                )
+            )
         }
 
         // 创建饼状图数据集对象，设置数据项和数据集名称
@@ -128,6 +119,11 @@ class PieChartPageReadme {
 
     func build() {
         Column {
+            // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+            // 如果在之后通过事件触发，
+            // 可通过dataSet.notifyDataSetChanged() 来触发数据更新，
+            // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+            // 可通过this.model.invalidate() 来触发绘制更新。
             PieChart(model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
