@@ -10,11 +10,11 @@ import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
-import mpchart.pie.*
-import mpchart.utils.*
-import mpchart.charts.*
-import mpchart.components.*
-import mpchart.scatter.*
+import chart.pie.*
+import chart.utils.*
+import chart.charts.*
+import chart.components.*
+import chart.scatter.*
 
 @Entry
 @Component
@@ -28,7 +28,7 @@ class ScatterChartPageReadme {
             legend.setOrientation(LegendOrientation.HORIZONTAL)
             legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
             legend.setHorizontalAlignment(LegendHorizontalAlignment.CENTER)
-            legend.setYOffset(-10.0)
+            legend.setDrawInside(false) // 设置图例绘制在图表外部
         }
 
         let description: Description = this.model.getDescription() // 获取描述对象
@@ -37,7 +37,6 @@ class ScatterChartPageReadme {
         // 设置图表最大可见数值数量、是否支持缩放、是否绘制网格背景
         this.model.setMaxVisibleValueCount(160)
         this.model.setDrawGridBackground(false)
-        this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
         this.model.animateXY(2000, 2000)
 
         let xAxis: ?XAxis = this.model.getXAxis() // 获取X轴对象
@@ -124,15 +123,14 @@ class ScatterChartPageReadme {
 
     func build() {
         Column() {
-            Column() {
-                // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
-                // 如果在之后通过事件触发，
-                // 可通过dataResult.notifyDataSetChanged() 来触发数据更新，
-                // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
-                // 可通过this.model.invalidate() 来触发绘制更新。
-                ScatterChart(model: this.model)
-            }
-        }
+            // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+            // 如果在之后通过事件触发，
+            // 可通过dataResult.notifyDataSetChanged() 来触发数据更新，
+            // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+            // 可通过this.model.invalidate() 来触发绘制更新。
+            ScatterChart(model: this.model)
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+
     }
 }
 

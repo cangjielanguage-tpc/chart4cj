@@ -65,7 +65,6 @@ class CombinedChartPage {
         this.generateBarData(data)
         this.model.setData(data)
         this.model.invalidate()
-       this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0)
     }
 
     private func generateLineData(data: CombinedData): Unit {
@@ -219,9 +218,8 @@ class CombinedChartPage {
 
     func build() {
         Column() {
-            Column() {
-                CombinedChart(model: this.model)
-            }
-        }
+            CombinedChart(model: this.model)
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+
     }
 }

@@ -24,11 +24,11 @@ internal import std.time.Duration
 internal import std.math.*
 internal import std.random.*
 internal import std.convert.*
-internal import mpchart.pie.*
-internal import mpchart.utils.*
-internal import mpchart.components.*
-internal import mpchart.line.*
-internal import mpchart.charts.*
+internal import chart.pie.*
+internal import chart.utils.*
+internal import chart.components.*
+internal import chart.line.*
+internal import chart.charts.*
 
 
 extend<T> Option<T> {

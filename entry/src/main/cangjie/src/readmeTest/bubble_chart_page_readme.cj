@@ -10,11 +10,11 @@ import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
 import std.random.*
-import mpchart.pie.*
-import mpchart.utils.*
-import mpchart.bubble.*
-import mpchart.charts.*
-import mpchart.components.*
+import chart.pie.*
+import chart.utils.*
+import chart.bubble.*
+import chart.charts.*
+import chart.components.*
 
 @Entry
 @Component
@@ -29,7 +29,7 @@ class BubbleChartPageReadme {
             v.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为水平
             v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
             v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为居中
-            v.setYOffset(-10.0) // 设置 Y 轴方向的偏移量
+            v.setDrawInside(false) // 设置图例绘制在图表外部
         }
 
         let description: Description = this.model.getDescription() // 获取描述对象
@@ -84,7 +84,6 @@ class BubbleChartPageReadme {
         this.setData(5, 50.0)
         this.model.notifyDataSetChanged()
         this.model.setVisibleXRangeMaximum(7.0)
-        this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
     }
 
     private func setData(count: Int64, range: Float64): Unit {
@@ -140,14 +139,13 @@ class BubbleChartPageReadme {
 
     func build() {
         Column() {
-            Column() {
-                // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
-                // 如果在之后通过事件触发，
-                // 可通过dataResult.notifyDataSetChanged() 来触发数据更新，
-                // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
-                // 可通过this.model.invalidate() 来触发绘制更新。
-                BubbleChart(model: this.model)
-            }
-        }
+            // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+            // 如果在之后通过事件触发，
+            // 可通过dataResult.notifyDataSetChanged() 来触发数据更新，
+            // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+            // 可通过this.model.invalidate() 来触发绘制更新。
+            BubbleChart(model: this.model)
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+
     }
 }

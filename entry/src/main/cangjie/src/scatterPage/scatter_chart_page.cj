@@ -117,9 +117,8 @@ class ScatterChartPage {
 
     func build() {
         Column() {
-            Column() {
-                ScatterChart(model: this.model)
-            }
-        }
+            ScatterChart(model: this.model)
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+
     }
 }

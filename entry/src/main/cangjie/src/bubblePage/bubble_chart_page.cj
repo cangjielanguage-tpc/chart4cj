@@ -152,9 +152,7 @@ class BubbleChartPage {
 
     func build() {
         Column() {
-            Column() {
-                BubbleChart(model: this.model)
-            }
-        }
+            BubbleChart(model: this.model)
+        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
     }
 }

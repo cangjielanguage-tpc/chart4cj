@@ -10,11 +10,11 @@ import ohos.state_macro_manage.*
 import std.collection.*
 import std.math.*
 import std.random.*
-import mpchart.pie.*
-import mpchart.utils.{Mode, AxisDependency, ColorTemplate, ChartColor}
-import mpchart.charts.*
-import mpchart.line.*
-import mpchart.components.*
+import chart.pie.*
+import chart.utils.{Mode, AxisDependency, ColorTemplate, ChartColor}
+import chart.charts.*
+import chart.line.*
+import chart.components.*
 
 @Entry
 @Component
@@ -32,11 +32,9 @@ class LineChartNotAxisConfigPageReadme {
             v.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例方向为水平
             v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
             v.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为居中
-            v.setDrawInside(true) // 设置图例绘制在图表内侧
-            v.setYOffset(-10.0) // 设置 Y 轴方向的偏移量
+            v.setDrawInside(false) // 设置图例绘制在图表外部
         }
 
-        this.model.setExtraOffsets(15.0, 0.0, 30.0, 0.0) // 设置图表整体偏移
         this.lineData = this.setData(10, 100.0)
         this.model.setData(this.lineData)
     }

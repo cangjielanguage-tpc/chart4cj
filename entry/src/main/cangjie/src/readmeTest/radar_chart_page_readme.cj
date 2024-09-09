@@ -10,11 +10,11 @@ import ohos.state_macro_manage.*
 import std.collection.*
 import std.math.*
 import std.random.*
-import mpchart.utils.*
-import mpchart.charts.*
-import mpchart.radar.*
-import mpchart.components.*
-import mpchart.pie.*
+import chart.utils.*
+import chart.charts.*
+import chart.radar.*
+import chart.components.*
+import chart.pie.*
 
 @Entry
 @Component
@@ -32,9 +32,7 @@ class RadarChartPageReadme {
             legend.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
             legend.setHorizontalAlignment(LegendHorizontalAlignment.CENTER) // 设置图例水平对齐方式为居中
             legend.setTextColor(Color(0xffffff)) // 设置文本颜色
-            legend.setDrawInside(true) // 设置图例绘制在图表内部
-            legend.setXOffset(30.0) // 设置 X 轴方向的偏移量
-            legend.setYOffset(20.0) // 设置 Y 轴方向的偏移量
+            legend.setDrawInside(false) // 设置图例绘制在图表外部
         }
 
         // 设置雷达图网格线宽度、颜色和透明度
@@ -42,7 +40,6 @@ class RadarChartPageReadme {
         this.model.setWebColor(0xFFCCCCCC)
         this.model.setWebLineWidthInner(0.3)
         this.model.setWebColorInner(0xFFCCCCCC)
-        this.model.setExtraTopOffset(-100.0)
 
         let xAxis: ?XAxis = this.model.getXAxis() // 获取 X 轴对象
         if (let Some(xAxis) <- xAxis) {
@@ -109,10 +106,9 @@ class RadarChartPageReadme {
 
     func build() {
         Column() {
-            Column() {
-                RadarChart(model: this.model)
-            }.backgroundColor(0x3C4152)
-        }
+            RadarChart(model: this.model)
+        }.backgroundColor(0x3C4152).width(100.percent).height(70.percent)
+
     }
 }
 
