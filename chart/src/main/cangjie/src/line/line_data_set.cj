@@ -48,6 +48,8 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
         this.calcMinMax()
         this.mCircleColors.clear()
         this.mCircleColors.append(UInt32(ChartColor.rgb(140, 234, 255)))
+        this.mColors.clear()
+        this.mColors.append(0x868686)
     }
 
     public func getCircleColor(index: Int64): UInt32 {
