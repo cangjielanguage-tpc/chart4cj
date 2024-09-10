@@ -401,11 +401,14 @@ public abstract class AxisBase <: ComponentBase {
         var line = LimitLine(customLine.getPosition())
         line.setLineWidth(customLine.getLineWidth())
         line.setLineColor(customLine.getLineColor())
-        line.enableDashedLine(
-            customLine.getDashPathEffect()().getLineLength(),
-            customLine.getDashPathEffect()().getSpaceLength(),
-            customLine.getDashPathEffect()().getPhase()
-        )
+        if(customLine.getDashPathEffect().isSome()) {
+            line.enableDashedLine(
+                customLine.getDashPathEffect()().getLineLength(),
+                customLine.getDashPathEffect()().getSpaceLength(),
+                customLine.getDashPathEffect()().getPhase()
+            )
+        }
+
         this.mGridLines.append(line)
     }
 

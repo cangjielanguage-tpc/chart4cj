@@ -88,12 +88,23 @@ public class ContentItemData {
 
         ContentItemData.itemData.append(
             ContentItem("Multiple   ", d: "Various types of charts as fragments.", pagePath: "ListViewMultiChartPage"))
+         ContentItemData.itemData.append(
+            ContentItem("View Pager", d: "Swipe through different charts.", pagePath: "ViewPagerPage"))
+        ContentItemData.itemData.append(
+            ContentItem("Many Bar Charts", d: "More bars than your screen can handle!", pagePath: "ManyBarChartsPage"))
+        ContentItemData.itemData.append(
+            ContentItem("Tall Bar Chart", d: "Bars bigger than your screen!", pagePath: "TallBarChartPage"))
 
         //Even More Line Charts
         ContentItemData.itemData.append(ContentItem("Even More Line Charts"))
 
         ContentItemData.itemData.append(
             ContentItem("Dynamic", d: "Build a line chart by pushing points and sets.", pagePath: "DynamicPage"))
+         ContentItemData.itemData.append(
+            ContentItem("Hourly", d: "Uses the current time to push a data point for each hour.", pagePath: "HourlyPage"))
+
+
+
 
 
         //readme

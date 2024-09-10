@@ -9,6 +9,36 @@ import ohos.component.*
 import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
+public class XAxisColorSetter {
+    var colorText: String
+    var colorVal: UInt32
+    var color: UInt32
+    public init(colorText: String, colorVal: UInt32, color: UInt32) {
+        this.colorText = colorText
+        this.colorVal = colorVal
+        this.color = color
+    }
+}
+
+public class GridColorSetter {
+    var colorText: String
+    var colorVal: UInt32
+    var color: String
+    public init(colorText: String, colorVal: UInt32, color: String) {
+        this.colorText = colorText
+        this.colorVal = colorVal
+        this.color = color
+    }
+    public func getColor(): String {
+        this.color
+    }
+    public func getColorVal(): UInt32 {
+        this.colorVal
+    }
+    public func getColorText(): String {
+        this.colorText
+    }
+}
 public class LineWidthSetter {
     var text: String
     var lineWidth: Float64

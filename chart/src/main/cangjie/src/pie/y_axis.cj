@@ -128,6 +128,10 @@ public class YAxis <: AxisBase {
         this.mPosition = pos
     }
 
+    public func setAxisDependency(pos: AxisDependency): Unit {
+        this.mAxisDependency = pos
+    }
+
     /**
      * returns the horizontal offset of the y-label
      */

@@ -9,35 +9,12 @@ import ohos.component.*
 import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
-public class XAxisColorSetter {
-    var colorText: String
-    var colorVal: UInt32
-    var color: UInt32
-    public init(colorText: String, colorVal: UInt32, color: UInt32) {
-        this.colorText = colorText
-        this.colorVal = colorVal
-        this.color = color
-    }
-}
-
-public class GridColorSetter {
-    var colorText: String
-    var colorVal: UInt32
-    var color: String
-    public init(colorText: String, colorVal: UInt32, color: String) {
-        this.colorText = colorText
-        this.colorVal = colorVal
-        this.color = color
-    }
-    public func getColor(): String {
-        this.color
-    }
-    public func getColorVal(): UInt32 {
-        this.colorVal
-    }
-    public func getColorText(): String {
-        this.colorText
-    }
+public class ColorArray {
+    public ColorArray(
+        let colorText: String,
+        let color: Color,
+        let colorVal: String
+    ) {}
 }
 
 @Entry
@@ -53,9 +30,9 @@ class CustomGridLineChartPage {
     @State
     var eventText: String = ""
     @State
-    var colorSetter: Array<XAxisColorSetter> = [
-        XAxisColorSetter("红色:", UInt32 (0xff00000), UInt32 (0xff00000)),
-        XAxisColorSetter("蓝色:", UInt32 (0x00ff000), UInt32 (0x00ff000))
+    var colorSetter: Array<ColorArray> = [
+        ColorArray("红色:", Color.RED, "red"),
+        ColorArray("蓝色:", Color.BLUE, "blue")
     ]
 
     protected override func aboutToAppear() {
@@ -125,17 +102,80 @@ class CustomGridLineChartPage {
         barData.setBarWidth(0.85)
         return barData
     }
-    func getArrData(): ArrayList<GridColorSetter> {
-        var list: ArrayList<GridColorSetter> = ArrayList<GridColorSetter>()
-        list.append(GridColorSetter("红色:", UInt32(0xFF0000), "red"))
-        list.append(GridColorSetter("蓝色:", UInt32(0x0000FF), "blue"))
+    func getArrData(): ArrayList<ColorArray> {
+        var list: ArrayList<ColorArray> = ArrayList<ColorArray>()
+        list.append(ColorArray("红色:", Color.RED, "red"))
+        list.append(ColorArray("蓝色:", Color.BLUE, "blue"))
         return list
+    }
+
+    // 网格线设置
+    @Builder
+    func gridLineSettings() {
+        Row() {
+            Text("默认网格线设置： ")
+            ForEach([ColorArray("红色:", Color.RED, "red"), ColorArray("蓝色:", Color.BLUE, "blue")],
+                itemGeneratorFunc: {
+                item: ColorArray, _: Int64 => Row() {
+                    Text(item.colorText)
+                    Radio(value: item.colorText, group: "gridValue").checked(false).onChange(
+                        {
+                        isChecked: Bool => if (isChecked) {
+                            //if (this.model) {
+                            let yAxis = this.model.getAxisLeft()
+                            if (let Some(yAxis) <- yAxis) {
+                                yAxis.setGridColor(item.color)
+                                yAxis.setGridLineWidth(1.0)
+                                yAxis.setGridDashedLine(DashPathEffect([2, 2], 1))
+                                this.model.invalidate()
+                            }
+                            //}
+                        }
+                    })
+                }
+            })
+        }.alignSelf(ItemAlign.Start)
+
+        Row() {
+            Text("自定义网格线:")
+            Checkbox(name: "customGridLine", group: "gridLine").select(false).onChange(
+                {
+                    isChecked: Bool =>
+                    if (this.leftAxis.isNone() || this.xAxis.isNone()) {
+                        return
+                    }
+                    if (isChecked) {
+                        this.xAxis().addGridLine(GridLineConfig(8.0, 0x0000FF, 0.6, DashPathEffectConfig(5, 10, 2)))
+                        this.leftAxis().addGridLine(GridLineConfig(35.0, 0xFF0000, 1.0,
+                            Option<DashPathEffectConfig>.None))
+                        this.leftAxis().addGridLine(GridLineConfig(45.0, 0x999999, 1.0,
+                            Option<DashPathEffectConfig>.None))
+                    } else {
+                        let verticalLines = this.xAxis().getGridLines()
+                        let horizontalLines = this.leftAxis().getGridLines()
+                        verticalLines.clear()
+                        horizontalLines.clear()
+                    }
+                    this.model.invalidate()
+                }
+            )
+        }.alignSelf(ItemAlign.Start)
     }
 
     func build() {
         Column {
-            Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
-            BarChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+            Column {
+                Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).
+                    maxLines(1)
+                BarChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+            Scroll() {
+                Stack() {
+                    Column() {
+                        this.gridLineSettings()
+                    }
+                }.align(Alignment.TopEnd)
+            }
+        }
     }
 }
