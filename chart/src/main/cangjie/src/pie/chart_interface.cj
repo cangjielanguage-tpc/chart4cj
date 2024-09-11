@@ -44,7 +44,7 @@ public interface ChartInterface<D, S, E> where D <: ChartData<S, E>, S <: IDataS
 
     func getCenterOffsets(): ?MPPointF
 
-    func getContentRect(): MyRect /*RectF*/
+    func getContentRect(): ChartRect /*RectF*/
 
     func getDefaultValueFormatter(): IValueFormatter
 

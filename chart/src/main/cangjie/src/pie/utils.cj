@@ -37,12 +37,13 @@ public abstract class Utils {
      * @return
      */
     public static func calcTextWidth(paint: ChartPaint, demoText: String): Float64 {
-        let context2: MeasureOptions = MeasureOptions(textContent: demoText, fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
+        let context2: MeasureOptions = MeasureOptions(textContent: demoText,
+            fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
         let textSize: MeasureSize = Measure.MeasureTextSize(context2)
         return px2vp(textSize.width.px)().value
     }
 
-    private static var mCalcTextHeightRect: MyRect = MyRect()
+    private static var mCalcTextHeightRect: ChartRect = ChartRect()
 
     /**
      * calculates the approximate height of a text, depending on a demo text
@@ -85,7 +86,8 @@ public abstract class Utils {
             let textMetrics: TextMetrics = canvas.measureText("Test")
             lineSpacing = textMetrics.height * 0.3
         } else {
-            let context2: MeasureOptions = MeasureOptions(textContent: "Test", fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
+            let context2: MeasureOptions = MeasureOptions(textContent: "Test",
+                fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
             let textSize: MeasureSize = Measure.MeasureTextSize(context2)
             lineSpacing = px2vp(textSize.height.px)().value * 0.3
         }
@@ -93,7 +95,8 @@ public abstract class Utils {
     }
 
     public static func calcTextSize(paint: ChartPaint, demoText: String): FSize {
-        let context2: MeasureOptions = MeasureOptions(textContent: demoText, fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
+        let context2: MeasureOptions = MeasureOptions(textContent: demoText,
+            fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
         let textSize: MeasureSize = Measure.MeasureTextSize(context2)
         let width: Float64 = px2vp(textSize.width.px)().value
         let height: Float64 = px2vp(textSize.height.px)().value
@@ -203,7 +206,7 @@ public abstract class Utils {
         return anglee - floor(anglee / 360.0) * 360.0
     }
 
-    private static var mDrawableBoundsCache: MyRect = MyRect()
+    private static var mDrawableBoundsCache: ChartRect = ChartRect()
 
     public static func drawImage(canvas: CanvasRenderingContext2D, drawable: ChartPixelMap, x: Float64, y: Float64): Unit {
         let pixelMap = drawable.getIcon()
@@ -239,8 +242,8 @@ public abstract class Utils {
             drawOffsetX -= Utils.mFontMetricsBuffer.width * 0.5
             drawOffsetY -= lineHeight * 0.5
 
-            var translateX: Float64 = x
-            var translateY: Float64 = y
+            var transX: Float64 = x
+            var transY: Float64 = y
 
             // Move the "outer" rect relative to the anchor, assuming its centered
             if (anchor.x != 0.5 || anchor.y != 0.5) {
@@ -249,19 +252,17 @@ public abstract class Utils {
                     lineHeight,
                     angleDegrees
                 )
-
-                translateX -= rotatedSize.width * (anchor.x - 0.5)
+                transX -= rotatedSize.width * (anchor.x - 0.5)
                 if (labelPosition.toString() == XAxisLabelPosition.RIGHT.toString()) {
-                    translateX += rotatedSize.width * 0.5
+                    transX += rotatedSize.width * 0.5
                 } else if (labelPosition.toString() == XAxisLabelPosition.LEFT.toString()) {
-                    translateX -= rotatedSize.width * 0.5
+                    transX -= rotatedSize.width * 0.5
                 }
-                translateY -= rotatedSize.height * (anchor.y - 0.5)
+                transY -= rotatedSize.height * (anchor.y - 0.5)
                 FSize.recycleInstance(rotatedSize)
             }
-
             c.save()
-            c.translate(translateX, translateY)
+            c.translate(transX, transY)
             c.rotate(angleDegrees * Float64.PI / 180.0)
 
             match (paint.getStyle()) {
@@ -269,11 +270,11 @@ public abstract class Utils {
                     c.beginPath()
                     c.strokeText(text, drawOffsetX, drawOffsetY)
                     c.closePath()
-                case Style.FILL_AND_STROKE =>
+                case Style.FILL =>
                     c.beginPath()
                     c.fillText(text, drawOffsetX, drawOffsetY)
                     c.closePath()
-                case Style.FILL =>
+                case Style.FILL_AND_STROKE =>
                     c.beginPath()
                     c.fillText(text, drawOffsetX, drawOffsetY)
                     c.closePath()

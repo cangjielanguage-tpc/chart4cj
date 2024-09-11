@@ -277,9 +277,9 @@ public open class XAxisRenderer <: AxisRenderer {
         c.restore()
     }
 
-    protected var mGridClippingRect: MyRect = MyRect()
+    protected var mGridClippingRect: ChartRect = ChartRect()
 
-    public open func getGridClippingRect(): MyRect {
+    public open func getGridClippingRect(): ChartRect {
         match (this.mViewPortHandler) {
             case Some(m) => this.mGridClippingRect.set(m.getContentRect().left, m.getContentRect().top,
                 m.getContentRect().right, m.getContentRect().bottom)
@@ -319,7 +319,7 @@ public open class XAxisRenderer <: AxisRenderer {
     }
 
     protected var mRenderLimitLinesBuffer = Array<Float64>(2, item: 0.0)
-    protected var mLimitLineClippingRect = MyRect()
+    protected var mLimitLineClippingRect = ChartRect()
 
     private func renderLinesInner(c: CanvasRenderingContext2D, lines: ?ArrayList<LimitLine>) {
         if (lines.isNone() || lines().size <= 0) {

@@ -66,23 +66,21 @@ public class WaterfallEntry <: EntryOhos {
 
      private func calcPosNegSum(): Unit {
         if (this.mYVals.size > 0) {
-            var sumNeg: Float64 = 0.0
-            var sumPos: Float64 = 0.0
+            var negSum: Float64 = 0.0
+            var posSum: Float64 = 0.0
 
             for (f in this.mYVals) {
                 if (f <= 0.0) {
-                    sumNeg += abs(f)
+                    negSum += abs(f)
                 } else {
-                    sumPos += f
+                    posSum += f
                 }
             }
-
-            this.mNegativeSum = sumNeg
-            this.mPositiveSum = sumPos
+            this.mNegativeSum = negSum
+            this.mPositiveSum = posSum
         } else {
             this.mNegativeSum = 0.0
             this.mPositiveSum = 0.0
-            return
         }
     }
 

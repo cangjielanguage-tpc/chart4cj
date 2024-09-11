@@ -7,7 +7,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
     protected var mBarBuffers: Array<WaterfallBuffer> = Array<WaterfallBuffer>();
     public var mChart: WaterfallDataProvider
 
-    protected var mBarRect: MyRect = MyRect()
+    protected var mBarRect: ChartRect = ChartRect()
     protected var mShadowPaint: ChartPaint
     protected var mBarBorderPaint: ChartPaint
 
@@ -46,7 +46,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
         }
     }
 
-    private var mWaterfallShadowRectBuffer: MyRect = MyRect();
+    private var mWaterfallShadowRectBuffer: ChartRect = ChartRect();
 
     public func drawData(c: CanvasRenderingContext2D): Unit {
         let data: ?WaterfallData = this.mChart.getWaterfallData();
@@ -603,7 +603,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
     }
 
     protected func prepareBarHighlight(x: Float64, y1: Float64, y2: Float64, barWidthHalf: Float64,
-        trans: Transformer): Unit {
+        transformer: Transformer): Unit {
         let left: Float64 = x - barWidthHalf
         let right: Float64 = x + barWidthHalf
         let top: Float64 = y1
@@ -611,7 +611,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
         this.mBarRect.set(left, top, right, bottom)
 
-        trans.rectToPixelPhase(
+        transformer.rectToPixelPhase(
             this.mBarRect,
             if (let Some(animator) <- this.mAnimator) {
                 animator.getPhaseY()
@@ -621,7 +621,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
         )
     }
 
-    protected open func setHighlightDrawPos(high: Highlight, bar: MyRect): Unit {
+    protected open func setHighlightDrawPos(high: Highlight, bar: ChartRect): Unit {
         high.setDraw(bar.centerX(), bar.top)
     }
 

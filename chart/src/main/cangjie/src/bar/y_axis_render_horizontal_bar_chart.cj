@@ -154,7 +154,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
         return positions
     }
 
-    public func getGridClippingRect(): MyRect {
+    public func getGridClippingRect(): ChartRect {
         if (this.mViewPortHandler.isNone()) {
             this.mGridClippingRect.set(0.0, 0.0, 0.0, 0.0)
         } else {

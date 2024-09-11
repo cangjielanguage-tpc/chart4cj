@@ -1173,7 +1173,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      *
      * @return
      */
-    public func getContentRect(): MyRect {
+    public func getContentRect(): ChartRect {
         return this.mViewPortHandler.getContentRect()
     }
 

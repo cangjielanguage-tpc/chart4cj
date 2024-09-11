@@ -144,9 +144,9 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
         }
     }
 
-    public func getGridClippingRect(): MyRect {
+    public func getGridClippingRect(): ChartRect {
         if (this.mAxis.isNone() || this.mViewPortHandler.isNone()) {
-            return MyRect()
+            return ChartRect()
         }
         this.mGridClippingRect.set(this.mViewPortHandler().getContentRect().left,
             this.mViewPortHandler().getContentRect().top, this.mViewPortHandler().getContentRect().right,

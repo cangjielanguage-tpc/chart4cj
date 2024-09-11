@@ -163,7 +163,7 @@ public class RadarChartModel <: PieRadarChartBaseModel<RadarData, IRadarDataSet,
      * @return
      */
     public func getFactor(): Float64 {
-        let content: MyRect = this.mViewPortHandler.getContentRect()
+        let content: ChartRect = this.mViewPortHandler.getContentRect()
         return min(content.width() / 2.0, content.height() / 2.0) / this.mYAxis.mAxisRange * 0.7
     }
 
@@ -332,7 +332,7 @@ public class RadarChartModel <: PieRadarChartBaseModel<RadarData, IRadarDataSet,
     }
 
     public func getRadius(): Float64 {
-        let content: MyRect = this.mViewPortHandler.getContentRect()
+        let content: ChartRect = this.mViewPortHandler.getContentRect()
         return min(content.width() / 2.0, content.height() / 2.0)
     }
 

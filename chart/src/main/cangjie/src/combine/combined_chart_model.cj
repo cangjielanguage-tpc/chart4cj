@@ -25,7 +25,8 @@ public class CombinedChartModel <: BarLineChartBaseModel<CombinedData, IBarLineS
 
     init() {
         super()
-        this.mDrawOrder = [DrawOrder.WATERFALL, DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.LINE, DrawOrder.CANDLE, DrawOrder.SCATTER]
+        this.mDrawOrder = [DrawOrder.WATERFALL, DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.LINE, DrawOrder.CANDLE,
+            DrawOrder.SCATTER]
         //this.setHighlighter(CombinedHighlighter(this, this, this))
         //this.setHighlightFullBarEnabled(true)
     }
@@ -47,13 +48,12 @@ public class CombinedChartModel <: BarLineChartBaseModel<CombinedData, IBarLineS
         }
     }
 
+    public func onChartSizeChanged(newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64) {
+        super.onSizeChanged(newWidth, newHeight, oldWidth, oldHeight)
+    }
 
     public func setContext2D(context2d: CanvasRenderingContext2D) {
         this.context2d = context2d
-    }
-
-    public func onChartSizeChanged(newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64) {
-        super.onSizeChanged(newWidth, newHeight, oldWidth, oldHeight)
     }
 
     public func getCombinedData(): ?CombinedData {
@@ -99,14 +99,12 @@ public class CombinedChartModel <: BarLineChartBaseModel<CombinedData, IBarLineS
         }
     }
 
-
     public func getLineData(): ?LineData {
         if (let Some(mData: CombinedData) <- this.mData) {
             return mData.getLineData()
         }
         return Option<LineData>.None
     }
-
 
     public func getBarData(): ?BarData {
         if (let Some(mData: CombinedData) <- this.mData) {

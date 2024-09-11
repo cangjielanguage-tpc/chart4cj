@@ -88,34 +88,34 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
         drawDataSetFunc(index, phaseX, dataSet, trans, c)
     }
 
-    private func drawDataSetFunc(index: Int64, phaseX: Float64, dataSet: IBarDataSet, trans: ?Transformer,
+    private func drawDataSetFunc(index: Int64, phaseX: Float64, horizonDataSet: IBarDataSet, trans: ?Transformer,
         c: CanvasRenderingContext2D): Unit {
         let phaseY = this.mAnimator().getPhaseY()
-        let drawBorder: Bool = dataSet.getBarBorderWidth() > 0.0
+        let drawBorder: Bool = horizonDataSet.getBarBorderWidth() > 0.0
         let buffer: BarBuffer = this.horizontalBarBuffer[index]
         buffer.setPhases(phaseX, phaseY)
         buffer.setDataSet(index)
-        buffer.setInverted(this.mChart.isInverted(dataSet.getAxisDependency()))
+        buffer.setInverted(this.mChart.isInverted(horizonDataSet.getAxisDependency()))
         let barData: ?BarData = this.mChart.getBarData()
 
         if (let Some(bar) <- barData) {
         	buffer.setBarWidth(bar.getBarWidth())
         }
 
-        buffer.feed(dataSet)
+        buffer.feed(horizonDataSet)
         let tempArray: Array<Float64> = buffer.buffer.toArray()
         if (let Some(tran) <- trans) {
         	tran.pointValuesToPixel(tempArray)
             buffer.buffer = ArrayList<Float64>(tempArray)
         }
-        let fills: ?ArrayList<Fill> = dataSet.getFills()
+        let fills: ?ArrayList<Fill> = horizonDataSet.getFills()
         let isCustomFill: Bool = fills.isSome() && fills().size > 0
 
-        let isSingleColor: Bool = dataSet.getColors().size == 1
-        let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
+        let isSingleColor: Bool = horizonDataSet.getColors().size == 1
+        let isInverted: Bool = this.mChart.isInverted(horizonDataSet.getAxisDependency())
 
         if (isSingleColor) {
-            this.mRenderPaint.setColor(Color(dataSet.getColor()))
+            this.mRenderPaint.setColor(Color(horizonDataSet.getColor()))
         }
 
         var j: Int64 = 0
@@ -134,7 +134,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
             if (!isSingleColor) {
                 // Set the color for the currently drawn value. If the index
                 // is out of bounds, reuse colors.
-                this.mRenderPaint.setColor(Color(dataSet.getColor(j / 4)))
+                this.mRenderPaint.setColor(Color(horizonDataSet.getColor(j / 4)))
             }
             let left = buffer.buffer[j]
             let top = buffer.buffer[j + 1]
@@ -142,7 +142,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
             let bottom = buffer.buffer[j + 3]
 
             if (isCustomFill) {
-                dataSet.getFill(pos).fillRect(
+                horizonDataSet.getFill(pos).fillRect(
                     c,
                     this.mRenderPaint,
                     left,
@@ -287,7 +287,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                 } else {
                     let trans: ?Transformer = this.mChart.getTransformer(dataSet.getAxisDependency())
 
-                    var bufferIndex = 0
+                    var bIndex = 0
                     var index = 0
 
                     while (index < dataSet.getEntryCount() * Int64(this.mAnimator().getPhaseX())) {
@@ -300,15 +300,15 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                         // non-stacked
                         // in between
                         if (vals.size == 0) {
-                            if (!this.mViewPortHandler().isInBoundsTop(buffer.buffer[bufferIndex + 1])) {
+                            if (!this.mViewPortHandler().isInBoundsTop(buffer.buffer[bIndex + 1])) {
                                 break
                             }
 
-                            if (!this.mViewPortHandler().isInBoundsX(buffer.buffer[bufferIndex])) {
+                            if (!this.mViewPortHandler().isInBoundsX(buffer.buffer[bIndex])) {
                                 continue
                             }
 
-                            if (!this.mViewPortHandler().isInBoundsBottom(buffer.buffer[bufferIndex + 1])) {
+                            if (!this.mViewPortHandler().isInBoundsBottom(buffer.buffer[bIndex + 1])) {
                                 continue
                             }
 
@@ -339,24 +339,24 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                             if (dataSet.isDrawValuesEnabled()) {
 
                                 this.drawHorizontalValue(c, formattedValue,
-                                    buffer.buffer[bufferIndex + 2]
+                                    buffer.buffer[bIndex + 2]
                                     + if (entry.getY() >= 0.0) {
                                     posOffset
                                 } else {
                                     negOffset
-                                }, buffer.buffer[bufferIndex + 1] + halfTextHeight, color)
+                                }, buffer.buffer[bIndex + 1] + halfTextHeight, color)
                             }
 
                             if (entry.getIcon().isNone() && dataSet.isDrawIconsEnabled()) {
                                 let icon: ?ChartPixelMap = entry.getIcon()
 
-                                var px: Float64 = buffer.buffer[bufferIndex + 2]
+                                var px: Float64 = buffer.buffer[bIndex + 2]
                                     + if (entry.getY() >= 0.0) {
                                     posOffset
                                 } else {
                                     negOffset
                                 }
-                                var py: Float64 = buffer.buffer[bufferIndex + 1]
+                                var py: Float64 = buffer.buffer[bIndex + 1]
 
                                 px += iconsOffset.x
                                 py += iconsOffset.y
@@ -432,7 +432,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                                 } else {
                                     posOffset
                                 }
-                                let y = (buffer.buffer[bufferIndex + 1] + buffer.buffer[bufferIndex + 3]) / 2.0
+                                let y = (buffer.buffer[bIndex + 1] + buffer.buffer[bIndex + 3]) / 2.0
 
                                 if (!this.mViewPortHandler().isInBoundsTop(y)) {
                                     break
@@ -461,10 +461,10 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                                 k += 2
                             }
                         }
-                        bufferIndex = if (vals.size == 0) {
-                            bufferIndex + 4
+                        bIndex = if (vals.size == 0) {
+                            bIndex + 4
                         } else {
-                            bufferIndex + 4 * vals.size
+                            bIndex + 4 * vals.size
                         }
                         index++
                     }
@@ -499,7 +499,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
         )
     }
 
-    public func setHighlightDrawPos(high: Highlight, bar: MyRect) {
+    public func setHighlightDrawPos(high: Highlight, bar: ChartRect) {
         high.setDraw(bar.centerY(), bar.right)
     }
 

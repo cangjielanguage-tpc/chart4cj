@@ -25,8 +25,8 @@ public class PieChartRenderer <: DataRenderer {
     /*StaticLayout*/
     private var mCenterTextLastValue: String = ""
     /*CharSequence*/
-    private var mCenterTextLastBounds: MyRect = MyRect()
-    private var mRectBuffer: Array<MyRect> = [MyRect(), MyRect(), MyRect()]
+    private var mCenterTextLastBounds: ChartRect = ChartRect()
+    private var mRectBuffer: Array<ChartRect> = [ChartRect(), ChartRect(), ChartRect()]
     /**
      * Bitmap for drawing the center hole
      */
@@ -94,7 +94,7 @@ public class PieChartRenderer <: DataRenderer {
     }
 
     private var mPathBuffer: Path2D = Path2D()
-    private var mInnerRectBuffer: MyRect = MyRect()
+    private var mInnerRectBuffer: ChartRect = ChartRect()
 
     protected func calculateMinimumRadiusForSpacedSlice(
         center: MPPointF,
@@ -182,7 +182,7 @@ public class PieChartRenderer <: DataRenderer {
         let phaseX: Float64 = this.mAnimator().getPhaseX() // X轴动画阶段
         let phaseY: Float64 = this.mAnimator().getPhaseY() // Y轴动画阶段
 
-        let circleBox: MyRect = this.mChart.getCircleBox() // 饼图边框
+        let circleBox: ChartRect = this.mChart.getCircleBox() // 饼图边框
 
         let entryCount: Int64 = dataSet.getEntryCount() // 数据集中的数据点数量
         let drawAngles: Array<Float64> = this.mChart.getDrawAngles() // 饼图每个扇形的绘制角度
@@ -195,7 +195,7 @@ public class PieChartRenderer <: DataRenderer {
             0.0
         } // 用户指定的内圆环半径
         let roundedRadius: Float64 = (radius - (radius * this.mChart.getHoleRadius() / 100.0)) / 2.0 // 圆角扇形的圆角半径
-        let roundedCircleBox: MyRect = MyRect() // 圆角扇形的边框
+        let roundedCircleBox: ChartRect = ChartRect() // 圆角扇形的边框
         let drawRoundedSlices: Bool = drawInnerArc && this.mChart.isDrawRoundedSlicesEnabled() // 是否绘制圆角扇形
 
         var visibleAngleCount: Int64 = 0 //可见的扇形数量
@@ -317,27 +317,27 @@ public class PieChartRenderer <: DataRenderer {
         phaseY: Float64, arcStartPointX: Float64, arcStartPointY: Float64, startAngleOuter: Float64,
         sweepAngleOuter: Float64, innerRadiuss: Float64, visibleAngleCount: Int64, sliceSpace: Float64,
         drawRoundedSlices: Bool, rotationAngle: Float64, angle: Float64, roundedRadius: Float64,
-        roundedCircleBox: MyRect) {
+        roundedCircleBox: ChartRect) {
         var innerRadius: Float64 = innerRadiuss
         if (accountForSliceSpacing) {
-            var minSpacedRadius: Float64 = this.calculateMinimumRadiusForSpacedSlice(center, radius, sliceAngle * phaseY,
+            var minRadius: Float64 = this.calculateMinimumRadiusForSpacedSlice(center, radius, sliceAngle * phaseY,
                 arcStartPointX, arcStartPointY, startAngleOuter, sweepAngleOuter)
 
-            if (minSpacedRadius < 0.0) {
-                minSpacedRadius = -minSpacedRadius
+            if (minRadius < 0.0) {
+                minRadius = -minRadius
             }
 
-            innerRadius = max(innerRadius, minSpacedRadius)
+            innerRadius = max(innerRadius, minRadius)
         }
 
-        let sliceSpaceAngleInner: Float64 = if (visibleAngleCount == 1 || innerRadius == 0.0) {
+        let sliceAngleInner: Float64 = if (visibleAngleCount == 1 || innerRadius == 0.0) {
             0.0
         } else {
             sliceSpace / (Utils.FDEG2RAD * innerRadius)
         }
 
-        let startAngleInner: Float64 = rotationAngle + (angle + sliceSpaceAngleInner / 2.0) * phaseY
-        var sweepAngleInner: Float64 = (sliceAngle - sliceSpaceAngleInner) * phaseY
+        let startAngleInner: Float64 = rotationAngle + (angle + sliceAngleInner / 2.0) * phaseY
+        var sweepAngleInner: Float64 = (sliceAngle - sliceAngleInner) * phaseY
         if (sweepAngleInner < 0.0) {
             sweepAngleInner = 0.0
         }
@@ -772,12 +772,12 @@ public class PieChartRenderer <: DataRenderer {
                 this.mChart.getRadius()
             }
 
-            let holeRect: MyRect = this.mRectBuffer[0]
+            let holeRect: ChartRect = this.mRectBuffer[0]
             holeRect.left = x - innerRadius
             holeRect.top = y - innerRadius
             holeRect.right = x + innerRadius
             holeRect.bottom = y + innerRadius
-            let boundingRect: MyRect = this.mRectBuffer[1]
+            let boundingRect: ChartRect = this.mRectBuffer[1]
             boundingRect.set(holeRect.left, holeRect.top, holeRect.right, holeRect.bottom)
 
             let radiusPercent: Float64 = this.mChart.getCenterTextRadiusPercent() / 100.0
@@ -810,7 +810,7 @@ public class PieChartRenderer <: DataRenderer {
         }
     }
 
-    protected var mDrawHighlightedRectF: MyRect = MyRect()
+    protected var mDrawHighlightedRectF: ChartRect = ChartRect()
 
     public func drawHighlighted(c: CanvasRenderingContext2D, indices: Array<Highlight>): Unit {
 
@@ -841,7 +841,7 @@ public class PieChartRenderer <: DataRenderer {
             0.0
         }
 
-        let highlightedCircleBox: MyRect = this.mDrawHighlightedRectF
+        let highlightedCircleBox: ChartRect = this.mDrawHighlightedRectF
         highlightedCircleBox.set(0.0, 0.0, 0.0, 0.0)
 
         for (i in 0..indices.size) {
@@ -1092,7 +1092,7 @@ public class PieChartRenderer <: DataRenderer {
         MPPointF.recycleInstance(center)
     }
 
-    private func arcTo(path: Path2D, roundedCircleBox: MyRect, startAngle: Float64, sweepAngle: Float64): Unit {
+    private func arcTo(path: Path2D, roundedCircleBox: ChartRect, startAngle: Float64, sweepAngle: Float64): Unit {
         path.ellipse(
             roundedCircleBox.left + (roundedCircleBox.right - roundedCircleBox.left) / 2.0,
             roundedCircleBox.top + (roundedCircleBox.bottom - roundedCircleBox.top) / 2.0,
