@@ -7697,9 +7697,16 @@ public class DashPathEffect {
 
 ```cangjie
 public class Fill {
+    /*
+     * 空构造，配合 setColor/setGradientColors 使用
+     * 
+     * 参数 color - 开始颜色
+     * 参数 endColor - 结束颜色
+     */
+    public init ()
     
     /*
-     * 构造 
+     * 渐变填充构造，默认类型为 FillType.LINEAR_GRADIENT，设置其他类型无效，设置 setColor 无效。
      * 
      * 参数 color - 开始颜色
      * 参数 endColor - 结束颜色
@@ -7709,27 +7716,19 @@ public class Fill {
     /*
      * 构造 
      * 
-     * 参数 color - 开始颜色组
-     * 参数 endColor - 结束颜色组
-     */
-    public init (color: Array<UInt32>, endColor: Array<Float64>)
-    
-    /*
-     * 构造 
-     * 
      * 参数 color - ChartPixelMap
      */
     public init (color: ChartPixelMap)
     
     /*
-     * 构造 
+     * 渐变填充构造，默认类型为 FillType.LINEAR_GRADIENT，设置其他类型无效，设置 setColor 无效。
      * 
      * 参数 color - 颜色数组
      */
     public init (color: Array<UInt32>)
     
     /*
-     * 构造 
+     * 单色填充构造，默认类型为 FillType.COLOR，设置其他类型无效，设置 setGradientColors 无效。
      * 
      * 参数 color - UInt32 颜色
      */
@@ -7743,9 +7742,8 @@ public class Fill {
      */
     public func setType (types: FillType): Unit
     
-  
     /*
-     * 设置颜色
+     * 设置单色填充颜色，默认类型为 FillType.COLOR，设置其他类型无效。
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -7753,15 +7751,7 @@ public class Fill {
     public func setColor (color: UInt32): Unit
     
     /*
-     * 设置渐变位置
-     * 
-     * 参数 positions - 渐变位置集合
-     * 返回值 Unit 
-     */
-    public func setGradientPositions (positions: Array<Float64>): Unit
-    
-    /*
-     * 设置渐变颜色
+     * 设置渐变填充颜色，默认类型为 FillType.LINEAR_GRADIENT，设置其他类型无效。
      * 
      * 参数 color - 颜色
      * 返回值 Unit 
@@ -7769,7 +7759,7 @@ public class Fill {
     public func setGradientColors (color: Array<UInt32>): Unit
     
     /*
-     * 设置渐变颜色组
+     * 设置渐变填充颜色组，设置渐变填充颜色，默认类型为 FillType.LINEAR_GRADIENT，设置其他类型无效。
      * 
      * 参数 color - 开始
      * 参数 endColor - 结束

@@ -13,13 +13,12 @@ public class Fill {
      * the color that is used for filling
      */
     private var mColor: UInt32 = 0xffffff //UInt32.parse("0x" + hex.replace("#", ""))
-    private var mFinalColor: UInt32 = 0x000000
+    private var mFinalColor: UInt32 = 0xffffff
     /**
      * the drawable to be used for filling
      */
     protected var mDrawable: ?ChartPixelMap = Option<ChartPixelMap>.None
     private var mGradientColors: ?Array<UInt32> = Option<Array<UInt32>>.None
-    private var mGradientPositions: ?Array<Float64> = Option<Array<Float64>>.None
     /**
      * transparency used for filling
      */
@@ -30,12 +29,6 @@ public class Fill {
     public init(color: UInt32, endColor: UInt32) {
         this.mType = FillType.LINEAR_GRADIENT
         this.mGradientColors = [color, endColor]
-    }
-
-    public init(color: Array<UInt32>, endColor: Array<Float64>) {
-        this.mType = FillType.LINEAR_GRADIENT
-        this.mGradientColors = color
-        this.mGradientPositions = endColor
     }
 
     public init(color: ChartPixelMap) {
@@ -51,7 +44,6 @@ public class Fill {
     public init(color: UInt32) {
         this.mType = FillType.COLOR
         this.mColor = color
-        this.calculateFinalColor()
     }
 
     public func getType(): FillType {
@@ -68,19 +60,10 @@ public class Fill {
 
     public func setColor(color: UInt32): Unit {
         this.mColor = color
-        this.calculateFinalColor()
     }
 
     public func getGradientColors(): ?Array<UInt32> {
         return this.mGradientColors
-    }
-
-    public func getGradientPositions(): ?Array<Float64> {
-        return this.mGradientPositions
-    }
-
-    public func setGradientPositions(positions: Array<Float64>): Unit {
-        this.mGradientPositions = positions
     }
 
     public func setGradientColors(color: Array<UInt32>): Unit {
@@ -97,16 +80,24 @@ public class Fill {
 
     public func setAlpha(alpha: Float64): Unit {
         this.mAlpha = alpha
-        this.calculateFinalColor()
+        this.calculateAlphaColorFinalColor()
+        if (this.mGradientColors.isSome() && this.mGradientColors().size != 0) {
+            this.calculateAlphaForGradientColors()
+        }
     }
 
-    private func calculateFinalColor(): Unit {
-        if (this.mColor == 0) {
-            this.mFinalColor = 0
-        } else {
-            let alpha: Int64 = Int64(floor((Float64(this.mColor >> 24) / 255.0) * (this.mAlpha / 255.0) * 255.0))
-            this.mFinalColor = UInt32((alpha << 24) | Int64(this.mColor & 0xffffff))
+    private func calculateAlphaColorFinalColor(): Unit {
+        this.mColor = UInt32(ColorTemplate.colorWithAlpha(Int64(this.mColor), this.mAlpha))
+        this.mFinalColor = UInt32(ColorTemplate.colorWithAlpha(Int64(this.mFinalColor), this.mAlpha))
+    }
+
+    private func calculateAlphaForGradientColors(): Unit {
+        let newColor: Array<UInt32> = Array<UInt32>(this.mGradientColors().size, item: 0)
+
+        for (i in 0..this.mGradientColors().size) {
+            newColor[i] = UInt32(ColorTemplate.colorWithAlpha(Int64(this.mGradientColors()[i]), this.mAlpha))
         }
+        this.mGradientColors = newColor
     }
 
     private func FillTypeIsLINEAR_GRADIENT(c: CanvasRenderingContext2D, gradientDirection: FillDirection, left: Float64,
@@ -150,26 +141,14 @@ public class Fill {
         cornerType!: RoundCornerType = RoundCornerType.UP): Unit {
         match (this.mType) {
             case FillType.EMPTY => return
-            case FillType.COLOR => if (this.isClipPathSupported()) {
-                c.save()
-                if (radius > 0.0) {
-                    Utils.fillRoundedRect(c, left, top, right - left, bottom - top, radius, cornerType)
-                } else {
-                    c.rect(left, top, right - left, bottom - top)
-                }
-                c.clip()
-                c.fillStyle(this.mFinalColor)
-                c.fill()
-                c.restore()
-            } else {
-
+            case FillType.COLOR =>
                 // save
                 let previous: Style = paint.getStyle()
                 let previousColor: Color = paint.getColor()
 
                 // set
                 paint.setStyle(Style.FILL)
-                paint.setColor(Color(this.mFinalColor))
+                paint.setColor(Color(this.mColor))
                 Utils.resetContext2DStyle(c, paint)
                 c.beginPath()
                 if (radius > 0.0) {
@@ -179,10 +158,8 @@ public class Fill {
                 }
                 c.closePath()
 
-                // restore
                 paint.setColor(previousColor)
                 paint.setStyle(previous)
-            }
 
             case FillType.LINEAR_GRADIENT =>
                 let gradient: CanvasGradient = FillTypeIsLINEAR_GRADIENT(c, gradientDirection, left, top, right, bottom)
@@ -190,8 +167,11 @@ public class Fill {
                     for (i in 0..this.mGradientColors().size) {
                         gradient.addColorStop(i, this.mGradientColors()[i])
                     }
+                    paint.setFillStyle(gradient)
+                } else {
+                    paint.setColor(Color(this.mColor))
                 }
-                paint.setFillStyle(gradient)
+
                 Utils.resetContext2DStyle(c, paint)
                 c.beginPath()
                 if (radius > 0.0) {
@@ -202,9 +182,14 @@ public class Fill {
                 c.fill()
                 c.closePath()
 
-            case FillType.DRAWABLE => match (this.mDrawable().getIcon()) {
-                case Some(i) => c.drawImage(i, left, top, right - left, bottom - top)
-                case _ => return
+            case FillType.DRAWABLE => if (let Some(drawable) <- this.mDrawable) {
+                if (let Some(i) <- drawable.getIcon()) {
+                    c.drawImage(i, left, top, right - left, bottom - top)
+                } else {
+                    return
+                }
+            } else {
+                return
             }
         }
     }
