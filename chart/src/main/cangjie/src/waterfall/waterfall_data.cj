@@ -7,7 +7,7 @@ public class WaterfallData <: BarLineScatterCandleBubbleData<IWaterfallDataSet, 
     /**
      * the width of the bars on the x-axis, in values (not pixels)
      */
-    private var mBarWidth: Float64 = 0.85
+    private var barWidth: Float64 = 0.85
 
     /**
      * 顶部圆角半径
@@ -27,11 +27,11 @@ public class WaterfallData <: BarLineScatterCandleBubbleData<IWaterfallDataSet, 
     }
 
     public func setBarWidth(mBarWidth: Float64): Unit {
-        this.mBarWidth = mBarWidth
+        this.barWidth = mBarWidth
     }
 
     public func getBarWidth(): Float64 {
-        return this.mBarWidth
+        return this.barWidth
     }
 
     public func setTopRadius(radius: Float64): Unit {
@@ -59,7 +59,7 @@ public class WaterfallData <: BarLineScatterCandleBubbleData<IWaterfallDataSet, 
 
             let groupSpaceWidthHalf: Float64 = groupSpace / 2.0
             let barSpaceHalf: Float64 = barSpace / 2.0
-            let barWidthHalf: Float64 = this.mBarWidth / 2.0
+            let barWidthHalf: Float64 = this.barWidth / 2.0
 
             let interval: Float64 = this.getGroupWidth(groupSpace, barSpace)
             var f = fromX
@@ -100,6 +100,6 @@ public class WaterfallData <: BarLineScatterCandleBubbleData<IWaterfallDataSet, 
     }
 
     public func getGroupWidth(groupSpace: Float64, barSpace: Float64): Float64 {
-        return Float64(this.mDataSets.size) * (this.mBarWidth + barSpace) + groupSpace
+        return Float64(this.mDataSets.size) * (this.barWidth + barSpace) + groupSpace
     }
 }

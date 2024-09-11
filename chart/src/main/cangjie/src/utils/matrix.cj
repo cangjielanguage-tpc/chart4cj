@@ -133,7 +133,7 @@ public class Matrix {
         }
     }
 
-    public func mapRect(rect: MyRect) {
+    public func mapRect(rect: ChartRect) {
         let translate_x: Float64 = this.data[Matrix.MTRANS_X]
         let translate_y: Float64 = this.data[Matrix.MTRANS_Y]
         let scale_x: Float64 = this.data[Matrix.MSCALE_X]

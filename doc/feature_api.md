@@ -1349,9 +1349,9 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     /*
      * 返回图表绘制的内容区域的矩形。
      * 
-     * 返回值 MyRect - 图表绘制的内容区域的矩形。
+     * 返回值 ChartRect - 图表绘制的内容区域的矩形。
      */
-    public func getContentRect (): MyRect
+    public func getContentRect (): ChartRect
     
     /*
      * 返回已为图表设置的 ChartData 对象。

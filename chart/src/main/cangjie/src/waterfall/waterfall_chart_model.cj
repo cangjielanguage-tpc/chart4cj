@@ -42,23 +42,23 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
 
      protected func calcMinMax(): Unit {
         match (this.mData) {
-            case Some(data: WaterfallData) =>
+            case Some(waterfallData: WaterfallData) =>
                 if (let Some(xaxis) <- this.mXAxis) {
                     if (this.mFitBars) {
                         xaxis.calculate(
-                            data.getXMin() - data.getBarWidth() / 2.0,
-                            data.getXMax() + data.getBarWidth() / 2.0
+                            waterfallData.getXMin() - waterfallData.getBarWidth() / 2.0,
+                            waterfallData.getXMax() + waterfallData.getBarWidth() / 2.0
                         )
                     } else {
-                        xaxis.calculate(data.getXMin(), data.getXMax())
+                        xaxis.calculate(waterfallData.getXMin(), waterfallData.getXMax())
                     }
                 }
                 // calculate axis range (min / max) according to provided data
                 if (let Some(axisLeft) <- this.mAxisLeft) {
-                    axisLeft.calculate(data.getYMin(AxisDependency.LEFT), data.getYMax(AxisDependency.LEFT))
+                    axisLeft.calculate(waterfallData.getYMin(AxisDependency.LEFT), waterfallData.getYMax(AxisDependency.LEFT))
                 }
                 if (let Some(axisReft) <- this.mAxisRight) {
-                    axisReft.calculate(data.getYMin(AxisDependency.RIGHT), data.getYMax(AxisDependency.RIGHT))
+                    axisReft.calculate(waterfallData.getYMin(AxisDependency.RIGHT), waterfallData.getYMax(AxisDependency.RIGHT))
                 }
             case _ => return
         }
@@ -115,25 +115,23 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
         }
     }
 
-    public func getBarBoundsByEntry(e: BarEntry): MyRect {
-        let bounds: MyRect = MyRect()
+    public func getBarBoundsByEntry(e: BarEntry): ChartRect {
+        let bounds: ChartRect = ChartRect()
         this.getBarBounds(e, bounds)
 
         return bounds
     }
 
-    public func getBarBounds(e: BarEntry, outputRect: MyRect): Unit {
+    public func getBarBounds(waterfallEntry: BarEntry, outputRect: ChartRect): Unit {
         match (this.mData) {
             case Some(data: BarData) =>
-                let bounds: MyRect = outputRect
+                let bounds: ChartRect = outputRect
 
-                match (data.getDataSetForEntry(e)) {
+                match (data.getDataSetForEntry(waterfallEntry)) {
                     case Some(set: IBarDataSet) =>
-                        let y: Float64 = e.getY()
-                        let x: Float64 = e.getX()
-
+                        let y: Float64 = waterfallEntry.getY()
+                        let x: Float64 = waterfallEntry.getX()
                         let barWidth: Float64 = data.getBarWidth()
-
                         let left: Float64 = x - barWidth / 2.0
                         let right: Float64 = x + barWidth / 2.0
                         let top: Float64 = if (y >= 0.0) {
@@ -146,9 +144,7 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
                         } else {
                             0.0
                         }
-
                         bounds.set(left, top, right, bottom)
-
                         let transformer: ?Transformer = this.getTransformer(set.getAxisDependency())
                         if (let Some(t) <- transformer) {
                             t.rectValueToPixel(outputRect)

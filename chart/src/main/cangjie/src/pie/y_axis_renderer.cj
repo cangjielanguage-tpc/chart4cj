@@ -185,9 +185,9 @@ public open class YAxisRenderer <: AxisRenderer {
         }
     }
 
-    protected var mGridClippingRect: MyRect = MyRect()
+    protected var mGridClippingRect: ChartRect = ChartRect()
 
-    public open func getGridClippingRect(): MyRect {
+    public open func getGridClippingRect(): ChartRect {
         this.mGridClippingRect.set(this.mViewPortHandler().getContentRect().left,
             this.mViewPortHandler().getContentRect().top, this.mViewPortHandler().getContentRect().right,
             this.mViewPortHandler().getContentRect().bottom)
@@ -242,7 +242,7 @@ public open class YAxisRenderer <: AxisRenderer {
     }
 
     // protected mDrawZeroLinePath: Path2D = new Path2D()
-    protected var mZeroLineClippingRect: MyRect = MyRect()
+    protected var mZeroLineClippingRect: ChartRect = ChartRect()
 
     /**
      * Draws the zero line.
@@ -277,7 +277,7 @@ public open class YAxisRenderer <: AxisRenderer {
     }
 
     var mRenderLimitLinesBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
-    protected var mLimitLineClippingRect: MyRect = MyRect()
+    protected var mLimitLineClippingRect: ChartRect = ChartRect()
 
     public func renderLine(c: CanvasRenderingContext2D, l: LimitLine) {
         this.mLimitLineClippingRect.set(this.mViewPortHandler().getContentRect().left,

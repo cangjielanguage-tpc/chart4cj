@@ -220,7 +220,7 @@ public open class Transformer {
      *
      * @param r
      */
-    public func rectValueToPixel(r: MyRect) {
+    public func rectValueToPixel(r: ChartRect) {
         this.mMatrixValueToPx.mapRect(r)
         this.mViewPortHandler.getMatrixTouch().mapRect(r)
         this.mMatrixOffset.mapRect(r)
@@ -232,7 +232,7 @@ public open class Transformer {
      * @param r
      * @param phaseY
      */
-    public func rectToPixelPhase(r: MyRect, phaseY: Float64) {
+    public func rectToPixelPhase(r: ChartRect, phaseY: Float64) {
 
         // multiply the height of the rect with the phase
         r.top *= phaseY
@@ -243,7 +243,7 @@ public open class Transformer {
         this.mMatrixOffset.mapRect(r)
     }
 
-    public func rectToPixelPhaseHorizontal(r: MyRect, phaseY: Float64) {
+    public func rectToPixelPhaseHorizontal(r: ChartRect, phaseY: Float64) {
 
         // multiply the height of the rect with the phase
         r.left *= phaseY
@@ -259,7 +259,7 @@ public open class Transformer {
      *
      * @param r
      */
-    public func rectValueToPixelHorizontal(r: MyRect, phaseY: ?Float64) {
+    public func rectValueToPixelHorizontal(r: ChartRect, phaseY: ?Float64) {
         if (phaseY.isSome()) {
             r.left *= phaseY()
             r.right *= phaseY()
@@ -274,7 +274,7 @@ public open class Transformer {
      *
      * @param rects
      */
-    public func rectValuesToPixel(rects: Array<MyRect>) {
+    public func rectValuesToPixel(rects: Array<ChartRect>) {
         let m: Matrix = this.getValueToPixelMatrix()
 
         for (i in 0..rects.size) {

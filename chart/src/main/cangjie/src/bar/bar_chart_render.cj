@@ -8,7 +8,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
     /**
      * the rect object that is used for drawing the bars
      */
-    protected var mBarRect: MyRect = MyRect()
+    protected var mBarRect: ChartRect = ChartRect()
     protected var mBarBuffers: Array<BarBuffer> = Array<BarBuffer>()
     protected var mShadowPaint: ChartPaint
     protected var mBarBorderPaint: ChartPaint
@@ -70,7 +70,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         }
     }
 
-    protected var mBarShadowRectBuffer: MyRect = MyRect()
+    protected var mBarShadowRectBuffer: ChartRect = ChartRect()
 
     private func drawDataSetFunc(index: Int64, phaseX: Float64, phaseY: Float64, dataSet: IBarDataSet,
         c: CanvasRenderingContext2D, trans: ?Transformer): Unit {
@@ -623,7 +623,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
      * Sets the drawing position of the highlight object based on the riven bar-rect.
      * @param high
      */
-    protected open func setHighlightDrawPos(high: Highlight, bar: MyRect): Unit {
+    protected open func setHighlightDrawPos(high: Highlight, bar: ChartRect): Unit {
         high.setDraw(bar.centerX(), bar.top)
     }
 

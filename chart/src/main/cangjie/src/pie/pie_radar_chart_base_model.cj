@@ -387,7 +387,7 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
      * @return
      */
     public func getDiameter(): Float64 {
-        let content: MyRect = this.mViewPortHandler.getContentRect()
+        let content: ChartRect = this.mViewPortHandler.getContentRect()
         content.left += this.getExtraLeftOffset()
         content.top += this.getExtraTopOffset()
         content.right -= this.getExtraRightOffset()

@@ -8,7 +8,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      * rect object that represents the bounds of the piechart, needed for
      * drawing the circle
      */
-    private var mCircleBox: MyRect = MyRect()
+    private var mCircleBox: ChartRect = ChartRect()
     /**
      * flag indicating if entry labels should be drawn or not
      */
@@ -492,7 +492,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      *
      * @return
      */
-    public func getCircleBox(): MyRect {
+    public func getCircleBox(): ChartRect {
         return this.mCircleBox
     }
 

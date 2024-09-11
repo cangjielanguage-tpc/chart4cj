@@ -34,7 +34,7 @@ public class HorizontalBarChartModel <: BarChartModel {
         return model
     }
 
-    protected func calculateLegendOffsets(offsets: MyRect): Unit {
+    protected func calculateLegendOffsets(offsets: ChartRect): Unit {
         offsets.left = 0.0
         offsets.right = 0.0
         offsets.top = 0.0
@@ -188,9 +188,9 @@ public class HorizontalBarChartModel <: BarChartModel {
         return [high.getDrawY(), high.getDrawX()]
     }
 
-    public func getBarBounds(e: BarEntry, outputRect: MyRect): Unit {
+    public func getBarBounds(e: BarEntry, outputRect: ChartRect): Unit {
         if (let Some(data: BarData) <- this.mData) {
-            let bounds: MyRect = outputRect
+            let bounds: ChartRect = outputRect
             let set: ?IBarDataSet = data.getDataSetForEntry(e)
 
             if (set.isNone()) {

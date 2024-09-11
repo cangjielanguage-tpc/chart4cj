@@ -8,7 +8,7 @@ public open class ViewPortHandler {
     /**
      * this rectangle defines the area in which graph values can be drawn
      */
-    protected var mContentRect = MyRect()
+    protected var mContentRect = ChartRect()
     protected var mChartWidth: Float64 = 0.0
     protected var mChartHeight: Float64 = 0.0
     /**
@@ -123,7 +123,7 @@ public open class ViewPortHandler {
         return this.mContentRect.height()
     }
 
-    public func getContentRect(): MyRect {
+    public func getContentRect(): ChartRect {
         return this.mContentRect
     }
 
@@ -340,7 +340,7 @@ public open class ViewPortHandler {
      *
      * @param matrix
      */
-    public func limitTransAndScale(matrix: Matrix, content: ?MyRect) {
+    public func limitTransAndScale(matrix: Matrix, content: ?ChartRect) {
         this.matrixBuffer = matrix.getValues()
 
         let curTransX: Float64 = this.matrixBuffer[Matrix.MTRANS_X]

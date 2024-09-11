@@ -444,11 +444,11 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             )
         }
     }
-    protected open func calculateLegendOffsets(offsets: MyRect): Unit {
-        offsets.left = 0.0
-        offsets.right = 0.0
-        offsets.top = 0.0
-        offsets.bottom = 0.0
+    protected open func calculateLegendOffsets(offset: ChartRect): Unit {
+        offset.left = 0.0
+        offset.right = 0.0
+        offset.top = 0.0
+        offset.bottom = 0.0
 
         if (!this.mLegend.isEnabled() || this.mLegend.isDrawInsideEnabled()) {
             return
@@ -456,26 +456,26 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
 
         match (this.mLegend.getOrientation()) {
             case LegendOrientation.VERTICAL => match (this.mLegend.getHorizontalAlignment()) {
-                case LegendHorizontalAlignment.LEFT => offsets.left += min(
+                case LegendHorizontalAlignment.LEFT => offset.left += min(
                     this.mLegend.mNeededWidth,
                     this.mViewPortHandler.getChartWidth() * this.mLegend.getMaxSizePercent()
                 )
                     + this.mLegend.getXOffset()
 
-                case LegendHorizontalAlignment.RIGHT => offsets.right += min(
+                case LegendHorizontalAlignment.RIGHT => offset.right += min(
                     this.mLegend.mNeededWidth,
                     this.mViewPortHandler.getChartWidth() * this.mLegend.getMaxSizePercent()
                 )
                     + this.mLegend.getXOffset()
 
                 case LegendHorizontalAlignment.CENTER => match (this.mLegend.getVerticalAlignment()) {
-                    case LegendVerticalAlignment.TOP => offsets.top += min(
+                    case LegendVerticalAlignment.TOP => offset.top += min(
                         this.mLegend.mNeededHeight,
                         this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent()
                     )
                         + this.mLegend.getYOffset()
 
-                    case LegendVerticalAlignment.BOTTOM => offsets.bottom += min(
+                    case LegendVerticalAlignment.BOTTOM => offset.bottom += min(
                         this.mLegend.mNeededHeight,
                         this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent()
                     )
@@ -486,13 +486,13 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             }
 
             case LegendOrientation.HORIZONTAL => match (this.mLegend.getVerticalAlignment()) {
-                case LegendVerticalAlignment.TOP => offsets.top += min(
+                case LegendVerticalAlignment.TOP => offset.top += min(
                     this.mLegend.mNeededHeight,
                     this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent()
                 )
                     + this.mLegend.getYOffset()
 
-                case LegendVerticalAlignment.BOTTOM => offsets.bottom += min(
+                case LegendVerticalAlignment.BOTTOM => offset.bottom += min(
                     this.mLegend.mNeededHeight,
                     this.mViewPortHandler.getChartHeight() * this.mLegend.getMaxSizePercent()
                 )
@@ -504,7 +504,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         }
     }
 
-    protected var mOffsetsBuffer: MyRect = MyRect()
+    protected var mOffsetsBuffer: ChartRect = ChartRect()
 
     public open func calculateOffsets(): Unit {
         if (!this.mCustomViewPortEnabled) {

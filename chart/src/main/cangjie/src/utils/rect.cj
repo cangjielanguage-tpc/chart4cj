@@ -3,7 +3,7 @@
  */
 package chart.utils
 
-public class MyRect {
+public class ChartRect {
     public var left: Float64 = 0.0
     public var top: Float64 = 0.0
     public var right: Float64 = 0.0
@@ -26,7 +26,7 @@ public class MyRect {
         this.bottom = bottom
     }
 
-    public init(r: MyRect) {
+    public init(r: ChartRect) {
         this.left = r.left
         this.top = r.top
         this.right = r.right
@@ -38,11 +38,11 @@ public class MyRect {
      *
      * @hide
      */
-    public static func copyOrNull(r: ?MyRect): ?MyRect {
+    public static func copyOrNull(r: ?ChartRect): ?ChartRect {
         return r
     }
 
-    public func equals(o: MyRect): Bool {
+    public func equals(o: ChartRect): Bool {
         return this.left == o.left && this.top == o.top && this.right == o.right && this.bottom == o.bottom
     }
 

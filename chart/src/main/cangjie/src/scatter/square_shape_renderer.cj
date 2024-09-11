@@ -4,16 +4,16 @@
 package chart.scatter
 
 public class SquareShapeRenderer <: IShapeRenderer {
-    public func renderShape(c: CanvasRenderingContext2D, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler,
+    public func renderShape(c: CanvasRenderingContext2D, squareDataSet: IScatterDataSet, viewPortHandler: ViewPortHandler,
         posX: Float64, posY: Float64, renderPaint: ChartPaint): Unit {
-        let shapeSize: Float64 = dataSet.getScatterShapeSize()
+        let shapeSize: Float64 = squareDataSet.getScatterShapeSize()
         let shapeHalf: Float64 = shapeSize / 2.0
-        let shapeHoleSizeHalf: Float64 = Utils.handleDataValues(dataSet.getScatterShapeHoleRadius())
+        let shapeHoleSizeHalf: Float64 = Utils.handleDataValues(squareDataSet.getScatterShapeHoleRadius())
         let shapeHoleSize: Float64 = shapeHoleSizeHalf * 2.0
         let shapeStrokeSize: Float64 = (shapeSize - shapeHoleSize) / 2.0
         let shapeStrokeSizeHalf: Float64 = shapeStrokeSize / 2.0
 
-        let shapeHoleColor: UInt32 = dataSet.getScatterShapeHoleColor()
+        let shapeHoleColor: UInt32 = squareDataSet.getScatterShapeHoleColor()
 
         if (shapeSize > 0.0) {
             renderPaint.setStyle(Style.STROKE)

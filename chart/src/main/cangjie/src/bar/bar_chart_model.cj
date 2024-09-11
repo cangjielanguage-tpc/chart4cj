@@ -42,14 +42,14 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
         return model
     }
 
+    public func setContext2D(context2d: CanvasRenderingContext2D) {
+        this.context2d = context2d
+    }
+
     public func invalidate(): Unit {
         if (let Some(context2d) <- this.context2d) {
             super.onDraw(context2d)
         }
-    }
-
-    public func setContext2D(context2d: CanvasRenderingContext2D) {
-        this.context2d = context2d
     }
 
     public func onChartSizeChanged(newWidth: Float64, newHeight: Float64, oldWidth: Float64, oldHeight: Float64) {
@@ -122,8 +122,8 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
      * @param e
      * @return
      */
-    public func getBarBoundsByEntry(e: BarEntry): MyRect {
-        let bounds: MyRect = MyRect()
+    public func getBarBoundsByEntry(e: BarEntry): ChartRect {
+        let bounds: ChartRect = ChartRect()
         this.getBarBounds(e, bounds)
 
         return bounds
@@ -136,15 +136,15 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
      * @param e
      * @return
      */
-    public open func getBarBounds(e: BarEntry, outputRect: MyRect): Unit {
+    public open func getBarBounds(barEntry: BarEntry, outputRect: ChartRect): Unit {
         match (this.mData) {
             case Some(data: BarData) =>
-                let bounds: MyRect = outputRect
+                let bound: ChartRect = outputRect
 
-                match (data.getDataSetForEntry(e)) {
+                match (data.getDataSetForEntry(barEntry)) {
                     case Some(set: IBarDataSet) =>
-                        let y: Float64 = e.getY()
-                        let x: Float64 = e.getX()
+                        let y: Float64 = barEntry.getY()
+                        let x: Float64 = barEntry.getX()
 
                         let barWidth: Float64 = data.getBarWidth()
 
@@ -161,14 +161,14 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
                             0.0
                         }
 
-                        bounds.set(left, top, right, bottom)
+                        bound.set(left, top, right, bottom)
 
                         let transformer: ?Transformer = this.getTransformer(set.getAxisDependency())
                         if (let Some(t) <- transformer) {
                             t.rectValueToPixel(outputRect)
                         }
                     case None =>
-                        bounds.set(Float64.Min, Float64.Min, Float64.Min, Float64.Min)
+                        bound.set(Float64.Min, Float64.Min, Float64.Min, Float64.Min)
                         return
                 }
             case _ => return
