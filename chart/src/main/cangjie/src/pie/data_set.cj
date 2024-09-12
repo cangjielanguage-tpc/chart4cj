@@ -333,6 +333,7 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
                     }
                 }
                 v.remove(index)
+                this.calcMinMax()
                 return true
 
             case None => return false

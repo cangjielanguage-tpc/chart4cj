@@ -4565,28 +4565,28 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     public func getDotsColors (): Array<UInt32>
     
     /*
-     * 是否设置图顶部高亮，默认false
+     * 设置图顶部高亮是否存在，如果存在（true）,则设置最高点高亮无效，反之有效。默认 false.
      * 
      * 参数 value - true/false
      */
     public func setMaxTopHighlightEXIST (value: Bool)
     
     /*
-     * 判断是否设置图顶部高亮
+     * 判断图顶部高亮是否存在。
      * 
      * 返回值 Bool - true/false
      */
     public func getMaxTopHighlightEXIST (): Bool
     
     /*
-     * 是否设置柱状图底部高亮,默认false
+     * 设置图底部高亮是否存在，如果存在（true）,则设置最低点高亮无效，反之有效。默认 false。
      * 
      * 参数 value - true/false
      */
     public func setMinBottomHighlightEXIST (value: Bool)
     
     /*
-     * 获取是否设置柱状图底部高亮
+     * 判断图底部高亮是否存在。
      * 
      * 返回值 Bool - true/false
      */

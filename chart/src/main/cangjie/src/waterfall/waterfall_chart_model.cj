@@ -115,14 +115,14 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
         }
     }
 
-    public func getBarBoundsByEntry(e: BarEntry): ChartRect {
+    public func getBarBoundsByEntry(e: WaterfallEntry): ChartRect {
         let bounds: ChartRect = ChartRect()
         this.getBarBounds(e, bounds)
 
         return bounds
     }
 
-    public func getBarBounds(waterfallEntry: BarEntry, outputRect: ChartRect): Unit {
+    public func getBarBounds(waterfallEntry: WaterfallEntry, outputRect: ChartRect): Unit {
         match (this.mData) {
             case Some(data: BarData) =>
                 let bounds: ChartRect = outputRect
