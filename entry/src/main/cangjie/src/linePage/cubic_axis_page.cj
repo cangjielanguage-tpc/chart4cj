@@ -27,7 +27,7 @@ class CubicAxisPage {
             xAxis.setDrawGridLines(true) //纵向线格显示
             xAxis.setLabelCount(6, false) //设置X轴坐标个数
         }
-
+        
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(leftAxis) <- this.leftAxis) {
             leftAxis.setLabelCount(7, false)

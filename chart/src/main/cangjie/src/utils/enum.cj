@@ -22,7 +22,7 @@ public enum Style <: Equatable<Style> {
         return !(this == b)
     }
 }
-public enum TextAlign {
+public enum TextAligns {
     | CENTER
     | END
     | LEFT

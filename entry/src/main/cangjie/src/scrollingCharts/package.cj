@@ -25,6 +25,7 @@ internal import chart.charts.*
 internal import chart.line.*
 internal import chart.line.*
 internal import chart.bar.*
+internal import chart.components.*
 
 extend<T> Option<T> {
     operator func ()(): T {

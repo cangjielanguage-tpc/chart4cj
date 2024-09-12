@@ -114,7 +114,7 @@ public open class XAxisRenderer <: AxisRenderer {
             this.drawLabels(c, this.mViewPortHandler().contentTop() - yoffset, pointF)
         } else if (this.mXAxis.getPosition() == XAxisPosition.TOP_INSIDE) {
             pointF.x = 0.5
-            pointF.y = 1.0
+            pointF.y = 1.5
             this.drawLabels(c, this.mViewPortHandler().contentTop() + yoffset + Float64(this.mXAxis.mLabelRotatedHeight),
                 pointF)
         } else if (this.mXAxis.getPosition() == XAxisPosition.BOTTOM) {

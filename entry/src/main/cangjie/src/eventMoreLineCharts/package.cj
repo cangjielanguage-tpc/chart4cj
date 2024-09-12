@@ -16,6 +16,7 @@ internal import ohos.window.WindowStage
 
 internal import ohos.ability.AbilityStage
 internal import ohos.ability.LaunchReason
+internal import ohos.hilog.*
 
 internal import std.sync.*
 internal import std.collection.*
@@ -24,6 +25,7 @@ internal import std.math.*
 internal import std.random.*
 internal import std.convert.*
 internal import std.format.*
+internal import std.time.*
 internal import chart.pie.*
 internal import chart.utils.*
 internal import chart.components.*
