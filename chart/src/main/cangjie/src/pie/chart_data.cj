@@ -484,7 +484,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
     public func removeEntry(e: E, dataSetIndex: Int64): Bool {
 
         // entry null, outofbounds
-        if (dataSetIndex >= this.mDataSets.size) {
+        if (dataSetIndex >= this.mDataSets.size || dataSetIndex < 0 ) {
             return false
         }
         let data: IDataSet<E> = this.mDataSets[dataSetIndex]
