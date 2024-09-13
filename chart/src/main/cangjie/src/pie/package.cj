@@ -20,6 +20,7 @@ internal import ohos.image.*
 internal import ohos.measure.Size as MeasureSize
 internal import ohos.measure.MeasureOptions
 internal import ohos.measure.Measure
+internal import ohos.hilog.*
 
 extend<T> Option<T> {
     operator func ()(): T {
