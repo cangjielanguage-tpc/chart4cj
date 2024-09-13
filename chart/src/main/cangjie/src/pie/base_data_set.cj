@@ -384,10 +384,10 @@ public abstract class BaseDataSet<E> <: IDataSet<E> where E <: EntryOhos {
     }
 
     public func removeEntryByXValue(xValue: Float64): Bool {
-        //        let e: ?E = this.getEntryForXValue(xValue, Float64.NaN, rounding: Rounding.CLOSEST)
-        //        if (e.isSome()) {
-        //            return this.removeEntry(e())
-        //        }
+        let e: ?E = this.getEntryForXValue(xValue, Float64.NaN, rounding: Rounding.CLOSEST)
+        if (e.isSome()) {
+            return this.removeEntry(e())
+        }
         return true
     }
 

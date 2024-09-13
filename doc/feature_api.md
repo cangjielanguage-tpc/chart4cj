@@ -755,7 +755,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     public func addDataSet (d: S): Unit
     
     /*
-     * 从此数据对象中移除给定的DataSet。也会重新计算所有的最小值和最大值。如果删除了数据集，则返回true;如果不能删除任何数据集，则返回false。
+     * 从 ChartData 中移除给定的 DataSet。也会重新计算所有的最小值和最大值。如果删除了数据集，则返回true;如果不能删除任何数据集，则返回false。
      * 
      * 参数 d - 数据集
      * 返回值 Bool - true/false
@@ -763,7 +763,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     public func removeDataSet (d: S): Bool
     
     /*
-     * 从数据对象中移除DataSet数组中给定索引处的DataSet。也会重新计算所有的最小值和最大值。如果删除了DataSet，则返回true;如果不能删除DataSet，则返回false。
+     * 从 ChartData 中移除给定索引处的 DataSet。也会重新计算所有的最小值和最大值。如果删除了DataSet，则返回true;如果不能删除DataSet，则返回false。
      * 
      * 参数 index - 索引
      * 返回值 Bool - true/false
@@ -771,25 +771,25 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     public func removeDataSetByIndex (index: Int64): Bool
     
     /*
-     * 在指定的索引处向DataSet添加一个Entry。条目添加到列表的未尾。
+     * 在 chartData 的指定索引处的 DataSet中添加一个Entry，条目添加到 DataSet 的未尾。
      * 
      * 参数 e - Entry
-     * 参数 dataSetIndex - 指定索引,范围[0-dataSet.size-2]
+     * 参数 dataSetIndex - 指定索引,范围[0-dataSet.size-1]
      * 返回值 Unit 
      */
     public func addEntry (e: E, dataSetIndex: Int64): Unit
     
     /*
-     * 从指定索引处的DataSet中移除给定的Entry对象。
+     * 在 chartData 的指定的索引处的 DataSet中 移除一个Entry。
      * 
      * 参数 e - Entry对象
-     * 参数 dataSetIndex - 指定索引,范围[0-dataSet.size-2]
+     * 参数 dataSetIndex - 指定索引,范围[0-dataSet.size-1]
      * 返回值 Bool - true/false
      */
     public func removeEntry (e: E, dataSetIndex: Int64): Bool
     
     /*
-     * 移除指定索引中最接近给定DataSet的Entry对象。如果删除条目，则返回true;如果没有找到符合指定要求的条目，则返回false。
+     * 移除 chartData 指定索引中 DataSet 最接近给定的 x值的 Entry。如果删除条目，则返回 true;如果没有找到符合指定要求的条目，则返回 false。
      * 
      * 参数 xValue - 给定值
      * 参数 dataSetIndex - 给定索引
@@ -798,7 +798,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     public func removeEntryByXValue (xValue: Float64, dataSetIndex: Int64): Bool
     
     /*
-     * 返回包含所提供的项的DataSet，如果没有DataSet包含此项，则返回 Option<S>.None
+     * 获取 ChartData 中包含 EntryOhos 的DataSet，如果没有 DataSet 包含此项，则返回 Option<S>.None
      * 
      * 参数 e - EntryOhos
      * 返回值 ?S - S/Option<S>.None
@@ -814,7 +814,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     public func getColors (): Array<UInt32>
     
     /*
-     * 返回此数据对象的DataSet数组中提供的DataSet的索引，如果不存在，返回-1。
+     * 获取 ChartData 对象给定 DataSet 的索引，如果不存在，返回-1。
      * 
      * 参数 dataSet - DataSet
      * 返回值 Int64 - 索引

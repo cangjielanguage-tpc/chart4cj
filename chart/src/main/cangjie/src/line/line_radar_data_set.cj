@@ -94,6 +94,7 @@ public abstract class LineRadarDataSet<E> <: LineScatterCandleRadarDataSet<E> & 
         if (width > 10.0) {
             this.mLineWidth = 10.0
         }
+        this.mLineWidth = width
     }
 
     public func getLineWidth(): Float64 {

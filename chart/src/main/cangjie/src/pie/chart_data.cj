@@ -393,7 +393,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
             }
             this.calcMinMax(e, data.getAxisDependency())
         } else {
-            AppLog.info("Cannot add Entry because dataSetIndex too high or too low.")
+            Hilog.error(0x0000, "error", "Cannot add Entry because dataSetIndex too high or too low.")
         }
     }
 
