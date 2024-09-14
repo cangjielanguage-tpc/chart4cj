@@ -295,8 +295,8 @@ public open class ViewPortHandler {
      * @param view
      * @return save
      */
-    public func centerViewPort(transformedPts: Array<Float64>,
-        view: ChartModel<BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>, IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>) {
+    public func centerViewPort<D, S, E>(transformedPts: Array<Float64>,
+        view: ChartModel<D, S, E>) where D <: ChartData<S, E>, S <: IDataSet<E>, E <: EntryOhos {
         let save: Matrix = this.mCenterViewPortMatrixBuffer
         save.reset()
         save.set(this.mMatrixTouch)

@@ -19,3 +19,17 @@ extend<T> Option<T> {
         this.getOrThrow()
     }
 }
+
+public interface ArrayListInterface<T> {
+	func replaceOrAppend(index: Int64, value: T) : Unit
+}
+
+extend<T> ArrayList<T> <: ArrayListInterface<T> {
+    public func replaceOrAppend(index: Int64, value: T): Unit{
+        if (index < this.size) {
+            this.set(index, value)
+        } else {
+            this.append(value)
+        }
+    }
+}

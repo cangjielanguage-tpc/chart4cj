@@ -279,7 +279,7 @@ class ScrollBarChartPage2 {
                                 if (let Some(y) <- yAxis) {
                                     y.setGridColor(Color(UInt32.parse(item.color)))
                                     y.setGridLineWidth(0.6)
-                                    y.setGridDashedLine(DashPathEffect([2, 2], 1))
+                                    y.setGridDashedLine(DashPathEffect([2, 2]))
                                     this.model.invalidate()
                                 }
                             }
@@ -296,7 +296,7 @@ class ScrollBarChartPage2 {
                     isChecked: Bool =>
                     if (isChecked) {
                         // 竖向网格线，x轴刻度为8的位置
-                        this.xAxis().addGridLine(GridLineConfig(8.0, 0x0000FF, 0.6, DashPathEffectConfig(5, 10, 2)))
+                        this.xAxis().addGridLine(GridLineConfig(8.0, 0x0000FF, 0.6, DashPathEffectConfig(5, 10)))
                         // 横向网格线，y轴刻度为35的位置
                         this.leftAxis().addGridLine(
                             GridLineConfig(35.0, 0xFF0000, 1.0, Option<DashPathEffectConfig>.None))

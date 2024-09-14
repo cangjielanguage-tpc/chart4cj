@@ -31,7 +31,7 @@ public class WaterfallChart {
                     let jobs = this.model.mJobs
                     let length = jobs.size
                     for (i in 0..length) {
-                        jobs[i].run()
+                        jobs[i].run<WaterfallData, IWaterfallDataSet, WaterfallEntry>()
                     }
                     jobs.clear()
                 }

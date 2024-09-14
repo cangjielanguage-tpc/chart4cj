@@ -444,9 +444,9 @@ public class DashPathEffect {
     var dash: Array<Int64>
     var offset: Int64
 
-    public init(dash: Array<Int64>, offset: Int64) {
+    public init(dash: Array<Int64>) {
         this.dash = dash
-        this.offset = offset
+        this.offset = 0
     }
 
     public func setDash(dash: Array<Int64>) {

@@ -76,11 +76,11 @@ public open class Transformer {
             let e: ?EntryOhos = data.getEntryForIndex(j / 2 + from)
 
             if (let Some(e) <- e) {
-                Utils.newSet(valuePoints, j, e.getX())
-                Utils.newSet(valuePoints, j + 1, e.getY() * phaseY)
+                valuePoints.replaceOrAppend(j, e.getX())
+                valuePoints.replaceOrAppend(j + 1, e.getY() * phaseY)
             } else {
-                Utils.newSet(valuePoints, j, 0.0)
-                Utils.newSet(valuePoints, j + 1, 0.0)
+                valuePoints.replaceOrAppend(j, 0.0)
+                valuePoints.replaceOrAppend(j + 1, 0.0)
             }
          }
 
@@ -153,12 +153,12 @@ public open class Transformer {
             let e: ?EntryOhos = data.getEntryForIndex(j / 2 + min)
             match (e) {
                 case Some(entryOhos) =>
-                    Utils.newSet(valuePoints, j, entryOhos.getX())
-                    Utils.newSet(valuePoints, j + 1, entryOhos.getY() * phaseY)
+                    valuePoints.replaceOrAppend(j, entryOhos.getX())
+                    valuePoints.replaceOrAppend(j + 1, entryOhos.getY() * phaseY)
 
                 case None =>
-                    Utils.newSet(valuePoints, j, 0.0)
-                    Utils.newSet(valuePoints, j + 1, 0.0)
+                    valuePoints.replaceOrAppend(j, 0.0)
+                    valuePoints.replaceOrAppend(j + 1, 0.0)
             }
         }
 
@@ -189,12 +189,12 @@ public open class Transformer {
             let e: ?CandleEntry = data.getEntryForIndex(j / 2 + fromValue)
             match (e) {
                 case Some(entryOhos) =>
-                    Utils.newSet(valuePoints, j, entryOhos.getX())
-                    Utils.newSet(valuePoints, j + 1, entryOhos.getHigh() * phaseY)
+                    valuePoints.replaceOrAppend(j, entryOhos.getX())
+                    valuePoints.replaceOrAppend(j + 1, entryOhos.getHigh() * phaseY)
 
                 case None =>
-                    Utils.newSet(valuePoints, j, 0.0)
-                    Utils.newSet(valuePoints, j + 1, 0.0)
+                    valuePoints.replaceOrAppend(j, 0.0)
+                    valuePoints.replaceOrAppend(j + 1, 0.0)
             }
         }
 

@@ -47,7 +47,7 @@ public class FragSimpleScatterIndex {
             xAxis.setPosition(XAxisPosition.TOP)
             xAxis.setAxisMinimum(0.0)
             xAxis.setAxisMaximum(this.dataScatter.getXMax())
-            xAxis.enableGridDashedLine(10, 10, 0)
+            xAxis.enableGridDashedLine(10, 10)
             xAxis.setDrawAxisLine(false)
             xAxis.setDrawLabels(false)
             xAxis.setDrawGridLines(true)
@@ -61,7 +61,7 @@ public class FragSimpleScatterIndex {
             leftAxis.setAxisMinimum(this.dataScatter.getYMin() - 500.0)
             leftAxis.setAxisMaximum(this.dataScatter.getYMax() + 1000.0)
             leftAxis.setDrawGridLines(true)
-            leftAxis.enableGridDashedLine(10, 10, 0)
+            leftAxis.enableGridDashedLine(10, 10)
             leftAxis.setDrawLabels(true)
         }
 

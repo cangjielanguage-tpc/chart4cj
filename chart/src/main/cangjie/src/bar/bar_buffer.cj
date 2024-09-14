@@ -30,22 +30,16 @@ public open class BarBuffer <: AbstractBuffer<IBarDataSet> {
     }
 
     protected func addBar(left: Float64, top: Float64, right: Float64, bottom: Float64): Unit {
-        newSet(this.buffer, this.index, left)
+        this.buffer.replaceOrAppend(this.index, left)
         this.index++
-        newSet(this.buffer, this.index, top)
+        this.buffer.replaceOrAppend(this.index, top)
         this.index++
-        newSet(this.buffer, this.index, right)
+        this.buffer.replaceOrAppend(this.index, right)
         this.index++
-        newSet(this.buffer, this.index, bottom)
+        this.buffer.replaceOrAppend(this.index, bottom)
         this.index++
     }
-    private func newSet(array: ArrayList<Float64>, index: Int64, value: Float64) {
-        if (index < array.size) {
-            array.set(index, value)
-        } else {
-            array.append(value)
-        }
-    }
+
     public open func feed(data: IBarDataSet): Unit {
         let size: Int64 = Int64(ceil(Float64(data.getEntryCount()) * this.phaseX))
         let barWidthHalf: Float64 = this.mBarWidth / 2.0

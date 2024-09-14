@@ -126,7 +126,7 @@ class CustomGridLineChartPage {
                             if (let Some(yAxis) <- yAxis) {
                                 yAxis.setGridColor(item.color)
                                 yAxis.setGridLineWidth(1.0)
-                                yAxis.setGridDashedLine(DashPathEffect([2, 2], 1))
+                                yAxis.setGridDashedLine(DashPathEffect([2, 2]))
                                 this.model.invalidate()
                             }
                             //}
@@ -145,7 +145,7 @@ class CustomGridLineChartPage {
                         return
                     }
                     if (isChecked) {
-                        this.xAxis().addGridLine(GridLineConfig(8.0, 0x0000FF, 0.6, DashPathEffectConfig(5, 10, 2)))
+                        this.xAxis().addGridLine(GridLineConfig(8.0, 0x0000FF, 0.6, DashPathEffectConfig(5, 10)))
                         this.leftAxis().addGridLine(GridLineConfig(35.0, 0xFF0000, 1.0,
                             Option<DashPathEffectConfig>.None))
                         this.leftAxis().addGridLine(GridLineConfig(45.0, 0x999999, 1.0,

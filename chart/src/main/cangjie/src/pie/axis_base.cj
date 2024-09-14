@@ -404,8 +404,7 @@ public abstract class AxisBase <: ComponentBase {
         if(customLine.getDashPathEffect().isSome()) {
             line.enableDashedLine(
                 customLine.getDashPathEffect()().getLineLength(),
-                customLine.getDashPathEffect()().getSpaceLength(),
-                customLine.getDashPathEffect()().getPhase()
+                customLine.getDashPathEffect()().getSpaceLength()
             )
         }
 
@@ -562,8 +561,8 @@ public abstract class AxisBase <: ComponentBase {
      * @param spaceLength the length of space in between the pieces
      * @param phase       offset, in degrees (normally, use 0)
      */
-    public func enableGridDashedLine(lineLength: Int64, spaceLength: Int64, phase: Int64): Unit {
-        this.mGridDashPathEffect = DashPathEffect([lineLength, spaceLength], phase)
+    public func enableGridDashedLine(lineLength: Int64, spaceLength: Int64): Unit {
+        this.mGridDashPathEffect = DashPathEffect([lineLength, spaceLength])
     }
 
     /**
@@ -619,8 +618,8 @@ public abstract class AxisBase <: ComponentBase {
      * @param spaceLength the length of space in between the pieces
      * @param phase       offset, in degrees (normally, use 0)
      */
-    public func enableAxisLineDashedLine(lineLength: Int64, spaceLength: Int64, phase: Int64): Unit {
-        this.mAxisLineDashPathEffect = DashPathEffect([lineLength, spaceLength], phase)
+    public func enableAxisLineDashedLine(lineLength: Int64, spaceLength: Int64): Unit {
+        this.mAxisLineDashPathEffect = DashPathEffect([lineLength, spaceLength])
     }
 
     /**

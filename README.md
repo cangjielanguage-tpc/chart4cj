@@ -322,7 +322,7 @@ class BarChartPageReadme {
             leftaxis.setAxisMinimum(0.0) // 设置左侧Y轴的最小值为 0
             leftaxis.setDrawLimitLinesBehindData(true) // 设置是否在数据后绘制限制线
             leftaxis.setSpaceTop(30.0) //设置距离顶部距离
-            leftaxis.enableGridDashedLine(10, 10, 0) //设置网格样式
+            leftaxis.enableGridDashedLine(10, 10) //设置网格样式
         }
 
         this.rightAxis = this.model.getAxisRight()
@@ -1816,9 +1816,8 @@ class CombinedChartPageReadme {
     1. 仓颉 UI 未支持手势组件，影响图表手势操作后的高亮、缩放、平移、旋转功能；
     2. 线形图曲线模式暂不支持；
     3. 饼状图、线形图填充效果暂不支持；
-    4. 受仓颉 UI 画布组件 CanvasRenderingContext2D 的 measureText(String) 接口的影响，凡涉及到文本的地方都有距离误差；
-    5. 散点图的的散布形状不支持实心圆，仅支持空心圆；
-    6. 雷达图暂不支持填充功能；
+    4. 散点图的的散布形状不支持实心圆，仅支持空心圆；
+    5. 雷达图暂不支持填充功能；
 
 ## 开源协议
 

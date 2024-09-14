@@ -80,7 +80,7 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
             var v: Float64 = mins
 
             for (i in 0..labelCount) {
-                Utils.newSet(this.mAxis().mEntries, i, v)
+                this.mAxis().mEntries.replaceOrAppend(i, v)
                 v += step
             }
 
@@ -126,7 +126,7 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
                 if (f == 0.0) {
                     f = 0.0
                 }
-                Utils.newSet(this.mAxis().mEntries, i, f)
+                this.mAxis().mEntries.replaceOrAppend(i, f)
                 f += interval
                 i++
             }

@@ -48,7 +48,7 @@ class BarChartMultiplePage {
             leftaxis.setAxisMinimum(0.0)
             leftaxis.setDrawLimitLinesBehindData(false)
             leftaxis.setSpaceTop(30.0)
-            leftaxis.enableGridDashedLine(10, 10, 0)
+            leftaxis.enableGridDashedLine(10, 10)
         }
 
         this.rightAxis = this.model.getAxisRight()

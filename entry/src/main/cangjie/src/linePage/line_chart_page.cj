@@ -44,13 +44,13 @@ class LineChartPage {
 
         this.limitLine1 = LimitLine(120.0, "Upper Limit")
         this.limitLine1.setLineWidth(4.0)
-        this.limitLine1.enableDashedLine(10, 10, 0)
+        this.limitLine1.enableDashedLine(10, 10)
         this.limitLine1.setLabelPosition(LimitLabelPosition.RIGHT_TOP)
         this.limitLine1.setTextSize(10.0)
 
         this.limitLine2 = LimitLine(50.0, "Lower Limit")
         this.limitLine2.setLineWidth(4.0)
-        this.limitLine2.enableDashedLine(10, 10, 0)
+        this.limitLine2.enableDashedLine(10, 10)
         this.limitLine2.setLineColor(0xFFFF00)
         this.limitLine2.setLabelPosition(LimitLabelPosition.RIGHT_BOTTOM)
         this.limitLine2.setTextSize(10.0)
@@ -60,7 +60,7 @@ class LineChartPage {
             x.setPosition(XAxisPosition.BOTTOM)
             x.setDrawGridLines(false)
             x.setLabelCount(7, false)
-            x.setValueFormatter(DefaultAxisValueFormatter(1))
+            x.setValueFormatter(DefaultAxisValueFormatter(3))
         }
 
         this.leftAxis = this.model.getAxisLeft()

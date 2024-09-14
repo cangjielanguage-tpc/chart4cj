@@ -28,7 +28,7 @@ public class PieChart {
                     let jobs = this.model.mJobs
                     let length = jobs.size
                     for (i in 0..length) {
-                        jobs[i].run()
+                        jobs[i].run<PieData, IPieDataSet, PiEntry>()
                     }
                     jobs.clear()
                 }

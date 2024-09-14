@@ -29,7 +29,7 @@ public class CombinedChart {
                     let jobs = this.model.mJobs
                     let length = jobs.size
                     for (i in 0..length) {
-                        jobs[i].run()
+                        jobs[i].run<CombinedData,IBarLineScatterCandleBubbleDataSet<EntryOhos>, EntryOhos>()
                     }
                     jobs.clear()
                 }

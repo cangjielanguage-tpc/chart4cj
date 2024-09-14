@@ -72,7 +72,7 @@ public abstract class Utils {
             let textMetrics: TextMetrics = canvas.measureText("Test")
             lineHeight = textMetrics.height
         } else {
-            let context2: MeasureOptions = MeasureOptions(textContent: "Test")
+            let context2: MeasureOptions = MeasureOptions(textContent: "Test",fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
             let textSize: MeasureSize = Measure.MeasureTextSize(context2)
             lineHeight = px2vp(textSize.height.px)().value
         }
@@ -447,14 +447,6 @@ public abstract class Utils {
     public static func drawStrokeRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: ChartPaint,
         left: Float64, top: Float64, right: Float64, bottom: Float64, radius: Float64, cornerType: RoundCornerType) {
         Utils.drawRect(isDrawRounded, c, paint, left, top, right, bottom, radius, false, cornerType)
-    }
-
-    public static func newSet(array: ArrayList<Float64>, index: Int64, value: Float64) {
-        if (index < array.size) {
-            array.set(index, value)
-        } else {
-            array.append(value)
-        }
     }
 
     private static func drawRect(isDrawRounded: Bool, c: CanvasRenderingContext2D, paint: ChartPaint, left: Float64,
