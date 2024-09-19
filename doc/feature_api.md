@@ -7665,9 +7665,8 @@ public class DashPathEffect {
      * 构造 
      * 
      * 参数 dash - [lineLength 虚线线段长度, spaceLength 虚线线段之间间隔]
-     * 参数 offset - 偏移量
      */
-    public init(dash: Array<Int64>, offset: Int64)
+    public init(dash: Array<Int64>)
 }
 ```
 
