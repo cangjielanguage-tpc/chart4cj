@@ -1484,22 +1484,6 @@ public abstract class AxisBase<: ComponentBase {
     public init ()
     
     /*
-     * 设置轴上的最小标签数,默认值2
-     * 
-     * 参数 labels - 标签数
-     * 返回值 Unit 
-     */
-    public func setAxisMinLabels (labels: Int64): Unit
-    
-    /*
-     * 设置轴上的最大标签数，默认值25
-     * 
-     * 参数 labels - 标签数
-     * 返回值 Unit 
-     */
-    public func setAxisMaxLabels (labels: Int64): Unit
-    
-    /*
      * 是否设置网格线，默认值true
      * 
      * 参数 enabled - true/false
@@ -1567,7 +1551,8 @@ public abstract class AxisBase<: ComponentBase {
      * 设置标签数量
      * 
      * 参数 count - 标签数量,默认6
-     * 参数 force - true/false，默认false
+     * 参数 force - true/false，默认false,如果启用，表示强制设置标签计数，这意味着将强制使用指定的标签数目
+     *             沿着轴绘制并均匀分布-这可能会导致标签的值不均匀。
      * 返回值 Unit 
      */
     public func setLabelCount (count: Int64, force: ?Bool): Unit
@@ -1639,10 +1624,9 @@ public abstract class AxisBase<: ComponentBase {
      * 
      * 参数 lineLength - 长度
      * 参数 spaceLength - 间隔
-     * 参数 phase - 偏移
      * 返回值 Unit 
      */
-    public func enableGridDashedLine (lineLength: Int64, spaceLength: Int64, phase: Int64): Unit
+    public func enableGridDashedLine (lineLength: Int64, spaceLength: Int64): Unit
     
     /*
      * 设置网格线的形式
@@ -1668,14 +1652,13 @@ public abstract class AxisBase<: ComponentBase {
     public func getGridDashPathEffect (): DashPathEffect
     
     /*
-     * 是否允许以虚线模式绘制轴线
+     * 是否允许以虚线模式绘制轴线,设置在 X 轴有效且作用于 X 轴和 Y 轴。
      * 
      * 参数 lineLength - 线长
      * 参数 spaceLength - 间隔
-     * 参数 phase - 偏移
      * 返回值 Unit 
      */
-    public func enableAxisLineDashedLine (lineLength: Int64, spaceLength: Int64, phase: Int64): Unit
+    public func enableAxisLineDashedLine (lineLength: Int64, spaceLength: Int64): Unit
     
     /*
      * 设置轴线为虚线
@@ -1954,16 +1937,15 @@ public class LimitLine<: ComponentBase {
      * 
      * 参数 color - 颜色
      */
-    public func setLineColor (color: Int64)
+    public func setLineColor (color: UInt32)
     
     /*
      * 设置限制线位虚线
      * 
      * 参数 lineLength - 线长
      * 参数 spaceLength - 虚线间隔
-     * 参数 phase - 偏移
      */
-    public func enableDashedLine (lineLength: Int64, spaceLength: Int64, phase: Int64)
+    public func enableDashedLine (lineLength: Int64, spaceLength: Int64)
     
     /*
      * 禁用虚线
@@ -2027,9 +2009,8 @@ public class DashPathEffectConfig {
      * 
      * 参数 lineLength - 线段长度
      * 参数 spaceLength - 线段间隔
-     * 参数 phase - 相位偏移，以度数表示(通常使用0)
      */
-    public init(lineLength: Int64, spaceLength: Int64, phase: Int64)
+    public init(lineLength: Int64, spaceLength: Int64)
 }
 ```
 
@@ -3360,7 +3341,7 @@ class BarChartPageReadme {
             leftaxis.setAxisMinimum(0.0) // 设置左侧Y轴的最小值为 0
             leftaxis.setDrawLimitLinesBehindData(true) // 设置是否在数据后绘制限制线
             leftaxis.setSpaceTop(30.0) //设置距离顶部距离
-            leftaxis.enableGridDashedLine(10, 10, 0) //设置网格样式
+            leftaxis.enableGridDashedLine(10, 10) //设置网格样式
         }
 
         this.rightAxis = this.model.getAxisRight()
@@ -5209,10 +5190,9 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
      * 
      * 参数 lineLength - 线段的长度
      * 参数 spaceLength - 线段之间的空间长度
-     * 参数 phase - 相位偏移，以度数表示(通常使用0)
      * 返回值 Unit 
      */
-    public func enableDashedLine (lineLength: Int64, spaceLength: Int64, phase: Int64): Unit
+    public func enableDashedLine (lineLength: Int64, spaceLength: Int64): Unit
     
     /*
      * 绘制线是实线

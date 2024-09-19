@@ -12,7 +12,7 @@ internal import ohos.base.*
 internal import ohos.device_info.*
 internal import ohos.animator.*
 
-internal import std.collection.*
+internal import std.collection.{ArrayList,HashMap}
 internal import std.math.*
 internal import std.format.*
 internal import std.time.*

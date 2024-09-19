@@ -265,7 +265,7 @@ public open class YAxisRenderer <: AxisRenderer {
 
             this.mZeroLinePaint.setColor(this.mYAxis.getZeroLineColor())
             this.mZeroLinePaint.setStrokeWidth(this.mYAxis.getZeroLineWidth())
-
+            Utils.resetContext2DStyle(c, this.mZeroLinePaint)
             c.beginPath()
             c.moveTo(this.mViewPortHandler().contentLeft(), pos.y)
             c.lineTo(this.mViewPortHandler().contentRight(), pos.y)

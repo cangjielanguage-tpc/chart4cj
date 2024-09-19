@@ -72,7 +72,7 @@ class MultiplePage {
         set1.setMode(Mode.LINEAR)
         set1.setColorByColor(0x008000)
         set1.setLineWidth(2.5)
-        set1.enableDashedLine(10, 10, 0)
+        set1.enableDashedLine(10, 10)
         dataSet.append(set1)
 
         let set2 = LineDataSet(values2, "DataSet 2")

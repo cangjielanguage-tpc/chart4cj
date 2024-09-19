@@ -212,7 +212,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      */
     public func addViewportJob(job: MoveViewJob): Unit {
         if (this.mViewPortHandler.hasChartDimens()) {
-            job.run()
+            job.run<D, S, E>()
         } else {
             this.mJobs.append(job)
         }

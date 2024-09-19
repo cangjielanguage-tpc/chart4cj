@@ -27,7 +27,7 @@ class TallBarChartPage {
             leftAxis.setSpaceTop(15.0)
             leftAxis.setAxisMinimum(0.0)
             leftAxis.setAxisMaximum(100.0)
-            leftAxis.enableGridDashedLine(10, 10, 0)
+            leftAxis.enableGridDashedLine(10, 10)
         }
 
         let rightAxis = this.model.getAxisRight()

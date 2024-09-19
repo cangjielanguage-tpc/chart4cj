@@ -30,7 +30,7 @@ public class ScatterChart {
                     let jobs = this.model.mJobs
                     let length = jobs.size
                     for (i in 0..length) {
-                        jobs[i].run()
+                        jobs[i].run<ScatterData, IScatterDataSet, EntryOhos>()
                     }
                     jobs.clear()
                 }

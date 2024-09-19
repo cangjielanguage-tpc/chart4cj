@@ -7,10 +7,10 @@ public class DashPathEffectConfig {
     var lineLength: Int64  = 0
     var spaceLength: Int64 = 0
     var phase: Int64 = 0
-    public init(lineLength: Int64, spaceLength: Int64, phase: Int64) {
+    public init(lineLength: Int64, spaceLength: Int64) {
         this.lineLength = lineLength
         this.spaceLength = spaceLength
-        this.phase = phase
+        this.phase = 0
     }
     public func getLineLength(): Int64 {
         return this.lineLength

@@ -25,7 +25,7 @@ public class BarChartItem {
             leftAxis.setLabelCount(7, false)
             leftAxis.setAxisMinimum(0.0)
             leftAxis.setAxisMaximum(100.0)
-            leftAxis.enableGridDashedLine(10, 10, 0)
+            leftAxis.enableGridDashedLine(10, 10)
         }
 
         this.barModel.setData(this.data)

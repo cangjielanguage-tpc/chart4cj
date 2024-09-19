@@ -162,7 +162,6 @@ public abstract class AxisRenderer <: Renderer {
                     interval
                 }
             }
-
             // Normalize interval
             let intervalMagnitude: Float64 = Utils.roundToNextSignificant(
                 pow(
@@ -174,6 +173,7 @@ public abstract class AxisRenderer <: Renderer {
                     })
                 )
             )
+
             let intervalSigDigit: Float64 = floor((interval / intervalMagnitude))
             if (intervalSigDigit > 5.0) {
                 // Use one order of magnitude higher, to avoid intervals like 0.9 or 90
@@ -216,8 +216,7 @@ public abstract class AxisRenderer <: Renderer {
 
                 let offset: Float64 = interval / 2.0
                 for (i in 0..n) {
-                    //this.mAxis.mCenteredEntries[i] = this.mAxis.mEntries[i] + offset
-                    mAxis.mCenteredEntries.append(mAxis.mEntries[i] + offset)
+                    mAxis.mCenteredEntries.replaceOrAppend(i, mAxis.mEntries[i] + offset)
                 }
             }
         }
@@ -234,8 +233,8 @@ public abstract class AxisRenderer <: Renderer {
 
             var v = min
 
-            for (_ in 0..labelCount) {
-                mAxis.mEntries.append(v)
+            for (i in 0..labelCount) {
+                mAxis.mEntries.replaceOrAppend(i, v)
                 v += interval
             }
         }
@@ -274,7 +273,6 @@ public abstract class AxisRenderer <: Renderer {
             }
 
             mAxis.mEntryCount = Float64(n)
-
             if (mAxis.mEntries.size < n) {
                 // Ensure stops contains at least numStops elements.
                 mAxis.mEntries = ArrayList<Float64>(n)
@@ -286,8 +284,7 @@ public abstract class AxisRenderer <: Renderer {
                     f = 0.0
                 } // Fix for negative zero case (Where value == -0.0, and 0.0 == -0.0)
 
-                // this.mAxis.mEntries[i] = f
-                mAxis.mEntries.append(f)
+                mAxis.mEntries.replaceOrAppend(i, f)
                 f += interval
                 i++
             }

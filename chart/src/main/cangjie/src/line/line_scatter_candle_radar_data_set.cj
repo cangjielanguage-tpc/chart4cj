@@ -68,9 +68,9 @@ public abstract class LineScatterCandleRadarDataSet<E> <: BarLineScatterCandleBu
      * @param spaceLength the length of space in between the line-pieces
      * @param phase offset, in degrees (normally, use 0)
      */
-    public func enableDashedHighlightLine(lineLength: Int64, spaceLength: Int64, phase: Int64): Unit {
+    public func enableDashedHighlightLine(lineLength: Int64, spaceLength: Int64): Unit {
         let arr = [lineLength, spaceLength]
-        this.mHighlightDashPathEffect = DashPathEffect(arr, phase)
+        this.mHighlightDashPathEffect = DashPathEffect(arr)
     }
 
     /**

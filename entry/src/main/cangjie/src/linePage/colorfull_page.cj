@@ -90,7 +90,7 @@ class ColorfulPage {
         // 设置数据点的颜色
         dataSet.setCircleColor(0Xffffff) // 可以将圆环设置为你想要的颜色
 
-        // dataSet.enableDashedLine(5, 5, 0)//虚折线
+        // dataSet.enableDashedLine(5, 5)//虚折线
         // 设置数据点的半径
         dataSet.setCircleRadius(5.0) // 设置半径大小
         dataSet.setCircleHoleRadius(2.5) //设置内径

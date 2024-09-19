@@ -156,8 +156,8 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
         return this.mCircleHoleRadius
     }
 
-    public func enableDashedLine(lineLength: Int64, spaceLength: Int64, phase: Int64): Unit {
-        this.mDashPathEffect = DashPathEffect([lineLength, spaceLength], phase)
+    public func enableDashedLine(lineLength: Int64, spaceLength: Int64): Unit {
+        this.mDashPathEffect = DashPathEffect([lineLength, spaceLength])
     }
 
     /**

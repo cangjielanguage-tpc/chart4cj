@@ -26,6 +26,8 @@ public class HorizontalBarChartModel <: BarChartModel {
         if (let Some(xaxis) <- this.mXAxis) {
             this.mXAxisRenderer = XAxisRendererHorizontalBarChart(this.mViewPortHandler, xaxis,
                 this.mLeftAxisTransformer(), this)
+                xaxis.setSpaceMin(0.5)
+                xaxis.setSpaceMax(0.5)
         }
     }
 

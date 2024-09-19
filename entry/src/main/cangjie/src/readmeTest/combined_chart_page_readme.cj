@@ -39,7 +39,6 @@ class CombinedChartPageReadme {
             l.setHorizontalAlignment(LegendHorizontalAlignment.LEFT) // 设置图例水平对齐方式为左侧
             l.setVerticalAlignment(LegendVerticalAlignment.BOTTOM) // 设置图例垂直对齐方式为底部
             l.setDrawInside(false) // 设置图例不绘制在图表内部
-            l.setYOffset(-10.0) // 设置图例 Y 轴偏移
             l.setOrientation(LegendOrientation.HORIZONTAL) // 设置图例水平方向显示
         }
 

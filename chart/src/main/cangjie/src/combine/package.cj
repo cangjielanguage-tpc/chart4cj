@@ -16,7 +16,7 @@ internal import ohos.component.*
 internal import ohos.base.*
 internal import ohos.device_info.*
 
-internal import std.collection.*
+internal import std.collection.{ArrayList}
 internal import std.math.*
 
 extend<T> Option<T> {

@@ -49,7 +49,7 @@ class BarChartPageReadme {
             leftaxis.setAxisMinimum(0.0) // 设置左侧Y轴的最小值为 0
             leftaxis.setDrawLimitLinesBehindData(true) // 设置是否在数据后绘制限制线
             leftaxis.setSpaceTop(30.0) //设置距离顶部距离
-            leftaxis.enableGridDashedLine(10, 10, 0) //设置网格样式
+            leftaxis.enableGridDashedLine(10, 10) //设置网格样式
         }
 
         this.rightAxis = this.model.getAxisRight()
