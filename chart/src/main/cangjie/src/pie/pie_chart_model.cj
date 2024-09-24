@@ -136,8 +136,10 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
             if (c.isNone()) {
                 return
             }
-
-            let shift: Float64 = (this.mData() as PieData)().getDataSet().getSelectionShift()
+            if(this.mData().getDataSet().isNone()) {
+                return
+            }
+            let shift: Float64 = this.mData().getDataSet()().getSelectionShift()
 
             // create the circle box that will contain the pie-chart (the bounds of
             // the pie-chart)

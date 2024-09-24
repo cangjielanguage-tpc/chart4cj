@@ -2573,9 +2573,10 @@ public class PieData<: ChartData<IPieDataSet,PiEntry> {
     /*
      * 返回此 PieData 对象表示的 DataSet。PieData 对象只能包含一个DataSet。
      * 
-     * 返回值 IPieDataSet - IPieDataSet
+     * 返回值 ?IPieDataSet - IPieDataSet 饼状图数据集
+     *                    - Option<IPieDataSet>.None 
      */
-    public func getDataSet (): IPieDataSet
+    public func getDataSet (): ?IPieDataSet
     
     /*
      * 返回此 PieData 对象表示的 DataSet集合。

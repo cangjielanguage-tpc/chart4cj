@@ -36,7 +36,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
                 MPPointD.recycleInstance(p2)
             }
 
-            this.computeAxisValues(yMin, yMax)
+            this.computeAxisValues(mins, maxs)
         } else {
             return
         }

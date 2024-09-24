@@ -38,7 +38,7 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
                 MPPointD.recycleInstance(p2)
             }
 
-            this.computeAxisValues(min, max)
+            this.computeAxisValues(mins, maxs)
         } else {
             return
         }

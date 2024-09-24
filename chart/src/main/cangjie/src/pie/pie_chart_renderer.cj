@@ -1048,9 +1048,11 @@ public class PieChartRenderer <: DataRenderer {
             return
         }
 
-        let dataSet: IPieDataSet = this.mChart.getPieData()().getDataSet()
-
-        if (!dataSet.isVisible()) {
+        let dataSet: ?IPieDataSet = this.mChart.getPieData()().getDataSet()
+        if(dataSet.isNone()) {
+            return
+        }
+        if (!dataSet().isVisible()) {
             return
         }
 
@@ -1066,10 +1068,10 @@ public class PieChartRenderer <: DataRenderer {
         let drawAngles: Array<Float64> = this.mChart.getDrawAngles()
         var angle: Float64 = this.mChart.getRotationAngle()
 
-        for (j in 0..dataSet.getEntryCount()) {
+        for (j in 0..dataSet().getEntryCount()) {
             let sliceAngle: Float64 = drawAngles[j]
 
-            let e: EntryOhos = dataSet.getEntryForIndex(j)()
+            let e: EntryOhos = dataSet().getEntryForIndex(j)()
 
             // draw only if the value is greater than zero
             if ((abs(e.getY()) > Utils.FLOAT_EPSILON)) {
@@ -1078,7 +1080,7 @@ public class PieChartRenderer <: DataRenderer {
                 let y: Float64 = /*(float)*/
                     ((r - circleRadius) * sin(MyMath.toRadians((angle + sliceAngle) * phaseY)) + center.y)
 
-                this.mRenderPaint.setColor(Color(dataSet.getColor(j)))
+                this.mRenderPaint.setColor(Color(dataSet().getColor(j)))
                 // this.mBitmapCanvas.drawCircle(x, y, circleRadius, this.mRenderPaint)
                 Utils.resetContext2DStyle(c, this.mRenderPaint)
                 c.beginPath()

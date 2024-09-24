@@ -38,8 +38,8 @@ public class PieData <: ChartData<IPieDataSet, PiEntry> {
      *
      * @return
      */
-    public func getDataSet(): IPieDataSet {
-        return this.mDataSets.get(0)()
+    public func getDataSet(): ?IPieDataSet {
+        return this.mDataSets.get(0)
     }
 
     public override func getDataSets(): ArrayList<IPieDataSet> {
@@ -86,7 +86,12 @@ public class PieData <: ChartData<IPieDataSet, PiEntry> {
 
 
     public override func getEntryForHighlight(highlight: Highlight): ?PiEntry {
-        return this.getDataSet().getEntryForIndex(Int64(highlight.getX()))
+        match(this.getDataSet()) {
+            case Some(dataSet) =>
+               return dataSet.getEntryForIndex(Int64(highlight.getX()))
+            case None => None
+        }
+
     }
 
     /**
@@ -96,11 +101,13 @@ public class PieData <: ChartData<IPieDataSet, PiEntry> {
      */
     public func getYValueSum(): Float64 {
         var sum: Float64 = 0.0
-        let index: Int64 = this.getDataSet().getEntryCount()
-        for (i in 0..index) {
-            sum += this.getDataSet().getEntryForIndex(i)().getY()
+        var index: Int64 = 0
+        if(let Some(dataSet) <- this.getDataSet()) {
+            index = dataSet.getEntryCount()
+            for (i in 0..index) {
+                sum += dataSet.getEntryForIndex(i)().getY()
+            }
         }
-
         return sum
     }
 }

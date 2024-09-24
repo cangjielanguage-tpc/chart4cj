@@ -321,11 +321,13 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                 // if only single values are drawn (sum)
                 if (!dataSet.isStacked()) {
-                    for (j in 0..buffer.buffer.size * Int64(if (let Some(animator) <- this.mAnimator) {
+                    let animatorLength: Int64 = Int64(if (let Some(animator) <- this.mAnimator) {
                                 animator.getPhaseX()
                             } else {
                                 1.0
-                            }) : 4) {
+                            })
+
+                    for (j in 0..buffer.buffer.size * animatorLength : 4) {
                         let x: Float64 = (buffer.buffer[j] + buffer.buffer[j + 2]) / 2.0
 
                         if (!this.mViewPortHandler().isInBoundsRight(x)) {

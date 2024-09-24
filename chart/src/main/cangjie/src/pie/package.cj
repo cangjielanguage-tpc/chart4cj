@@ -16,6 +16,7 @@ internal import ohos.animator.*
 internal import std.unicode.{UnicodeExtension}
 internal import std.time.*
 internal import std.convert.*
+internal import std.format.*
 internal import ohos.image.*
 internal import ohos.measure.Size as MeasureSize
 internal import ohos.measure.MeasureOptions
