@@ -300,7 +300,9 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      * Draws the description text in the bottom right corner of the chart (per default)
      */
     protected func drawDescription(c: CanvasRenderingContext2D): Unit {
-
+        if (this.mData().getDataSetCount() == 0) {
+            return
+        }
 
         // check if description should be drawn
         if (this.mDescription.isEnabled()) {

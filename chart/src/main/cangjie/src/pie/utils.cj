@@ -135,8 +135,15 @@ public abstract class Utils {
         let d: Float64 = ceil(ilog10)
         let pw: Float64 = 1.0 - floor(d)
         let magnitude: Float64 = pow(10.0, pw)
-        let shifted: Float64 = round(number * magnitude)
-        return shifted / magnitude
+        let shifted: Float64 = number * magnitude
+        let shiftedStr: Array<String> = shifted.format(".1").split(".")
+        var shiftedNum: Float64 = 0.0
+        if(Int32.parse(shiftedStr[1]) >= 5 ) {
+             shiftedNum = ceil(shifted)
+        } else {
+            shiftedNum = floor(shifted)
+        }
+        return shiftedNum / magnitude
     }
 
     /**
@@ -169,10 +176,11 @@ public abstract class Utils {
         if (dd == Float64.Max) {
             return dd
         } else {
+            dd += 0.0
             if (dd >= 0.0) {
                 dd += 0.000000001
             } else {
-                dd -= 0.00000000
+                dd -= 0.000000001
             }
             return dd
         }

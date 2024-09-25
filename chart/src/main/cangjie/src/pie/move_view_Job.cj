@@ -40,6 +40,7 @@ public class MoveViewJob <: Poolable {
 
     public func run<D,S,E>(): Unit where D <: ChartData<S, E>, S <: IDataSet<E>, E <: EntryOhos  {
         this.pts[0] = this.xValue
+        this.pts[1] = this.yValue
 
         if (this.mTrans.isSome()) {
             this.mTrans().pointValuesToPixel(this.pts)

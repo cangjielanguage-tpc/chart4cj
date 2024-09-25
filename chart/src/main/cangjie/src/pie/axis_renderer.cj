@@ -194,13 +194,12 @@ public abstract class AxisRenderer <: Renderer {
             // force label count
             if (mAxis.isForceLabelsEnabled()) {
                 interval = range / Float64(labelCount - 1)
-                xaxisIsForceLablesEnabled(labelCount, min, interval)
+                xaxisIsForceLablesEnabled(labelCount, yMin, interval)
                 n = labelCount
 
             // no forced count
             } else {
-                interval = xaxisIsForceLablesDesnabled(interval, yMin, yMax, n)[0]
-                n = xaxisIsForceLablesDesnabled(interval, yMin, yMax, n)[1]
+                (interval, n) = xaxisIsForceLablesDesnabled(interval, yMin, yMax, n)
             }
 
             // set decimals

@@ -237,7 +237,6 @@ public class LegendRenderer <: Renderer {
     public func computeLegend<D, S, E>(data: ?D): Unit where D <: ChartData<S, E>, S <: IDataSet<E>, E <: EntryOhos {
         if (this.mLegend.isSome() && !this.mLegend().isLegendCustom() && data.isSome()) {
             this.computedEntries.clear()
-
             // loop for building up the colors and labels used in the legend
             for (i in 0..data().getDataSetCount()) {
                 let dataSet: Option<S> = data().getDataSetByIndex(i)
@@ -246,29 +245,28 @@ public class LegendRenderer <: Renderer {
                 }
 
                 computeLegendMatchDataSet(dataSet, data, i)
-
-                if (this.mLegend.isSome() && this.mLegend().getExtraEntries().isSome()) {
-                    let dataSource: ?Array<LegendEntry> = this.mLegend().getExtraEntries()
-                    if (let Some(data) <- dataSource) {
-                        for (i in 0..data.size) {
-                            this.computedEntries.append(data[i])
-                        }
+            }
+            if (this.mLegend.isSome() && this.mLegend().getExtraEntries().isSome()) {
+                let dataSource: ?Array<LegendEntry> = this.mLegend().getExtraEntries()
+                if (let Some(data) <- dataSource) {
+                    for (i in 0..data.size) {
+                        this.computedEntries.append(data[i])
                     }
                 }
-                match (this.mLegend) {
-                    case Some(l) =>
-                        l.setEntries(this.computedEntries)
-                        let tf: FontFamily = l.getTypeface()
+            }
+            match (this.mLegend) {
+                case Some(l) =>
+                    l.setEntries(this.computedEntries)
+                    let tf: FontFamily = l.getTypeface()
 
-                        this.mLegendLabelPaint.setFontFamily(tf)
+                    this.mLegendLabelPaint.setFontFamily(tf)
 
-                        this.mLegendLabelPaint.setTextSize(l.getTextSize())
-                        this.mLegendLabelPaint.setColor(l.getTextColor())
+                    this.mLegendLabelPaint.setTextSize(l.getTextSize())
+                    this.mLegendLabelPaint.setColor(l.getTextColor())
 
-                        // calculate all dimensions of the mLegend
-                        l.calculateDimensions(this.mLegendLabelPaint, this.mViewPortHandler())
-                    case _ => ()
-                }
+                    // calculate all dimensions of the mLegend
+                    l.calculateDimensions(this.mLegendLabelPaint, this.mViewPortHandler())
+                case _ => ()
             }
         }
     }
