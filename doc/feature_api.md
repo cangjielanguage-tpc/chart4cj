@@ -3040,7 +3040,7 @@ public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBa
     /*
      * 构造 
      * 
-     * 参数 yVals - BarEntry 集合
+     * 参数 yVals - BarEntry 集合，按照 x 值大小顺序填入。
      * 参数 label - 标签
      */
     public init (yVals: ArrayList<BarEntry>, label: String)
@@ -3768,7 +3768,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func moveViewToX (xValue: Float64): Unit
     
     /*
-     * 将使当前视图的左侧移动到x轴上的指定位置，并将视图中心移动到y轴的指定位置，,不支持饼状图和雷达图
+     * 将使当前视图的左侧移动到x轴上的指定位置，并将视图中心移动到y轴的指定位置，不支持饼状图和雷达图
      * 
      * 参数 xValue - x轴上的指定位置
      * 参数 yValue - y轴上的指定位置
@@ -3778,7 +3778,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func moveViewTo (xValue: Float64, yValue: Float64, axis: AxisDependency): Unit
     
     /*
-     * 将使当前视图的左侧移动到x轴上的指定位置，并将视图中心移动到y轴的指定位置,启动动画效果，,不支持饼状图和雷达图
+     * 将使当前视图的左侧移动到x轴上的指定位置，并将视图中心移动到y轴的指定位置,启动动画效果，不支持饼状图和雷达图
      * 
      * 参数 xValue - x轴上的指定位置
      * 参数 yValue - y轴上的指定位置
@@ -4044,7 +4044,7 @@ public class BubbleDataSet<: BarLineScatterCandleBubbleDataSet<BubblesEntry> & I
     /*
      * 构造 
      * 
-     * 参数 yVals - 气泡图数据结构集合
+     * 参数 yVals - 气泡图数据结构集合，按照 x 值大小顺序填入。
      * 参数 label - 标签
      */
     public init (yVals: ArrayList<BubblesEntry>, label: String)
@@ -4470,7 +4470,7 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
     /*
      * 构造 
      * 
-     * 参数 yVals - 瀑布图数据结构集合
+     * 参数 yVals - 瀑布图数据结构集合，按照 x 值大小顺序填入。
      * 参数 label - 标签
      */
     public init (yVals: ArrayList<WaterfallEntry>, label: String)
@@ -5105,7 +5105,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
     /*
      * 线形图数据集构造函数
      * 
-     * 参数 yVals - 线性图数据结构集合
+     * 参数 yVals - 线性图数据结构集合，按照 x 值大小顺序填入。
      * 参数 label - 标签
      */
     public init (yVals: ArrayList<EntryOhos>, label: String)
@@ -5923,7 +5923,7 @@ public class CandleDataSet<: LineScatterCandleRadarDataSet<CandleEntry> & ICandl
     /*
      * 蜡烛图数据对象构造 
      * 
-     * 参数 yVals - 蜡烛图数据结构集合
+     * 参数 yVals - 蜡烛图数据结构集合，按照 x 值大小顺序填入。
      * 参数 label - 标签
      */
     public init (yVals: ArrayList<CandleEntry>, label: String)
@@ -6310,7 +6310,7 @@ public class ScatterDataSet<: LineScatterCandleRadarDataSet<EntryOhos>&IScatterD
     /*
      * 构造 
      * 
-     * 参数 yVals - 散点图数据结构集合
+     * 参数 yVals - 散点图数据结构集合，按照 x 值大小顺序填入。
      * 参数 label - 标签
      */
     public init (yVals: ArrayList<EntryOhos>, label: String)
@@ -7430,20 +7430,6 @@ public class ChartPixelMap {
      * 参数 newIcon - PixelMap
      */
     public func setIcon (newIcon: PixelMap)
-    
-    /*
-     * 设置图像宽度,默认值0.0
-     * 
-     * 参数 width - 宽度
-     */
-    public func setWidth (width: Int64)
-     
-    /*
-     * 设置图像高度,默认值0.0
-     * 
-     * 参数 height - 高度
-     */
-    public func setHeight (height: Int64) 
 }
 ```
 
