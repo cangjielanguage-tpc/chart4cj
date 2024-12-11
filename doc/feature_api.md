@@ -14,7 +14,7 @@ chart4cj 是一个包含各种类型图表的图表库，主要用于业务数�
 public class EntryOhos <: BaseEntry {
     
     /*
-     * 构造 
+     * 图表单条数据初始化构造函数
      * 
      * 参数 x - x 值
      * 参数 y - y 值
@@ -620,20 +620,20 @@ public abstract class BaseDataSet<E> <: IDataSet<E> {
 public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
     
     /*
-     * 无参构造 
+     * 图表数据包构造函数 
      * 
      */
     public init ()
     
     /*
-     * 有参构造 
+     * 图表数据包构造函数 
      * 
      * 参数 dataSets - 数据集
      */
     public init (dataSets: ArrayList<S>)
     
     /*
-     * 有参构造  
+     * 图表数据包构造函数 
      * 
      * 参数 dataSets - 数据集
      */
@@ -918,14 +918,14 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos  {
 public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorUpdateListener {
     
     /*
-     * 获取图表 Y 轴最小值
+     * 获取图表 Y 轴最小值，默认 0.0，需要在设置数据（setData）之后调用。
      * 
      * 返回值 Float64 - 最小值
      */
     public func getYChartMin (): Float64
     
     /*
-     * 获取图表 Y 轴最大值
+     * 获取图表 Y 轴最大值，默认 0.0，需要在设置数据（setData）之后调用。
      * 
      * 返回值 Float64 - 最大值
      */
@@ -942,7 +942,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
      * 更新动画效果
      * 
      * 参数 result - ohos 的 AnimatorResult
-     * 返回值 Unit - 
+     * 返回值 Unit
      */
     public func onAnimationUpdate (result: AnimatorResult): Unit
     
@@ -1050,7 +1050,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func getAnimator (): ?ChartAnimator
     
     /*
-     * 展示图表时同时带有X轴，Y轴动画
+     * 展示图表时同时带有X轴，Y轴动画，与 animateX 和 animateY 同时设定时，同时生效。 
      * 
      * 参数 durationMillisX - X轴条目动画播放的时长，单位毫秒。
      * 参数 durationMillisY - Y轴条目动画播放的时长，单位毫秒。
@@ -1058,10 +1058,10 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
      * 参数 easingY - Y轴动画差值曲线（可选值见 animateX）
      * 返回值 Unit
      */
-    public func animateXY (durationMillisX: Int32, durationMillisY: Int32, easingX: String, easingY: String): Unit
+    public func animateXY (durationMillisX: Int32, durationMillisY: Int32, easingX!: String, easingY!: String): Unit
     
     /*
-     * 展示图表时带有X轴动画，默认'linear'
+     * 展示图表时带有X轴动画，默认'linear'，与 animateXY 和 animateY 同时设定时，同时生效。
      * 
      * 参数 durationMillis - 动画播放的时长，单位毫秒。
      * 参数 easing - 动画差值曲线，可选值：参考仓颉语言系统 API 参考-UI 界面-ohos.animator
@@ -1083,10 +1083,10 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
      *       "steps(number,step-position)"：阶梯曲线，number必须设置，为正整数，step-position参数可选，支持设置start或end，默认值为end。例如"steps(3,start)"。
      * 返回值 Unit 
      */
-    public func animateX (durationMillis: Int32, easing: String): Unit
+    public func animateX (durationMillis: Int32, easing!: String): Unit
     
     /*
-     * 展示图表时带有Y轴动画，默认'linear'
+     * 展示图表时带有Y轴动画，默认'linear'与 animateXY 和 animateX 同时设定时，同时生效。
      * 
      * 参数 durationMillis - 动画播放的时长，单位毫秒。
      * 参数 easing - 动画差值曲线，可选值：参考仓颉语言系统 API 参考-UI 界面-ohos.animator
@@ -1108,7 +1108,7 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
      *       "steps(number,step-position)"：阶梯曲线，number必须设置，为正整数，step-position参数可选，支持设置start或end，默认值为end。例如"steps(3,start)"。
      * 返回值 Unit 
      */
-    public func animateY (durationMillis: Int32, easing: String): Unit
+    public func animateY (durationMillis: Int32, easing!: String): Unit
     
     /*
      * 获取 X 轴对象   
@@ -1134,14 +1134,14 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
     public func setOnChartValueSelectedListener (l: OnChartValueSelectedListener): Unit
     
     /*
-     * 获取 Y 轴最大值
+     * 获取 datasets 数据集最大 Y 值
      * 
      * 返回值 Float64 - 最大值
      */
     public func getYMax (): Float64
     
     /*
-     * 获取 Y 轴最小值
+     * 获取 datasets 数据集最小 Y 值
      * 
      * 返回值 Float64 - 最小值
      */
@@ -1408,8 +1408,9 @@ public abstract class ChartModel<(D, S, E)> <: ChartInterface<S , E> & AnimatorU
      * 默认值:false
      * 
      * 参数 enabled - true/false
+     * 返回值 Unit
      */
-    public func setUnbindEnabled (enabled: Bool)
+    public func setUnbindEnabled (enabled: Bool): Unit
 }
 
 ```
@@ -1478,7 +1479,7 @@ public abstract class ComponentBase {
 ```cangjie
 public abstract class AxisBase<: ComponentBase {
     /*
-     * 构造 
+     * 坐标轴构造函数
      * 
      */
     public init ()
@@ -1686,14 +1687,14 @@ public abstract class AxisBase<: ComponentBase {
     /*
      * 重置轴线的最大值
      * 
-     * 返回值 Unit 最大值
+     * 返回值 Unit
      */
     public func resetAxisMaximum (): Unit
     
     /*
      * 重置轴线的最小值
      * 
-     * 返回值 Unit 最小值
+     * 返回值 Unit
      */
     public func resetAxisMinimum (): Unit
     
@@ -1737,7 +1738,7 @@ X轴
 public class XAxis<: AxisBase {
     
     /*
-     * 构造 
+     * X 坐标轴构造函数
      * 
      */
     public init ()
@@ -1807,7 +1808,7 @@ Y轴
 public class YAxis<: AxisBase {
     
     /*
-     * 构造 
+     * Y 坐标轴构造函数 
      * 
      * 参数 position - y位置
      */
@@ -1911,14 +1912,14 @@ public class YAxis<: AxisBase {
 public class LimitLine<: ComponentBase {
     
     /*
-     * 构造 
+     * 限制线构造函数 
      * 
      * 参数 limit - 限制线
      */
     public init (limit: Float64)
     
     /*
-     * 构造 
+     * 限制线构造函数  
      * 
      * 参数 limit - 限制线
      * 参数 label - 标签
@@ -1989,7 +1990,7 @@ public class LimitLine<: ComponentBase {
 ```cangjie
 public class GridLineConfig {
     /*
-     * 构造 
+     * 网格线构造函数 
      * 
      * 参数 position - 位置
      * 参数 lineColor - 颜色
@@ -2113,7 +2114,7 @@ public interface IAxisValueFormatter {
 public class DefaultAxisValueFormatter<: IAxisValueFormatter {
     
     /*
-     * 构造 
+     * 坐标轴数据格式构造函数
      * 
      * 参数 digits - 值格式化位数
      */
@@ -2147,13 +2148,13 @@ public class DefaultAxisValueFormatter<: IAxisValueFormatter {
 public class LegendEntry {
     
     /*
-     * 构造 
+     * 单项图例构造函数 
      * 
      */
     public init ()
     
     /*
-     * 构造 
+     * 单项图例构造函数  
      * 
      * 参数 label - 图例条目文本。
      * 参数 form - 本条目要绘制的表格。
@@ -2174,13 +2175,13 @@ public class LegendEntry {
 public class Legend<: ComponentBase {
     
     /*
-     * 无参构造 
+     * 图例构造函数
      * 
      */
     public init ()
     
     /*
-     * 构造 
+     * 图例构造函数 
      * 
      * 参数 entries - LegendEntry 集合
      */
@@ -2363,7 +2364,7 @@ public class Legend<: ComponentBase {
 public class Description<: ComponentBase {
     
     /*
-     * 构造 
+     * 图标描述信息构造函数 
      */
     public init ()
     
@@ -2405,7 +2406,7 @@ public class Description<: ComponentBase {
 public class PiEntry <: EntryOhos {
     
     /*
-     * 构造 
+     * 饼状图单项数据构造函数 
      * 
      * 参数 yValue - 比例值
      * 参数 label - 标签字符
@@ -2550,13 +2551,13 @@ public class PieDataSet<: DataSet<PiEntry>&IPieDataSet {
 public class PieData<: ChartData<IPieDataSet,PiEntry> {
     
     /*
-     * 无参构造 
+     * 饼状图数据包构造函数 
      * 
      */
     public init ()
     
     /*
-     * 有参构造 
+     * 饼状图数据包构造函数 
      * 
      * 参数 dataSet - IPieDataSet，这里可用 PieDataSet
      */
@@ -2959,7 +2960,7 @@ class PieChartPageReadme {
 ```cangjie
 public class BarEntry <: EntryOhos {
     /*
-     * 构造 
+     * 柱状图单项条目数据构造函数
      * 
      * 参数 x - x 值
      * 参数 y - y 值
@@ -2969,7 +2970,7 @@ public class BarEntry <: EntryOhos {
     public init(x: Float64, y: Float64, icon!: ?ChartPixelMap, data!: ?Any)
     
     /*
-     * 构造 
+     * 柱状图单项条目数据构造函数 
      * 
      * 参数 x - x 值
      * 参数 y - y 值集合
@@ -3038,7 +3039,7 @@ public interface IBarDataSet <: IBarLineScatterCandleBubbleDataSet<BarEntry> {
 public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBarDataSet {
     
     /*
-     * 构造 
+     * 柱状图数据集构造函数 
      * 
      * 参数 yVals - BarEntry 集合，按照 x 值大小顺序填入。
      * 参数 label - 标签
@@ -3108,19 +3109,19 @@ public open class BarDataSet<: BarLineScatterCandleBubbleDataSet<BarEntry> & IBa
 public open class BarData<: BarLineScatterCandleBubbleData<IBarDataSet, BarEntry> {
     
     /*
-     * 构造
+     * 柱状图数据包构造函数
      */
     public init ()
     
     /*
-     * 构造 
+     * 柱状图数据包构造函数 
      * 
      * 参数 dataSets - 柱状图数据集合
      */
     public init (dataSets: Array<IBarDataSet>)
     
     /*
-     * 构造 
+     * 柱状图数据包构造函数 
      * 
      * 参数 dataSets - 柱状图数据集合
      */
@@ -3288,7 +3289,9 @@ public open class BarChartModel<: BarLineChartBaseModel<BarData, IBarDataSet, Ba
 ##### 8.2.1.6 BarChart Class API Description
 ```cangjie
 @Component
-public class BarChart {}
+public class BarChart {
+    var model: BarChartModel
+}
 ```
 
 ##### 8.2.1.7 垂直柱状图示例
@@ -3512,7 +3515,9 @@ public class HorizontalBarChartModel<: BarChartModel {
 
 ```cangjie
 @Component
-public class HorizontalBarChart {}
+public class HorizontalBarChart {
+    var model: HorizontalBarChartModel
+}
 ```
 ##### 1.10.2.3 示例
 
@@ -3696,7 +3701,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     E>, S <: IBarLineScatterCandleBubbleDataSet<E>, E <: EntryOhos {
     
     /*
-     * 构造 
+     * 图表配置构建类初始化函数
      * 
      */
     public init ()
@@ -3852,7 +3857,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func getDrawListener (): ?OnDrawListener
     
     /*
-     * 设置图表可绘制的最大数量
+     * 设置图表可绘制的最大数量，默认 100，若数据小于100，则图表数据项完全显示。
      * 
      * 参数 count - 数量
      * 返回值 Unit 
@@ -4042,7 +4047,7 @@ public interface IBubbleDataSet <: IBarLineScatterCandleBubbleDataSet<BubblesEnt
 public class BubbleDataSet<: BarLineScatterCandleBubbleDataSet<BubblesEntry> & IBubbleDataSet {
     
     /*
-     * 构造 
+     * 气泡图数据集初始化函数 
      * 
      * 参数 yVals - 气泡图数据结构集合，按照 x 值大小顺序填入。
      * 参数 label - 标签
@@ -4083,7 +4088,7 @@ public class BubbleDataSet<: BarLineScatterCandleBubbleDataSet<BubblesEntry> & I
 public class BubbleData<: BarLineScatterCandleBubbleData<IBubbleDataSet,BubblesEntry> {
     
     /*
-     * 构造 
+     * 气泡图数据包初始化函数 
      * 
      * 参数 sets - 气泡图数据集集合
      */
@@ -4161,7 +4166,9 @@ public class BubbleChartModel<: BarLineChartBaseModel<BubbleData, IBubbleDataSet
 
 ```cangjie
 @Component
-public class BubbleChart {}
+public class BubbleChart {
+    var model: BubbleChartModel
+}
 ```
 
 #### 1.11.7 示例
@@ -4326,7 +4333,7 @@ class BubbleChartPageReadme {
 public class WaterfallEntry<: EntryOhos {
     
     /*
-     * 构造 
+     * 瀑布图单项数据初始化函数 
      * 
      * 参数 x - x 值
      * 参数 minY - 最小Y值
@@ -4382,7 +4389,7 @@ public class WaterfallEntry<: EntryOhos {
 public class WaterfallHighlight {
 
     /*
-     * 构造 
+     * 瀑布图高亮初始化构造函数 
      * 
      * 参数 minY - 最小Y值
      * 参数 maxY - 最大Y值
@@ -4468,7 +4475,7 @@ public interface IWaterfallDataSet <: IBarLineScatterCandleBubbleDataSet<Waterfa
 public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry>&IWaterfallDataSet {
     
     /*
-     * 构造 
+     * 瀑布图数据集初始化构造函数 
      * 
      * 参数 yVals - 瀑布图数据结构集合，按照 x 值大小顺序填入。
      * 参数 label - 标签
@@ -4678,20 +4685,20 @@ public class WaterfallDataSet<: BarLineScatterCandleBubbleDataSet<WaterfallEntry
 public class WaterfallData<: BarLineScatterCandleBubbleData<IWaterfallDataSet,WaterfallEntry> {
     
     /*
-     * 构造 
+     * 瀑布图数据包初始化构造函数 
      * 
      */
     public init ()
     
     /*
-     * 构造 
+     * 瀑布图数据包初始化构造函数  
      * 
      * 参数 dataSets - 瀑布图数据集对象集合
      */
     public init (dataSets: Array<IWaterfallDataSet>)
     
     /*
-     * 构造 
+     * 瀑布图数据包初始化构造函数  
      * 
      * 参数 dataSets - 瀑布图数据集对象集合
      */
@@ -4863,7 +4870,9 @@ public class WaterfallChartModel<: BarLineChartBaseModel<WaterfallData,IWaterfal
 #### 1.12.8 WaterfallChart Component
 
 ```cangjie
-public class WaterfallChart {}
+public class WaterfallChart {
+    var model: WaterfallChartModel
+}
 ```
 
 #### 1.12.9 示例
@@ -5434,7 +5443,9 @@ public class LineChartModel<: BarLineChartBaseModel<LineData,ILineDataSet,EntryO
 
 ```cangjie
 @Component
-public class LineChart
+public class LineChart {
+    var model: LineChartModel
+}
 ```
 
 #### 8.5.7 线形图父类
@@ -6110,7 +6121,9 @@ public class CandleStickChartModel<: BarLineChartBaseModel<CandleData,ICandleDat
 
 ```cangjie
 @Component
-public class CandleStickChart {}
+public class CandleStickChart {
+    var model: CandleStickChartModel
+}
 ```
 
 #### 8.6.7 蜡烛图父类
@@ -6308,7 +6321,7 @@ public interface IScatterDataSet <: ILineScatterCandleRadarDataSet<EntryOhos> {
 public class ScatterDataSet<: LineScatterCandleRadarDataSet<EntryOhos>&IScatterDataSet {
     
     /*
-     * 构造 
+     * 散点图数据集初始化构造函数 
      * 
      * 参数 yVals - 散点图数据结构集合，按照 x 值大小顺序填入。
      * 参数 label - 标签
@@ -6440,7 +6453,9 @@ public class ScatterChartModel<: BarLineChartBaseModel<ScatterData,IScatterDataS
 
 ```cangjie
 @Component
-public class ScatterChart {}
+public class ScatterChart {
+    var model: ScatterChartModel
+}
 ```
 
 #### 8.7.6 ChartShape Enum
@@ -6837,7 +6852,7 @@ public class RadarChartModel<: PieRadarChartBaseModel<RadarData,IRadarDataSet,Ra
 public abstract class PieRadarChartBaseModel<(D, S, E)> <: ChartModel<D,S,E> {
     
     /*
-     * 构造函数
+     * 图标初始化构造函数
      */
     public init ()
     
@@ -6873,7 +6888,9 @@ public abstract class PieRadarChartBaseModel<(D, S, E)> <: ChartModel<D,S,E> {
 ```
 
 ```cangjie
-public class RadarChart {}
+public class RadarChart {
+    var model: RadarChartModel
+}
 ```
 
 #### 8.8.8 雷达图示例
@@ -7164,7 +7181,9 @@ public class CombinedChartModel <: BarLineChartBaseModel<CombinedData, IBarLineS
 
 ```cangjie
 @Component
-public class CombinedChart {}
+public class CombinedChart {
+    var model: CombinedChartModel
+}
 ```
 
 #### 8.9.5 组合图示例
@@ -7439,7 +7458,7 @@ public class ChartPixelMap {
 public class MPPointF<: Poolable {
        
     /*
-     * 构造函数
+     * 图标数据点构造函数
      * 
      * 参数 x - x 坐标
      * 参数 y - y 坐标
@@ -7649,7 +7668,7 @@ public enum AxisDependency <: Equatable<AxisDependency> {
 ```cangjie
 public class DashPathEffect {
     /*
-     * 构造 
+     * 虚线样式初始化构造函数 
      * 
      * 参数 dash - [lineLength 虚线线段长度, spaceLength 虚线线段之间间隔]
      */
@@ -7680,7 +7699,7 @@ public class Fill {
     public init (color: UInt32, endColor: UInt32)
     
     /*
-     * 构造 
+     * 颜色填充初始化构造函数 
      * 
      * 参数 color - ChartPixelMap
      */
@@ -7839,3 +7858,92 @@ public enum DrawOrder {
     | SCATTER       // 散点图
 }
 ```
+### 9.23 ChartAnimator
+
+图表动画更新监听事件
+
+```
+public interface AnimatorUpdateListener {
+    /*
+     * 图表动画更新监听事件
+     * 
+     * 参数 result - AnimatorResult 动画属性，参考 仓颉 UI 标准库 API 描述
+     * 返回值 Unit 
+     */
+    func onAnimationUpdate(result: AnimatorResult): Unit
+}
+```
+
+图标动画
+
+```
+public class ChartAnimator {
+    
+    /*
+     * 图表动画初始化构造函数
+     * 
+     * 参数 listener - 图表动画更新监听事件
+     */
+    public init(listener: ?AnimatorUpdateListener)
+
+    /**
+     * 沿 X 轴动画
+     *
+     * 参数 durationMillis - 动画持续时间
+     * 参数 easing - 动画效果，参考仓颉 UI 参数设置
+     * 返回值 Unit
+     */
+    public func animateX(durationMillis: Int32, easing!: String = "linear"): Unit
+
+    /**
+     * 沿 X 和 Y 轴动画
+     *
+     * 参数 durationMillisX - X 轴动画持续时间
+     * 参数 durationMillisY - Y 轴动画持续时间
+     * 参数 easing - 动画效果，参考仓颉 UI 参数设置
+     * 返回值 Unit
+     */
+    public func animateXY(durationMillisX: Int32, durationMillisY: Int32, xEasing!: String = "linear",
+        yEasing!: String = "linear"): Unit
+
+    /**
+     * 沿 Y 轴动画
+     *
+     * 参数 durationMillis - 动画持续时间
+     * 参数 easing - 动画效果，参考仓颉 UI 参数设置
+     * 返回值 Unit
+     */
+    public func animateY(durationMillis: Int32, easing!: String = "linear"): Unit
+
+    /**
+     * 获取 Y 轴动画当前进度
+     *
+     * 返回值 Float64 - Y 轴动画当前进度
+     */
+    public func getPhaseY(): Float64
+
+    /**
+     * 设置 Y 轴动画当前进度
+     *
+     * 参数 Float64 - Y 轴动画当前进度
+     * 返回值 Unit
+     */
+    public func setPhaseY(phase: Float64): Unit
+
+    /**
+     * 获取 X 轴动画当前进度
+     *
+     * 返回值 Float64 - X 轴动画当前进度
+     */
+    public func getPhaseX(): Float64
+
+    /**
+     * 设置 X 轴动画当前进度
+     *
+     * 参数 Float64 - X 轴动画当前进度
+     * 返回值 Unit
+     */
+    public func setPhaseX(phase: Float64): Unit
+}
+```
+
