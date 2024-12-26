@@ -18,8 +18,8 @@
     path = "./cj_res"
     version = "1.0.0"
   [dependencies.chart]
-      path = "../../../../chart/src/main/cangjie"
-      version = "1.0.0"
+    path = "../../../../chart/src/main/cangjie"
+    version = "1.0.0"
 
 [package]
   cjc-version = "0.48.2"
