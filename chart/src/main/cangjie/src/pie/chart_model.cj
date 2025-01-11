@@ -41,12 +41,12 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      * paint object used for drawing the description text in the bottom right
      * corner of the chart
      */
-    protected var mDescPaint: ChartPaint = ChartPaint()
+    protected var mDescPaint: ChartPaint
     /**
      * paint object for drawing the information text when there are no values in
      * the chart
      */
-    protected var mInfoPaint: ChartPaint = ChartPaint()
+    protected var mInfoPaint: ChartPaint
     /**
      * the object representing the labels on the x-axis
      */
@@ -268,7 +268,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
             return
         }
         if (this.mData.isNone()) {
-            c.clearRect(0, 0, 0, 0)
+            c.clearRect(0.0, 0.0, this.mViewPortHandler.getChartWidth(), this.mViewPortHandler.getChartHeight())
             let hasText: Bool = !this.strIsEmpty(this.mNoDataText)
             if (hasText) {
                 let pt: MPPointF = this.getCenter()

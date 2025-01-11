@@ -94,7 +94,8 @@ public class ScatterChartRenderer <: LineScatterCandleRadarRenderer {
             }
             let dataSets: ArrayList<IScatterDataSet> = data().getDataSets()
 
-            for (i in 0..data().getDataSetCount()) {
+            let count: Int64 = data().getDataSetCount()
+            for (i in 0..count) {
                 let dataSet: IScatterDataSet = dataSets[i]
 
                 if (!this.shouldDrawValues(dataSet) || dataSet.getEntryCount() < 1) {

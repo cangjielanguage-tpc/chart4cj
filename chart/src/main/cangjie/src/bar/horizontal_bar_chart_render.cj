@@ -56,8 +56,8 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
             let barWidth: Float64 = barData().getBarWidth()
             let barWidthHalf: Float64 = barWidth / 2.0
             var x: Float64 = 0.0
-
-            for (i in 0..Int64(min((ceil(Float64(dataSet.getEntryCount()) * phaseX)), Float64(dataSet.getEntryCount())))) {
+            let count: Int64 = Int64(min((ceil(Float64(dataSet.getEntryCount()) * phaseX)), Float64(dataSet.getEntryCount())))
+            for (i in 0..count) {
                 let e: BarEntry = dataSet.getEntryForIndex(i)()
                 x = e.getX()
 
@@ -190,8 +190,8 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
             var posOffset: Float64 = 0.0
             var negOffset: Float64 = 0.0
             let drawValueAboveBar: Bool = this.mChart.isDrawValueAboveBarEnabled()
-
-            for (i in 0..chartData().getDataSetCount()) {
+            let count: Int64 = chartData().getDataSetCount()
+            for (i in 0..count) {
                 let dataSet: IBarDataSet = dataSets[i]
 
                 if (!this.shouldDrawValues(dataSet)) {
@@ -290,7 +290,8 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                     var bIndex = 0
                     var index = 0
 
-                    while (index < dataSet.getEntryCount() * Int64(this.mAnimator().getPhaseX())) {
+                    let count: Int64 = dataSet.getEntryCount() * Int64(this.mAnimator().getPhaseX())
+                    while (index < count) {
                         let entry: BarEntry = dataSet.getEntryForIndex(index)()
 
                         let color: UInt32 = dataSet.getValueTextColor(index)

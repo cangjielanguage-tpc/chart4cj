@@ -55,8 +55,8 @@ public class RadarHighlighter <: PieRadarHighlighter<RadarChartModel, RadarData,
         let factor = this.mChart().getFactor()
 
         var pOut = MPPointF.getInstance(0.0, 0.0)
-
-        for (i in 0..(this.mChart().getData() as RadarData)().getDataSetCount()) {
+        let count: Int64 = (this.mChart().getData() as RadarData)().getDataSetCount()
+        for (i in 0..count) {
             if (let Some(dataSet: IRadarDataSet) <- (this.mChart().getData() as RadarData)().getDataSetByIndex(i)) {
                 let entry = dataSet.getEntryForIndex(index)()
 

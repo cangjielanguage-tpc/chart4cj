@@ -7,11 +7,11 @@ public abstract class BaseDataSet<E> <: IDataSet<E> where E <: EntryOhos {
     /**
      * List representing all colors that are used for this DataSet
      */
-    protected var mColors: ArrayList<UInt32> = ArrayList<UInt32>()
+    protected var mColors: ArrayList<UInt32>
     /**
      * List representing all colors that are used for drawing the actual values for this DataSet
      */
-    protected var mValueColors: ArrayList<UInt32> = ArrayList<UInt32>()
+    protected var mValueColors: ArrayList<UInt32>
     /**
      * label that describes the DataSet or the data the DataSet represents
      */

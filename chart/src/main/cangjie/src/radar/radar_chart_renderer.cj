@@ -153,7 +153,8 @@ public class RadarChartRenderer <: LineRadarRenderer {
 
         let yoffset = Utils.handleDataValues(5.0)
 
-        for (i in 0..(this.mChart.getRadarData())().getDataSetCount()) {
+        let count: Int64 = (this.mChart.getRadarData())().getDataSetCount()
+        for (i in 0..count) {
             let dataSet: ?IRadarDataSet =( this.mChart.getRadarData())().getDataSetByIndex(i)
 
             if (dataSet.isNone() || !this.shouldDrawValues(dataSet())) {

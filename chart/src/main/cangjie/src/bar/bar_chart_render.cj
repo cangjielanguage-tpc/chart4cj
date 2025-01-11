@@ -57,15 +57,17 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
     public func drawData(c: CanvasRenderingContext2D): Unit {
         let barData: ?BarData = this.mChart.getBarData()
         match (barData) {
-            case Some(bardata) => for (i in 0..bardata.getDataSetCount()) {
-                let set: ?IBarDataSet = bardata.getDataSetByIndex(i)
-                match (set) {
-                    case Some(ibardataset) => if (ibardataset.isVisible()) {
-                        this.drawDataSet(c, ibardataset, i)
+            case Some(bardata) =>
+                let count: Int64 = bardata.getDataSetCount()
+                for (i in 0..count) {
+                    let set: ?IBarDataSet = bardata.getDataSetByIndex(i)
+                    match (set) {
+                        case Some(ibardataset) => if (ibardataset.isVisible()) {
+                            this.drawDataSet(c, ibardataset, i)
+                        }
+                        case _ => ()
                     }
-                    case _ => ()
                 }
-            }
             case _ => ()
         }
     }
@@ -275,8 +277,8 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
             var posOffset: Float64 = 0.0
             var negOffset: Float64 = 0.0
             let drawValueAboveBar: Bool = this.mChart.isDrawValueAboveBarEnabled()
-
-            for (i in 0..barData().getDataSetCount()) {
+            let count: Int64 = barData().getDataSetCount()
+            for (i in 0..count) {
                 let dataSet: IBarDataSet = dataSets[i]
 
                 if (!this.shouldDrawValues(dataSet)) {
@@ -380,12 +382,12 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                     var bufferIndex: Int64 = 0
                     var index: Int64 = 0
-
-                    while (index < dataSet.getEntryCount() * Int64(if (let Some(animator) <- this.mAnimator) {
+                    let count: Int64 = dataSet.getEntryCount() * Int64(if (let Some(animator) <- this.mAnimator) {
                                 animator.getPhaseX()
                             } else {
                                 1.0
-                            })) {
+                            })
+                    while (index < count) {
                         let entry: ?BarEntry = dataSet.getEntryForIndex(index)
                         let vals: Array<Float64> = entry().getYVals()
                         let x: Float64 = (buffer.buffer[bufferIndex] + buffer.buffer[bufferIndex + 2]) / 2.0
