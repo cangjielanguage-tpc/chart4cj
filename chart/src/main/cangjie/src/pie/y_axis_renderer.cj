@@ -5,7 +5,7 @@ package chart.pie
 
 public open class YAxisRenderer <: AxisRenderer {
     protected var mYAxis: YAxis
-    protected var mZeroLinePaint: ChartPaint = ChartPaint()
+    protected var mZeroLinePaint: ChartPaint
 
     public init(viewPortHandler: ViewPortHandler, yAxis: YAxis, trans: ?Transformer) {
         super(viewPortHandler, yAxis, trans)

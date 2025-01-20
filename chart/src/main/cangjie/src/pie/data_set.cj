@@ -59,9 +59,9 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
         for (entry in this.mEntries()) {
             match (entry) {
             	case bubblesEntry: BubblesEntry => this.myCalcMinMaxBubble(bubblesEntry)
-            	case waterfallEntry: WaterfallEntry => this.myCalcMinMaxWaterfall(waterfallEntry)
-            	case barEntry: BarEntry => this.myBarCalcMinMax(barEntry)
             	case candleEntry: CandleEntry => this.myCandleCalcMinMax(candleEntry)
+            	case barEntry: BarEntry => this.myBarCalcMinMax(barEntry)
+                case waterfallEntry: WaterfallEntry => this.myCalcMinMaxWaterfall(waterfallEntry)
             	case _ => this.myCalcMinMax(entry)
             }
         }

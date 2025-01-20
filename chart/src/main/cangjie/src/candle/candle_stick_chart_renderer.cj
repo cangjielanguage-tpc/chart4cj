@@ -48,7 +48,8 @@ public class CandleStickChartRenderer <: LineScatterCandleRadarRenderer {
             bounds.set(this.mChart, dataSet)
 
             this.mRenderPaint.setStrokeWidth(dataSet.getShadowWidth())
-            for (j in bounds.mins..=bounds.range + bounds.mins) {
+            let boundTo: Int64 = bounds.range + bounds.mins
+            for (j in bounds.mins..=boundTo) {
                 let e: ?CandleEntry = dataSet.getEntryForIndex(j)
                 if(e.isNone()) {
                     continue

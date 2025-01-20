@@ -28,7 +28,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
     /**
      * array that holds all DataSets the ChartData object represents
      */
-    protected var mDataSets: ArrayList<S> = ArrayList<S>()
+    protected var mDataSets: ArrayList<S>
 
     /**
      * 是否仅通过X轴距离来判断是否高亮点

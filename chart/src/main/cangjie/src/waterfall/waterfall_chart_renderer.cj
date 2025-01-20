@@ -51,7 +51,8 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
     public func drawData(c: CanvasRenderingContext2D): Unit {
         let data: ?WaterfallData = this.mChart.getWaterfallData();
         if (let Some(d) <- data) {
-            for (i in 0..d.getDataSetCount()) {
+            let count: Int64 = d.getDataSetCount()
+            for (i in 0..count) {
                 let set: ?IWaterfallDataSet = d.getDataSetByIndex(i)
                 if (let Some(ds: WaterfallDataSet) <- set) {
                     if (ds.isVisible()) {
@@ -442,7 +443,8 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
             var negOffset: Float64 = 0.0;
             let drawValueAboveBar: Bool = this.mChart.isDrawValueAboveBarEnabled();
 
-            for (i in 0..waterfallData().getDataSetCount()) {
+            let count: Int64 = waterfallData().getDataSetCount()
+            for (i in 0..count) {
                 let dataSet: IWaterfallDataSet = dataSets[i];
 
                 if (!this.shouldDrawValues(dataSet)) {

@@ -78,7 +78,7 @@ public class PieChartRenderer <: DataRenderer {
     public func drawData(c: CanvasRenderingContext2D): Unit {
         //c.clearRect(0.0, 0.0, c.width, c.height)
         //CanvasRenderingContext2D 未实现属性 width heigth
-        c.clearRect(0.0, 0.0, 500.0, 500.0)
+        c.clearRect(0.0, 0.0, this.mViewPortHandler().getChartWidth(), this.mViewPortHandler().getChartHeight())
 
         let pieData: ?PieData = this.mChart.getPieData()
 

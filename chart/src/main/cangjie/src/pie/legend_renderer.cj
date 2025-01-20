@@ -238,7 +238,8 @@ public class LegendRenderer <: Renderer {
         if (this.mLegend.isSome() && !this.mLegend().isLegendCustom() && data.isSome()) {
             this.computedEntries.clear()
             // loop for building up the colors and labels used in the legend
-            for (i in 0..data().getDataSetCount()) {
+            let count: Int64 = data().getDataSetCount()
+            for (i in 0..count) {
                 let dataSet: Option<S> = data().getDataSetByIndex(i)
                 if (dataSet.isNone()) {
                     continue

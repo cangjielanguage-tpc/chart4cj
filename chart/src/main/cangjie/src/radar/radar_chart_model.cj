@@ -121,7 +121,7 @@ public class RadarChartModel <: PieRadarChartBaseModel<RadarData, IRadarDataSet,
         }
 
         //TODO canvas.width canvas.height
-        canvas.clearRect(0, 0, 400, 400 /*canvas.width, canvas.height*/ )
+        canvas.clearRect(0.0, 0.0, this.mViewPortHandler.getChartWidth(), this.mViewPortHandler.getChartHeight())
         if (this.mXAxis.isSome() && this.mXAxis().isEnabled() && this.mXAxisRenderer.isSome()) {
             this.mXAxisRenderer().computeAxis(this.mXAxis().mAxisMinimum, this.mXAxis().mAxisMaximum, false)
         }

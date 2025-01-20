@@ -11,18 +11,18 @@ public abstract class DataRenderer <: Renderer {
     /**
      * main paint object used for rendering
      */
-    protected var mRenderPaint: ChartPaint = ChartPaint()
+    protected var mRenderPaint: ChartPaint
 
     /**
      * paint used for highlighting values
      */
-    protected var mHighlightPaint: ChartPaint = ChartPaint()
-    protected var mDrawPaint: ChartPaint = ChartPaint()
+    protected var mHighlightPaint: ChartPaint
+    protected var mDrawPaint: ChartPaint
     /**
      * paint object for drawing values (text representing values of chart
      * entries)
      */
-    public var mValuePaint: ChartPaint = ChartPaint()
+    public var mValuePaint: ChartPaint
 
     public init(animator: ?ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(viewPortHandler);

@@ -233,7 +233,8 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
             var offset: Float64 = 0.0
             var diff: Float64 = 0.0
 
-            for (i in 0..d.getDataSetCount()) {
+            let count: Int64 = d.getDataSetCount()
+            for (i in 0..count) {
                 let set: IPieDataSet = dataSets.get(i)()
 
                 for (j in 0..set.getEntryCount()) {
