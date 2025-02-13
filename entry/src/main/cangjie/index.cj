@@ -4,17 +4,17 @@
 
 package ohos_app_cangjie_entry
 
- internal import ohos.base.LengthProp
- internal import ohos.component.Column
- internal import ohos.component.Row
- internal import ohos.component.Button
- internal import ohos.component.Text
- internal import ohos.component.CustomView
- internal import ohos.component.CJEntry
- internal import ohos.component.loadNativeView
- internal import ohos.state_manage.SubscriberManager
- internal import ohos.state_manage.ObservedProperty
- internal import ohos.state_manage.LocalStorage
+import ohos.base.LengthProp
+import ohos.component.Column
+import ohos.component.Row
+import ohos.component.Button
+import ohos.component.Text
+import ohos.component.CustomView
+import ohos.component.CJEntry
+import ohos.component.loadNativeView
+import ohos.state_manage.SubscriberManager
+import ohos.state_manage.ObservedProperty
+import ohos.state_manage.LocalStorage
 import ohos.state_macro_manage.Entry
 import ohos.state_macro_manage.Component
 import ohos.state_macro_manage.State
@@ -27,10 +27,11 @@ import ohos.router.*
 import std.collection.*
 import ohos_app_cangjie_entry.pageconfig.*
 
+
 @Entry
 @Component
-class MyView {
-    private let title: String = "chart Example"
+class EntryView {
+ private let title: String = "chart Example"
     var scroller: Scroller = Scroller()
     @State
     var message: String = "Hello Cangjie"
