@@ -4,21 +4,21 @@
 package chart.components
 
 public class DashPathEffectConfig {
-    var lineLength: Int64  = 0
-    var spaceLength: Int64 = 0
-    var phase: Int64 = 0
-    public init(lineLength: Int64, spaceLength: Int64) {
+    var lineLength: Float64  = 0.0
+    var spaceLength: Float64 = 0.0
+    var phase: Float64 = 0.0
+    public init(lineLength: Float64, spaceLength: Float64) {
         this.lineLength = lineLength
         this.spaceLength = spaceLength
-        this.phase = 0
+        this.phase = 0.0
     }
-    public func getLineLength(): Int64 {
+    public func getLineLength(): Float64 {
         return this.lineLength
     }
-    public func getSpaceLength(): Int64 {
+    public func getSpaceLength(): Float64 {
         return this.spaceLength
     }
-    public func getPhase(): Int64{
+    public func getPhase(): Float64{
         return this.phase
     }
 }

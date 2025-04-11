@@ -3,15 +3,15 @@
  */
 package ohos_app_cangjie_entry.scatterPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class ScatterChartPage {
+public class ScatterChartPage {
     private var model: ScatterChartModel = ScatterChartModel.build()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
@@ -116,9 +116,14 @@ class ScatterChartPage {
     }
 
     func build() {
-        Column() {
-            ScatterChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
-
+        NavDestination() {
+            Column() {
+                ScatterChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

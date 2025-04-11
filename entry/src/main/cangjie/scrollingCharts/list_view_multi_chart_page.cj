@@ -3,16 +3,17 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
 import ohos.state_macro_manage.*
+import tpc.UIKit.*
 import ohos_app_cangjie_entry.scrollingCharts.listViewItems.*
 
-@Entry
 @Component
-class ListViewMultiChartPage {
+public class ListViewMultiChartPage {
     var list: ArrayList<Any> = ArrayList<Any>()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         // 30 items
@@ -98,7 +99,8 @@ class ListViewMultiChartPage {
     }
 
     func build() {
-        Column {
+        NavDestination() {
+            Column {
             List(space: 20, initialIndex: 0) {
                 ForEach(
                     this.list,
@@ -118,5 +120,10 @@ class ListViewMultiChartPage {
                 )
             }.listDirection(Axis.Vertical)
         }.width(100.percent).height(100.percent).backgroundColor(Color.WHITE)
+         }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

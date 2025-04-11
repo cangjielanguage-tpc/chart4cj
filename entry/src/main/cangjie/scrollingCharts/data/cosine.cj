@@ -3,7 +3,7 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.data
 
-public class Cosine {
+public  class Cosine {
   public var data: Array<Float64> = [
     1.0, //#0
     0.9998000066755178, //#1

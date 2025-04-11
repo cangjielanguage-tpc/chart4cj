@@ -80,7 +80,7 @@ public class CombinedChartModel <: BarLineChartBaseModel<CombinedData, IBarLineS
      */
     public override func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {
         if (this.mData.isNone()) {
-            AppLog.info("Can't select by touch. No data set.")
+            Hilog.info(0x000000,"chart","Can't select by touch. No data set.")
             return None
         } else {
             let highlighter = this.getHighlighter()

@@ -184,7 +184,7 @@ public class Fill {
 
             case FillType.DRAWABLE => if (let Some(drawable) <- this.mDrawable) {
                 if (let Some(i) <- drawable.getIcon()) {
-                    c.drawImage(i, left, top, right - left, bottom - top)
+                    //c.drawImage(i, left, top, right - left, bottom - top) //改
                 } else {
                     return
                 }

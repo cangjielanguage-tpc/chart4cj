@@ -3,9 +3,10 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import std.collection.*
 import std.math.*
@@ -16,10 +17,11 @@ import chart.radar.*
 import chart.components.*
 import chart.pie.*
 
-@Entry
+
 @Component
-class RadarChartPageReadme {
+public class RadarChartPageReadme {
     private var model: RadarChartModel = RadarChartModel.build()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
@@ -86,6 +88,7 @@ class RadarChartPageReadme {
         let set1: RadarDataSet = RadarDataSet(entries1, "Last Week")
         set1.setColorByColor(UInt32(ChartColor.rgb(103, 110, 129)))
         set1.setLineWidth(2.0)
+        set1.setDrawFilled(true)
 
         // 创建雷达图数据集
         let set2: RadarDataSet = RadarDataSet(entries2, "This Week")
@@ -96,23 +99,31 @@ class RadarChartPageReadme {
         let sets: ArrayList<IRadarDataSet> = ArrayList<IRadarDataSet>()
         sets.append(set1)
         sets.append(set2)
+        
+
 
         // 创建雷达图数据对象
         let data: RadarData = RadarData(sets)
         data.setDrawValues(false) // 不绘制数据值
+
         data.setValueTextColor(0xffffff) // 设置数据值文字颜色为白色
         this.model.setData(data) // 设置图表数据
     }
 
     func build() {
-        Column() {
-            RadarChart(model: this.model)
-        }.backgroundColor(0x3C4152).width(100.percent).height(70.percent)
-
+        NavDestination() {
+            Column() {
+                RadarChart(model: this.model)
+            }.backgroundColor(0x3C4152).width(100.percent).height(70.percent)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }
 
-class valueFormatter <: IAxisValueFormatter {
+public class valueFormatter <: IAxisValueFormatter {
     private var mActivities: Array<String> = ["Burger", "Steak", "Salad", "Pasta", "Pizza"]
 
     public func getFormattedValue(value: Float64, axis: AxisBase): String {

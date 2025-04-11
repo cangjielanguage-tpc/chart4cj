@@ -3,9 +3,10 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
@@ -16,11 +17,12 @@ import chart.bubble.*
 import chart.charts.*
 import chart.components.*
 
-@Entry
+
 @Component
-class BubbleChartPageReadme {
+public class BubbleChartPageReadme {
     private var model: BubbleChartModel = BubbleChartModel.build()
     var isDrawValuesEnable: Bool = true
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend() //设置图例
@@ -138,14 +140,20 @@ class BubbleChartPageReadme {
     }
 
     func build() {
-        Column() {
-            // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
-            // 如果在之后通过事件触发，
-            // 可通过dataResult.notifyDataSetChanged() 来触发数据更新，
-            // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
-            // 可通过this.model.invalidate() 来触发绘制更新。
-            BubbleChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column() {
+                // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+                // 如果在之后通过事件触发，
+                // 可通过dataResult.notifyDataSetChanged() 来触发数据更新，
+                // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+                // 可通过this.model.invalidate() 来触发绘制更新。
+                BubbleChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
 
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

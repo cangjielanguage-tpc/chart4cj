@@ -458,7 +458,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                 // calculate the correct offset depending on the draw position of
                 // the value
-                let valueTextHeight: Float64 = Utils.calcTextHeight(c, this.mValuePaint, "8");
+                let valueTextHeight: Float64 = Utils.calcTextHeight(this.mValuePaint, "8");
                 posOffset = (if (drawValueAboveBar) {
                     -valueOffsetPlus
                 } else {
@@ -597,7 +597,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 let centerX = this.mBarRect.left + this.mBarRect.width() / 2.0;
                 let centerY = this.mBarRect.top + this.mBarRect.height() / 2.0;
                 c.moveTo(centerX, centerY);
-                c.arc(centerX, centerY, round, 0.0, 360.0, anticlockwise: false);
+                c.arc(centerX, centerY, round, 0.0, 360.0, false);
                 c.fill();
                 c.closePath();
             }

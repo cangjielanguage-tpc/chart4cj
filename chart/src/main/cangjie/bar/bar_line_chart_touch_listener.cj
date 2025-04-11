@@ -835,7 +835,7 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             this.barChartModel.zoom(scaleX, scaleY, trans.x, trans.y, Option<AxisDependency>.None)
 
             if (this.barChartModel.isLogEnabled()) {
-                AppLog.info("BarlineChartTouch:" + "Double-Tap, Zooming In, x: ${trans.x}, y: ${trans.y}")
+                Hilog.info(0x000000,"chart","BarlineChartTouch:" + "Double-Tap, Zooming In, x: ${trans.x}, y: ${trans.y}")
             }
 
             if (let Some(listener) <- l) {

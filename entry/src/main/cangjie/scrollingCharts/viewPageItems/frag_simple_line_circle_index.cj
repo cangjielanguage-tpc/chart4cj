@@ -3,9 +3,11 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.viewPageItems
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import chart.pie.*
 import chart.utils.*
@@ -16,9 +18,8 @@ import std.collection.{ArrayList}
 import std.format.*
 import ohos_app_cangjie_entry.scrollingCharts.data.*
 
-@Entry
 @Component
-public class fragSimpleLineCircleIndex {
+public  class fragSimpleLineCircleIndex {
     var topAxis: XAxis = XAxis() //顶部X轴
     var bottomAxis: XAxis = XAxis() //底部X轴
     var mWidth: Float64 = 380.0 //表的宽度
@@ -31,12 +32,20 @@ public class fragSimpleLineCircleIndex {
     @State
     var lineChartModel: LineChartModel = LineChartModel.build()
 
+    var pageInfo: NavPathStack = NavPathStack()
+
     func build() {
-        Column() {
+        NavDestination() {
+            Column() {
             Stack(Alignment.TopStart) {
                 LineChart(model: this.lineChartModel)
             }.width(100.percent).height(80.percent)
         }.alignItems(HorizontalAlign.Start)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 
     protected override func aboutToAppear() {

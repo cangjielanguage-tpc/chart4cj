@@ -3,20 +3,20 @@
  */
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 
-@Entry
 @Component
-class HorizontalBarNegativeChartPage {
+public class HorizontalBarNegativeChartPage {
     private var title: String = "Horizontal Negative"
     private var model: HorizontalBarChartModel = HorizontalBarChartModel.build()
     private var leftAxis: ?YAxis = Option<YAxis>.None
     private var rightAxis: ?YAxis = Option<YAxis>.None
     private var xAxis: ?XAxis = Option<XAxis>.None
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear(){
         this.model = HorizontalBarChartModel.build()
@@ -88,9 +88,15 @@ class HorizontalBarNegativeChartPage {
     }
 
     func build() {
-        Column {
-            Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
-            HorizontalBarChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column {
+                Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
+                HorizontalBarChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

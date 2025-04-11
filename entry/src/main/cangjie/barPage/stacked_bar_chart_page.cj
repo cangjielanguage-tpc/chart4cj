@@ -3,14 +3,13 @@
  */
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class StackedBarChartPage {
+public class StackedBarChartPage {
     private var model: BarChartModel = BarChartModel.build()
     private var leftAxis: ?YAxis = Option<YAxis>.None
     private var rightAxis: ?YAxis = Option<YAxis>.None
@@ -18,6 +17,7 @@ class StackedBarChartPage {
     private var limitLine1: LimitLine = LimitLine(0.0, "limit1")
     private var limitLine2: LimitLine = LimitLine(0.0, "limit2")
     private var barData: BarData = BarData()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
@@ -39,13 +39,13 @@ class StackedBarChartPage {
 
         this.limitLine1 = LimitLine(120.0, "Upper Limit")
         this.limitLine1.setLineWidth(4.0)
-        this.limitLine1.enableDashedLine(10, 10)
+        this.limitLine1.enableDashedLine(10.0, 10.0)
         this.limitLine1.setLabelPosition(LimitLabelPosition.RIGHT_TOP)
         this.limitLine1.setTextSize(10.0)
 
         this.limitLine2 = LimitLine(50.0, "Lower Limit")
         this.limitLine2.setLineWidth(4.0)
-        this.limitLine2.enableDashedLine(10, 10)
+        this.limitLine2.enableDashedLine(10.0, 10.0)
         this.limitLine2.setLineColor(0xFFFF00)
         this.limitLine2.setLabelPosition(LimitLabelPosition.RIGHT_BOTTOM)
         this.limitLine2.setTextSize(10.0)
@@ -118,8 +118,14 @@ class StackedBarChartPage {
     }
 
     func build() {
-        Column {
-            BarChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column {
+                BarChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

@@ -263,27 +263,27 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
                 this.mLimitLinePaint.setStrokeWidth(0.5)
                 this.mLimitLinePaint.setTextSize(l.getTextSize())
 
-                let labelLineHeight: Float64 = Utils.calcTextHeight(c, this.mLimitLinePaint, label)
+                let labelLineHeight: Float64 = Utils.calcTextHeight(this.mLimitLinePaint, label)
                 let xOffset: Float64 = Utils.handleDataValues(4.0) + l.getXOffset()
                 let yOffset: Float64 = l.getLineWidth() + labelLineHeight + l.getYOffset()
 
                 let position: LimitLabelPosition = l.getLabelPosition()
 
                 if (position == LimitLabelPosition.RIGHT_TOP) {
-                    this.mLimitLinePaint.setTextAlign(TextAlignStyle.Right)
+                    this.mLimitLinePaint.setTextAlign(CanvasTextAlign.right)
                     Utils.resetContext2DStyle(c, this.mLimitLinePaint)
                     c.beginPath()
                     c.strokeText(label, this.mViewPortHandler().contentRight() - xOffset,
                         pts[1] - yOffset + labelLineHeight)
                     c.closePath()
                 } else if (position == LimitLabelPosition.RIGHT_BOTTOM) {
-                    this.mLimitLinePaint.setTextAlign(TextAlignStyle.Right)
+                    this.mLimitLinePaint.setTextAlign(CanvasTextAlign.right)
                     Utils.resetContext2DStyle(c, this.mLimitLinePaint)
                     c.beginPath()
                     c.strokeText(label, this.mViewPortHandler().contentRight() - xOffset, pts[1] + yOffset)
                     c.closePath()
                 } else if (position == LimitLabelPosition.LEFT_TOP) {
-                    this.mLimitLinePaint.setTextAlign(TextAlignStyle.Left)
+                    this.mLimitLinePaint.setTextAlign(CanvasTextAlign.left)
                     /* c.drawText(label,
                     mViewPortHandler.contentLeft() + xOffset,
                     pts[1] - yOffset + labelLineHeight, mLimitLinePaint)*/
@@ -293,7 +293,7 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
                         pts[1] - yOffset + labelLineHeight)
                     c.closePath()
                 } else {
-                    this.mLimitLinePaint.setTextAlign(TextAlignStyle.Left)
+                    this.mLimitLinePaint.setTextAlign(CanvasTextAlign.left)
                     /*	c.drawText(label,
                               mViewPortHandler.offsetLeft() + xOffset,
                     pts[1] + yOffset, mLimitLinePaint)*/

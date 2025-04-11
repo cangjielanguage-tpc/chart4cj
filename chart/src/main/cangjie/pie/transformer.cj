@@ -10,6 +10,7 @@ public open class Transformer {
      */
     protected var mMatrixOffset: Matrix = Matrix()
     protected var mViewPortHandler: ViewPortHandler
+    protected var matrix2D: Matrix2D = Matrix2D()
     protected var resultPath: Path2D = Path2D()
 
     public init(viewPortHandler: ViewPortHandler) {
@@ -202,6 +203,27 @@ public open class Transformer {
         this.getValueToPixelMatrix().mapPoints(tmpArray);
         return tmpArray
     }
+
+    public func pathTransform(path: Path2D, matrix: Matrix): Path2D {
+        let values = matrix.getValues()
+        this.matrix2D.scaleX = values[Matrix.MSCALE_X]
+        this.matrix2D.scaleY = values[Matrix.MSCALE_Y]
+        this.matrix2D.translateX = values[Matrix.MTRANS_X]
+        this.matrix2D.translateY = values[Matrix.MTRANS_Y]
+        this.matrix2D.rotateX = values[Matrix.MSKEW_X]
+        this.matrix2D.rotateY = values[Matrix.MSKEW_Y]
+        this.resultPath = Path2D()
+        this.resultPath.addPath(path, this.matrix2D)
+        return this.resultPath
+    }
+
+    public func pathValueToPixel(path: Path2D): Path2D {
+        var paths = path
+        paths = this.pathTransform(paths, this.mMatrixValueToPx);
+        paths = this.pathTransform(paths, this.mViewPortHandler.getMatrixTouch());
+        paths = this.pathTransform(paths, this.mMatrixOffset);
+        return paths;
+      }
 
     /**
      * Transform an array of points with all matrices. VERY IMPORTANT: Keep

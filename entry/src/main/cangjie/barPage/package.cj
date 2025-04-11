@@ -14,6 +14,8 @@ internal import  ohos.ability.LaunchReason
 
 internal import ohos.prompt_action.*
 
+internal import tpc.UIKit.*
+
 internal import std.sync.*
 internal import std.collection.*
 internal import std.time.Duration

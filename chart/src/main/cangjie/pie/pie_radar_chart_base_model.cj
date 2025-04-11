@@ -214,7 +214,7 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
         this.mViewPortHandler.restrainViewPort(offsetLeft, offsetTop, offsetRight, offsetBottom)
 
         if (this.mLogEnabled) {
-            AppLog.info(
+            Hilog.info(0x000000,"chart",
                 "offsetLeft: ${offsetLeft}, offsetTop: ${offsetTop}, offsetRight: ${offsetRight}, offsetBottom: ${offsetBottom}"
             )
         }

@@ -3,9 +3,10 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.viewPageItems
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import chart.pie.*
 import chart.utils.*
@@ -15,9 +16,8 @@ import chart.scatter.*
 import std.collection.{ArrayList}
 import std.random.*
 
-@Entry
 @Component
-public class FragSimpleScatterIndex {
+public  class FragSimpleScatterIndex {
     var minOffset: Float64 = 15.0
     var XLimtLine: LimitLine = LimitLine(35.0, "Index 10")
     var legendScatter: LegendEntry = LegendEntry()
@@ -27,15 +27,22 @@ public class FragSimpleScatterIndex {
     var dataScatter: ScatterData = ScatterData()
     @State
     var scatterChartModel: ScatterChartModel = ScatterChartModel.build()
+    var pageInfo: NavPathStack = NavPathStack()
 
     func build() {
-        Column() {
+        NavDestination() {
             Column() {
-                Stack(Alignment.TopStart) {
-                    ScatterChart(model: this.scatterChartModel)
-                }.width(100.percent).height(70.percent)
-            }
-        }.alignItems(HorizontalAlign.Start)
+                Column() {
+                    Stack(Alignment.TopStart) {
+                        ScatterChart(model: this.scatterChartModel)
+                    }.width(100.percent).height(70.percent)
+                }
+            }.alignItems(HorizontalAlign.Start)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 
     protected override func aboutToAppear() {
@@ -47,7 +54,7 @@ public class FragSimpleScatterIndex {
             xAxis.setPosition(XAxisPosition.TOP)
             xAxis.setAxisMinimum(0.0)
             xAxis.setAxisMaximum(this.dataScatter.getXMax())
-            xAxis.enableGridDashedLine(10, 10)
+            xAxis.enableGridDashedLine(10.0, 10.0)
             xAxis.setDrawAxisLine(false)
             xAxis.setDrawLabels(false)
             xAxis.setDrawGridLines(true)
@@ -61,7 +68,7 @@ public class FragSimpleScatterIndex {
             leftAxis.setAxisMinimum(this.dataScatter.getYMin() - 500.0)
             leftAxis.setAxisMaximum(this.dataScatter.getYMax() + 1000.0)
             leftAxis.setDrawGridLines(true)
-            leftAxis.enableGridDashedLine(10, 10)
+            leftAxis.enableGridDashedLine(10.0, 10.0)
             leftAxis.setDrawLabels(true)
         }
 

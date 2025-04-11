@@ -3,9 +3,10 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.viewPageItems
 
-import ohos.hilog.*
-import ohos.base.*
-import ohos.component.*
+//import ohos.hilog.*
+//import ohos.base.*
+//import ohos.component.*
+import tpc.UIKit.*
 import ohos.state_manage.*
 import ohos.state_macro_manage.*
 import chart.pie.*
@@ -17,13 +18,14 @@ import std.collection.{ArrayList}
 import ohos_app_cangjie_entry.scrollingCharts.data.Cosine
 import ohos_app_cangjie_entry.scrollingCharts.data.Sine
 
-@Entry
+
 @Component
-public class fragSimpleLineIndex {
+public  class fragSimpleLineIndex {
     var minOffset: Float64 = 15.0;
     @State
     var lineChartModel: LineChartModel = LineChartModel.build()
     var lineData: LineData = LineData()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         this.lineData = this.initCurveData(45, 100.0)
@@ -101,8 +103,14 @@ public class fragSimpleLineIndex {
     }
 
     func build() {
-        Column {
-            LineChart(model: this.lineChartModel)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column {
+                LineChart(model: this.lineChartModel)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

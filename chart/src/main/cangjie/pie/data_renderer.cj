@@ -37,7 +37,7 @@ public abstract class DataRenderer <: Renderer {
         this.mValuePaint = ChartPaint()
 
         this.mValuePaint.setColor("#3F3F3F")
-        this.mValuePaint.setTextAlign(TextAlignStyle.Center)
+        this.mValuePaint.setTextAlign(CanvasTextAlign.center)
         this.mValuePaint.setTextSize(9.0)
 
         this.mHighlightPaint = ChartPaint()
@@ -123,7 +123,7 @@ public abstract class DataRenderer <: Renderer {
         dataSetIndex: Int64, x: Float64, y: Float64, color: Color, isHorizontalFlip!: Bool = false): Unit {
         if (isHorizontalFlip) {
             c.save()
-            c.scale(-1, 1)
+            c.scale(-1.0, 1.0)
         }
         this.mValuePaint.setColor(color)
         Utils.resetContext2DStyle(c, this.mValuePaint)

@@ -130,7 +130,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
         if (radius >= 1.0) {
             this.mCircleRadius = radius
         } else {
-            AppLog.info("LineDataSet: Circle radius cannot be < 1")
+            Hilog.info(0x000000,"chart","LineDataSet: Circle radius cannot be < 1")
         }
     }
 
@@ -148,7 +148,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
         if (holeRadius >= 0.5) {
             this.mCircleHoleRadius = holeRadius
         } else {
-            AppLog.info("LineDataSet: Circle radius cannot be < 0.5")
+            Hilog.info(0x000000,"chart","LineDataSet: Circle radius cannot be < 0.5")
         }
     }
 
@@ -156,7 +156,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
         return this.mCircleHoleRadius
     }
 
-    public func enableDashedLine(lineLength: Int64, spaceLength: Int64): Unit {
+    public func enableDashedLine(lineLength: Float64, spaceLength: Float64): Unit {
         this.mDashPathEffect = DashPathEffect([lineLength, spaceLength])
     }
 

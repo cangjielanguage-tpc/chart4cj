@@ -3,17 +3,18 @@
  */
 package ohos_app_cangjie_entry.combinedPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class CombinedChartPage {
+public class CombinedChartPage {
     private var model: CombinedChartModel = CombinedChartModel.build()
     var combinedData: ?CombinedData = None
     var count: Int64 = 12
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         this.model.getDescription().setEnabled(false)
@@ -217,9 +218,14 @@ class CombinedChartPage {
     }
 
     func build() {
-        Column() {
-            CombinedChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
-
+        NavDestination() {
+            Column() {
+                CombinedChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

@@ -4,12 +4,12 @@
 
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
-public class ColorArray {
+public  class ColorArray {
     public ColorArray(
         let colorText: String,
         let color: Color,
@@ -17,15 +17,15 @@ public class ColorArray {
     ) {}
 }
 
-@Entry
 @Component
-class CustomGridLineChartPage {
+public class CustomGridLineChartPage {
     private var title: String = "custom grid line"
     private var model: BarChartModel = BarChartModel.build()
     private var leftAxis: ?YAxis = Option<YAxis>.None
     private var rightAxis: ?YAxis = Option<YAxis>.None
     private var xAxis: ?XAxis = Option<XAxis>.None
     private var barData: BarData = BarData()
+    var pageInfo: NavPathStack = NavPathStack()
 
     @State
     var eventText: String = ""
@@ -126,7 +126,7 @@ class CustomGridLineChartPage {
                             if (let Some(yAxis) <- yAxis) {
                                 yAxis.setGridColor(item.color)
                                 yAxis.setGridLineWidth(1.0)
-                                yAxis.setGridDashedLine(DashPathEffect([2, 2]))
+                                yAxis.setGridDashedLine(DashPathEffect([2.0, 2.0]))
                                 this.model.invalidate()
                             }
                             //}
@@ -145,7 +145,7 @@ class CustomGridLineChartPage {
                         return
                     }
                     if (isChecked) {
-                        this.xAxis().addGridLine(GridLineConfig(8.0, 0x0000FF, 0.6, DashPathEffectConfig(5, 10)))
+                        this.xAxis().addGridLine(GridLineConfig(8.0, 0x0000FF, 0.6, DashPathEffectConfig(5.0, 10.0)))
                         this.leftAxis().addGridLine(GridLineConfig(35.0, 0xFF0000, 1.0,
                             Option<DashPathEffectConfig>.None))
                         this.leftAxis().addGridLine(GridLineConfig(45.0, 0x999999, 1.0,
@@ -163,19 +163,25 @@ class CustomGridLineChartPage {
     }
 
     func build() {
-        Column {
+        NavDestination() {
             Column {
-                Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).
-                    maxLines(1)
-                BarChart(model: this.model)
-            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
-            Scroll() {
-                Stack() {
-                    Column() {
-                        this.gridLineSettings()
-                    }
-                }.align(Alignment.TopEnd)
+                Column {
+                    Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).
+                        maxLines(1)
+                    BarChart(model: this.model)
+                }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+                Scroll() {
+                    Stack() {
+                        Column() {
+                            this.gridLineSettings()
+                        }
+                    }.align(Alignment.TopEnd)
+                }
             }
-        }
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

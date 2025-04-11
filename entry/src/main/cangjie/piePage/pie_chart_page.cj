@@ -4,14 +4,13 @@
 
 package ohos_app_cangjie_entry.piePage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class PieChartPage {
+public class PieChartPage {
 
     //标题栏标题
     private var title: String = "PieChart"
@@ -21,6 +20,7 @@ class PieChartPage {
     "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X", "Party Y", "Party Z"]
 
     var pieData: PieData = PieData()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override  func aboutToAppear() {
 
@@ -104,9 +104,15 @@ class PieChartPage {
 
 
     func build() {
-        Column {
-            PieChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column {
+                PieChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
 
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

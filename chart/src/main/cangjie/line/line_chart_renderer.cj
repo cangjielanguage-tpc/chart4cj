@@ -122,6 +122,10 @@ public class LineChartRenderer <: LineRadarRenderer {
         this.mRenderPaint.setColor(Color(dataSet.getColor()))
         this.mRenderPaint.setStyle(Style.STROKE)
 
+        if (trans.isSome()) {
+            cubicPath = trans().pathValueToPixel(cubicPath);
+        }
+
         // TODO 当前UI不支持 Matrix2D
         Utils.resetContext2DStyle(c, this.mRenderPaint)
         c.beginPath()
@@ -219,6 +223,10 @@ public class LineChartRenderer <: LineRadarRenderer {
         this.mRenderPaint.setColor(Color(dataSet.getColor()))
         this.mRenderPaint.setStyle(Style.STROKE)
 
+        if (trans.isSome()) {
+            cubicPath = trans().pathValueToPixel(cubicPath);
+        }
+
         // TODO 当前UI不支持 Matrix2D
         Utils.resetContext2DStyle(c, this.mRenderPaint)
         c.beginPath()
@@ -235,6 +243,8 @@ public class LineChartRenderer <: LineRadarRenderer {
         splineTemp.lineTo(dataSet.getEntryForIndex(bounds.mins + bounds.range)().getX(), fillMin)
         splineTemp.lineTo(dataSet.getEntryForIndex(bounds.mins)().getX(), fillMin)
         splineTemp.closePath()
+
+        splineTemp = trans.pathValueToPixel(splineTemp);
 
         // TODO 当前UI不支持 Matrix2D splineTemp = trans.pathValueToPixel(splineTemp)
         let drawable: ?ChartPixelMap = dataSet.getFillDrawable()
@@ -477,6 +487,7 @@ public class LineChartRenderer <: LineRadarRenderer {
             if (currentStartIndex <= currentEndIndex) {
                 filled = this.generateFilledPath(dataSet, currentStartIndex, currentEndIndex, filled)
                 // TODO 当前UI不支持 Matrix2D filled = trans.pathValueToPixel(filled)
+                filled = trans.pathValueToPixel(filled)
 
                 let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
 
@@ -748,12 +759,10 @@ public class LineChartRenderer <: LineRadarRenderer {
                 // Begin path for circle with hole
                 Utils.resetContext2DStyle(c, this.mRenderPaint)
                 c.beginPath()
-                c.arc(circleRadius + offsetX, circleRadius + offsetY, circleRadius, 0.0, Float64.PI * 2.0,
-                    anticlockwise: false)
+                c.arc(circleRadius + offsetX, circleRadius + offsetY, circleRadius, 0.0, Float64.PI * 2.0, false)
 
                 // Cut hole in path
-                c.arc(circleRadius + offsetX, circleRadius + offsetY, circleHoleRadius, 0.0, Float64.PI * 2.0,
-                    anticlockwise: true)
+                c.arc(circleRadius + offsetX, circleRadius + offsetY, circleHoleRadius, 0.0, Float64.PI * 2.0, true)
 
                 // Fill in-between
                 c.fill()

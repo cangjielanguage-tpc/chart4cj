@@ -4,14 +4,13 @@
 
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class BarChartMultiplePage {
+public class BarChartMultiplePage {
     private var title: String = "Negative"
     private var model: BarChartModel = BarChartModel.build()
     private var leftAxis: ?YAxis = Option<YAxis>.None
@@ -19,6 +18,7 @@ class BarChartMultiplePage {
     private var xAxis: ?XAxis = Option<XAxis>.None
     private var barData: BarData = BarData()
     private var normalMarker: MarkerView = MarkerView()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
@@ -48,7 +48,7 @@ class BarChartMultiplePage {
             leftaxis.setAxisMinimum(0.0)
             leftaxis.setDrawLimitLinesBehindData(false)
             leftaxis.setSpaceTop(30.0)
-            leftaxis.enableGridDashedLine(10, 10)
+            leftaxis.enableGridDashedLine(10.0, 10.0)
         }
 
         this.rightAxis = this.model.getAxisRight()
@@ -140,9 +140,15 @@ class BarChartMultiplePage {
     }
 
     func build() {
-        Column {
-            Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
-            BarChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column {
+                Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
+                BarChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

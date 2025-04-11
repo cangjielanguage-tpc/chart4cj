@@ -4,12 +4,12 @@
 
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
-public class XAxisColorSetter {
+public  class XAxisColorSetter {
     var colorText: String
     var colorVal: UInt32
     var color: UInt32
@@ -20,7 +20,7 @@ public class XAxisColorSetter {
     }
 }
 
-public class GridColorSetter {
+public  class GridColorSetter {
     var colorText: String
     var colorVal: UInt32
     var color: String
@@ -39,7 +39,7 @@ public class GridColorSetter {
         this.colorText
     }
 }
-public class LineWidthSetter {
+public  class LineWidthSetter {
     var text: String
     var lineWidth: Float64
     var lineWidthValue: String
@@ -59,9 +59,8 @@ public class LineWidthSetter {
     }
 }
 
-@Entry
 @Component
-class ScrollBarChartPage2 {
+public class ScrollBarChartPage2 {
     private var title: String = "BarChart Extension"
     private var model: BarChartModel = BarChartModel.build()
     private var leftAxis: ?YAxis = Option<YAxis>.None
@@ -76,6 +75,8 @@ class ScrollBarChartPage2 {
         XAxisColorSetter("红色:", UInt32(0xff00000), UInt32(0xff00000)),
         XAxisColorSetter("蓝色:", UInt32(0x00ff000), UInt32(0xff00000))
     ]
+
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         this.model.setDragEnabled(false)
@@ -279,7 +280,7 @@ class ScrollBarChartPage2 {
                                 if (let Some(y) <- yAxis) {
                                     y.setGridColor(Color(UInt32.parse(item.color)))
                                     y.setGridLineWidth(0.6)
-                                    y.setGridDashedLine(DashPathEffect([2, 2]))
+                                    y.setGridDashedLine(DashPathEffect([2.0, 2.0]))
                                     this.model.invalidate()
                                 }
                             }
@@ -296,7 +297,7 @@ class ScrollBarChartPage2 {
                     isChecked: Bool =>
                     if (isChecked) {
                         // 竖向网格线，x轴刻度为8的位置
-                        this.xAxis().addGridLine(GridLineConfig(8.0, 0x0000FF, 0.6, DashPathEffectConfig(5, 10)))
+                        this.xAxis().addGridLine(GridLineConfig(8.0, 0x0000FF, 0.6, DashPathEffectConfig(5.0, 10.0)))
                         // 横向网格线，y轴刻度为35的位置
                         this.leftAxis().addGridLine(
                             GridLineConfig(35.0, 0xFF0000, 1.0, Option<DashPathEffectConfig>.None))
@@ -318,7 +319,8 @@ class ScrollBarChartPage2 {
     }
 
     func build() {
-        Column {
+        NavDestination() {
+            Column {
             Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
             BarChart(model: this.model)
             Divider().width(1).padding(top: 5)
@@ -332,5 +334,10 @@ class ScrollBarChartPage2 {
                 }
             }
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

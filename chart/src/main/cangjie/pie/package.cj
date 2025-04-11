@@ -3,25 +3,30 @@
  */
 package chart.pie
 
-internal import chart.utils.*
-internal import chart.components.*
-internal import chart.basedata.*
+
 internal import std.collection.{ArrayList, HashSet, EquatableCollection, HashMap,map,collectArrayList}
 internal import std.format.{Formatter}
 internal import std.math.*
-internal import ohos.component.*
-internal import ohos.base.*
-internal import ohos.device_info.*
-internal import ohos.animator.*
 internal import std.unicode.{UnicodeExtension}
 internal import std.time.*
 internal import std.convert.*
 internal import std.format.*
-internal import ohos.image.*
-internal import ohos.measure.Size as MeasureSize
-internal import ohos.measure.MeasureOptions
-internal import ohos.measure.Measure
+
+internal import tpc.UIKit.*
+internal import tpc.UIKit.component_interop.*
+//internal import ohos.image.*
+//internal import ohos.measure.Size as MeasureSize
+//internal import ohos.measure.MeasureOptions
+//internal import ohos.measure.Measure
 internal import ohos.hilog.*
+//internal import ohos.component.*
+//internal import ohos.base.*
+internal import ohos.device_info.*
+internal import ohos.animator.*
+
+internal import chart.utils.*
+internal import chart.components.*
+internal import chart.basedata.*
 
 extend<T> Option<T> {
     operator func ()(): T {

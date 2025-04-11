@@ -3,9 +3,9 @@
  */
 package ohos_app_cangjie_entry.scatterPage
 
-import ohos.component.*
+import tpc.UIKit.component_interop.CanvasRenderingContext2D
 
-public class CustomScatterShapeRenderer <: IShapeRenderer {
+public  class CustomScatterShapeRenderer <: IShapeRenderer {
     public func renderShape(c: CanvasRenderingContext2D, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler,
         posX: Float64, posY: Float64, renderPaint: ChartPaint): Unit {
         let shapeHalf: Float64 = dataSet.getScatterShapeSize() / 2.0;

@@ -89,7 +89,7 @@ public class LimitLine <: ComponentBase {
      * @param spaceLength the length of space in between the pieces
      * @param phase offset, in degrees (normally, use 0)
      */
-    public func enableDashedLine(lineLength: Int64, spaceLength: Int64) {
+    public func enableDashedLine(lineLength: Float64, spaceLength: Float64) {
         this.mDashPathEffect = DashPathEffect([lineLength, spaceLength])
     }
 

@@ -124,11 +124,11 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         this.mDescPaint = ChartPaint()
         this.mInfoPaint = ChartPaint()
         this.mInfoPaint.setColor(Color(0xFFA500))
-        this.mInfoPaint.setTextAlign(TextAlignStyle.Center)
+        this.mInfoPaint.setTextAlign(CanvasTextAlign.center)
         this.mInfoPaint.setTextSize(Utils.handleDataValues(12.0))
 
         if (this.mLogEnabled) {
-            AppLog.info("Chart.init()")
+            Hilog.info(0x000000,"chart","Chart.init()")
         }
     }
 
@@ -154,7 +154,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
             this.invalidate()
 
             if (this.mLogEnabled) {
-                AppLog.info(LOG_TAG + ":Data is set.")
+                Hilog.info(0x000000,"chart", LOG_TAG + ":Data is set.")
             }
         } else {
             return
@@ -275,10 +275,10 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
 
                 Utils.resetContext2DStyle(c, this.mInfoPaint)
                 match (this.mInfoPaint.getTextAlign()) {
-                    case TextAlignStyle.Start =>
+                    case CanvasTextAlign.start =>
                         pt.x = 0.0
                         c.fillText(this.mNoDataText, pt.x, pt.y)
-                    case TextAlignStyle.End =>
+                    case CanvasTextAlign.end =>
                         pt.x *= 2.0
                         c.fillText(this.mNoDataText, pt.x, pt.y)
                     case _ => c.fillText(this.mNoDataText, pt.x, pt.y)
@@ -524,7 +524,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
             this.mIndicesToHighlight = Option<Array<Highlight>>.None
         } else {
             if (this.mLogEnabled) {
-                AppLog.info(LOG_TAG + ":Highlighted: " + highlight().toString())
+                Hilog.info(0x000000,"chart", LOG_TAG + ":Highlighted: " + highlight().toString())
             }
 
             // 缺失方法
@@ -578,7 +578,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      */
     public open func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {
         if (this.mData.isNone()) {
-            AppLog.error(LOG_TAG + ":Can't select by touch. No data set.")
+            Hilog.error(0x000000,"chart",LOG_TAG + ":Can't select by touch. No data set.")
             return Option<Highlight>.None
         } else {
             let hghLighter = this.getHighlighter()
@@ -1077,7 +1077,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      *
      * @param align
      */
-    public func setNoDataTextAlignment(align: TextAlignStyle) {
+    public func setNoDataTextAlignment(align: CanvasTextAlign) {
         this.mInfoPaint.setTextAlign(align)
     }
 
@@ -1347,19 +1347,19 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
     }
     public open func onSizeChanged(w: Float64, h: Float64, oldw: Float64, oldh: Float64): Unit {
         if (this.mLogEnabled) {
-            AppLog.info(LOG_TAG + "OnSizeChanged()")
+            Hilog.info(0x000000,"chart", LOG_TAG + "OnSizeChanged()")
         }
         this.mChartSizeCorrected = true
         this.width = w
         this.height = h
         if (w > 0.0 && h > 0.0 && w < 10000.0 && h < 10000.0) {
             if (this.mLogEnabled) {
-                AppLog.info(LOG_TAG + "Setting chart dimens, width: ${w}, height: ${h}")
+                Hilog.info(0x000000,"chart", LOG_TAG + "Setting chart dimens, width: ${w}, height: ${h}")
             }
             this.mViewPortHandler.setChartDimens(w, h)
         } else {
             if (this.mLogEnabled) {
-                AppLog.info(LOG_TAG + "*Avoiding* setting chart dimens! width: ${w}, height: ${h}")
+                Hilog.info(0x000000,"chart", LOG_TAG + "*Avoiding* setting chart dimens! width: ${w}, height: ${h}")
             }
         }
 

@@ -3,9 +3,10 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import std.collection.*
 import std.math.*
@@ -16,14 +17,14 @@ import chart.charts.*
 import chart.line.*
 import chart.components.*
 
-@Entry
 @Component
-class LineChartNotAxisConfigPageReadme {
+public class LineChartNotAxisConfigPageReadme {
     private var model: LineChartModel = LineChartModel.build()
     var minOffset: Float64 = 15.0
     var leftAxis: ?YAxis = None
     var rightAxis: ?YAxis = None
     var lineData: LineData = LineData()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let legend: ?Legend = this.model.getLegend() //设置图例
@@ -77,12 +78,12 @@ class LineChartNotAxisConfigPageReadme {
         dataSet.append(set1)
 
         let set2 = LineDataSet(values2, "DataSet 2")
-        set2.setDrawFilled(false) //设置不渐变色填充
+        set2.setDrawFilled(true) //设置不渐变色填充
         set2.setDrawValues(true) //设置数据标签显示
         set2.setDrawCircles(true) //折线点画圆圈
         set2.setCircleColor(0xcd4e2e) // 设置数据点的颜色
         set2.setCircleRadius(4.0) // 设置半径大小
-        set2.setMode(Mode.STEPPED) //90度线模式
+        set2.setMode(Mode.CUBIC_BEZIER) //90度线模式
         set2.setColorByColor(0xcd4e2e) //设置折线颜色
         set2.setLineWidth(2.5) //设置线宽
         dataSet.append(set2)
@@ -104,13 +105,19 @@ class LineChartNotAxisConfigPageReadme {
     }
 
     func build() {
-        Column {
-            // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
-            // 如果在之后通过事件触发，
-            // 可通过lineData.notifyDataSetChanged() 来触发数据更新，
-            // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
-            // 可通过this.model.invalidate() 来触发绘制更新。
-            LineChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column {
+                // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+                // 如果在之后通过事件触发，
+                // 可通过lineData.notifyDataSetChanged() 来触发数据更新，
+                // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+                // 可通过this.model.invalidate() 来触发绘制更新。
+                LineChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

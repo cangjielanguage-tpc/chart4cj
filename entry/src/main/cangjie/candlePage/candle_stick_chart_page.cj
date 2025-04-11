@@ -3,15 +3,16 @@
  */
 package ohos_app_cangjie_entry.candlePage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class CandlestickChartPage {
+public class CandlestickChartPage {
     private var model: CandleStickChartModel = CandleStickChartModel.build()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
@@ -117,9 +118,14 @@ class CandlestickChartPage {
     }
 
     func build() {
-        Column() {
-            CandleStickChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
-
+        NavDestination() {
+            Column() {
+                CandleStickChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

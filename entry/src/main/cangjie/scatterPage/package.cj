@@ -7,6 +7,7 @@ internal import  ohos.ability.Ability
 internal import  ohos.ability.Want
 internal import  ohos.ability.LaunchParam
 internal import  ohos.window.WindowStage
+internal import tpc.UIKit.*
 
 internal import  ohos.ability.AbilityStage
 internal import  ohos.ability.LaunchReason

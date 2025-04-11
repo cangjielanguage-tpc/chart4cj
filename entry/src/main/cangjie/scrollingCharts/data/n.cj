@@ -4,7 +4,7 @@
 package ohos_app_cangjie_entry.scrollingCharts.data
 
 
-public class N {
+public  class N {
   public var data: Array<Float64> = [
     0.0, //#0
     0.05, //#1

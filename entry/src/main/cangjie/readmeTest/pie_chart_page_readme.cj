@@ -3,9 +3,10 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
@@ -15,15 +16,15 @@ import chart.pie.*
 import chart.utils.*
 import chart.components.*
 
-@Entry
 @Component
-class PieChartPageReadme {
+public class PieChartPageReadme {
     private var model: PieChartModel = PieChartModel.build()
     protected let parties: Array<String> = ["Party A", "Party B", "Party C", "Party D", "Party E", "Party F", "Party G",
     "Party H", "Party I", "Party J", "Party K", "Party L", "Party M", "Party N", "Party O", "Party P", "Party Q",
     "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X", "Party Y", "Party Z"]
 
     var pieData: PieData = PieData()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend() //设置图例
@@ -117,13 +118,19 @@ class PieChartPageReadme {
     }
 
     func build() {
-        Column {
-            // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
-            // 如果在之后通过事件触发，
-            // 可通过dataSet.notifyDataSetChanged() 来触发数据更新，
-            // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
-            // 可通过this.model.invalidate() 来触发绘制更新。
-            PieChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column {
+                // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+                // 如果在之后通过事件触发，
+                // 可通过dataSet.notifyDataSetChanged() 来触发数据更新，
+                // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+                // 可通过this.model.invalidate() 来触发绘制更新。
+                PieChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

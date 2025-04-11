@@ -12,6 +12,9 @@ public abstract class Utils {
     public static let DOUBLE_EPSILON: Float64 = 4.9E-324
     public static let FLOAT_EPSILON: Float64 = 1.4E-45
 
+    public static let contextSettings: RenderingContextSettings = RenderingContextSettings(antialias: true);
+    public static let offCanvasContext2d: OffscreenCanvasRenderingContext2D = OffscreenCanvasRenderingContext2D(500.0, 500.0, settings: Utils.contextSettings, unit: LengthMetricsUnit.DEFAULT);
+
     /**
      * initialize method, called inside the Chart.init() method.
      *
@@ -37,10 +40,13 @@ public abstract class Utils {
      * @return
      */
     public static func calcTextWidth(paint: ChartPaint, demoText: String): Float64 {
-        let context2: MeasureOptions = MeasureOptions(textContent: demoText,
-            fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
-        let textSize: MeasureSize = Measure.MeasureTextSize(context2)
-        return px2vp(textSize.width.px)().value
+//        let context2: MeasureOptions = MeasureOptions(textContent: demoText,
+//            fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
+//        let textSize: MeasureSize = Measure.MeasureTextSize(context2)
+//        return px2vp(textSize.width.px)().value
+        Utils.resetContext2DStyle(Utils.offCanvasContext2d, paint);
+        let textMetrics: TextMetrics = Utils.offCanvasContext2d.measureText(demoText);
+        return textMetrics.width;
     }
 
     private static var mCalcTextHeightRect: ChartRect = ChartRect()
@@ -54,54 +60,78 @@ public abstract class Utils {
      * @return
      */
     public static func calcTextHeight(paint: ChartPaint, demoText: String): Float64 {
-        let context2: MeasureOptions = MeasureOptions(textContent: demoText)
-        let textSize: MeasureSize = Measure.MeasureTextSize(context2)
-        return px2vp(textSize.height.px)().value
+//        let context2: MeasureOptions = MeasureOptions(textContent: demoText)
+//        let textSize: MeasureSize = Measure.MeasureTextSize(context2)
+//        return px2vp(textSize.height.px)().value
+        Utils.resetContext2DStyle(Utils.offCanvasContext2d, paint);
+        let textMetrics: TextMetrics = Utils.offCanvasContext2d.measureText(demoText);
+        return textMetrics.height;
     }
 
-    public static func calcTextHeight(c: CanvasRenderingContext2D, paint: ChartPaint, demoText: String): Float64 {
-        Utils.resetContext2DStyle(c, paint)
-        let textMetrics: TextMetrics = c.measureText(demoText)
-        return textMetrics.height
-    }
+//    public static func calcTextHeight(c: CanvasRenderingContext2D, paint: ChartPaint, demoText: String): Float64 {
+//        Utils.resetContext2DStyle(c, paint)
+//        let textMetrics: TextMetrics = c.measureText(demoText)
+//        return textMetrics.height
+//    }
 
-    public static func getLineHeight(paint: ChartPaint, c: ?CanvasRenderingContext2D): Float64 {
-        var lineHeight: Float64 = 0.0
-        if (let Some(canvas) <- c) {
-            Utils.resetContext2DStyle(canvas, paint)
-            let textMetrics: TextMetrics = canvas.measureText("Test")
-            lineHeight = textMetrics.height
-        } else {
-            let context2: MeasureOptions = MeasureOptions(textContent: "Test",fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
-            let textSize: MeasureSize = Measure.MeasureTextSize(context2)
-            lineHeight = px2vp(textSize.height.px)().value
+    public static func getLineHeight(paint: ChartPaint, c: ?CanvasRenderer): Float64 {
+        var cavas: ?CanvasRenderer = c
+        if (cavas.isNone()) {
+            cavas = Utils.offCanvasContext2d;
         }
-        return lineHeight
+        Utils.resetContext2DStyle(cavas(), paint);
+        let textMetrics: TextMetrics = cavas().measureText('Test');
+        return textMetrics.height;
+//        var lineHeight: Float64 = 0.0
+//        if (let Some(canvas) <- c) {
+//            Utils.resetContext2DStyle(canvas, paint)
+//            let textMetrics: TextMetrics = canvas.measureText("Test")
+//            lineHeight = textMetrics.height
+//        } else {
+////            let context2: MeasureOptions = MeasureOptions(textContent: "Test",fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
+////            let textSize: MeasureSize = Measure.MeasureTextSize(context2)
+////            lineHeight = px2vp(textSize.height.px)().value
+//        }
+//        return lineHeight
     }
 
-    public static func getLineSpacing(paint: ChartPaint, c: ?CanvasRenderingContext2D): Float64 {
-        var lineSpacing: Float64 = 0.0
-        if (let Some(canvas) <- c) {
-            Utils.resetContext2DStyle(canvas, paint)
-            let textMetrics: TextMetrics = canvas.measureText("Test")
-            lineSpacing = textMetrics.height * 0.3
-        } else {
-            let context2: MeasureOptions = MeasureOptions(textContent: "Test",
-                fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
-            let textSize: MeasureSize = Measure.MeasureTextSize(context2)
-            lineSpacing = px2vp(textSize.height.px)().value * 0.3
+    public static func getLineSpacing(paint: ChartPaint, c: ?CanvasRenderer): Float64 {
+        var cavas: ?CanvasRenderer = c
+        if (cavas.isNone()) {
+            cavas = Utils.offCanvasContext2d;
         }
-        return lineSpacing
+        Utils.resetContext2DStyle(cavas(), paint);
+        let textMetrics: TextMetrics = cavas().measureText('Test');
+        return textMetrics.actualBoundingBoxAscent - textMetrics.fontBoundingBoxAscent + textMetrics.fontBoundingBoxDescent
+
+//        var lineSpacing: Float64 = 0.0
+//        if (let Some(canvas) <- c) {
+//            Utils.resetContext2DStyle(canvas, paint)
+//            let textMetrics: TextMetrics = canvas.measureText("Test")
+//            lineSpacing = textMetrics.height * 0.3
+//        } else {
+//            let context2: MeasureOptions = MeasureOptions(textContent: "Test",
+//                fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
+//            let textSize: MeasureSize = Measure.MeasureTextSize(context2)
+//            lineSpacing = px2vp(textSize.height.px)().value * 0.3
+//        }
+//        return lineSpacing
     }
 
     public static func calcTextSize(paint: ChartPaint, demoText: String): FSize {
-        let context2: MeasureOptions = MeasureOptions(textContent: demoText,
-            fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
-        let textSize: MeasureSize = Measure.MeasureTextSize(context2)
-        let width: Float64 = px2vp(textSize.width.px)().value
-        let height: Float64 = px2vp(textSize.height.px)().value
-        let fsize: FSize = FSize(width, height)
-        return fsize
+        Utils.resetContext2DStyle(Utils.offCanvasContext2d, paint);
+        let textMetrics: TextMetrics = Utils.offCanvasContext2d.measureText(demoText);
+        let width: Float64 = textMetrics.width;
+        let height: Float64 = textMetrics.height;
+        let fsize: FSize = FSize(width, height);
+        return fsize;
+//        let context2: MeasureOptions = MeasureOptions(textContent: demoText,
+//            fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
+//        let textSize: MeasureSize = Measure.MeasureTextSize(context2)
+//        let width: Float64 = px2vp(textSize.width.px)().value
+//        let height: Float64 = px2vp(textSize.height.px)().value
+//        let fsize: FSize = FSize(width, height)
+//        return fsize
     }
 
     private static var mDefaultValueFormatter: IValueFormatter = Utils.generateDefaultValueFormatter()
@@ -219,11 +249,11 @@ public abstract class Utils {
     public static func drawImage(canvas: CanvasRenderingContext2D, drawable: ChartPixelMap, x: Float64, y: Float64): Unit {
         let pixelMap = drawable.getIcon()
         if (pixelMap.isSome()) {
-            canvas.drawImage(pixelMap(), x, y)
+            //canvas.drawImage(pixelMap(), x, y)  //改
         }
     }
 
-    private static var mFontMetricsBuffer: TextMetrics = TextMetrics()
+    private static var mFontMetricsBuffer: ?TextMetrics = Option<TextMetrics>.None
 
     public static func drawXAxisValue(c: CanvasRenderingContext2D, text: String, x: Float64, y: Float64,
         paint: ChartPaint, anchor: MPPointF, angleDegrees: Float64, labelPosition: XAxisLabelPosition): Unit {
@@ -235,19 +265,19 @@ public abstract class Utils {
         // 防止计算出来的宽度，高度等数据不准确
         Utils.resetContext2DStyle(c, paint)
         Utils.mFontMetricsBuffer = c.measureText(text)
-        let lineHeight = Utils.mFontMetricsBuffer.height
+        let lineHeight = Utils.mFontMetricsBuffer().height
 
         // To have a consistent point of reference, we always draw left-aligned
-        let originalTextAlign: TextAlignStyle = paint.getTextAlign()
-        let originalTextBaseLine: TextBaseline = paint.getTextBaseline()
+        let originalTextAlign: CanvasTextAlign = paint.getTextAlign()
+        let originalTextBaseLine: CanvasTextBaseline = paint.getTextBaseline()
 
-        paint.setTextAlign(TextAlignStyle.Left)
-        paint.setTextBaseline(TextBaseline.Top)
+        paint.setTextAlign(CanvasTextAlign.left)
+        paint.setTextBaseline(CanvasTextBaseline.top)
         Utils.resetContext2DStyle(c, paint)
         if (angleDegrees != 0.0) {
 
             // Move the text drawing rect in a way that it always rotates around its center
-            drawOffsetX -= Utils.mFontMetricsBuffer.width * 0.5
+            drawOffsetX -= Utils.mFontMetricsBuffer().width * 0.5
             drawOffsetY -= lineHeight * 0.5
 
             var transX: Float64 = x
@@ -256,7 +286,7 @@ public abstract class Utils {
             // Move the "outer" rect relative to the anchor, assuming its centered
             if (anchor.x != 0.5 || anchor.y != 0.5) {
                 let rotatedSize: FSize = Utils.getSizeOfRotatedRectangleByDegrees(
-                    Utils.mFontMetricsBuffer.width,
+                    Utils.mFontMetricsBuffer().width,
                     lineHeight,
                     angleDegrees
                 )
@@ -294,15 +324,15 @@ public abstract class Utils {
             c.restore()
         } else {
             if (anchor.x != 0.0 || anchor.y != 0.0) {
-                drawOffsetX -= Utils.mFontMetricsBuffer.width * anchor.x
+                drawOffsetX -= Utils.mFontMetricsBuffer().width * anchor.x
                 drawOffsetY -= lineHeight * anchor.y
             }
 
             drawOffsetX += x
             if (labelPosition.toString() == XAxisLabelPosition.RIGHT.toString()) {
-                drawOffsetX += Utils.mFontMetricsBuffer.width * 0.5
+                drawOffsetX += Utils.mFontMetricsBuffer().width * 0.5
             } else if (labelPosition.toString() == XAxisLabelPosition.LEFT.toString()) {
-                drawOffsetX -= Utils.mFontMetricsBuffer.width * 0.5
+                drawOffsetX -= Utils.mFontMetricsBuffer().width * 0.5
             }
             drawOffsetY += y
 
@@ -347,10 +377,9 @@ public abstract class Utils {
         return DeviceInfo.sdkApiVersion
     }
 
-    public static func resetContext2DStyle(context2D: CanvasRenderingContext2D, paint: ChartPaint) {
+    public static func resetContext2DStyle(context2D: CanvasRenderer, paint: ChartPaint) {
         match (paint.getStyle()) {
             case Style.FILL =>
-                let c: Color = paint.getFillStyle()
                 context2D.fillStyle(paint.getFillStyle())
             case Style.STROKE => context2D.strokeStyle(paint.getStrokeStyle())
             case Style.FILL_AND_STROKE =>
@@ -366,17 +395,17 @@ public abstract class Utils {
         }
 
         if (let Some(globalAlpha) <- paint.getGlobalAlpha()) {
-            context2D.globalAlpha(globalAlpha)
+            context2D.globalAlpha = globalAlpha
         }
         context2D.lineWidth(paint.getStrokeWidth())
-        context2D.textAlign(paint.getTextAlign())
-        context2D.textBaseline(paint.getTextBaseline())
-        context2D.font(size: Length(paint.getTextSize()))
+        context2D.textAlign = paint.getTextAlign()
+        context2D.textBaseline = paint.getTextBaseline()
+        context2D.font = paint.getFont()
 
         let dashEffect: ?DashPathEffect = paint.getDashPathEffect()
         if (let Some(dashE) <- dashEffect) {
-            context2D.lineDash(dashE.getDash())
-            context2D.lineDashOffset(dashE.getOffset())
+            context2D.setLineDash(dashE.getDash())
+            context2D.lineDashOffset = dashE.getOffset()
         }
     }
 

@@ -3,9 +3,10 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
@@ -16,10 +17,10 @@ import chart.charts.*
 import chart.components.*
 import chart.scatter.*
 
-@Entry
 @Component
-class ScatterChartPageReadme {
+public class ScatterChartPageReadme {
     private var model: ScatterChartModel = ScatterChartModel.build()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
@@ -122,20 +123,25 @@ class ScatterChartPageReadme {
     }
 
     func build() {
-        Column() {
-            // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
-            // 如果在之后通过事件触发，
-            // 可通过dataResult.notifyDataSetChanged() 来触发数据更新，
-            // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
-            // 可通过this.model.invalidate() 来触发绘制更新。
-            ScatterChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
-
+        NavDestination() {
+            Column() {
+                // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+                // 如果在之后通过事件触发，
+                // 可通过dataResult.notifyDataSetChanged() 来触发数据更新，
+                // 可通过this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+                // 可通过this.model.invalidate() 来触发绘制更新。
+                ScatterChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }
 
 // 自定义散点形状
-public class CustomScatterShapeRenderer <: IShapeRenderer {
+public  class CustomScatterShapeRenderer <: IShapeRenderer {
     public func renderShape(c: CanvasRenderingContext2D, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler,
         posX: Float64, posY: Float64, renderPaint: ChartPaint): Unit {
         let shapeHalf: Float64 = dataSet.getScatterShapeSize() / 2.0

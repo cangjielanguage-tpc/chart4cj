@@ -1,30 +1,46 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
- */
-
 package ohos_app_cangjie_entry
 
-internal import ohos.base.AppLog
-internal import ohos.ability.AbilityStage
-internal import ohos.ability.LaunchReason
-internal import cj_res_entry.app
+import ohos.base.AppLog
+import tpc.AbilityKit
+import tpc.AbilityKit.UIAbility
+import tpc.AbilityKit.Want
+import tpc.AbilityKit.AbilityConstant
+import tpc.UIKit.window
+import ohos.hybrid_base.CJPageEntry
 
-class MainAbility <: Ability {
-    public init() {
-        super()
-        registerSelf()
-    }
+let ENTRYABILITY_REGISTER_RESULT = UIAbility.registerCreator("EntryAbility", {=> EntryAbility()})
 
-    public override func onCreate(want: Want, launchParam: LaunchParam): Unit {
-        AppLog.info("MainAbility OnCreated.${want.abilityName}")
+class EntryAbility <: UIAbility {
+    public override func onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): Unit {
+        AppLog.info("Ability OnCreated.${want.abilityName}")
         match (launchParam.launchReason) {
-            case LaunchReason.START_ABILITY => AppLog.info("START_ABILITY")
+            case AbilityConstant.LaunchReason.START_ABILITY => AppLog.info("START_ABILITY")
             case _ => ()
         }
     }
 
-    public override func onWindowStageCreate(windowStage: WindowStage): Unit {
-        AppLog.info("MainAbility onWindowStageCreate.")
-        windowStage.loadContent("EntryView")
+    public override func onDestroy(): Unit {
+        AppLog.info("myAbility onDestroy.")
+    }
+
+    public override func onWindowStageCreate(windowStage: window.WindowStage): Unit {
+        windowStage.loadContent("pages/index", {err, data => ()})
+    }
+
+    public override func onWindowStageDestroy(): Unit {
+        AppLog.info("myAbility onWindowStageDestroy.")
+    }
+
+    public override func onForeground(): Unit {
+        AppLog.info("myAbility onForeground.")
+    }
+
+    public override func onBackground(): Unit {
+        AppLog.info("myAbility onBackground.")
+    }
+
+    public override func onConfigurationUpdate(config: AbilityKit.Configuration): Unit {
+      AppLog.info("myAbility onConfigurationUpdate: ${config.mcc}")
+      CJPageEntry.getInstance().forceRerenderAllEntry()
     }
 }

@@ -3,14 +3,13 @@
  */
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class StackedNegativePage {
+public class StackedNegativePage {
     private var model: BarChartModel = HorizontalBarChartModel.build()
     private var leftAxis: ?YAxis = Option<YAxis>.None
     private var rightAxis: ?YAxis = Option<YAxis>.None
@@ -18,6 +17,7 @@ class StackedNegativePage {
     private var limitLine1: LimitLine = LimitLine(0.0, "limit1")
     private var limitLine2: LimitLine = LimitLine(0.0, "limit2")
     private var barData: BarData = BarData()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
@@ -104,19 +104,25 @@ class StackedNegativePage {
     }
 
     func build() {
-        Column {
-            BarChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column {
+                BarChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }
 
-class CustomFormatter <: IAxisValueFormatter {
+public class CustomFormatter <: IAxisValueFormatter {
     public func getFormattedValue(value: Float64, axis: AxisBase): String {
         return abs(value).format(".0") + "m";
     }
 }
 
-class CustomValueFormatter <: IAxisValueFormatter {
+public class CustomValueFormatter <: IAxisValueFormatter {
     public func getFormattedValue(value: Float64, axis: AxisBase): String {
         return abs(value).format(".0") + "- ${(Int64.parse(abs(value).format(".0")) + 10)}"
     }

@@ -13,6 +13,9 @@ internal import ohos.ability.AbilityStage
 internal import ohos.ability.LaunchReason
 internal import ohos.prompt_action.*
 
+internal import tpc.UIKit.component_interop.*
+internal import tpc.UIKit.*
+
 internal import chart.pie.{PieChartModel,PieData, IPieDataSet, PiEntry,IBarDataSet,BarEntry,
     IBubbleDataSet,BubblesEntry,ICandleDataSet,CandleEntry,IBarLineScatterCandleBubbleDataSet,
     EntryOhos, ILineDataSet,LineData,IScatterDataSet, WaterfallEntry}

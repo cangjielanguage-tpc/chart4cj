@@ -10,13 +10,13 @@ import ohos.state_macro_manage.Entry
 import ohos.state_macro_manage.Component
 import ohos.state_macro_manage.State
 
-@Entry
 @Component
-class HourlyPage {
+public class HourlyPage {
     @State
     var lineData: LineData = LineData()
     @State
     var lineChartModel: LineChartModel = LineChartModel.build()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         this.lineData = this.initCurveData(100, 50.0)
@@ -69,13 +69,19 @@ class HourlyPage {
     }
 
     func build() {
-        Column {
-            LineChart(model: this.lineChartModel)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column {
+                LineChart(model: this.lineChartModel)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }
 
-class TopAxisValueFormatter <: IAxisValueFormatter {
+public class TopAxisValueFormatter <: IAxisValueFormatter {
     public func getFormattedValue(value: Float64, axis: AxisBase): String {
         let mmddd = DateTime.nowUTC().toString()[0..10]
         let mmdd = mmddd.split('-')

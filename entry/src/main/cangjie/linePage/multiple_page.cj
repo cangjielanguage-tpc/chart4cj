@@ -4,9 +4,8 @@
 package ohos_app_cangjie_entry.linePage
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class MultiplePage {
+public class MultiplePage {
     private var model: LineChartModel = LineChartModel.build()
     var topAxis: XAxis = XAxis() //顶部X轴
     var bottomAxis: XAxis = XAxis() //底部X轴
@@ -16,6 +15,7 @@ class MultiplePage {
     var leftAxis: ?YAxis = None
     var rightAxis: ?YAxis = None
     var lineData: LineData = LineData()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear(){
         let legend: ?Legend = this.model.getLegend()
@@ -72,7 +72,7 @@ class MultiplePage {
         set1.setMode(Mode.LINEAR)
         set1.setColorByColor(0x008000)
         set1.setLineWidth(2.5)
-        set1.enableDashedLine(10, 10)
+        set1.enableDashedLine(10.0, 10.0)
         dataSet.append(set1)
 
         let set2 = LineDataSet(values2, "DataSet 2")
@@ -107,8 +107,14 @@ class MultiplePage {
     }
 
     func build() {
-        Column {
-            LineChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column {
+                LineChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

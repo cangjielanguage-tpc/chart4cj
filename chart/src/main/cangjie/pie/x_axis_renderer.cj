@@ -13,7 +13,7 @@ public open class XAxisRenderer <: AxisRenderer {
         super(viewPortHandler, xAxis, trans)
         this.mXAxis = xAxis
         this.mAxisLabelPaint.setColor(Color.BLACK)
-        this.mAxisLabelPaint.setTextAlign(TextAlignStyle.Center)
+        this.mAxisLabelPaint.setTextAlign(CanvasTextAlign.center)
         this.mAxisLabelPaint.setTextSize(10.0)
     }
     protected func setupGridPaint() {
@@ -412,8 +412,8 @@ public open class XAxisRenderer <: AxisRenderer {
 
     private func lablePositionIsRIGHT_TOP(limitLine: LimitLine, c: CanvasRenderingContext2D, label: String,
         position: Array<Float64>, yOffset: Float64, paintStyle: Style, xOffset: Float64): Unit {
-        let labelLineHeight = Utils.calcTextHeight(c, this.mLimitLinePaint, label)
-        this.mLimitLinePaint.setTextAlign(TextAlignStyle.Left)
+        let labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label)
+        this.mLimitLinePaint.setTextAlign(CanvasTextAlign.left)
 
         Utils.resetContext2DStyle(c, this.mLimitLinePaint)
         match (paintStyle) {
@@ -459,7 +459,7 @@ public open class XAxisRenderer <: AxisRenderer {
 
     private func lablePositionIsRIGHT_BOTTOM(limitLine: LimitLine, c: CanvasRenderingContext2D, label: String,
         position: Array<Float64>, yOffset: Float64, paintStyle: Style, xOffset: Float64): Unit {
-        this.mLimitLinePaint.setTextAlign(TextAlignStyle.Left)
+        this.mLimitLinePaint.setTextAlign(CanvasTextAlign.left)
 
         Utils.resetContext2DStyle(c, this.mLimitLinePaint)
         match (paintStyle) {
@@ -496,9 +496,9 @@ public open class XAxisRenderer <: AxisRenderer {
 
     private func lablePositionIsLEFT_TOP(limitLine: LimitLine, c: CanvasRenderingContext2D, label: String,
         position: Array<Float64>, yOffset: Float64, paintStyle: Style, xOffset: Float64): Unit {
-        this.mLimitLinePaint.setTextAlign(TextAlignStyle.Right)
+        this.mLimitLinePaint.setTextAlign(CanvasTextAlign.right)
 
-        let labelLineHeight = Utils.calcTextHeight(c, this.mLimitLinePaint, label)
+        let labelLineHeight = Utils.calcTextHeight(this.mLimitLinePaint, label)
         Utils.resetContext2DStyle(c, this.mLimitLinePaint)
         match (paintStyle) {
             case Style.STROKE =>
@@ -535,7 +535,7 @@ public open class XAxisRenderer <: AxisRenderer {
 
     private func lablePositionIsOther(limitLine: LimitLine, c: CanvasRenderingContext2D, label: String,
         position: Array<Float64>, yOffset: Float64, paintStyle: Style, xOffset: Float64): Unit {
-        this.mLimitLinePaint.setTextAlign(TextAlignStyle.Right)
+        this.mLimitLinePaint.setTextAlign(CanvasTextAlign.right)
         Utils.resetContext2DStyle(c, this.mLimitLinePaint)
         match (paintStyle) {
             case Style.STROKE =>

@@ -4,7 +4,7 @@
 package ohos_app_cangjie_entry.scrollingCharts.data
 
 
-public  class Square {
+public class Square {
   public var data: Array<Float64> = [
     0.0, //#0
     0.0025000000745058065, //#1

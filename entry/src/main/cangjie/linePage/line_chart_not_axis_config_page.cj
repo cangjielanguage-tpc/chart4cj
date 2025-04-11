@@ -4,11 +4,11 @@
 package ohos_app_cangjie_entry.linePage
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class LineChartNotAxisConfigPage {
+public class LineChartNotAxisConfigPage {
     private var model: LineChartModel = LineChartModel.build()
     private var dataSet: LineDataSet = LineDataSet(ArrayList<EntryOhos>(), "Data Set")
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let l: ?Legend = this.model.getLegend()
@@ -66,8 +66,14 @@ class LineChartNotAxisConfigPage {
     }
 
     func build() {
-        Column {
-            LineChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column {
+                LineChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

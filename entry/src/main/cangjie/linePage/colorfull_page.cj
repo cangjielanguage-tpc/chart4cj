@@ -5,13 +5,13 @@ package ohos_app_cangjie_entry.linePage
 
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class ColorfulPage {
+public class ColorfulPage {
     private var lineChartModel1: LineChartModel = LineChartModel.build()
     private var lineChartModel2: LineChartModel = LineChartModel.build()
     private var lineChartModel3: LineChartModel = LineChartModel.build()
     private var lineChartModel4: LineChartModel = LineChartModel.build()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         this.initialLineChartModel(this.lineChartModel1)
@@ -104,21 +104,27 @@ class ColorfulPage {
     }
 
     func build() {
-        Column {
-            Stack(Alignment.TopStart) {
-                LineChart(model: this.lineChartModel1)
-            }.backgroundColor(UInt32(ColorTemplate.colorRgb(137, 230, 81))).height(25.percent)
-            Stack(Alignment.TopStart) {
-                LineChart(model: this.lineChartModel2)
-            }.backgroundColor(UInt32(ColorTemplate.colorRgb(240, 240, 30))).height(25.percent)
+        NavDestination() {
+            Column {
+                Stack(Alignment.TopStart) {
+                    LineChart(model: this.lineChartModel1)
+                }.backgroundColor(UInt32(ColorTemplate.colorRgb(137, 230, 81))).height(25.percent)
+                Stack(Alignment.TopStart) {
+                    LineChart(model: this.lineChartModel2)
+                }.backgroundColor(UInt32(ColorTemplate.colorRgb(240, 240, 30))).height(25.percent)
 
-            Stack(Alignment.TopStart) {
-                LineChart(model: this.lineChartModel3)
-            }.backgroundColor(UInt32(ColorTemplate.colorRgb(89, 199, 250))).height(25.percent)
+                Stack(Alignment.TopStart) {
+                    LineChart(model: this.lineChartModel3)
+                }.backgroundColor(UInt32(ColorTemplate.colorRgb(89, 199, 250))).height(25.percent)
 
-            Stack(Alignment.TopStart) {
-                LineChart(model: this.lineChartModel4)
-            }.backgroundColor(UInt32(ColorTemplate.colorRgb(250, 104, 104))).height(25.percent)
-        }.width(100.percent).height(100.percent).backgroundColor(Color.WHITE)
+                Stack(Alignment.TopStart) {
+                    LineChart(model: this.lineChartModel4)
+                }.backgroundColor(UInt32(ColorTemplate.colorRgb(250, 104, 104))).height(25.percent)
+            }.width(100.percent).height(100.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

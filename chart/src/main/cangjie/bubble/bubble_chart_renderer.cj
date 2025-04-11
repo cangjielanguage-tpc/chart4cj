@@ -104,8 +104,7 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                         Utils.resetContext2DStyle(c, this.mRenderPaint);
                         c.beginPath();
-                        c.arc(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, 0.0, 2.0 * Float64.PI,
-                            anticlockwise: true);
+                        c.arc(this.pointBuffer[0], this.pointBuffer[1], shapeHalf, 0.0, 2.0 * Float64.PI, true);
                         c.stroke();
                         c.fill();
                         c.closePath();
@@ -132,7 +131,7 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
         if (let Some(b) <- bubbleData) {
             if (this.isDrawingValuesAllowed(this.mChart) && this.mXBounds.isSome()) {
                 let dataSets: ArrayList<IBubbleDataSet> = b.getDataSets();
-                let lineHeight: Float64 = Utils.calcTextHeight(c, this.mValuePaint, "1");
+                let lineHeight: Float64 = Utils.calcTextHeight(this.mValuePaint, "1");
                 for (i in 0..dataSets.size) {
                     let dataSet: IBubbleDataSet = dataSets[i];
 

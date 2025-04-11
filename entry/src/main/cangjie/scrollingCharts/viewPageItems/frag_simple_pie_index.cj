@@ -3,9 +3,10 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.viewPageItems
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import chart.pie.*
 import chart.utils.*
@@ -14,15 +15,15 @@ import chart.charts.*
 import std.collection.{ArrayList}
 import std.random.*
 
-@Entry
 @Component
-public class fragmentSimplePieIndex {
+public  class fragmentSimplePieIndex {
     var pieData: PieData = PieData()
     @State
     var pieModel: PieChartModel = PieChartModel.build()
     var parties: Array<String> = ["Party A", "Party B", "Party C", "Party D", "Party E", "Party F", "Party G",
     "Party H", "Party I", "Party J", "Party K", "Party L", "Party M", "Party N", "Party O", "Party P", "Party Q",
     "Party R", "Party S", "Party T", "Party U", "Party V", "Party W", "Party X", "Party Y", "Party Z"]
+     var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         this.pieData = this.initPieData(4, 10.0)
@@ -81,8 +82,14 @@ public class fragmentSimplePieIndex {
     }
 
     func build() {
-        Column() {
-            PieChart(model: this.pieModel)
-        }.width(100.percent).height(80.percent)
+        NavDestination() {
+            Column() {
+                PieChart(model: this.pieModel)
+            }.width(100.percent).height(80.percent)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

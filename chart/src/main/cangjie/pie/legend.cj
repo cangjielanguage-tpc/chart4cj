@@ -587,7 +587,7 @@ public class Legend <: ComponentBase {
         var maxWidth: Float64 = 0.0;
         var maxHeight: Float64 = 0.0;
         var width: Float64 = 0.0;
-        let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, Option<CanvasRenderingContext2D>.None)
+        let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, Option<CanvasRenderer>.None)
         var wasStacked: Bool = false;
 
         for (i in 0..entryCount) {
@@ -647,8 +647,8 @@ public class Legend <: ComponentBase {
     private func orientationIsHORIZONTAL(labelpaint: ChartPaint, entryCount: Int64, entries: Array<LegendEntry>,
         defaultFormSize: Float64, stackSpace: Float64, formToTextSpace: Float64, yEntrySpace: Float64,
         viewPortHandler: ViewPortHandler, xEntrySpace: Float64, wordWrapEnabled: Bool) {
-        let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, Option<CanvasRenderingContext2D>.None);
-        let labelLineSpacing: Float64 = Utils.getLineSpacing(labelpaint, Option<CanvasRenderingContext2D>.None) +
+        let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, Option<CanvasRenderer>.None);
+        let labelLineSpacing: Float64 = Utils.getLineSpacing(labelpaint, Option<CanvasRenderer>.None) +
             yEntrySpace;
         let contentWidth: Float64 = viewPortHandler.contentWidth() * this.mMaxSizePercent;
 

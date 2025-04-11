@@ -3,9 +3,10 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
@@ -16,14 +17,14 @@ import chart.bar.*
 import chart.charts.*
 import chart.components.*
 
-@Entry
 @Component
-class BarChartPageReadme {
+public class BarChartPageReadme {
     private var model: BarChartModel = BarChartModel.build()
     private var leftAxis: ?YAxis = Option<YAxis>.None
     private var rightAxis: ?YAxis = Option<YAxis>.None
     private var xAxis: ?XAxis = Option<XAxis>.None
     private var barData: BarData = BarData()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let description: Description = this.model.getDescription() // 获取图表描述部件
@@ -49,7 +50,7 @@ class BarChartPageReadme {
             leftaxis.setAxisMinimum(0.0) // 设置左侧Y轴的最小值为 0
             leftaxis.setDrawLimitLinesBehindData(true) // 设置是否在数据后绘制限制线
             leftaxis.setSpaceTop(30.0) //设置距离顶部距离
-            leftaxis.enableGridDashedLine(10, 10) //设置网格样式
+            leftaxis.enableGridDashedLine(10.0, 10.0) //设置网格样式
         }
 
         this.rightAxis = this.model.getAxisRight()
@@ -138,14 +139,20 @@ class BarChartPageReadme {
     }
 
     func build() {
-        Column {
-            // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
-            // 如果在之后通过事件触发，
-            // 可通过 barData.notifyDataSetChanged() 来触发数据更新，
-            // 可通过 this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
-            // 可通过 this.model.invalidate() 来触发绘制更新。
-            BarChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column {
+                // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+                // 如果在之后通过事件触发，
+                // 可通过 barData.notifyDataSetChanged() 来触发数据更新，
+                // 可通过 this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+                // 可通过 this.model.invalidate() 来触发绘制更新。
+                BarChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }
 extend<T> Option<T> {

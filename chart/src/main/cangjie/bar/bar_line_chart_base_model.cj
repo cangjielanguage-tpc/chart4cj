@@ -321,7 +321,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
 
     protected open func prepareValuePxMatrix(): Unit {
         if (this.mLogEnabled && this.mXAxis.isSome()) {
-            AppLog.info(
+            Hilog.info(0x000000,"chart",
                 "chart: Preparing Value-Px Matrix, xmin: ${this.mXAxis().mAxisMinimum}, xmax: ${this.mXAxis().mAxisMaximum}, xdelta: ${this.mXAxis().mAxisRange}"
             )
         }
@@ -356,12 +356,12 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     public func notifyDataSetChanged(): Unit {
         if (this.mData.isNone()) {
             if (this.mLogEnabled) {
-                AppLog.info("chart: Preparing... DATA NOT SET.")
+                Hilog.info(0x000000,"chart","chart: Preparing... DATA NOT SET.")
             }
             return
         } else {
             if (this.mLogEnabled) {
-                AppLog.info("chart: Preparing...")
+                Hilog.info(0x000000,"chart","chart: Preparing...")
             }
         }
 
@@ -562,10 +562,10 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             )
 
             if (this.mLogEnabled) {
-                AppLog.info(
+                Hilog.info(0x000000,"chart",
                     "offsetLeft: ${offsetLeft}, offsetTop: ${offsetTop}, offsetRight: ${offsetRight}, offsetBottom: ${offsetBottom}"
                 )
-                AppLog.info("Content: " + this.mViewPortHandler.getContentRect().toString())
+                Hilog.info(0x000000,"chart","Content: " + this.mViewPortHandler.getContentRect().toString())
             }
         }
 

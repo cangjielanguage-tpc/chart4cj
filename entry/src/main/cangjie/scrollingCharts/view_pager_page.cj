@@ -4,17 +4,18 @@
 package ohos_app_cangjie_entry.scrollingCharts
 
 import ohos.hilog.*
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import ohos_app_cangjie_entry.scrollingCharts.viewPageItems.*
 
-@Entry
 @Component
-class ViewPagerPage {
+public class ViewPagerPage {
     private var swiperController: SwiperController = SwiperController()
     private var data: MyDataSource = MyDataSource(ArrayList<Order>())
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let datas: ArrayList<Order> = ArrayList<Order>()
@@ -25,7 +26,8 @@ class ViewPagerPage {
     }
 
     func build() {
-        Column(5.0) {
+        NavDestination() {
+            Column(5.0) {
             Swiper(this.swiperController) {
                 LazyForEach(this.data,
                     itemGeneratorFunc: {
@@ -53,17 +55,22 @@ class ViewPagerPage {
                 index => Hilog.info(0x0000, "test", "index:${ index.toString()}")
             })
         }
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }
 
-public class Order {
+public  class Order {
     public Order(
         let name: String,
         let id: Int64
     ) {}
 }
 
-class MyDataSource <: IDataSource<Order> {
+public class MyDataSource <: IDataSource<Order> {
     public MyDataSource(let data_: ArrayList<Order>) {}
     public var listenerOp: Option<DataChangeListener> = None
     public func totalCount(): Int64 {

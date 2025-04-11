@@ -3,9 +3,10 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import std.collection.{ArrayList}
 import std.math.*
@@ -17,9 +18,8 @@ import chart.components.*
 import chart.charts.*
 import chart.waterfall.*
 
-@Entry
 @Component
-class WaterfallChartPageReadme {
+public class WaterfallChartPageReadme {
     private var model: WaterfallChartModel = WaterfallChartModel.build()
     private var dataSet: WaterfallDataSet = WaterfallDataSet(ArrayList<WaterfallEntry>(), "")
     private var leftAxis: ?YAxis = Option<YAxis>.None
@@ -27,6 +27,7 @@ class WaterfallChartPageReadme {
     private var xAxis: ?XAxis = Option<XAxis>.None
     private var data: WaterfallData = WaterfallData()
     private var normalMarker: MarkerView = MarkerView()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         // 获取图表描述部件，设置图表描述部件不可用，即图表不进行绘制描述部件
@@ -113,14 +114,19 @@ class WaterfallChartPageReadme {
     }
 
     func build() {
-        Column() {
-            WaterfallChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
-
+        NavDestination() {
+            Column() {
+                WaterfallChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+         }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }
 
-class CustomFormatter <: IAxisValueFormatter {
+public class CustomFormatter <: IAxisValueFormatter {
     public func getFormattedValue(value: Float64, axis: AxisBase): String {
         let str = value.format(".0").split(".")
         return "${str[0]}%"

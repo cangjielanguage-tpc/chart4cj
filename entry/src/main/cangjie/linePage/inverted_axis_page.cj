@@ -4,14 +4,14 @@
 package ohos_app_cangjie_entry.linePage
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class InvertedAxisPage {
+public class InvertedAxisPage {
     private var model: LineChartModel = LineChartModel.build()
     private var leftAxis: ?YAxis = None
     private var rightAxis: ?YAxis = None
     private var xAxis: ?XAxis = None
     private var dataSet: LineDataSet = LineDataSet(ArrayList<EntryOhos>(), "")
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
@@ -84,8 +84,14 @@ class InvertedAxisPage {
     }
 
     func build() {
-        Column {
-            LineChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column {
+                LineChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

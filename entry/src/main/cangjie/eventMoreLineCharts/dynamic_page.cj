@@ -10,9 +10,8 @@ import ohos.state_macro_manage.Entry
 import ohos.state_macro_manage.Component
 import ohos.state_macro_manage.State
 
-@Entry
 @Component
-class DynamicPage {
+public class DynamicPage {
     private var leftAxis: ?YAxis = None
     private var rightAxis: ?YAxis = None
     private var topAxis: ?XAxis = None
@@ -27,6 +26,7 @@ class DynamicPage {
     private var index: Int64 = 0
     @State
     var lineChartModel: LineChartModel = LineChartModel.build()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let topAxis = this.lineChartModel.getXAxis()
@@ -80,7 +80,8 @@ class DynamicPage {
     }
 
     func build() {
-        Column {
+        NavDestination() {
+            Column {
             Flex(FlexParams(alignItems: ItemAlign.Center, wrap: FlexWrap.Wrap)) {
                 Button("Add Entry").backgroundColor(0x317aff).onClick({
                     => this.addEntry()
@@ -106,6 +107,11 @@ class DynamicPage {
                 LineChart(model: this.lineChartModel)
             }
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 
     func addEntry() {

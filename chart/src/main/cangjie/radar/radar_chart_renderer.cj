@@ -90,8 +90,8 @@ public class RadarChartRenderer <: LineRadarRenderer {
 
             let e: RadarEntry = dataSet.getEntryForIndex(j)()
 
-            if (let Some(center) <- center) {
-                pOut = Utils.getPosition(center, (e.getY() - this.mChart.getYChartMin()) * factor * phaseY,
+            if (let Some(c) <- center) {
+                pOut = Utils.getPosition(c, (e.getY() - this.mChart.getYChartMin()) * factor * phaseY,
                     sliceangle * Float64(j) * phaseX + this.mChart.getRotationAngle(), pOut)
             }
 
@@ -128,8 +128,8 @@ public class RadarChartRenderer <: LineRadarRenderer {
             c.closePath()
         }
 
-        if (let Some(center) <- center) {
-            MPPointF.recycleInstance(center)
+        if (let Some(c) <- center) {
+            MPPointF.recycleInstance(c)
         }
         MPPointF.recycleInstance(pOut)
     }
@@ -171,9 +171,9 @@ public class RadarChartRenderer <: LineRadarRenderer {
             for (j in 0..dataSet().getEntryCount()) {
                 let entry: RadarEntry = dataSet().getEntryForIndex(j)()
 
-                if (let Some(center) <- center) {
+                if (let Some(c) <- center) {
                     pOut = Utils.getPosition(
-                        center,
+                        c,
                         (entry.getY() - this.mChart.getYChartMin()) * factor * phaseY,
                         sliceangle * Float64(j) * phaseX + this.mChart.getRotationAngle(),
                         pOut
@@ -197,9 +197,9 @@ public class RadarChartRenderer <: LineRadarRenderer {
                 if (entry.getIcon().isSome() && dataSet().isDrawIconsEnabled()) {
                     let icon: ?ChartPixelMap = entry.getIcon()
 
-                    if (let Some(center) <- center) {
+                    if (let Some(c) <- center) {
                         pIcon = Utils.getPosition(
-                            center,
+                            c,
                             entry.getY() * factor * phaseY + iconsOffset.y,
                             sliceangle * Float64(j) * phaseX + this.mChart.getRotationAngle(),
                             pIcon
@@ -223,8 +223,8 @@ public class RadarChartRenderer <: LineRadarRenderer {
             MPPointF.recycleInstance(iconsOffset)
         }
 
-        if (let Some(center) <- center) {
-            MPPointF.recycleInstance(center)
+        if (let Some(c) <- center) {
+            MPPointF.recycleInstance(c)
         }
         MPPointF.recycleInstance(pOut)
         MPPointF.recycleInstance(pIcon)
@@ -261,16 +261,16 @@ public class RadarChartRenderer <: LineRadarRenderer {
 
             var p: MPPointF = MPPointF.getInstance(0.0, 0.0)
             for (i in 0..maxEntryCount : xIncrements) {
-                if (let Some(center) <- center) {
+                if (let Some(centers) <- center) {
                     p = Utils.getPosition(
-                        center,
+                        centers,
                         this.mChart.getYRange() * factor,
                         sliceangle * Float64(i) + rotationangle,
                         p
                     )
                     Utils.resetContext2DStyle(c, this.mWebPaint)
                     c.beginPath()
-                    c.moveTo(center.x, center.y)
+                    c.moveTo(centers.x, centers.y)
                     c.lineTo(p.x, p.y)
                     c.stroke()
                     c.closePath()
@@ -292,9 +292,9 @@ public class RadarChartRenderer <: LineRadarRenderer {
         for (j in 0..labelCount) {
             for (i in 0..(this.mChart.getRadarData())().getEntryCount()) {
                 let r: Float64 = (yAxis.mEntries[j] - this.mChart.getYChartMin()) * factor
-                if (let Some(center) <- center) {
-                    p1out = Utils.getPosition(center, r, sliceangle * Float64(i) + rotationangle, p1out)
-                    p2out = Utils.getPosition(center, r, sliceangle * Float64(i + 1) + rotationangle, p2out)
+                if (let Some(centers) <- center) {
+                    p1out = Utils.getPosition(centers, r, sliceangle * Float64(i) + rotationangle, p1out)
+                    p2out = Utils.getPosition(centers, r, sliceangle * Float64(i + 1) + rotationangle, p2out)
                 }
                 Utils.resetContext2DStyle(c, this.mWebPaint)
                 c.beginPath()
@@ -338,9 +338,9 @@ public class RadarChartRenderer <: LineRadarRenderer {
                 }
 
                 let y: Float64 = (e().getY() - this.mChart.getYChartMin())
-                if (let Some(center) <- center) {
+                if (let Some(centers) <- center) {
                     pOut = Utils.getPosition(
-                        center,
+                        centers,
                         y * factor * this.mAnimator().getPhaseY(),
                         sliceangle * high.getX() * this.mAnimator().getPhaseX() + this.mChart.getRotationAngle(),
                         pOut
@@ -376,8 +376,8 @@ public class RadarChartRenderer <: LineRadarRenderer {
                 }
             }
         }
-        if (let Some(center) <- center) {
-            MPPointF.recycleInstance(center)
+        if (let Some(centers) <- center) {
+            MPPointF.recycleInstance(centers)
         }
         MPPointF.recycleInstance(pOut)
     }
@@ -402,16 +402,17 @@ public class RadarChartRenderer <: LineRadarRenderer {
             var p: Path2D = this.mDrawHighlightCirclePathBuffer
             p = Path2D()
             c.beginPath()
-            p.arc(point.x, point.y, outerRadius, 0.0, 2.0 * Float64.PI, anticlockwise: false)
+            p.arc(point.x, point.y, outerRadius, 0.0, 2.0 * Float64.PI, false)
             if (innerRadius > 0.0) {
-                p.arc(point.x, point.y, innerRadius, 0.0, 2.0 * Float64.PI, anticlockwise: true)
+                p.arc(point.x, point.y, innerRadius, 0.0, 2.0 * Float64.PI, true)
             }
             this.mHighlightCirclePaint.setColor(Color(fillColor))
             this.mHighlightCirclePaint.setStyle(Style.FILL)
             Utils.resetContext2DStyle(c, this.mHighlightCirclePaint)
             c.closePath()
             //TODO c.fill(p)
-            c.stroke(p)
+            //c.stroke(p)
+            c.fill(p)
         }
 
         if (strokeColor != ColorTemplate.COLOR_NONE) {

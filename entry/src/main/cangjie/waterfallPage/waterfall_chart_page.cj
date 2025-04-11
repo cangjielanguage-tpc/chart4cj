@@ -3,24 +3,25 @@
  */
 package ohos_app_cangjie_entry.waterfallPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
+import ohos.hilog.*
 
-class MyOnChartValueSelectedListener <: OnChartValueSelectedListener {
+public class MyOnChartValueSelectedListener <: OnChartValueSelectedListener {
     public func onValueSelected(e: EntryOhos, h: Highlight): Unit {
-        AppLog.info("BubbleChartPage onValueSelected: ${e.getX()}")
+        Hilog.info(0x000000,"chart","BubbleChartPage onValueSelected: ${e.getX()}")
     }
 
     public func onNothingSelected(): Unit {
-        AppLog.info("MyOnChartValueSelectedListener onNothingSelected")
+        Hilog.info(0x000000,"chart","MyOnChartValueSelectedListener onNothingSelected")
     }
 }
 
-@Entry
 @Component
-class SimpleWaterfallChartPage {
+public class SimpleWaterfallChartPage {
     private var model: WaterfallChartModel = WaterfallChartModel.build()
     private var dataSet: WaterfallDataSet = WaterfallDataSet(ArrayList<WaterfallEntry>(), "")
     private var leftAxis: ?YAxis = Option<YAxis>.None
@@ -32,6 +33,7 @@ class SimpleWaterfallChartPage {
     private var normalMarker: MarkerView = MarkerView()
 
     private var valueSelectedListener: OnChartValueSelectedListener = MyOnChartValueSelectedListener()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         this.model.setOnChartValueSelectedListener(this.valueSelectedListener);
@@ -58,13 +60,13 @@ class SimpleWaterfallChartPage {
 
         this.limitLine1 = LimitLine(120.0, "Upper Limit")
         this.limitLine1.setLineWidth(4.0);
-        this.limitLine1.enableDashedLine(10, 10);
+        this.limitLine1.enableDashedLine(10.0, 10.0);
         this.limitLine1.setLabelPosition(LimitLabelPosition.RIGHT_TOP);
         this.limitLine1.setTextSize(10.0);
 
         this.limitLine2 = LimitLine(50.0, "Lower Limit")
         this.limitLine2.setLineWidth(4.0);
-        this.limitLine2.enableDashedLine(10, 10);
+        this.limitLine2.enableDashedLine(10.0, 10.0);
         this.limitLine2.setLineColor(0xFFFF00);
         this.limitLine2.setLabelPosition(LimitLabelPosition.RIGHT_BOTTOM);
         this.limitLine2.setTextSize(10.0);
@@ -193,7 +195,8 @@ class SimpleWaterfallChartPage {
     }
 
     func build() {
-        Column() {
+        NavDestination() {
+            Column() {
             Column() {
                 WaterfallChart(model: this.model)
             }
@@ -232,10 +235,15 @@ class SimpleWaterfallChartPage {
                 }
             }.alignSelf(ItemAlign.Center)
         }
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }
 
-class CustomFormatter <: IAxisValueFormatter {
+public class CustomFormatter <: IAxisValueFormatter {
     public func getFormattedValue(value: Float64, axis: AxisBase): String {
         let str = value.format(".0").split(".")
         return "${str[0]}%";

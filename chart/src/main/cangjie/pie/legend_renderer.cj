@@ -24,8 +24,8 @@ public class LegendRenderer <: Renderer {
 
         this.mLegendLabelPaint = ChartPaint()
         this.mLegendLabelPaint.setTextSize(Utils.handleDataValues(9.0))
-        this.mLegendLabelPaint.setTextAlign(TextAlignStyle.Left)
-        this.mLegendLabelPaint.setTextBaseline(TextBaseline.Bottom)
+        this.mLegendLabelPaint.setTextAlign(CanvasTextAlign.left)
+        this.mLegendLabelPaint.setTextBaseline(CanvasTextBaseline.bottom)
 
         this.mLegendFormPaint = ChartPaint()
         this.mLegendFormPaint.setStyle(Style.FILL)
@@ -293,7 +293,7 @@ public class LegendRenderer <: Renderer {
             + Utils.handleDataValues(this.mLegend().getYEntrySpace())
 
         // 计算形状偏移以使其与文本垂直居中
-        let formYOffset: Float64 = labelLineHeight - Utils.calcTextHeight(c, this.mLegendLabelPaint, "ABC") / 2.0
+        let formYOffset: Float64 = labelLineHeight - Utils.calcTextHeight(this.mLegendLabelPaint, "ABC") / 2.0 //改
         // 获取图例条目
         let entries: Array<LegendEntry> = this.mLegend().getEntries()
 
@@ -336,7 +336,7 @@ public class LegendRenderer <: Renderer {
                     }
                 }
                 if (let Some(handle) <- this.mViewPortHandler) {
-                    AppLog.info(
+                    Hilog.info(0x000000,"chart",
                         "1. originPosX(${originPosX})= xoffset(${xoffset}) + mViewPortHandler.contentLeft(${handle.contentLeft()})"
                     )
                 }

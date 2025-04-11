@@ -8,7 +8,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
 
     public init(chart: BarDataProvider, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(chart, animator, viewPortHandler)
-        this.mValuePaint.setTextAlign(TextAlignStyle.Left)
+        this.mValuePaint.setTextAlign(CanvasTextAlign.left)
     }
 
     public func initBuffers() {
@@ -202,7 +202,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
 
                 // apply the text-styling defined by the DataSet
                 this.applyValueTextStyle(dataSet)
-                let halfTextHeight: Float64 = Utils.calcTextHeight(c, this.mValuePaint, "10") / 2.0
+                let halfTextHeight: Float64 = Utils.calcTextHeight(this.mValuePaint, "10") / 2.0
 
                 let formatter: ?IValueFormatter = dataSet.getValueFormatter()
 

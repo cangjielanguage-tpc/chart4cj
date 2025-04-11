@@ -35,8 +35,8 @@ public class XAxisRendererRadarChart <: XAxisRenderer {
             for (i in 0..maxCountEntrySet.getEntryCount()) {
                 let label: String = this.mXAxis.getValueFormatter()().getFormattedValue(Float64(i), this.mXAxis);
                 let angle: Int64 = (Int64(sliceangle) * i + Int64(this.mChart.getRotationAngle())) % 360;
-                if (let Some(center) <- center) {
-                    pOut = Utils.getPosition(center,
+                if (let Some(c) <- center) {
+                    pOut = Utils.getPosition(c,
                         this.mChart.getYRange() * factor + Float64(this.mXAxis.mLabelRotatedWidth / 2), Float64(angle),
                         pOut)
                 }
@@ -46,8 +46,8 @@ public class XAxisRendererRadarChart <: XAxisRenderer {
             }
         }
 
-        if (let Some(center) <- center) {
-            MPPointF.recycleInstance(center);
+        if (let Some(c) <- center) {
+            MPPointF.recycleInstance(c);
         }
         MPPointF.recycleInstance(pOut);
         MPPointF.recycleInstance(drawLabelAnchor);

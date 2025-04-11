@@ -3,7 +3,7 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.data
 
-public  class Three {
+public class Three {
   public var data: Array<Float64> = [
     0.0, //#0
     1.2500000558793553E-4, //#1

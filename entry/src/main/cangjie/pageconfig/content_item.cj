@@ -3,7 +3,7 @@
  */
 package ohos_app_cangjie_entry.pageconfig
 
-public class ContentItem {
+public  class ContentItem {
     private var name: String
     private var desc: String
     private var pagePath: String

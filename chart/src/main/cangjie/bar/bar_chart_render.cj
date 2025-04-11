@@ -291,7 +291,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
                 let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
                 // calculate the correct offset depending on the draw position of
                 // the value
-                let valueTextHeight: Float64 = Utils.calcTextHeight(c, this.mValuePaint, "8")
+                let valueTextHeight: Float64 = Utils.calcTextHeight(this.mValuePaint, "8")
                 posOffset = if (drawValueAboveBar) {
                     -valueOffsetPlus
                 } else {

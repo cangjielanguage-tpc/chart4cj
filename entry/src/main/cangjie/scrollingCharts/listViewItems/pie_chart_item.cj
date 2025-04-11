@@ -3,9 +3,10 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.listViewItems
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import chart.pie.*
 import chart.utils.*
@@ -13,10 +14,11 @@ import chart.components.*
 import chart.charts.*
 
 @Component
-public class PieChartItem {
+public  class PieChartItem {
     var data: PieData = PieData()
     @State
     var pieModel: PieChartModel = PieChartModel.build()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         this.pieModel.setHoleRadius(95.0);
@@ -37,8 +39,14 @@ public class PieChartItem {
     }
 
     func build() {
-        Column() {
-            PieChart(model: this.pieModel)
-        }.alignItems(HorizontalAlign.Start).width(100.percent).height(30.percent)
+        NavDestination() {
+            Column() {
+                PieChart(model: this.pieModel)
+            }.alignItems(HorizontalAlign.Start).width(100.percent).height(30.percent)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

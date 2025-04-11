@@ -4,14 +4,13 @@
 
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class ScrollBarChartPage {
+public class ScrollBarChartPage {
     private var title: String = "scroll bar"
     private var model: BarChartModel = BarChartModel.build()
     private var leftAxis: ?YAxis = Option<YAxis>.None
@@ -27,6 +26,7 @@ class ScrollBarChartPage {
     private var normalMarker: ?MarkerView = Option<MarkerView>.None
     //private var stackMarker: CustomMarkerView
     private var isChangedMaxVisibleXCount: Bool = false
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         this.model.setDragEnabled(false) //禁用滑动
@@ -53,13 +53,13 @@ class ScrollBarChartPage {
 
         this.limitLine1 = LimitLine(120.0, "Upper Limit")
         this.limitLine1.setLineWidth(4.0)
-        this.limitLine1.enableDashedLine(10, 10)
+        this.limitLine1.enableDashedLine(10.0, 10.0)
         this.limitLine1.setLabelPosition(LimitLabelPosition.RIGHT_TOP)
         this.limitLine1.setTextSize(10.0)
 
         this.limitLine2 = LimitLine(50.0, "Lower Limit")
         this.limitLine2.setLineWidth(4.0)
-        this.limitLine2.enableDashedLine(10, 10)
+        this.limitLine2.enableDashedLine(10.0, 10.0)
         this.limitLine2.setLineColor(0xffff00)
         this.limitLine2.setLabelPosition(LimitLabelPosition.RIGHT_BOTTOM)
         this.limitLine2.setTextSize(10.0)
@@ -214,7 +214,8 @@ class ScrollBarChartPage {
     }
 
     func build() {
-        Column {
+        NavDestination() {
+            Column {
             Text(this.title).fontSize(21).fontColor(Color.WHITE).fontWeight(FontWeight.W600).layoutWeight(1).maxLines(1)
             BarChart(model: this.model)
             Divider().width(1).padding(top: 5)
@@ -618,5 +619,10 @@ class ScrollBarChartPage {
                 }.align(Alignment.TopEnd)
             }.layoutWeight(1).margin(bottom: 50)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

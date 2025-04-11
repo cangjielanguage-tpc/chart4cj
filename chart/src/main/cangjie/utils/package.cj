@@ -9,10 +9,13 @@ internal import std.sort.*
 internal import std.math.*
 internal import std.convert.{Parsable}
 internal import std.unicode.{UnicodeExtension}
-internal import ohos.base.*
-internal import ohos.component.*
-internal import ohos.device_info.*
+
+//internal import ohos.base.*
+//internal import ohos.component.*
+//internal import ohos.device_info.*
+
 internal import ohos.image.*
+internal import tpc.UIKit.*
 
 extend<T> Option<T> {
     operator func ()(): T {

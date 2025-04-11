@@ -4,7 +4,7 @@
 package ohos_app_cangjie_entry.scrollingCharts.data
 
 
-public  class Sine {
+public class Sine {
   public var data: Array<Float64> = [
     0.0, //#0
     0.019998666246387648, //#1

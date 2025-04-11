@@ -3,9 +3,10 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import std.collection.*
 import std.math.*
@@ -22,12 +23,12 @@ import chart.candle.*
 import chart.bubble.*
 import chart.components.*
 
-@Entry
 @Component
-class CombinedChartPageReadme {
+public class CombinedChartPageReadme {
     private var model: CombinedChartModel = CombinedChartModel.build() //初始化图表配置构建类
     var combinedData: ?CombinedData = None
     var count: Int64 = 12
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         this.model.getDescription().setEnabled(false) // 禁用图表描述
@@ -232,13 +233,19 @@ class CombinedChartPageReadme {
     }
 
     func build() {
-        Column() {
-            // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
-            // 如果在之后通过事件触发，
-            // 可通过 data.notifyDataSetChanged() 来触发数据更新，
-            // 可通过 this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
-            // 可通过 this.model.invalidate() 来触发绘制更新。
-            CombinedChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
-    }
+        NavDestination() {
+            Column() {
+                // 为组件设置配置构建类，如果需要在页面初始化就显示图表，则需要在 aboutToAppear 方法中完成图表数据构建
+                // 如果在之后通过事件触发，
+                // 可通过 data.notifyDataSetChanged() 来触发数据更新，
+                // 可通过 this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
+                // 可通过 this.model.invalidate() 来触发绘制更新。
+                CombinedChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
+   }
 }

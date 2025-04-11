@@ -3,14 +3,14 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class TallBarChartPage {
+public class TallBarChartPage {
     var scroller: Scroller = Scroller()
     @State
     var model: BarChartModel = BarChartModel.build()
@@ -18,6 +18,7 @@ class TallBarChartPage {
     var leftAxis: ?YAxis = None
     var rightAxis: ?YAxis = None
     var bottomAxis: XAxis = XAxis()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
         let leftAxis = this.model.getAxisLeft()
@@ -27,7 +28,7 @@ class TallBarChartPage {
             leftAxis.setSpaceTop(15.0)
             leftAxis.setAxisMinimum(0.0)
             leftAxis.setAxisMaximum(100.0)
-            leftAxis.enableGridDashedLine(10, 10)
+            leftAxis.enableGridDashedLine(10.0, 10.0)
         }
 
         let rightAxis = this.model.getAxisRight()
@@ -56,7 +57,8 @@ class TallBarChartPage {
     }
 
     func build() {
-        Column() {
+        NavDestination() {
+            Column() {
             Scroll(this.scroller) {
                 Column() {
                      Text("START OF SCROLLVIEW").width(100.percent).textAlign(TextAlign.Center)
@@ -72,6 +74,11 @@ class TallBarChartPage {
                 }.width(100.percent).alignItems(HorizontalAlign.Start)
             }.width(100.percent).height(100.percent)
         }
+         }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 
     let VORDIPLOM_COLORS: Array<UInt32> = [UInt32(ChartColor.rgb(192, 255, 140)), UInt32(ChartColor.rgb(255, 247, 140)),

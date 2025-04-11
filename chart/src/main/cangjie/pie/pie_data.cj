@@ -46,7 +46,7 @@ public class PieData <: ChartData<IPieDataSet, PiEntry> {
         let dataSets: ArrayList<IPieDataSet> = super.getDataSets()
 
         if (dataSets.size < 1) {
-            AppLog.info("chart,Found multiple data sets while pie chart only allows one")
+            Hilog.info(0x000000,"chart","chart,Found multiple data sets while pie chart only allows one")
         }
 
         return dataSets

@@ -3,24 +3,22 @@
  */
 package ohos_app_cangjie_entry.bubblePage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
+import ohos.hilog.*
 
-class MyOnChartValueSelectedListener <: OnChartValueSelectedListener {
+public class MyOnChartValueSelectedListener <: OnChartValueSelectedListener {
     public func onValueSelected(e: EntryOhos, h: Highlight): Unit {
-        AppLog.info("BubbleChartPage onValueSelected: ${e.getX()}")
+        Hilog.info(0x000000,"chart","BubbleChartPage onValueSelected: ${e.getX()}")
     }
 
     public func onNothingSelected(): Unit {
-        AppLog.info("MyOnChartValueSelectedListener onNothingSelected")
+        Hilog.info(0x000000,"chart","MyOnChartValueSelectedListener onNothingSelected")
     }
 }
 
-@Entry
 @Component
-class BubbleChartPage {
+public class BubbleChartPage {
     private var menuItemArr: Array<String> = ["Animate X", "Animate Y", "Animate XY"]
     private var title: String = "BubbleChartPage"
     private var model: BubbleChartModel = BubbleChartModel.build()
@@ -28,6 +26,7 @@ class BubbleChartPage {
     private var valueSelectedListener: OnChartValueSelectedListener = MyOnChartValueSelectedListener()
     var isDrawValuesEnable: Bool = true
     var titleSelcetString: String = "X"
+    var pageInfo: NavPathStack = NavPathStack()
 
     public func animate() {
         if (this.titleSelcetString == "X") {
@@ -151,8 +150,14 @@ class BubbleChartPage {
     }
 
     func build() {
-        Column() {
-            BubbleChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        NavDestination() {
+            Column() {
+                BubbleChart(model: this.model)
+            }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

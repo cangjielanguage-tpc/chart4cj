@@ -15,12 +15,12 @@ public open class ChartPaint {
 
     var strokeStyle: Color = Color.BLACK
     var strokeStyle1: String = "#000000"
-    var strokeStyle2: CanvasGradient = CanvasRenderingContext2D(RenderingContextSettings(antialias: true)).createLinearGradient(0,0,0,0)
+    var strokeStyle2: CanvasGradient = CanvasRenderingContext2D(RenderingContextSettings(antialias: true)).createLinearGradient(0.0,0.0,0.0,0.0)
     // var strokeStyle3: CanvasPattern
 
     var filter: String = "none"
     var imageSmoothingEnabled: Bool = true
-    var imageSmoothingQuality: QualityType = Low
+    var imageSmoothingQuality: ImageSmoothingQuality = ImageSmoothingQuality.low
     var lineCap: LineCapStyle = Butt
     var lineDashOffset: Float64 = 0.0
     var lineJoin: LineJoinStyle = Miter
@@ -37,8 +37,8 @@ public open class ChartPaint {
     var fontSizeUnit: FontSizeUnit = FontSizeUnit.VP
     var fontFamily: FontFamily = NONE
     var font: String = "normal normal 14vp"
-    var textAlign: TextAlignStyle = Left
-    var textBaseline: TextBaseline = Alphabetic
+    var textAlign: CanvasTextAlign = CanvasTextAlign.left
+    var textBaseline: CanvasTextBaseline = CanvasTextBaseline.alphabetic
     var lineDash: Array<Int64> = Array<Int64>()
     var dashPathEffect: ?DashPathEffect = Option<DashPathEffect>.None
 
@@ -218,11 +218,11 @@ public open class ChartPaint {
         return this.imageSmoothingEnabled
     }
 
-    public func setImageSmoothingQuality(quality: QualityType) {
+    public func setImageSmoothingQuality(quality: ImageSmoothingQuality) {
         this.imageSmoothingQuality = quality
     }
 
-    public func getImageSmoothingQuality(): QualityType {
+    public func getImageSmoothingQuality(): ImageSmoothingQuality {
         return this.imageSmoothingQuality
     }
 
@@ -306,7 +306,7 @@ public open class ChartPaint {
         return this.direction
     }
 
-    public func setTextSize(textSize: Float64, textSizeUnit!: FontSizeUnit = PX): Unit {
+    public func setTextSize(textSize: Float64, textSizeUnit!: FontSizeUnit = VP): Unit {
         this.fontSize = textSize
         this.fontSizeUnit = textSizeUnit
 
@@ -358,19 +358,19 @@ public open class ChartPaint {
         return this.font
     }
 
-    public func setTextAlign(textAlign: TextAlignStyle) {
+    public func setTextAlign(textAlign: CanvasTextAlign) {
         this.textAlign = textAlign
     }
 
-    public func getTextAlign(): TextAlignStyle {
+    public func getTextAlign(): CanvasTextAlign {
         return this.textAlign
     }
 
-    public func setTextBaseline(textBaseline: TextBaseline) {
+    public func setTextBaseline(textBaseline: CanvasTextBaseline) {
         this.textBaseline = textBaseline
     }
 
-    public func getTextBaseline(): TextBaseline {
+    public func getTextBaseline(): CanvasTextBaseline {
         return this.textBaseline
     }
 
@@ -441,27 +441,27 @@ public class TextPaint <: ChartPaint {
 }
 
 public class DashPathEffect {
-    var dash: Array<Int64>
-    var offset: Int64
+    var dash: Array<Float64>
+    var offset: Float64
 
-    public init(dash: Array<Int64>) {
+    public init(dash: Array<Float64>) {
         this.dash = dash
-        this.offset = 0
+        this.offset = 0.0
     }
 
-    public func setDash(dash: Array<Int64>) {
+    public func setDash(dash: Array<Float64>) {
         this.dash = dash
     }
 
-    public func getDash(): Array<Int64> {
+    public func getDash(): Array<Float64> {
         return this.dash
     }
 
-    public func setOffset(offset: Int64) {
+    public func setOffset(offset: Float64) {
         this.offset = offset
     }
 
-    public func getOffset(): Int64 {
+    public func getOffset(): Float64 {
         return this.offset
     }
 }

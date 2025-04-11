@@ -94,7 +94,7 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
 
      public func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {
         if (this.mData.isNone()) {
-            AppLog.error("chart: Can't select by touch. No data set.")
+            Hilog.info(0x000000,"chart","chart: Can't select by touch. No data set.")
             return None
         } else {
             let highLighter: ?IHighlighter = this.getHighlighter()

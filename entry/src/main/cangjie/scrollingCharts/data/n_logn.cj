@@ -3,7 +3,7 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.data
 
-public class Nlogn {
+public  class Nlogn {
   public var data: Array<Float64> = [
     0.0, //#0
     -0.14978661516463596, //#1

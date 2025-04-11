@@ -3,16 +3,16 @@
  */
 package ohos_app_cangjie_entry.radarPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
 import ohos.state_macro_manage.*
+import tpc.UIKit.*
 
-@Entry
 @Component
-class RadarChartPage {
+public class RadarChartPage {
     private var model: RadarChartModel = RadarChartModel.build()
-
+    var pageInfo: NavPathStack = NavPathStack()
     protected override func aboutToAppear() {
         let description: Description = this.model.getDescription()
         description.setEnabled(false);
@@ -96,13 +96,19 @@ class RadarChartPage {
     }
 
     func build() {
-        Column() {
-            RadarChart(model: this.model)
-        }.backgroundColor(0x3C4152).width(100.percent).height(70.percent)
+        NavDestination() {
+            Column() {
+                RadarChart(model: this.model)
+            }.backgroundColor(0x3C4152).width(100.percent).height(70.percent)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }
 
-class valueFormatter <: IAxisValueFormatter {
+public class valueFormatter <: IAxisValueFormatter {
     private var mActivities: Array<String> = ["Burger", "Steak", "Salad", "Pasta", "Pizza"];
 
     public func getFormattedValue(value: Float64, axis: AxisBase): String {

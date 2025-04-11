@@ -165,10 +165,10 @@ public class HorizontalBarChartModel <: BarChartModel {
         )
 
         if (this.mLogEnabled) {
-            AppLog.info(
+            Hilog.info(0x000000,"chart",
                 "ChartModel.LOG_TAG: offsetLeft: ${offsetLeft}, offsetTop: ${offsetTop}, offsetRight: ${offsetRight}, offsetBottom: ${offsetBottom}"
             )
-            AppLog.info("ChartModel.LOG_TAG: Content: ${this.mViewPortHandler.getContentRect().toString()}")
+            Hilog.info(0x000000,"chart","ChartModel.LOG_TAG: Content: ${this.mViewPortHandler.getContentRect().toString()}")
         }
 
         this.prepareOffsetMatrix()
@@ -255,7 +255,7 @@ public class HorizontalBarChartModel <: BarChartModel {
     public open func getHighlightByTouchPoint(x: Float64, y: Float64): ?Highlight {
         if (this.mData.isNone()) {
             if (this.mLogEnabled) {
-                AppLog.info("ChartModel.LOG_TAG: Can't select by touch. No data set.")
+                Hilog.info(0x000000,"chart","ChartModel.LOG_TAG: Can't select by touch. No data set.")
             }
             return Option<Highlight>.None
         } else {

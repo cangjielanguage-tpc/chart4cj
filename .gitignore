@@ -14,13 +14,13 @@
 **/*.cj.macrocall
 *.ast
 *.macrocall
-entry/main/cangjie/.cache/lsp/
+entry/src/main/cangjie/.cache/lsp/
 .vscode
 .idea
 .cjpm-history
 target/
 oh-package-lock.json5
-chart/main/cangjie/cjpm.lock
+chart/src/main/cangjie/cjpm.lock
 chart/BuildProfile.ets
 
 **/ability_mainability_entry.cj

@@ -3,15 +3,15 @@
  */
 package ohos_app_cangjie_entry.scatterPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class ScatterChartPageOtherShape {
+public class ScatterChartPageOtherShape {
     private var model: ScatterChartModel = ScatterChartModel.build()
+    var pageInfo: NavPathStack = NavPathStack()
 
     protected override func aboutToAppear() {
 
@@ -86,10 +86,16 @@ class ScatterChartPageOtherShape {
     }
 
     func build() {
-        Column() {
+        NavDestination() {
             Column() {
-                ScatterChart(model: this.model)
+                Column() {
+                    ScatterChart(model: this.model)
+                }
             }
-        }
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 }

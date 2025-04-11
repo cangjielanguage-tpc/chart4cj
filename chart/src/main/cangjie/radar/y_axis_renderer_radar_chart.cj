@@ -183,8 +183,8 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
 
         for (j in Int64(myFrom)..Int64(to)) {
             let r: Float64 = (this.mYAxis.mEntries[j] - this.mYAxis.mAxisMinimum) * factor
-            if (let Some(center) <- center) {
-                pOut = Utils.getPosition(center, r, this.mChart.getRotationAngle(), pOut)
+            if (let Some(c) <- center) {
+                pOut = Utils.getPosition(c, r, this.mChart.getRotationAngle(), pOut)
             }
 
             let label: String = this.mYAxis.getFormattedLabel(j)
@@ -195,8 +195,8 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
             c.fillText(label, pOut.x + xOffset, pOut.y)
             c.closePath()
         }
-        if (let Some(center) <- center) {
-            MPPointF.recycleInstance(center)
+        if (let Some(c) <- center) {
+            MPPointF.recycleInstance(c)
         }
         MPPointF.recycleInstance(pOut)
     }
@@ -237,16 +237,16 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
                 let entrySet: ?IRadarDataSet = modeData.getMaxEntryCountSet()
                 if (let Some(entrySet) <- entrySet) {
                     for (j in 0..entrySet.getEntryCount()) {
-                        if (let Some(center) <- center) {
-                            pOut = Utils.getPosition(center, r, sliceangle * Float64(j) + this.mChart.getRotationAngle(),
+                        if (let Some(c) <- center) {
+                            pOut = Utils.getPosition(c, r, sliceangle * Float64(j) + this.mChart.getRotationAngle(),
                                 pOut)
                         }
                     }
                 }
             }
         }
-        if (let Some(center) <- center) {
-            MPPointF.recycleInstance(center)
+        if (let Some(c) <- center) {
+            MPPointF.recycleInstance(c)
         }
         MPPointF.recycleInstance(pOut)
     }

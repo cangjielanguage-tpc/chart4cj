@@ -3,9 +3,10 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.viewPageItems
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 import chart.pie.*
 import chart.utils.*
@@ -15,12 +16,12 @@ import chart.bar.*
 import std.collection.{ArrayList}
 import std.random.*
 
-@Entry
 @Component
-public class fragSimpleBarIndex {
+public  class fragSimpleBarIndex {
   @State
   var barModel: BarChartModel =  BarChartModel.build()
   var minOffset: Float64 = 15.0
+    var pageInfo: NavPathStack = NavPathStack()
 
   protected override func aboutToAppear() {
     this.setData(12, 100.0)
@@ -31,7 +32,7 @@ public class fragSimpleBarIndex {
       leftAxis.setSpaceTop(15.0)
       leftAxis.setAxisMinimum(0.0)
       leftAxis.setAxisMaximum(100.0)
-      leftAxis.enableGridDashedLine(10, 10)
+      leftAxis.enableGridDashedLine(10.0, 10.0)
     }
 
     let rightAxis = this.barModel.getAxisRight()
@@ -60,13 +61,19 @@ public class fragSimpleBarIndex {
   }
 
   func build() {
-    Column() {
+        NavDestination() {
+            Column() {
       Stack(Alignment.TopStart ) {
         BarChart(model: this.barModel)
 
       }.width(100.percent)
           .height(70.percent)
     }.alignItems(HorizontalAlign.Start)
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
   }
 
 let VORDIPLOM_COLORS: Array<UInt32> = [UInt32(ChartColor.rgb(192, 255, 140)), UInt32(ChartColor.rgb(255, 247, 140)),

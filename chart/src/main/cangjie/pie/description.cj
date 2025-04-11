@@ -15,7 +15,7 @@ public class Description <: ComponentBase {
     /**
      * the alignment of the description text
      */
-    private var mTextAlign: TextAlignStyle = TextAlignStyle.Right
+    private var mTextAlign: CanvasTextAlign = CanvasTextAlign.right
 
     public init() {
         super()
@@ -70,7 +70,7 @@ public class Description <: ComponentBase {
      *
      * @param align
      */
-    public func setTextAlign(align: TextAlignStyle) {
+    public func setTextAlign(align: CanvasTextAlign) {
         this.mTextAlign = align
     }
 
@@ -79,7 +79,7 @@ public class Description <: ComponentBase {
      *
      * @return
      */
-    public func getTextAlign(): TextAlignStyle {
+    public func getTextAlign(): CanvasTextAlign {
         return this.mTextAlign
     }
 }

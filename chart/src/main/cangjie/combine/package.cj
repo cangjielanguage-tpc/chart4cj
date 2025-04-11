@@ -12,9 +12,11 @@ internal import chart.candle.*
 internal import chart.bubble.*
 internal import chart.waterfall.*
 
-internal import ohos.component.*
-internal import ohos.base.*
-internal import ohos.device_info.*
+//internal import ohos.component.*
+//internal import ohos.base.*
+//internal import ohos.device_info.*
+internal import tpc.UIKit.*
+internal import ohos.hilog.*
 
 internal import std.collection.{ArrayList}
 internal import std.math.*

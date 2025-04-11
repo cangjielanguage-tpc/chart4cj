@@ -4,10 +4,10 @@
 
 package ohos_app_cangjie_entry.eventMoreLineCharts
 
-internal import ohos.base.*
-internal import ohos.component.*
-internal import ohos.state_manage.*
-
+//internal import ohos.base.*
+//internal import ohos.component.*
+//internal import ohos.state_manage.*
+internal import tpc.UIKit.*
 
 internal import ohos.ability.Ability
 internal import ohos.ability.Want

@@ -3,17 +3,17 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+//import ohos.base.*
+//import ohos.component.*
+//import ohos.state_manage.*
+import tpc.UIKit.*
 import ohos.state_macro_manage.*
 
-@Entry
 @Component
-class ManyBarChartsPage {
+public class ManyBarChartsPage {
     var minOffset: Float64 = 15.0 //X轴线偏移量
     private var list: ArrayList<BarChartModel> = ArrayList<BarChartModel>()
-
+    var pageInfo: NavPathStack = NavPathStack()
     protected override func aboutToAppear() {
         // 20 items
         for (i in 0..20) {
@@ -31,7 +31,8 @@ class ManyBarChartsPage {
     }
 
     func build() {
-        Column() {
+        NavDestination() {
+            Column() {
             List(space: 20, initialIndex: 0) {
                 ForEach(
                     this.list,
@@ -46,6 +47,11 @@ class ManyBarChartsPage {
             }.id("list").listDirection(Axis.Vertical).edgeEffect(EdgeEffect.None) // 滑动到边缘无效果
                 .chainAnimation(false) // 联动特效关闭
         }
+        }.onReady({
+            context => pageInfo = context.pathStack
+        }).onBackPressed({
+            => false
+        })
     }
 
     let VORDIPLOM_COLORS: Array<UInt32> = [UInt32(ChartColor.rgb(192, 255, 140)), UInt32(ChartColor.rgb(255, 247, 140)),
