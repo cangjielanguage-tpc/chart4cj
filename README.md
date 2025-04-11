@@ -1810,8 +1810,8 @@ class CombinedChartPageReadme {
 
 在下述版本验证通过：
 
-    DevEco Studio 5.0.7.200
-    Cangjie Support Plugin 5.0.7.100
+    DevEco Studio 5.0.9.300
+    Cangjie Support Plugin 5.0.9.100
 
     1. 仓颉 UI 未支持手势组件，影响图表手势操作后的高亮、缩放、平移、旋转功能；
     2. 线形图曲线模式暂不支持；
