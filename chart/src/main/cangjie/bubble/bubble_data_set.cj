@@ -4,7 +4,8 @@
 package chart.bubble
 
 public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubblesEntry> & IBubbleDataSet {
-    static var mMaxSize: Float64 = 0.0
+    let FLAG_DATA: String = "BubbleDataSet"
+    protected var mMaxSize: Float64 = 0.0
     protected var mNormalizeSize: Bool = true
     private var mHighlightCircleWidth: Float64 = 2.5
 
@@ -13,7 +14,9 @@ public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubblesEntry> & 
 
         this.calcMinMax()
     }
-
+    public override func toString(): String {
+        return FLAG_DATA
+    }
     public func setHighlightCircleWidth(width: Float64): Unit {
         this.mHighlightCircleWidth = Utils.handleDataValues(width)
     }
@@ -25,8 +28,8 @@ public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubblesEntry> & 
     public func myCalcMinMaxBubble(e: BubblesEntry): Unit {
         super.myCalcMinMaxBubble(e)
         let size: Float64 = e.getSize()
-        if (size > BubbleDataSet.mMaxSize) {
-            BubbleDataSet.mMaxSize = size
+        if (size > this.mMaxSize) {
+            this.mMaxSize = size
         }
     }
 
@@ -48,7 +51,7 @@ public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubblesEntry> & 
     }
 
     public func getMaxSize(): Float64 {
-        return BubbleDataSet.mMaxSize
+        return this.mMaxSize
     }
 
     public func isNormalizeSizeEnabled(): Bool {

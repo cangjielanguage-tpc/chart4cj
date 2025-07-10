@@ -229,7 +229,7 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                         continue
                     }
 
-                    if (!this.isInBoundsX(entry(), (set as IBarLineScatterCandleBubbleDataSet<EntryOhos>)())) {
+                    if (!this.isInBoundsX(entry(), set())) {
                         continue
                     }
 
@@ -284,6 +284,7 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                         ))
 
                     this.mHighlightPaint.setColor(Color(color))
+                    this.mHighlightPaint.setColor(Color(set().getHighLightColor()))
                     this.mHighlightPaint.setStrokeWidth(set().getHighlightCircleWidth())
                     Utils.resetContext2DStyle(c, this.mHighlightPaint)
                     c.beginPath()
@@ -295,5 +296,20 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
         } else {
             return
         }
+    }
+    protected func isInboundsX(e: ?BubblesEntry, dataSet: IBubbleDataSet): Bool {
+        if (let Some(entry) <- e) {
+            let entryIndex = dataSet.getEntryIndexByEntry(entry)
+            if (entryIndex >= dataSet.getEntryCount() * (if (let Some(m) <- this.mAnimator) {
+                Int64(m.getPhaseX())
+            } else {
+                1
+            })) {
+                return false
+            } else {
+                return true
+            }
+        }
+        return false
     }
 }

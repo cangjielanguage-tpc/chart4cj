@@ -13,7 +13,8 @@ public class BubbleChartModel <: BarLineChartBaseModel<BubbleData, IBubbleDataSe
         let model: BubbleChartModel = BubbleChartModel()
         model.mAnimator = ChartAnimator(model)
         model.mRenderer = BubbleChartRenderer(model, model.mAnimator(), model.mViewPortHandler)
-        model.setHighlighter(ChartHighlighter(model))
+        model.setHighlighter(BubbleHighlighter(model))
+        model.mChartTouchListener = BubbleChartTouchListener(model, model.mViewPortHandler.getMatrixTouch(), 3.0)
 
         return model
     }
@@ -42,6 +43,24 @@ public class BubbleChartModel <: BarLineChartBaseModel<BubbleData, IBubbleDataSe
             return data
         } else {
             return None
+        }
+    }
+
+    public func setHighlighter(highlighter: BubbleHighlighter) {
+        this.mHighlighter = highlighter
+    }
+
+    public func getBubbleDataSetByTouchPoint(x: Float64, y: Float64): ?IBubbleDataSet {
+        let h: ?Highlight = this.getHighlightByTouchPoint(x, y)
+        if (h.isSome() && this.mData.isSome()) {
+            return this.mData().getDataSetByIndex(h().getDataSetIndex())
+        }
+        return None
+    }
+
+    public func computeScroll(event: GestureEvent): Unit {
+        if (let Some(listener: BubbleChartTouchListener) <- this.mChartTouchListener) {
+            listener.computeScroll(event)
         }
     }
 }
