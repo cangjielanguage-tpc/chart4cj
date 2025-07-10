@@ -3,18 +3,7 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import std.collection.{ArrayList}
-import std.math.*
-import std.random.*
-import chart.pie.*
-import chart.utils.*
-import chart.bar.*
-import chart.charts.*
-import chart.components.*
 
 @Entry
 @Component
@@ -87,10 +76,10 @@ class BarChartPageReadme {
         let randomMultiplier: Int64 = range
 
         for (i in startYear..endYear) {
-            values1.append(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
-            values2.append(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
-            values3.append(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
-            values4.append(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
+            values1.add(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
+            values2.add(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
+            values3.add(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
+            values4.add(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
         }
 
         var set1: ?BarDataSet
@@ -120,10 +109,10 @@ class BarChartPageReadme {
             set4().setColorsByArr([0x224058])
 
             let dataSets: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
-            dataSets.append(set1())
-            dataSets.append(set2())
-            dataSets.append(set3())
-            dataSets.append(set4())
+            dataSets.add(set1())
+            dataSets.add(set2())
+            dataSets.add(set3())
+            dataSets.add(set4())
 
             let data: BarData = BarData(dataSets)
             this.model.setData(data)

@@ -16,7 +16,7 @@ package chart.pie
 public class CombinedChartDataWrapper<SW, EW> <: BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
     EntryOhos> where EW <: EntryOhos, SW <: IBarLineScatterCandleBubbleDataSet<EW> {
 
-    let inner: BarLineScatterCandleBubbleData<SW, EW> // 保存源数据
+    public let inner: BarLineScatterCandleBubbleData<SW, EW> // 保存源数据
 
     public init(inner: BarLineScatterCandleBubbleData<SW, EW>) {
         this.inner = inner
@@ -56,8 +56,11 @@ public type ChartDataWrapper = BarLineScatterCandleBubbleData<IBarLineScatterCan
         IBarLineScatterCandleBubbleDataSet<EntryOhos>
  */
 public class CombinedDataSetWrapper<EW> <: IBarLineScatterCandleBubbleDataSet<EntryOhos> where EW <: EntryOhos {
-    CombinedDataSetWrapper(let inner: IBarLineScatterCandleBubbleDataSet<EW>) {}
-
+//    CombinedDataSetWrapper(let inner: IBarLineScatterCandleBubbleDataSet<EW>) {}
+    public var inner: IBarLineScatterCandleBubbleDataSet<EW>
+    public init(inner: IBarLineScatterCandleBubbleDataSet<EW>) {
+        this.inner = inner
+    }
     public override func getYMax(): Float64 {
         inner.getYMax()
     }
@@ -225,6 +228,9 @@ public class CombinedDataSetWrapper<EW> <: IBarLineScatterCandleBubbleDataSet<En
     }
     public operator override func !=(s: Any): Bool {
         inner != s
+    }
+    public func toString(): String {
+        return "sss"
     }
 }
 

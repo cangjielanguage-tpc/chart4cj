@@ -23,12 +23,7 @@ public class HorizontalBarHighlighter <: BarHighlighter {
 
         let set: ?IBarDataSet = barData().getDataSetByIndex(high().getDataSetIndex())
         if (set.isSome() && set().isStacked()) {
-            return this.getStackedHighlight(
-                high(),
-                set(),
-                pos.y,
-                pos.x
-            )
+            return this.getStackedHighlight(high(),set(),pos.y,pos.x)
         }
 
         MPPointD.recycleInstance(pos)
@@ -39,13 +34,10 @@ public class HorizontalBarHighlighter <: BarHighlighter {
     protected func buildHighlights(set: IDataSet<EntryOhos>, dataSetIndex: Int64, xVal: Float64, rounding: Rounding): ArrayList<Highlight> {
         let highlights: ArrayList<Highlight> = ArrayList<Highlight>()
 
-        //noinspection unchecked
         var entries: ArrayList<EntryOhos> = set.getEntriesForXValue(xVal)
         if (entries.size == 0) {
-            // Try to find closest x-value and take all entries for that x-value
             let closest: ?EntryOhos = set.getEntryForXValue(xVal, Float64.NaN, rounding: rounding)
             if (closest.isSome()) {
-                //noinspection unchecked
                 entries = set.getEntriesForXValue(closest().getX())
             }
         }
@@ -63,7 +55,7 @@ public class HorizontalBarHighlighter <: BarHighlighter {
             }
             let pixels: MPPointD = trans().getPixelForValues(e.getY(), e.getX())
 
-            highlights.append(Highlight(e.getX(), y: e.getY(), dataSetIndex: dataSetIndex, dataIndex: 0, xPx: pixels.x, yPx: pixels.y,
+            highlights.add(Highlight(e.getX(), y: e.getY(), dataSetIndex: dataSetIndex, dataIndex: 0, xPx: pixels.x, yPx: pixels.y,
                 axis: set.getAxisDependency()))
         }
 

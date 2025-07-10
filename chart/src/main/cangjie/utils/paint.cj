@@ -31,12 +31,12 @@ public open class ChartPaint {
     var shadowOffsetX: Float64 = 0.0
     var shadowOffsetY: Float64 = 0.0
     var direction: Direction = Direction.Auto
-    var fontStyle: FontStyleType = FontStyleType.NORMAL
-    var fontWeight: FontWeightType = FontWeightType.NORMAL
+    var fontStyle: FontStyle = FontStyle.Normal
+    var fontWeight: FontWeight  = FontWeight.Normal
     var fontSize: Float64 = 14.0
     var fontSizeUnit: FontSizeUnit = FontSizeUnit.VP
-    var fontFamily: FontFamily = NONE
-    var font: String = "normal normal 14vp"
+    var fontFamily: String  = "sans-serif"
+    var font: (FontStyle, FontWeight, Length, String) = (FontStyle.Normal, FontWeight.Normal, 14.px, "sans-serif")
     var textAlign: TextAlignStyle = Left
     var textBaseline: TextBaseline = Alphabetic
     var lineDash: Array<Int64> = Array<Int64>()
@@ -306,55 +306,47 @@ public open class ChartPaint {
         return this.direction
     }
 
-    public func setTextSize(textSize: Float64, textSizeUnit!: FontSizeUnit = PX): Unit {
+    public func setTextSize(textSize: Float64): Unit {
         this.fontSize = textSize
-        this.fontSizeUnit = textSizeUnit
-
-        this.font = this.fontStyle.toString() + " " + this.fontWeight.toString() + " " + this.fontSize.toString() +
-            this.fontSizeUnit.toString() + " " + this.fontFamily.toString()
+        this.font = (this.fontStyle, this.fontWeight, this.fontSize, this.fontFamily)
     }
 
     public func getTextSize(): Float64 {
         return this.fontSize
     }
 
-    public func setFontStyle(fontStyle: FontStyleType): Unit {
+    public func setFontStyle(fontStyle: FontStyle): Unit {
         this.fontStyle = fontStyle
-        this.font = this.fontStyle.toString() + " " + this.fontWeight.toString() + " " + this.fontSize.toString() +
-            this.fontSizeUnit.toString() + " " + this.fontFamily.toString()
+        this.font = (this.fontStyle, this.fontWeight, this.fontSize, this.fontFamily)
     }
 
-    public func getFontStyle(): FontStyleType {
+    public func getFontStyle(): FontStyle  {
         return this.fontStyle
     }
 
-    public func setFontWeight(fontWeight: FontWeightType): Unit {
+    public func setFontWeight(fontWeight: FontWeight ): Unit {
         this.fontWeight = fontWeight
-        this.font = this.fontStyle.toString() + " " + this.fontWeight.toString() + " " + this.fontSize.toString() +
-            this.fontSizeUnit.toString() + " " + this.fontFamily.toString()
+        this.font = (this.fontStyle, this.fontWeight, this.fontSize, this.fontFamily)
     }
 
-    public func getFontWeight(): FontWeightType {
+    public func getFontWeight(): FontWeight {
         return this.fontWeight
     }
 
-    public func setFontFamily(fontFamily: FontFamily): Unit {
+    public func setFontFamily(fontFamily: String): Unit {
         this.fontFamily = fontFamily
-        this.font = this.fontStyle.toString() + " " + this.fontWeight.toString() + " " + this.fontSize.toString() +
-            this.fontSizeUnit.toString() + " " + this.fontFamily.toString()
+        this.font = (this.fontStyle, this.fontWeight, this.fontSize, this.fontFamily)
     }
 
-    public func getFontFamily(): FontFamily {
+    public func getFontFamily(): String {
         return this.fontFamily
     }
 
-    public func setFont(fontStyle!: FontStyleType = NORMAL, fontWeight!: FontWeightType = NORMAL,
-        fontSize!: Float64 = 14.0, fontSizeUnit!: FontSizeUnit = PX, fontFamily!: FontFamily = NONE) {
-        this.font = this.fontStyle.toString() + " " + this.fontWeight.toString() + " " + this.fontSize.toString() +
-            this.fontSizeUnit.toString() + " " + this.fontFamily.toString()
+    public func setFont(font: (FontStyle, FontWeight, Length, String)) {
+        this.font = font
     }
 
-    public func getFont(): String {
+    public func getFont(): (FontStyle, FontWeight, Length, String) {
         return this.font
     }
 

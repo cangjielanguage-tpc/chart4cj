@@ -38,7 +38,7 @@ public class PieRadarChartTouchListener< D, S, E> <: ChartTouchListener<D, S, E>
         if (isTouchEvent) {
             let touch = e as TouchEvent
             if (touch.isNone() || touch().touches.size == 0) {
-                return;
+                return
             }
             x = touch().touches[0].x
             y = touch().touches[0].y
@@ -58,7 +58,7 @@ public class PieRadarChartTouchListener< D, S, E> <: ChartTouchListener<D, S, E>
         if (isTouchEvent) {
             let touch = event as TouchEvent
             if (touch.isNone() || touch().touches.size == 0) {
-                return;
+                return
             }
             xCoordinate = touch().touches[0].x
             yCoordinate = touch().touches[0].y
@@ -88,7 +88,7 @@ public class PieRadarChartTouchListener< D, S, E> <: ChartTouchListener<D, S, E>
         if (isTouchEvent) {
             let touch = event as TouchEvent
             if (touch.isNone() || touch().touches.size == 0) {
-                return;
+                return
             }
             xCoordinate = touch().touches[0].x
             yCoordinate = touch().touches[0].y
@@ -117,7 +117,7 @@ public class PieRadarChartTouchListener< D, S, E> <: ChartTouchListener<D, S, E>
         if (isTouchEvent) {
             let touch = event as TouchEvent
             if (touch.isNone() || touch().touches.size == 0) {
-                return;
+                return
             }
             xCoordinate = touch().touches[0].x
             yCoordinate = touch().touches[0].y
@@ -166,7 +166,7 @@ public class PieRadarChartTouchListener< D, S, E> <: ChartTouchListener<D, S, E>
     private func sampleVelocity(touchLocationX: Float64, touchLocationY: Float64): Unit {
         let currentTime: Int64 = DateTime.nowUTC().second
 
-        this._velocitySamples.append(
+        this._velocitySamples.add(
             AngularVelocitySample(
                 currentTime,
                 (this.pieChart as PieRadarChartBaseModel<D, S, E>)().getAngleForPoint(touchLocationX, touchLocationY)
@@ -178,7 +178,7 @@ public class PieRadarChartTouchListener< D, S, E> <: ChartTouchListener<D, S, E>
         var i: Int64 = 0
         while (i < count - 2) {
             if (currentTime - this._velocitySamples.get(i)().time > 1000) {
-                this._velocitySamples.remove(0)
+                this._velocitySamples.remove(at: 0)
                 i--
                 count--
             } else {

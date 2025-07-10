@@ -38,7 +38,7 @@ public class LimitLine <: ComponentBase {
     }
 
     /**
-     * set the line width of the chart (min = 0.2f, max = 12f); default 2f NOTE:
+     * set the line width of the chart (min = 0.2f, max = 12f) default 2f NOTE:
      * thinner line == better performance, thicker line == worse performance
      *
      * @param width

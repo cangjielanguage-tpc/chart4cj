@@ -25,12 +25,12 @@ public abstract class DataRenderer <: Renderer {
     public var mValuePaint: ChartPaint
 
     public init(animator: ?ChartAnimator, viewPortHandler: ViewPortHandler) {
-        super(viewPortHandler);
+        super(viewPortHandler)
 
         this.mAnimator = animator
 
         this.mRenderPaint = ChartPaint()
-        this.mRenderPaint.setStyle(Style.FILL);
+        this.mRenderPaint.setStyle(Style.FILL)
 
         this.mDrawPaint = ChartPaint()
 
@@ -82,7 +82,7 @@ public abstract class DataRenderer <: Renderer {
      * @param set
      */
     protected func applyValueTextStyle<S, E>(dateSet: S) where S <: IDataSet<E>, E <: EntryOhos {
-        this.mValuePaint.setFontFamily(dateSet.getValueTypeface())
+        this.mValuePaint.setFontFamily(dateSet.getValueTypeface().toString())
         this.mValuePaint.setTextSize(dateSet.getValueTextSize())
     }
 
@@ -140,17 +140,17 @@ public abstract class DataRenderer <: Renderer {
                 }
                 c.closePath()
             case Style.FILL =>
-                c.beginPath();
+                c.beginPath()
                 if (let Some(handle) <- this.mViewPortHandler) {
-                    c.fillText(formatter.getFormattedValue(value, entry, dataSetIndex, handle), x, y);
+                    c.fillText(formatter.getFormattedValue(value, entry, dataSetIndex, handle), x, y)
                 }
-                c.closePath();
+                c.closePath()
             case Style.FILL_AND_STROKE =>
-                c.beginPath();
+                c.beginPath()
                 if (let Some(handle) <- this.mViewPortHandler) {
-                    c.fillText(formatter.getFormattedValue(value, entry, dataSetIndex, handle), x, y);
+                    c.fillText(formatter.getFormattedValue(value, entry, dataSetIndex, handle), x, y)
                 }
-                c.closePath();
+                c.closePath()
         }
     }
 

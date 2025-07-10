@@ -61,7 +61,7 @@ class DynamicPage {
     private var values: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
 
     private func initCurveData(count: Int64, range: Float64): LineData {
-        this.values.append(EntryOhos(Float64(count), range))
+        this.values.add(EntryOhos(Float64(count), range))
         let dataSet = ArrayList<ILineDataSet>()
         let set1 = LineDataSet(this.values, "DataSet 1")
         set1.setDrawFilled(false)
@@ -75,7 +75,7 @@ class DynamicPage {
         set1.setMode(Mode.LINEAR)
         set1.setColorByColor(UInt32(ColorTemplate.colorRgb(140, 234, 255)))
         set1.setLineWidth(1.5)
-        dataSet.append(set1)
+        dataSet.add(set1)
         return LineData(dataSet)
     }
 
@@ -137,7 +137,7 @@ class DynamicPage {
             let values: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
 
             for (i in 0..amount) {
-                values.append(EntryOhos(Float64(i), (Random().nextFloat64() * 50.0) + 50.0 * Float64(count)))
+                values.add(EntryOhos(Float64(i), (Random().nextFloat64() * 50.0) + 50.0 * Float64(count)))
             }
 
             let dataSet: LineDataSet = LineDataSet(values, "DataSet${count}")
@@ -177,7 +177,7 @@ class DynamicPage {
 
         for (i in 0..10) {
             let yVal: Float64 = (Random().nextFloat64() * 50.0)
-            values.append(EntryOhos(Float64(i), yVal))
+            values.add(EntryOhos(Float64(i), yVal))
         }
         let set1: LineDataSet = LineDataSet(values, "DataSet 1")
 

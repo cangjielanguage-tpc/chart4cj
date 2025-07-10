@@ -8,7 +8,7 @@ public open class EntryOhos <: BaseEntry {
 
     public init(x: Float64, y: Float64, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None,
         data!: ?Any = Option<Any>.None) {
-        super(y, icon, data);
+        super(y, icon, data)
         this.x = x
     }
     public open func getX(): Float64 {

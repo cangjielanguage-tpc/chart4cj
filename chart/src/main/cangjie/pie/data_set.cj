@@ -243,7 +243,7 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
         super.copyTo(dataSet)
     }
 
-    public func toString(): String {
+    public open func toString(): String {
         var str: String = this.toSimpleString()
         match (this.mEntries) {
             case _ => return str
@@ -295,7 +295,7 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
                 if (m.size > 0 && m.get(m.size - 1)().getX() > e.getX()) {
                     let closestIndex: Int64 = this.getEntryIndex(e.getX(), e.getY(), Rounding.UP)
                 } else {
-                    m.append(e)
+                    m.add(e)
                 }
         }
     }
@@ -317,7 +317,7 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
                 this.myCalcMinMax(m)
 
                 // add the entry
-                values().append(m)
+                values().add(m)
                 return true
         }
     }
@@ -332,7 +332,7 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
                         break
                     }
                 }
-                v.remove(index)
+                v.remove(at: index)
                 this.calcMinMax()
                 return true
 
@@ -476,13 +476,11 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
                 high = this.mEntries().size
 
                 // loop over all "equal" entries
-                for (m in 0..high) {
-                    if (let Some(entries) <- this.mEntries) {
-                        entry = entries[m]
+                for (i in m..high) {
+                    if (let Some(entriesTemp) <- this.mEntries) {
+                        entry = entriesTemp[m]
                         if (entry.getX() == xValue) {
-                            entries.append(entry)
-                        } else {
-                            break
+                            entriesTemp.add(entry)
                         }
                     }
                 }

@@ -7,7 +7,7 @@ public class PiEntry <: EntryOhos {
     public var label: String = ""
 
     public init(yValue: Float64, label: String, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: ?Any = Option<Any>.None) {
-        super(0.0, yValue, icon: icon, data: data);
+        super(0.0, yValue, icon: icon, data: data)
         this.label = label
     }
 

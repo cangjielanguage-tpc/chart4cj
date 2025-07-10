@@ -44,8 +44,8 @@ public class WaterfallBuffer <: BarBuffer {
             } else {
                 maxY
             }
-            this.arrayTop.append(e().getMaxY())
-            this.arrayBottom.append(e().getMinY())
+            this.arrayTop.add(e().getMaxY())
+            this.arrayBottom.add(e().getMinY())
             this.addWaterfall(x - barWidthHalf, top * this.phaseY, x + barWidthHalf, bottom * this.phaseY)
         }
 

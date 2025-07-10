@@ -3,7 +3,7 @@
  */
 package chart.bar
 
-public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
+public open class BarChartRenderer <: DataRenderer {
     public var mChart: BarDataProvider
     /**
      * the rect object that is used for drawing the bars
@@ -12,9 +12,13 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
     protected var mBarBuffers: Array<BarBuffer> = Array<BarBuffer>()
     protected var mShadowPaint: ChartPaint
     protected var mBarBorderPaint: ChartPaint
+    protected var mXBounds: ?XBounds = None
 
     public init(chart: BarDataProvider, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler)
+        if (let Some(m) <- this.mAnimator) {
+            this.mXBounds = XBounds(m)
+        }
         this.mChart = chart
 
         this.mHighlightPaint = ChartPaint()
@@ -30,11 +34,38 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
         this.mBarBorderPaint.setStyle(Style.STROKE)
     }
 
+    protected func shouldDrawValues(dataSet: IBarDataSet): Bool {
+        return dataSet.isVisible() && (dataSet.isDrawValuesEnabled() || dataSet.isDrawIconsEnabled())
+    }
+
+    /**
+     * Checks if the provided entry object is in bounds for drawing considering the current animation phase.
+     *
+     * @param e
+     * @param set
+     * @return
+     */
+    protected func isInBoundsX(e: ?BarEntry, dataSet: IBarDataSet): Bool {
+        if (let Some(entry) <- e) {
+            let entryIndex = dataSet.getEntryIndexByEntry(entry)
+            if (entryIndex >= dataSet.getEntryCount() * (if (let Some(m) <- this.mAnimator) {
+                Int64(m.getPhaseX())
+            } else {
+                1
+            })) {
+                return false
+            } else {
+                return true
+            }
+        }
+        return false
+    }
+
     public open func initBuffers(): Unit {
         let barData: ?BarData = this.mChart.getBarData()
         match (barData) {
             case Some(bardata) =>
-                mBarBuffers = Array<BarBuffer>(bardata.getDataSetCount(), item: BarBuffer(0, 0, false))
+                mBarBuffers = Array<BarBuffer>(bardata.getDataSetCount(), repeat: BarBuffer(0, 0, false))
                 for (i in 0..this.mBarBuffers.size) {
                     let dataSet: ?IBarDataSet = bardata.getDataSetByIndex(i)
                     match (dataSet) {
@@ -441,7 +472,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                         // draw stack values
                         } else {
-                            var transformed: Array<Float64> = Array<Float64>(vals.size * 2, item: 0.0)
+                            var transformed: Array<Float64> = Array<Float64>(vals.size * 2, repeat: 0.0)
                             var posY: Float64 = 0.0
                             var negY: Float64 = -entry().getNegativeSum()
                             var k: Int64 = 0
@@ -576,7 +607,7 @@ public open class BarChartRenderer <: BarLineScatterCandleBubbleRenderer {
             if (e.isNone()) {
                 continue
             }
-            if (!this.isInBoundsX((e() as EntryOhos), (set as IBarLineScatterCandleBubbleDataSet<EntryOhos>)())) {
+            if (!this.isInBoundsX((e()), set())) {
                 continue
             }
 

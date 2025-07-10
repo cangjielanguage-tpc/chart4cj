@@ -92,7 +92,7 @@ public class Fill {
     }
 
     private func calculateAlphaForGradientColors(): Unit {
-        let newColor: Array<UInt32> = Array<UInt32>(this.mGradientColors().size, item: 0)
+        let newColor: Array<UInt32> = Array<UInt32>(this.mGradientColors().size, repeat: 0)
 
         for (i in 0..this.mGradientColors().size) {
             newColor[i] = UInt32(ColorTemplate.colorWithAlpha(Int64(this.mGradientColors()[i]), this.mAlpha))

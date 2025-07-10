@@ -42,7 +42,7 @@ public class ObjectPool<T> where T <: Poolable {
         }
 
         for (_ in 0..portionOfCapacity) {
-            this.objects.append(this.modelObject.instantiate())
+            this.objects.add(this.modelObject.instantiate())
         }
         objectsPointer = portionOfCapacity - 1
     }
@@ -80,9 +80,9 @@ public class ObjectPool<T> where T <: Poolable {
 
     private func newSet(array: ArrayList<Any>, index: Int64, value: Poolable) {
         if (index < array.size) {
-            array.set(index, value)
+            array.add(value, at: index)
         } else {
-            array.append(value)
+            array.add(value)
         }
     }
     public func get(): T {
@@ -137,8 +137,8 @@ public class ObjectPool<T> where T <: Poolable {
     private func resizePool(): Unit {
         let oldCapacity: Int64 = this.desiredCapacity
         this.desiredCapacity *= 2
-        var item: Array<Any> = Array<Any>(this.desiredCapacity, item: this.modelObject)
-        var temp: ArrayList<Any> = ArrayList<Any>(item)
+        var repeat: Array<Any> = Array<Any>(this.desiredCapacity, repeat: this.modelObject)
+        var temp: ArrayList<Any> = ArrayList<Any>(repeat)
         for (i in 0..oldCapacity) {
             temp[i] = this.objects[i]
         }

@@ -60,7 +60,7 @@ public class ChartColor {
         s = floor(s * 100.0)
         v = floor(v * 100.0)
         hsv.remove(0..hsv.size)
-        hsv.appendAll([h, s, v])
+        hsv.add(all: [h, s, v])
     }
 
     public static func HSVToColor(alpha: Float64, arr: Array<Int64>): Int64 {
@@ -184,7 +184,7 @@ public class ColorTemplate {
      */
     public static func createColors(colors: Array<UInt32>): ArrayList<UInt32> {
         var result: ArrayList<UInt32> = ArrayList<UInt32>()
-        result.appendAll(colors)
+        result.add(all: colors)
         return result
     }
 

@@ -59,13 +59,13 @@ class CubicAxisPage {
         for (i in 1..count) { //X轴坐标个数
             // 设置数据点Y值
             let val = range * Random().nextFloat64() //Y轴值
-            values.append(EntryOhos(Float64(i), val))
+            values.add(EntryOhos(Float64(i), val))
         }
         this.dataSet = LineDataSet(values, "DataSet 1")
 
         let gradientFillColor = ArrayList<ChartColorStop>()
-        gradientFillColor.append((0xffffff, 0.3))
-        gradientFillColor.append((0x00ffff, 1.0))
+        gradientFillColor.add((0xffffff, 0.3))
+        gradientFillColor.add((0x00ffff, 1.0))
         this.dataSet.setGradientFillColor(gradientFillColor)
         this.dataSet.setDrawFilled(true) //是否显示阴影
         this.dataSet.setDrawValues(false)
@@ -74,7 +74,7 @@ class CubicAxisPage {
         this.dataSet.setLineWidth(1.0)
         this.dataSet.setDrawCircles(false)
         let dataSetList: ArrayList<ILineDataSet> = ArrayList<ILineDataSet>()
-        dataSetList.append(this.dataSet)
+        dataSetList.add(this.dataSet)
 
         let lineData: LineData = LineData(dataSetList)
         lineData.setValueTextSize(10.0)

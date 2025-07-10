@@ -3,18 +3,8 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import std.collection.*
-import std.math.*
-import std.random.*
-import chart.utils.*
-import chart.charts.*
-import chart.radar.*
-import chart.components.*
-import chart.pie.*
+
 
 @Entry
 @Component
@@ -76,10 +66,10 @@ class RadarChartPageReadme {
         // 注意: 将数据点添加到数据点数组中的顺序决定它们在图表中心周围的位置。
         for (i in 0..cnt) {
             let val1 = (Random().nextFloat64() * mul) + min
-            entries1.append(RadarEntry(val1))
+            entries1.add(RadarEntry(val1))
 
             let val2 = (Random().nextFloat64() * mul) + min
-            entries2.append(RadarEntry(val2))
+            entries2.add(RadarEntry(val2))
         }
 
         // 创建雷达图数据集
@@ -91,11 +81,12 @@ class RadarChartPageReadme {
         let set2: RadarDataSet = RadarDataSet(entries2, "This Week")
         set2.setColorByColor(UInt32(ChartColor.rgb(121, 162, 175)))
         set2.setLineWidth(2.0)
+        set2.setFillColor(UInt32(ChartColor.rgb(121, 162, 175)))
 
         // 创建雷达图数据集合
         let sets: ArrayList<IRadarDataSet> = ArrayList<IRadarDataSet>()
-        sets.append(set1)
-        sets.append(set2)
+        sets.add(set1)
+        sets.add(set2)
 
         // 创建雷达图数据对象
         let data: RadarData = RadarData(sets)

@@ -61,8 +61,8 @@ public abstract class BaseDataSet<E> <: IDataSet<E> where E <: EntryOhos {
         this.mColors = ArrayList<UInt32>()
         this.mValueColors = ArrayList<UInt32>()
         // default color
-        this.mColors.append(0x8ceaff)
-        this.mValueColors.append(0x000000)
+        this.mColors.add(0x8ceaff)
+        this.mValueColors.add(0x000000)
         this.mLabel = label
     }
 
@@ -139,7 +139,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> where E <: EntryOhos {
             this.mColors.clear()
         }
 
-        this.mColors.appendAll(colors)
+        this.mColors.add(all: colors)
     }
 
     /**
@@ -148,7 +148,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> where E <: EntryOhos {
      * @param color
      */
     public func addColor(color: UInt32): Unit {
-        this.mColors.append(color)
+        this.mColors.add(color)
     }
 
     /**
@@ -159,7 +159,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> where E <: EntryOhos {
      */
     public func setColorByColor(color: UInt32): Unit {
         this.resetColors()
-        this.mColors.append(color)
+        this.mColors.add(color)
     }
 
     /**
@@ -232,7 +232,7 @@ public abstract class BaseDataSet<E> <: IDataSet<E> where E <: EntryOhos {
     public func setValueTextColor(color: UInt32): Unit {
         if (this.mValueColors.size != 0) {
             this.mValueColors.clear()
-            this.mValueColors.append(color)
+            this.mValueColors.add(color)
         }
     }
 

@@ -3,18 +3,8 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import std.collection.*
-import std.math.*
-import std.random.*
-import chart.pie.*
-import chart.utils.{Mode, AxisDependency, ColorTemplate, ChartColor}
-import chart.charts.*
-import chart.line.*
-import chart.components.*
+
 
 @Entry
 @Component
@@ -46,24 +36,24 @@ class LineChartNotAxisConfigPageReadme {
 
         for (i in 0..count) {
             let val: Float64 = Random().nextFloat64() * range + 3.0
-            values1.append(EntryOhos(Float64(i), val))
+            values1.add(EntryOhos(Float64(i), val))
         }
 
         for (i in 0..count) {
             let val: Float64 = Random().nextFloat64() * range + 3.0
-            values2.append(EntryOhos(Float64(i), val))
+            values2.add(EntryOhos(Float64(i), val))
         }
 
         for (i in 0..count) {
             let val: Float64 = Random().nextFloat64() * range + 3.0
-            values3.append(EntryOhos(Float64(i), val))
+            values3.add(EntryOhos(Float64(i), val))
         }
 
         let dataSet = ArrayList<ILineDataSet>()
 
         let gradientFillColor = ArrayList<ChartColorStop>()
-        gradientFillColor.append((0xffffff, 0.3))
-        gradientFillColor.append((0x00ffff, 1.0))
+        gradientFillColor.add((0xffffff, 0.3))
+        gradientFillColor.add((0x00ffff, 1.0))
 
         let set1 = LineDataSet(values1, "DataSet 1")
         set1.setDrawFilled(false) //设置不渐变色填充
@@ -74,7 +64,7 @@ class LineChartNotAxisConfigPageReadme {
         set1.setMode(Mode.LINEAR) //直线模式
         set1.setColorByColor(0x2b89ab) //设置折线颜色
         set1.setLineWidth(2.5) //设置线宽
-        dataSet.append(set1)
+        dataSet.add(set1)
 
         let set2 = LineDataSet(values2, "DataSet 2")
         set2.setDrawFilled(false) //设置不渐变色填充
@@ -85,7 +75,7 @@ class LineChartNotAxisConfigPageReadme {
         set2.setMode(Mode.STEPPED) //90度线模式
         set2.setColorByColor(0xcd4e2e) //设置折线颜色
         set2.setLineWidth(2.5) //设置线宽
-        dataSet.append(set2)
+        dataSet.add(set2)
 
         let set3 = LineDataSet(values3, "DataSet 3")
         set3.setDrawFilled(false) //设置不渐变色填充
@@ -96,7 +86,7 @@ class LineChartNotAxisConfigPageReadme {
         set3.setMode(Mode.LINEAR) //直线模式
         set3.setColorByColor(0xacc045) //设置折线颜色
         set3.setLineWidth(2.5) //设置线宽
-        dataSet.append(set3)
+        dataSet.add(set3)
 
         let lineData: LineData = LineData(dataSet)
 

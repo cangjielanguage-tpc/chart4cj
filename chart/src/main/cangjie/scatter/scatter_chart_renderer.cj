@@ -29,7 +29,7 @@ public class ScatterChartRenderer <: LineScatterCandleRadarRenderer {
         }
     }
 
-    private var mPixelBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
+    private var mPixelBuffer: Array<Float64> = Array<Float64>(2, repeat: 0.0)
 
     protected func drawDataSet(c: CanvasRenderingContext2D, dataSet: IScatterDataSet) {
         if (dataSet.getEntryCount() < 1) {
@@ -131,36 +131,38 @@ public class ScatterChartRenderer <: LineScatterCandleRadarRenderer {
                         continue
                     }
 
-                    let entry = dataSet.getEntryForIndex(j / 2 + this.mXBounds().mins)()
+                    let entry: ?EntryOhos = dataSet.getEntryForIndex(j / 2 + this.mXBounds().mins)
+                    if(let Some(scatterEntry) <- entry) {
+                        if (dataSet.isDrawValuesEnabled()) {
+                            let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
+                            if (valueFormatter.isSome()) {
+                                this.drawValue(
+                                    c,
+                                    dataSet.getValueFormatter()(),
+                                    scatterEntry.getY(),
+                                    scatterEntry,
+                                    i,
+                                    positions[j],
+                                    positions[j + 1] - shapeSize,
+                                    Color(dataSet.getValueTextColor(j / 2 + this.mXBounds().mins))
+                                )
+                            }
+                        }
 
-                    if (dataSet.isDrawValuesEnabled()) {
-                        let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
-                        if (valueFormatter.isSome()) {
-                            this.drawValue(
+                        if (scatterEntry.getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
+                            let icon: ?ChartPixelMap = scatterEntry.getIcon()
+                            if (icon.isNone()) {
+                                continue
+                            }
+                            Utils.drawImage(
                                 c,
-                                dataSet.getValueFormatter()(),
-                                entry.getY(),
-                                entry,
-                                i,
-                                positions[j],
-                                positions[j + 1] - shapeSize,
-                                Color(dataSet.getValueTextColor(j / 2 + this.mXBounds().mins))
+                                icon(),
+                                (positions[j] + iconsOffset.x),
+                                (positions[j + 1] + iconsOffset.y),
                             )
                         }
                     }
 
-                    if (entry.getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
-                        let icon: ?ChartPixelMap = entry.getIcon()
-                        if (icon.isNone()) {
-                            continue
-                        }
-                        Utils.drawImage(
-                            c,
-                            icon(),
-                            (positions[j] + iconsOffset.x),
-                            (positions[j + 1] + iconsOffset.y),
-                        )
-                    }
                 }
 
                 MPPointF.recycleInstance(iconsOffset)

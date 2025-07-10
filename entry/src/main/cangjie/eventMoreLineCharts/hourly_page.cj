@@ -49,7 +49,7 @@ class HourlyPage {
 
         for (x in 0..count) {
             let yVal: Float64 = (Random().nextFloat64() * range) + 50.0
-            values.append(EntryOhos(Float64(x), yVal))
+            values.add(EntryOhos(Float64(x), yVal))
         }
         let dataSet = ArrayList<ILineDataSet>()
         let dataSet1 = LineDataSet(values, "DataSet 1")
@@ -64,7 +64,7 @@ class HourlyPage {
         dataSet1.setMode(Mode.LINEAR)
         dataSet1.setColorByColor(UInt32(ColorTemplate.colorRgb(140, 234, 255)))
 
-        dataSet.append(dataSet1)
+        dataSet.add(dataSet1)
         return LineData(dataSet)
     }
 

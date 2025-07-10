@@ -443,7 +443,7 @@ public interface  IDataSet<E> where E <: EntryOhos {
      *
      * For all charts except Pie and Radar it will be ordinary (x offset,y offset).
      *
-     * For Pie and Radar chart it will be (y offset, distance from center offset); so if you want icon to be rendered under value, you should increase X component of CGPoint, and if you want icon to be rendered closet to center, you should decrease height component of CGPoint.
+     * For Pie and Radar chart it will be (y offset, distance from center offset) so if you want icon to be rendered under value, you should increase X component of CGPoint, and if you want icon to be rendered closet to center, you should decrease height component of CGPoint.
      * @param offset
      */
      func setIconsOffset(offset: MPPointF): Unit

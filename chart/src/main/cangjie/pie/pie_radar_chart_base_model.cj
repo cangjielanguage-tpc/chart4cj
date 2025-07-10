@@ -426,10 +426,10 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
     }
 
     private func toDegrees(radians: Float64): Float64 {
-        return radians * (180.0 / Float64.PI)
+        return radians * (180.0 / Float64.getPI())
     }
 
     private func toRadians(degrees: Float64): Float64 {
-        return degrees * (Float64.PI / 180.0)
+        return degrees * (Float64.getPI() / 180.0)
     }
 }

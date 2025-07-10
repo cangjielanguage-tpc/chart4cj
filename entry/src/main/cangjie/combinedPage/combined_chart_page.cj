@@ -3,9 +3,6 @@
  */
 package ohos_app_cangjie_entry.combinedPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -73,7 +70,7 @@ class CombinedChartPage {
         var entries: ArrayList<EntryOhos> = ArrayList()
 
         for (index in 0..this.count) {
-            entries.append(EntryOhos(Float64(index) + 0.5, this.getRandom(15.0, 5.0)))
+            entries.add(EntryOhos(Float64(index) + 0.5, this.getRandom(15.0, 5.0)))
         }
 
         let set: LineDataSet = LineDataSet(entries, "Line DataSet")
@@ -94,7 +91,7 @@ class CombinedChartPage {
         var values: ArrayList<WaterfallEntry> = ArrayList<WaterfallEntry>()
 
         for (i in 0..this.count - 1) {
-            values.append(WaterfallEntry(Float64(i) + 0.5, 35.0, 50.0))
+            values.add(WaterfallEntry(Float64(i) + 0.5, 35.0, 50.0))
         }
 
         let dataSet = WaterfallDataSet(values, "Waterfall")
@@ -104,7 +101,7 @@ class CombinedChartPage {
         dataSet.setDrawValues(true)
 
         let dataSetList: ArrayList<IWaterfallDataSet> = ArrayList<IWaterfallDataSet>()
-        dataSetList.append(dataSet)
+        dataSetList.add(dataSet)
 
         let waterfallData: WaterfallData = WaterfallData(dataSetList)
         waterfallData.setBarWidth(0.6)
@@ -116,10 +113,10 @@ class CombinedChartPage {
         var entries2: ArrayList<BarEntry> = ArrayList()
 
         for (index in 0..this.count) {
-            entries1.append(BarEntry(0.0, this.getRandom(10.0, 6.0)))
+            entries1.add(BarEntry(0.0, this.getRandom(10.0, 6.0)))
 
             // stacked
-            entries2.append(BarEntry(0.0, [this.getRandom(10.0, 6.0), this.getRandom(10.0, 6.0)]))
+            entries2.add(BarEntry(0.0, [this.getRandom(10.0, 6.0), this.getRandom(10.0, 6.0)]))
         }
 
         let set1: BarDataSet = BarDataSet(entries1, "Bar 1")
@@ -142,8 +139,8 @@ class CombinedChartPage {
         let barWidth = 0.45 // x2 dataset
 
         let set: ArrayList<IBarDataSet> = ArrayList()
-        set.append(set1)
-        set.append(set2)
+        set.add(set1)
+        set.add(set2)
         let d: BarData = BarData(set)
         d.setBarWidth(barWidth)
 
@@ -158,7 +155,7 @@ class CombinedChartPage {
         var entries: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
 
         for (index in 0..this.count) {
-            entries.append(EntryOhos(Float64(index) + 0.25, this.getRandom(10.0, 55.0)))
+            entries.add(EntryOhos(Float64(index) + 0.25, this.getRandom(10.0, 55.0)))
         }
 
         let set: ScatterDataSet = ScatterDataSet(entries, "Scatter DataSet")
@@ -176,7 +173,7 @@ class CombinedChartPage {
         var entries: ArrayList<CandleEntry> = ArrayList()
 
         for (index in 0..this.count : 2) {
-            entries.append(CandleEntry(Float64(index + 1), shadowH: 90.0, shadowL: 70.0, open: 85.0, close: 75.0))
+            entries.add(CandleEntry(Float64(index + 1), shadowH: 90.0, shadowL: 70.0, open: 85.0, close: 75.0))
         }
 
         let set: CandleDataSet = CandleDataSet(entries, "Candle DataSet")
@@ -197,7 +194,7 @@ class CombinedChartPage {
         for (index in 0..this.count) {
             let y = this.getRandom(10.0, 105.0)
             let size = this.getRandom(20.0, 30.0)
-            entries.append(BubblesEntry(Float64(index) + 0.5, y, size: size))
+            entries.add(BubblesEntry(Float64(index) + 0.5, y, size: size))
         }
 
         let set: BubbleDataSet = BubbleDataSet(entries, "Bubble DataSet")

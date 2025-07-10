@@ -34,7 +34,7 @@ public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubblesEntry> & 
         let entries: ArrayList<BubblesEntry> = ArrayList<BubblesEntry>()
         if (let Some(m) <- this.mEntries) {
             for (i in 0..m.size) {
-                entries.append(m[i].copy())
+                entries.add(m[i].copy())
             }
         }
         let copied = BubbleDataSet(entries, this.getLabel())

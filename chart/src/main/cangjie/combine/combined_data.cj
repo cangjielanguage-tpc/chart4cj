@@ -57,7 +57,7 @@ public class CombinedData <: BarLineScatterCandleBubbleData<IBarLineScatterCandl
         for (data in allData) {
             data.calcMinMax()
             let sets = data.getDataSets()
-            this.mDataSets.appendAll(sets)
+            this.mDataSets.add(all: sets)
 
             if (data.getYMax() > this.mYMax) {
                 this.mYMax = data.getYMax()
@@ -120,22 +120,22 @@ public class CombinedData <: BarLineScatterCandleBubbleData<IBarLineScatterCandl
     public func getAllData(): ArrayList<ChartDataWrapper> {
         let data: ArrayList<ChartDataWrapper> = ArrayList<ChartDataWrapper>()
         if (let Some(mWaterfallData) <- this.mWaterfallData) {
-            data.append(CombinedChartDataWrapper(mWaterfallData))
+            data.add(CombinedChartDataWrapper(mWaterfallData))
         }
         if (let Some(mLineData) <- this.mLineData) {
-            data.append(CombinedChartDataWrapper(mLineData))
+            data.add(CombinedChartDataWrapper(mLineData))
         }
         if (let Some(mBarData) <- this.mBarData) {
-            data.append(CombinedChartDataWrapper(mBarData))
+            data.add(CombinedChartDataWrapper(mBarData))
         }
         if (let Some(mScatterData) <- this.mScatterData) {
-            data.append(CombinedChartDataWrapper(mScatterData))
+            data.add(CombinedChartDataWrapper(mScatterData))
         }
         if (let Some(mCandleData) <- this.mCandleData) {
-            data.append(CombinedChartDataWrapper(mCandleData))
+            data.add(CombinedChartDataWrapper(mCandleData))
         }
         if (let Some(mBubbleData) <- this.mBubbleData) {
-            data.append(CombinedChartDataWrapper(mBubbleData))
+            data.add(CombinedChartDataWrapper(mBubbleData))
         }
         return data
     }

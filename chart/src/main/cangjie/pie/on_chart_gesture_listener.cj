@@ -68,4 +68,6 @@ public interface OnChartGestureListener {
      * @param dY translation distance on the y-axis
      */
     func onChartTranslate(isTouchEvent: Bool, me: Any, dX: Float64, dY: Float64): Unit
+
+    func onChartMove(isTouchEvent: Bool, me: Any): Unit
 }

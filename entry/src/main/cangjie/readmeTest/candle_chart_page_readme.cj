@@ -3,18 +3,8 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import std.collection.{ArrayList}
-import std.math.*
-import std.random.*
-import chart.pie.*
-import chart.utils.*
-import chart.candle.*
-import chart.charts.*
-import chart.components.*
+
 
 @Entry
 @Component
@@ -77,7 +67,7 @@ class CandleChartPageReadme {
 
             let even: Bool = i % 2 == 0
 
-            values.append(
+            values.add(
                 CandleEntry(
                     Float64(i),
                     shadowH: val + high,

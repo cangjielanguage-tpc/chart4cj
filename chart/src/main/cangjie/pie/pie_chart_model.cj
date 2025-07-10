@@ -16,11 +16,11 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
     /**
      * array that holds the width of each pie-slice in degrees
      */
-    private var mDrawAngles: Array<Float64> = Array<Float64>(1, item: 0.0)
+    private var mDrawAngles: Array<Float64> = Array<Float64>(1, repeat: 0.0)
     /**
      * array that holds the absolute angle in degrees of each slice
      */
-    private var mAbsoluteAngles: Array<Float64> = Array<Float64>(1, item: 0.0)
+    private var mAbsoluteAngles: Array<Float64> = Array<Float64>(1, repeat: 0.0)
     /**
      * if true, the white hole inside the chart will be drawn
      */
@@ -207,14 +207,14 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
             let entryCount: Int64 = d.getEntryCount()
 
             if (this.mDrawAngles.size != entryCount) {
-                this.mDrawAngles = Array<Float64>(entryCount, item: 0.0) //new float[entryCount]
+                this.mDrawAngles = Array<Float64>(entryCount, repeat: 0.0) //new float[entryCount]
             } else {
                 for (i in 0..entryCount) {
                     this.mDrawAngles[i] = 0.0
                 }
             }
             if (this.mAbsoluteAngles.size != entryCount) {
-                this.mAbsoluteAngles = Array<Float64>(entryCount, item: 0.0) //new float[entryCount]
+                this.mAbsoluteAngles = Array<Float64>(entryCount, repeat: 0.0) //new float[entryCount]
             } else {
                 for (i in 0..entryCount) {
                     this.mAbsoluteAngles[i] = 0.0
@@ -227,7 +227,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
 
             let hasMinAngle: Bool = this.mMinAngleForSlices != 0.0 && Float64(entryCount) * this.mMinAngleForSlices <=
                 this.mMaxAngle
-            let minAngles: Array<Float64> = Array<Float64>(entryCount, item: 0.0) //new float[entryCount]
+            let minAngles: Array<Float64> = Array<Float64>(entryCount, repeat: 0.0) //new float[entryCount]
 
             var cnt: Int64 = 0
             var offset: Float64 = 0.0
@@ -515,7 +515,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      */
     public func setCenterTextTypeface(t: FontFamily): Unit {
         if (let Some(render: PieChartRenderer) <- this.mRenderer) {
-            render.getPaintCenterText().setFontFamily(t)
+            render.getPaintCenterText().setFontFamily(t.toString())
         }
     }
 
@@ -674,7 +674,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      */
     public func setEntryLabelTypeface(tf: FontFamily): Unit {
         if (let Some(render: PieChartRenderer) <- this.mRenderer) {
-            render.getPaintEntryLabels().setFontFamily(tf)
+            render.getPaintEntryLabels().setFontFamily(tf.toString())
         }
     }
 

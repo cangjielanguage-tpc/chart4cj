@@ -4,9 +4,6 @@
 
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -80,14 +77,14 @@ class BarChartNegativePage {
         let valueColors: ArrayList<UInt32> = ArrayList<UInt32>()
         for (i in startAxis..endAxis) {
             let val = Random().nextFloat64() * Float64(range) - Float64(range / 2)
-            values.append(BarEntry(Float64(i), val))
+            values.add(BarEntry(Float64(i), val))
         }
 
         for (i in 0..values.size) {
             if (values[i].getY() > 0.0) {
-                valueColors.append(0xD34A58)
+                valueColors.add(0xD34A58)
             } else {
-                valueColors.append(0x6EBE66)
+                valueColors.add(0x6EBE66)
             }
         }
         let dataSet: BarDataSet = BarDataSet(values, "DataSet")
@@ -96,7 +93,7 @@ class BarChartNegativePage {
         dataSet.setDrawValues(true)
 
         let dataSetList: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
-        dataSetList.append(dataSet)
+        dataSetList.add(dataSet)
         let barData: BarData = BarData(dataSetList)
         barData.setBarWidth(0.8)
         this.model.setData(barData)

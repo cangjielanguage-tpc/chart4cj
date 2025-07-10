@@ -3,17 +3,8 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.viewPageItems
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import chart.pie.*
-import chart.utils.*
-import chart.components.*
-import chart.charts.*
-import chart.bar.*
-import std.collection.{ArrayList}
-import std.random.*
+
 
 @Entry
 @Component
@@ -80,7 +71,7 @@ let VORDIPLOM_COLORS: Array<UInt32> = [UInt32(ChartColor.rgb(192, 255, 140)), UI
     for (i in start..(start + count)) {
       let multi = range
       let val: Float64 = ( Random().nextFloat64() * (multi - 6.0))
-      values.append(BarEntry(Float64(i), val))
+      values.add(BarEntry(Float64(i), val))
     }
     let set1: ?BarDataSet
 
@@ -98,7 +89,7 @@ let VORDIPLOM_COLORS: Array<UInt32> = [UInt32(ChartColor.rgb(192, 255, 140)), UI
       set1().setDrawValues(true)
 
       let dataSets: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
-      dataSets.append(set1())
+      dataSets.add(set1())
 
       let data: BarData =  BarData(dataSets)
 

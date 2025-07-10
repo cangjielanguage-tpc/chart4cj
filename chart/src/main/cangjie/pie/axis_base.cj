@@ -388,7 +388,7 @@ public abstract class AxisBase <: ComponentBase {
      * @param l
      */
     public func addLimitLine(l: LimitLine): Unit {
-        this.mLimitLines.append(l)
+        this.mLimitLines.add(l)
 
         if (this.mLimitLines.size > 6) {
             //      Info("MPChart",
@@ -408,7 +408,7 @@ public abstract class AxisBase <: ComponentBase {
             )
         }
 
-        this.mGridLines.append(line)
+        this.mGridLines.add(line)
     }
 
     public func getGridLines(): ArrayList<LimitLine> {

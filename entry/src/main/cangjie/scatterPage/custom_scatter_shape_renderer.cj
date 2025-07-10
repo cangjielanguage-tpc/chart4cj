@@ -3,8 +3,6 @@
  */
 package ohos_app_cangjie_entry.scatterPage
 
-import ohos.component.*
-
 public class CustomScatterShapeRenderer <: IShapeRenderer {
     public func renderShape(c: CanvasRenderingContext2D, dataSet: IScatterDataSet, viewPortHandler: ViewPortHandler,
         posX: Float64, posY: Float64, renderPaint: ChartPaint): Unit {

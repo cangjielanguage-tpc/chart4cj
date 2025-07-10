@@ -3,9 +3,6 @@
  */
 package ohos_app_cangjie_entry.piePage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -56,7 +53,7 @@ class HalfPieChartPage {
     private func setData(count: Int64, range: Int64): Unit {
         var entries: ArrayList<PiEntry> = ArrayList<PiEntry>()
         for (i in 0..count) {
-            entries.append(
+            entries.add(
                 PiEntry((Random().nextFloat64() * Float64(range)) + Float64(range) / 5.0,
                 this.parties[i % this.parties.size]))
         }
@@ -70,24 +67,24 @@ class HalfPieChartPage {
 
         var colors: ArrayList<UInt32> = ArrayList<UInt32>()
         for (i in 0..ColorTemplate.COLORFUL_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.COLORFUL_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.COLORFUL_COLORS[i]))
         }
 
         for (i in 0..ColorTemplate.VORDIPLOM_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.VORDIPLOM_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.VORDIPLOM_COLORS[i]))
         }
 
         for (i in 0..ColorTemplate.JOYFUL_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.JOYFUL_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.JOYFUL_COLORS[i]))
         }
 
         for (i in 0..ColorTemplate.LIBERTY_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.LIBERTY_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.LIBERTY_COLORS[i]))
         }
         for (i in 0..ColorTemplate.PASTEL_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.PASTEL_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.PASTEL_COLORS[i]))
         }
-        colors.append(UInt32(ColorTemplate.getHoloBlue()))
+        colors.add(UInt32(ColorTemplate.getHoloBlue()))
         dataSet.setColorsByList(colors)
         let data: PieData = PieData(dataSet)
 

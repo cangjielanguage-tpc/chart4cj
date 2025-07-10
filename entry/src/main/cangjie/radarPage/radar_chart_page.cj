@@ -3,9 +3,6 @@
  */
 package ohos_app_cangjie_entry.radarPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -70,10 +67,10 @@ class RadarChartPage {
 
         for (i in 0..cnt) {
             let val1 = (Random().nextFloat64() * mul) + min;
-            entries1.append(RadarEntry(val1));
+            entries1.add(RadarEntry(val1));
 
             let val2 = (Random().nextFloat64() * mul) + min;
-            entries2.append(RadarEntry(val2));
+            entries2.add(RadarEntry(val2));
         }
 
         let set1: RadarDataSet = RadarDataSet(entries1, "Last Week");
@@ -85,8 +82,8 @@ class RadarChartPage {
         set2.setLineWidth(2.0);
 
         let sets: ArrayList<IRadarDataSet> = ArrayList<IRadarDataSet>();
-        sets.append(set1);
-        sets.append(set2);
+        sets.add(set1);
+        sets.add(set2);
 
         let data: RadarData = RadarData(sets);
         data.setValueTextSize(10.0);

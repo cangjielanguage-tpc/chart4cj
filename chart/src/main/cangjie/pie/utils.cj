@@ -7,8 +7,8 @@ public abstract class Utils {
     private static var scaledDensity: Float64 = 3.3125
     private static let mMinimumFlingVelocity: Int64 = 50
     private static let mMaximumFlingVelocity: Int64 = 8000
-    public static let DEG2RAD: Float64 = (Float64.PI / 180.0)
-    public static let FDEG2RAD: Float64 = (Float64.PI / 180.0)
+    public static let DEG2RAD: Float64 = (Float64.getPI() / 180.0)
+    public static let FDEG2RAD: Float64 = (Float64.getPI() / 180.0)
     public static let DOUBLE_EPSILON: Float64 = 4.9E-324
     public static let FLOAT_EPSILON: Float64 = 1.4E-45
 
@@ -62,7 +62,7 @@ public abstract class Utils {
     public static func calcTextHeight(c: CanvasRenderingContext2D, paint: ChartPaint, demoText: String): Float64 {
         Utils.resetContext2DStyle(c, paint)
         let textMetrics: TextMetrics = c.measureText(demoText)
-        return textMetrics.height
+        return px2vp(textMetrics.height.px)().value
     }
 
     public static func getLineHeight(paint: ChartPaint, c: ?CanvasRenderingContext2D): Float64 {
@@ -70,7 +70,7 @@ public abstract class Utils {
         if (let Some(canvas) <- c) {
             Utils.resetContext2DStyle(canvas, paint)
             let textMetrics: TextMetrics = canvas.measureText("Test")
-            lineHeight = textMetrics.height
+            lineHeight = vp2px(textMetrics.height.vp)().value
         } else {
             let context2: MeasureOptions = MeasureOptions(textContent: "Test",fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
             let textSize: MeasureSize = Measure.MeasureTextSize(context2)
@@ -193,8 +193,8 @@ public abstract class Utils {
         } else {
             p = outputPoint()
         }
-        p.x = center.x + dist * cos((angle * Float64.PI / 180.0))
-        p.y = center.y + dist * sin((angle * Float64.PI / 180.0))
+        p.x = center.x + dist * cos((angle * Float64.getPI() / 180.0))
+        p.y = center.y + dist * sin((angle * Float64.getPI() / 180.0))
         return p
     }
 
@@ -271,7 +271,7 @@ public abstract class Utils {
             }
             c.save()
             c.translate(transX, transY)
-            c.rotate(angleDegrees * Float64.PI / 180.0)
+            c.rotate(angleDegrees * Float64.getPI() / 180.0)
 
             match (paint.getStyle()) {
                 case Style.STROKE =>
@@ -371,7 +371,7 @@ public abstract class Utils {
         context2D.lineWidth(paint.getStrokeWidth())
         context2D.textAlign(paint.getTextAlign())
         context2D.textBaseline(paint.getTextBaseline())
-        context2D.font(size: Length(paint.getTextSize()))
+        context2D.font(size: paint.getTextSize().vp)
 
         let dashEffect: ?DashPathEffect = paint.getDashPathEffect()
         if (let Some(dashE) <- dashEffect) {
@@ -389,16 +389,20 @@ public abstract class Utils {
         if (highLight1.isNone() && highLight2.isNone()) {
             return true
         }
-
-        return highLight1().getX() == highLight2().getX() && highLight1().getY() == highLight2().getY() &&
+        if(highLight1.isSome() && highLight2.isSome()) {
+            return highLight1().getX() == highLight2().getX() && highLight1().getY() == highLight2().getY() &&
             highLight1().getStackIndex() == highLight2().getStackIndex()
+        } else {
+            return false
+        }
+
     }
 
     public static func equalsIgnoreCase(label: String, anotherString: String) {
         if (label == anotherString) {
             return true
         }
-        return label.toLower() == anotherString.toLower()
+        return label.toAsciiLower() == anotherString.toAsciiLower()
     }
 
     /**

@@ -3,11 +3,7 @@
  */
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-
 
 @Entry
 @Component
@@ -69,7 +65,7 @@ class HorizontalBarNegativeChartPage {
         let values: ArrayList<BarEntry> = ArrayList<BarEntry>()
         for (i in 0..count) {
             let val = Random().nextFloat64() * Float64(range) - Float64(range) / 2.0
-            values.append(BarEntry(Float64(i * spaceForBar), val))
+            values.add(BarEntry(Float64(i * spaceForBar), val))
         }
 
         let dataSet: BarDataSet = BarDataSet(values, "DataSet")
@@ -78,7 +74,7 @@ class HorizontalBarNegativeChartPage {
         dataSet.setColorByColor(0x8CEAFF)
 
         let dataSetList: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
-        dataSetList.append(dataSet)
+        dataSetList.add(dataSet)
 
         let barData: BarData = BarData(dataSetList)
         barData.setValueTextSize(10.0)

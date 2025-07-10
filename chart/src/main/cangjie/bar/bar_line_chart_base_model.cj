@@ -76,6 +76,8 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      */
     protected var mLongPressCursorEnabled: Bool = false
     protected var mLongPressDuration: Int64 = 500
+    protected var mSwipeEnabled: Bool = false;
+    protected var isHorizontalFlip: Bool = false;
 
     public init() {
         super()
@@ -108,6 +110,13 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     private var totalTime: Int64 = 0
     private var drawCycles: Int64 = 0
 
+    public func setHorizontalFlip(isHorizontalFlip: Bool): Unit {
+        this.isHorizontalFlip = isHorizontalFlip;
+    }
+
+    public func getHorizontalFlip(): Bool {
+        return this.isHorizontalFlip;
+    }
     public func setLongPressCursorEnabled(enabled: Bool): Unit {
         this.mLongPressCursorEnabled = enabled
     }
@@ -122,6 +131,14 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
 
     public func getLongPressDuration(): Int64 {
         return this.mLongPressDuration
+    }
+
+    public func setSwipeEnabled(enabled: Bool): Unit {
+        this.mSwipeEnabled = enabled;
+    }
+
+    public func getSwipeEnabled(): Bool {
+        return this.mSwipeEnabled;
     }
 
     public func getEventControl() {
@@ -695,7 +712,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             }
         }
     }
-    public func computeScroll(): Unit {
+    public open func computeScroll(): Unit {
         if (let Some(listener: BarLineChartTouchListener<D, S, E>) <- this.mChartTouchListener) {
             listener.computeScroll()
         }
@@ -1068,7 +1085,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         return this.mDrawListener
     }
 
-    private var mGetPositionBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
+    private var mGetPositionBuffer: Array<Float64> = Array<Float64>(2, repeat: 0.0)
 
     /**
      * Returns a recyclable MPPointF instance.
@@ -1704,7 +1721,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         return None
     }
 
-    public var mOnSizeChangedBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
+    public var mOnSizeChangedBuffer: Array<Float64> = Array<Float64>(2, repeat: 0.0)
 
     public func onSizeChanged(w: Float64, h: Float64, oldw: Float64, oldh: Float64): Unit {
 

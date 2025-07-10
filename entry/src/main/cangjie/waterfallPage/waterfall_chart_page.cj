@@ -3,9 +3,6 @@
  */
 package ohos_app_cangjie_entry.waterfallPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 class MyOnChartValueSelectedListener <: OnChartValueSelectedListener {
@@ -107,13 +104,13 @@ class SimpleWaterfallChartPage {
         let h3 = WaterfallHighlight(40.0, 60.0, color: 0x339933);
         let h4 = WaterfallHighlight(60.0, 70.0, color: 0xFF0000);
 
-        values.append(WaterfallEntry(1.0, 10.0, 30.0, highlights: [h1]));
-        values.append(WaterfallEntry(2.0, 15.0, 50.0));
-        values.append(WaterfallEntry(3.0, 20.0, 90.0));
-        values.append(WaterfallEntry(4.0, 5.0, 95.0, highlights: [h2, h3, h4]));
-        values.append(WaterfallEntry(5.0, 5.0, 50.0));
-        values.append(WaterfallEntry(6.0, 45.0, 80.0, highlights: [h2, h3]));
-        values.append(WaterfallEntry(7.0, 60.0, 70.0));
+        values.add(WaterfallEntry(1.0, 10.0, 30.0, highlights: [h1]));
+        values.add(WaterfallEntry(2.0, 15.0, 50.0));
+        values.add(WaterfallEntry(3.0, 20.0, 90.0));
+        values.add(WaterfallEntry(4.0, 5.0, 95.0, highlights: [h2, h3, h4]));
+        values.add(WaterfallEntry(5.0, 5.0, 50.0));
+        values.add(WaterfallEntry(6.0, 45.0, 80.0, highlights: [h2, h3]));
+        values.add(WaterfallEntry(7.0, 60.0, 70.0));
 
         this.dataSet = WaterfallDataSet(values, "DataSet")
         this.dataSet.setDrawIcons(false);
@@ -121,7 +118,7 @@ class SimpleWaterfallChartPage {
         this.dataSet.setValueTextSize(10.0)
 
         let dataSetList: ArrayList<IWaterfallDataSet> = ArrayList<IWaterfallDataSet>();
-        dataSetList.append(this.dataSet);
+        dataSetList.add(this.dataSet);
 
         let data: WaterfallData = WaterfallData(dataSetList);
         data.setBarWidth(0.3);
@@ -131,13 +128,13 @@ class SimpleWaterfallChartPage {
     private func getNormalData2(): WaterfallData {
         let values: ArrayList<WaterfallEntry> = ArrayList<WaterfallEntry>();
 
-        values.append(WaterfallEntry(1.0, 10.0, 70.0));
-        values.append(WaterfallEntry(2.0, 15.0, 80.0));
-        values.append(WaterfallEntry(3.0, 20.0, 90.0));
-        values.append(WaterfallEntry(4.0, 5.0, 80.0));
-        values.append(WaterfallEntry(5.0, 5.0, 50.0));
-        values.append(WaterfallEntry(6.0, 45.0, 80.0));
-        values.append(WaterfallEntry(7.0, 60.0, 70.0));
+        values.add(WaterfallEntry(1.0, 10.0, 70.0));
+        values.add(WaterfallEntry(2.0, 15.0, 80.0));
+        values.add(WaterfallEntry(3.0, 20.0, 90.0));
+        values.add(WaterfallEntry(4.0, 5.0, 80.0));
+        values.add(WaterfallEntry(5.0, 5.0, 50.0));
+        values.add(WaterfallEntry(6.0, 45.0, 80.0));
+        values.add(WaterfallEntry(7.0, 60.0, 70.0));
 
         this.dataSet = WaterfallDataSet(values, "DataSet")
         this.dataSet.setDrawIcons(false);
@@ -146,13 +143,13 @@ class SimpleWaterfallChartPage {
 
         // 根据Y刻度范围设置颜色
         let highlightList: ArrayList<WaterfallHighlight> = ArrayList<WaterfallHighlight>();
-        highlightList.append(WaterfallHighlight(0.0, 40.0, color: 0x008000));
-        highlightList.append(WaterfallHighlight(40.0, 60.0, color: 0xFFA500));
-        highlightList.append(WaterfallHighlight(60.0, 100.0, color: 0xFFC0CB));
+        highlightList.add(WaterfallHighlight(0.0, 40.0, color: 0x008000));
+        highlightList.add(WaterfallHighlight(40.0, 60.0, color: 0xFFA500));
+        highlightList.add(WaterfallHighlight(60.0, 100.0, color: 0xFFC0CB));
         this.dataSet.setYAxisSegmentationColors(highlightList.toArray());
 
         let dataSetList: ArrayList<IWaterfallDataSet> = ArrayList<IWaterfallDataSet>();
-        dataSetList.append(this.dataSet);
+        dataSetList.add(this.dataSet);
 
         let data: WaterfallData = WaterfallData(dataSetList);
         data.setBarWidth(0.3);
@@ -162,13 +159,13 @@ class SimpleWaterfallChartPage {
     private func getNormalData3(): WaterfallData {
         let values: ArrayList<WaterfallEntry> = ArrayList<WaterfallEntry>();
 
-        values.append(WaterfallEntry(1.0, 10.0, 90.0));
-        values.append(WaterfallEntry(2.0, 15.0, 80.0));
-        values.append(WaterfallEntry(3.0, 20.0, 90.0));
-        values.append(WaterfallEntry(4.0, 5.0, 80.0));
-        values.append(WaterfallEntry(5.0, 5.0, 50.0));
-        values.append(WaterfallEntry(6.0, 45.0, 80.0));
-        values.append(WaterfallEntry(7.0, 60.0, 70.0));
+        values.add(WaterfallEntry(1.0, 10.0, 90.0));
+        values.add(WaterfallEntry(2.0, 15.0, 80.0));
+        values.add(WaterfallEntry(3.0, 20.0, 90.0));
+        values.add(WaterfallEntry(4.0, 5.0, 80.0));
+        values.add(WaterfallEntry(5.0, 5.0, 50.0));
+        values.add(WaterfallEntry(6.0, 45.0, 80.0));
+        values.add(WaterfallEntry(7.0, 60.0, 70.0));
 
         this.dataSet = WaterfallDataSet(values, "DataSet")
         this.dataSet.setDrawIcons(false);
@@ -176,16 +173,16 @@ class SimpleWaterfallChartPage {
         this.dataSet.setValueTextSize(10.0)
         // 根据Y刻度范围设置颜色
         let highlightList: ArrayList<WaterfallHighlight> = ArrayList<WaterfallHighlight>();
-        highlightList.append(WaterfallHighlight(0.0, 40.0, color: 0xcddc39));
-        highlightList.append(WaterfallHighlight(40.0, 60.0, color: 0x00bcd4));
-        highlightList.append(WaterfallHighlight(60.0, 100.0, color: 0xff9800));
+        highlightList.add(WaterfallHighlight(0.0, 40.0, color: 0xcddc39));
+        highlightList.add(WaterfallHighlight(40.0, 60.0, color: 0x00bcd4));
+        highlightList.add(WaterfallHighlight(60.0, 100.0, color: 0xff9800));
         this.dataSet.setYAxisSegmentationColors(highlightList.toArray());
         // 最高点最低点高亮时颜色设置
         this.dataSet.setEnableMaxOrMinHighlightColor(true);
         this.dataSet.setMaxyHighlightColor(0xA52A2A);
         this.dataSet.setMinyHighlightColor(0xFFFF00);
         let dataSetList: ArrayList<IWaterfallDataSet> = ArrayList<IWaterfallDataSet>();
-        dataSetList.append(this.dataSet);
+        dataSetList.add(this.dataSet);
 
         let data: WaterfallData = WaterfallData(dataSetList);
         data.setBarWidth(0.3);

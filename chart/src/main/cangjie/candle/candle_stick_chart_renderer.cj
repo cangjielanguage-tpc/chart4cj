@@ -5,11 +5,11 @@ package chart.candle
 
 public class CandleStickChartRenderer <: LineScatterCandleRadarRenderer {
     public var mChart: CandleDataProvider
-    private var mShadowBuffers: Array<Float64> = Array<Float64>(8, item: 0.0)
-    private var mBodyBuffers: Array<Float64> = Array<Float64>(4, item: 0.0)
-    private var mRangeBuffers: Array<Float64> = Array<Float64>(4, item: 0.0)
-    private var mOpenBuffers: Array<Float64> = Array<Float64>(4, item: 0.0)
-    private var mCloseBuffers: Array<Float64> = Array<Float64>(4, item: 0.0)
+    private var mShadowBuffers: Array<Float64> = Array<Float64>(8, repeat: 0.0)
+    private var mBodyBuffers: Array<Float64> = Array<Float64>(4, repeat: 0.0)
+    private var mRangeBuffers: Array<Float64> = Array<Float64>(4, repeat: 0.0)
+    private var mOpenBuffers: Array<Float64> = Array<Float64>(4, repeat: 0.0)
+    private var mCloseBuffers: Array<Float64> = Array<Float64>(4, repeat: 0.0)
 
     public init(chart: CandleDataProvider, animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
         super(animator, viewPortHandler)
@@ -311,28 +311,29 @@ public class CandleStickChartRenderer <: LineScatterCandleRadarRenderer {
                             }
 
                             let entry: ?CandleEntry = dataSet.getEntryForIndex(j / 2 + xbounds.mins)
-
-                            if (dataSet.isDrawValuesEnabled()) {
-                                this.drawValue(
-                                    c,
-                                    dataSet.getValueFormatter()(),
-                                    entry().getHigh(),
-                                    entry(),
-                                    i,
-                                    x,
-                                    y - yOffset,
-                                    Color(dataSet.getValueTextColor(j / 2))
-                                )
-                            }
-                            if (entry().getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
-                                let icon: ?ChartPixelMap = entry().getIcon()
-                                if (let Some(icon) <- icon) {
-                                    Utils.drawImage(
+                            if(let Some(candleEntry) <- entry) {
+                                if (dataSet.isDrawValuesEnabled()) {
+                                    this.drawValue(
                                         c,
-                                        icon,
-                                        (x + iconsOffset.x),
-                                        (y + iconsOffset.y)
+                                        dataSet.getValueFormatter()(),
+                                        candleEntry.getHigh(),
+                                        candleEntry,
+                                        i,
+                                        x,
+                                        y - yOffset,
+                                        Color(dataSet.getValueTextColor(j / 2))
                                     )
+                                }
+                                if (candleEntry.getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
+                                    let icon: ?ChartPixelMap = candleEntry.getIcon()
+                                    if (let Some(icon) <- icon) {
+                                        Utils.drawImage(
+                                            c,
+                                            icon,
+                                            (x + iconsOffset.x),
+                                            (y + iconsOffset.y)
+                                        )
+                                    }
                                 }
                             }
                         }

@@ -37,39 +37,39 @@ public class CombinedChartRenderer <: DataRenderer  {
             match (orders[index]) {
                 case DrawOrder.BAR => if (let Some(chart: BarDataProvider) <- (chart)) {
                     if (chart.getBarData().isSome()) {
-                        this.mRenderers.append(BarChartRenderer(chart, this.mAnimator(), this.mViewPortHandler()))
+                        this.mRenderers.add(BarChartRenderer(chart, this.mAnimator(), this.mViewPortHandler()))
                     }
                 }
 
                 case DrawOrder.BUBBLE => if (let Some(chart: BubbleDataProvider) <- chart) {
                     if (chart.getBubbleData().isSome()) {
-                        this.mRenderers.append(BubbleChartRenderer(chart, this.mAnimator(), this.mViewPortHandler()))
+                        this.mRenderers.add(BubbleChartRenderer(chart, this.mAnimator(), this.mViewPortHandler()))
                     }
                 }
 
                  case DrawOrder.LINE =>
                     if (let Some(lineChart: LineDataProvider) <- chart) {
                         if (lineChart.getLineData().isSome()) {
-                            this.mRenderers.append(LineChartRenderer(lineChart, this.mAnimator(), this.mViewPortHandler()))
+                            this.mRenderers.add(LineChartRenderer(lineChart, this.mAnimator(), this.mViewPortHandler()))
                         }
                     }
 
                 case DrawOrder.CANDLE => if (let Some(chart: CandleDataProvider) <- chart) {
                     if (chart.getCandleData().isSome()) {
-                        this.mRenderers.append(CandleStickChartRenderer(chart, this.mAnimator(), this.mViewPortHandler()
+                        this.mRenderers.add(CandleStickChartRenderer(chart, this.mAnimator(), this.mViewPortHandler()
                         ))
                     }
                 }
 
                 case DrawOrder.SCATTER => if (let Some(chart: ScatterDataProvider) <- chart) {
                     if (chart.getScatterData().isSome()) {
-                        this.mRenderers.append(ScatterChartRenderer(chart, this.mAnimator(), this.mViewPortHandler()))
+                        this.mRenderers.add(ScatterChartRenderer(chart, this.mAnimator(), this.mViewPortHandler()))
                     }
                 }
 
                 case DrawOrder.WATERFALL => if (let Some(chart: WaterfallDataProvider) <- chart) {
                     if (chart.getWaterfallData().isSome()) {
-                        this.mRenderers.append(WaterfallChartRenderer(chart, this.mAnimator(), this.mViewPortHandler()))
+                        this.mRenderers.add(WaterfallChartRenderer(chart, this.mAnimator(), this.mViewPortHandler()))
                     }
                 }
             }
@@ -146,12 +146,12 @@ public class CombinedChartRenderer <: DataRenderer  {
             this.mHighlightBuffer.clear()
             for (index in 0..indices.size) {
                 if (indices[index].getDataIndex() == dataIndex || indices[index].getDataIndex() == -1) {
-                    this.mHighlightBuffer.append(indices[index])
+                    this.mHighlightBuffer.add(indices[index])
                 }
             }
 
             let bufferSize = this.mHighlightBuffer.size
-            var highlightArr = Array<Highlight>(bufferSize, item: Highlight(0.0))
+            var highlightArr = Array<Highlight>(bufferSize, repeat: Highlight(0.0))
             for (i in 0..bufferSize) {
                 highlightArr[i] = this.mHighlightBuffer[i]
             }

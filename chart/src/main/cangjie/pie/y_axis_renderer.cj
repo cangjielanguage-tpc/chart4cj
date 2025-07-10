@@ -30,7 +30,7 @@ public open class YAxisRenderer <: AxisRenderer {
 
         let positions: Array<Float64> = this.getTransformedPositions()
 
-        this.mAxisLabelPaint.setFontFamily(this.mYAxis.getTypeface())
+        this.mAxisLabelPaint.setFontFamily(this.mYAxis.getTypeface().toString())
         this.mAxisLabelPaint.setTextSize(this.mYAxis.getTextSize())
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor())
 
@@ -214,7 +214,7 @@ public open class YAxisRenderer <: AxisRenderer {
         c.closePath()
     }
 
-    protected var mGetTransformedPositionsBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
+    protected var mGetTransformedPositionsBuffer: Array<Float64> = Array<Float64>(2, repeat: 0.0)
 
     /**
      * Transforms the values contained in the axis entries to screen pixels and returns them in form of a float array
@@ -224,7 +224,7 @@ public open class YAxisRenderer <: AxisRenderer {
      */
     protected open func getTransformedPositions(): Array<Float64> {
         if (this.mGetTransformedPositionsBuffer.size != Int64(this.mYAxis.mEntryCount) * 2) {
-            this.mGetTransformedPositionsBuffer = Array<Float64>(Int64(this.mYAxis.mEntryCount) * 2, item: 0.0)
+            this.mGetTransformedPositionsBuffer = Array<Float64>(Int64(this.mYAxis.mEntryCount) * 2, repeat: 0.0)
         }
         let positions: Array<Float64> = this.mGetTransformedPositionsBuffer
 
@@ -276,7 +276,7 @@ public open class YAxisRenderer <: AxisRenderer {
         }
     }
 
-    var mRenderLimitLinesBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
+    var mRenderLimitLinesBuffer: Array<Float64> = Array<Float64>(2, repeat: 0.0)
     protected var mLimitLineClippingRect: ChartRect = ChartRect()
 
     public func renderLine(c: CanvasRenderingContext2D, l: LimitLine) {
@@ -359,7 +359,7 @@ public open class YAxisRenderer <: AxisRenderer {
                 this.mLimitLinePaint.setStyle(l.getTextStyle())
                 this.mLimitLinePaint.setDashPathEffect(Option<DashPathEffect>.None)
                 this.mLimitLinePaint.setColor(l.getTextColor())
-                this.mLimitLinePaint.setFontFamily(l.getTypeface())
+                this.mLimitLinePaint.setFontFamily(l.getTypeface().toString())
                 this.mLimitLinePaint.setStrokeWidth(0.5)
                 this.mLimitLinePaint.setTextSize(l.getTextSize())
                 let labelLineHeight = Utils.calcTextHeight(c, this.mLimitLinePaint, label)

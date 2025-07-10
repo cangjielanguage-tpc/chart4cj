@@ -10,13 +10,13 @@ public class BarEntry <: EntryOhos {
     private var mPositiveSum: Float64 = 0.0
 
     public init(x: Float64, y: Float64, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: Any = Option<Any>.None) {
-        super(x, y, icon: icon, data: data);
+        super(x, y, icon: icon, data: data)
     }
     public init(x: Float64, y: Array<Float64>, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: Any = Option<Any>.None) {
-        super(x, BarEntry.calcSum(y), icon: icon, data: data);
+        super(x, BarEntry.calcSum(y), icon: icon, data: data)
         this.mYVals = y
-        this.calcPosNegSum();
-        this.calcRanges();
+        this.calcPosNegSum()
+        this.calcRanges()
     }
 
     public func copy(): BarEntry {
@@ -147,7 +147,7 @@ public class BarEntry <: EntryOhos {
             if (v.size == 0) {
                 return
             } else {
-                this.mRanges = Array(v.size, item: RangeChart(0.0, 0.0))
+                this.mRanges = Array(v.size, repeat: RangeChart(0.0, 0.0))
 
                 var negRemain: Float64 = -this.mNegativeSum //getNegativeSum
                 var posRemain: Float64 = 0.0

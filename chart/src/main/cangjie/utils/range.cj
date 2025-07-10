@@ -4,8 +4,8 @@
 package chart.utils
 
 public class RangeChart {
-    public var myfrom: Float64 = 0.0;
-    public var to: Float64 = 0.0;
+    public var myfrom: Float64 = 0.0
+    public var to: Float64 = 0.0
 
     public init(myfrom: Float64, to: Float64) {
         this.myfrom = myfrom
@@ -20,17 +20,17 @@ public class RangeChart {
      */
     public func contains(value: Float64): Bool {
         if (value > this.myfrom && value <= this.to) {
-            return true;
+            return true
         } else {
-            return false;
+            return false
         }
     }
 
     public func isLarger(value: Float64): Bool {
-        return value > this.to;
+        return value > this.to
     }
 
     public func isSmaller(value: Float64): Bool {
-        return value < this.myfrom;
+        return value < this.myfrom
     }
 }

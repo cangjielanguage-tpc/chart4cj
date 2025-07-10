@@ -191,7 +191,7 @@ public class Legend <: ComponentBase {
                 entry.form = LegendForm.EMPTY
             }
 
-            entries.append(entry)
+            entries.add(entry)
         }
 
         this.mExtraEntries = entries.toArray()
@@ -557,14 +557,14 @@ public class Legend <: ComponentBase {
      * @param labelpaint
      */
     public func calculateDimensions(labelpaint: ChartPaint, viewPortHandler: ViewPortHandler): Unit {
-        let defaultFormSize: Float64 = Utils.handleDataValues(this.mFormSize);
-        let stackSpace: Float64 = Utils.handleDataValues(this.mStackSpace);
-        let formToTextSpace: Float64 = Utils.handleDataValues(this.mFormToTextSpace);
-        let xEntrySpace: Float64 = Utils.handleDataValues(this.mXEntrySpace);
-        let yEntrySpace: Float64 = Utils.handleDataValues(this.mYEntrySpace);
-        let wordWrapEnabled: Bool = this.mWordWrapEnabled;
-        let entries: Array<LegendEntry> = this.mEntries;
-        let entryCount: Int64 = entries.size;
+        let defaultFormSize: Float64 = Utils.handleDataValues(this.mFormSize)
+        let stackSpace: Float64 = Utils.handleDataValues(this.mStackSpace)
+        let formToTextSpace: Float64 = Utils.handleDataValues(this.mFormToTextSpace)
+        let xEntrySpace: Float64 = Utils.handleDataValues(this.mXEntrySpace)
+        let yEntrySpace: Float64 = Utils.handleDataValues(this.mYEntrySpace)
+        let wordWrapEnabled: Bool = this.mWordWrapEnabled
+        let entries: Array<LegendEntry> = this.mEntries
+        let entryCount: Int64 = entries.size
 
         this.mTextWidthMax = this.getMaximumEntryWidth(labelpaint)
         this.mTextHeightMax = this.getMaximumEntryHeight(labelpaint)
@@ -584,22 +584,22 @@ public class Legend <: ComponentBase {
 
     private func orientationIsVERTICAL(labelpaint: ChartPaint, entryCount: Int64, entries: Array<LegendEntry>,
         defaultFormSize: Float64, stackSpace: Float64, formToTextSpace: Float64, yEntrySpace: Float64) {
-        var maxWidth: Float64 = 0.0;
-        var maxHeight: Float64 = 0.0;
-        var width: Float64 = 0.0;
+        var maxWidth: Float64 = 0.0
+        var maxHeight: Float64 = 0.0
+        var width: Float64 = 0.0
         let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, Option<CanvasRenderingContext2D>.None)
-        var wasStacked: Bool = false;
+        var wasStacked: Bool = false
 
         for (i in 0..entryCount) {
-            let e: LegendEntry = entries[i];
-            let drawingForm: Bool = e.form != LegendForm.NONE;
+            let e: LegendEntry = entries[i]
+            let drawingForm: Bool = e.form != LegendForm.NONE
             let formSize: Float64 = if (e.formSize.isNaN()) {
                 defaultFormSize
             } else {
                 Utils.handleDataValues(e.formSize)
             }
 
-            let label: String = e.label;
+            let label: String = e.label
 
             if (!wasStacked) {
                 width = 0.1
@@ -647,48 +647,48 @@ public class Legend <: ComponentBase {
     private func orientationIsHORIZONTAL(labelpaint: ChartPaint, entryCount: Int64, entries: Array<LegendEntry>,
         defaultFormSize: Float64, stackSpace: Float64, formToTextSpace: Float64, yEntrySpace: Float64,
         viewPortHandler: ViewPortHandler, xEntrySpace: Float64, wordWrapEnabled: Bool) {
-        let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, Option<CanvasRenderingContext2D>.None);
+        let labelLineHeight: Float64 = Utils.getLineHeight(labelpaint, Option<CanvasRenderingContext2D>.None)
         let labelLineSpacing: Float64 = Utils.getLineSpacing(labelpaint, Option<CanvasRenderingContext2D>.None) +
-            yEntrySpace;
-        let contentWidth: Float64 = viewPortHandler.contentWidth() * this.mMaxSizePercent;
+            yEntrySpace
+        let contentWidth: Float64 = viewPortHandler.contentWidth() * this.mMaxSizePercent
 
         // Start calculating layout
-        var maxLineWidth: Float64 = 0.0;
-        var currentLineWidth: Float64 = 0.0;
-        var requiredWidth: Float64 = 0.0;
-        var stackedStartIndex: Int64 = -1;
+        var maxLineWidth: Float64 = 0.0
+        var currentLineWidth: Float64 = 0.0
+        var requiredWidth: Float64 = 0.0
+        var stackedStartIndex: Int64 = -1
 
-        this.mCalculatedLabelBreakPoints.clear();
-        this.mCalculatedLabelSizes.clear();
-        this.mCalculatedLineSizes.clear();
+        this.mCalculatedLabelBreakPoints.clear()
+        this.mCalculatedLabelSizes.clear()
+        this.mCalculatedLineSizes.clear()
 
         for (i in 0..entryCount) {
-            let e: LegendEntry = entries[i];
-            let drawingForm: Bool = e.form != LegendForm.NONE;
+            let e: LegendEntry = entries[i]
+            let drawingForm: Bool = e.form != LegendForm.NONE
             let formSize: Float64 = fontsizeFunc(e, defaultFormSize)
 
-            let label: String = e.label;
+            let label: String = e.label
 
-            this.mCalculatedLabelBreakPoints.append(false);
+            this.mCalculatedLabelBreakPoints.add(false)
 
             requiredWidth = stackedStartIndexFunc(requiredWidth, stackSpace, stackedStartIndex)
 
             // grouped forms have null labels
             if (label != "") {
-                this.mCalculatedLabelSizes.append(Utils.calcTextSize(labelpaint, label));
+                this.mCalculatedLabelSizes.add(Utils.calcTextSize(labelpaint, label))
                 requiredWidth += if (drawingForm) {
                     formToTextSpace + formSize
                 } else {
                     0.0
-                };
+                }
                 requiredWidth += this.mCalculatedLabelSizes.get(i)().width
             } else {
-                this.mCalculatedLabelSizes.append(FSize.getInstance(0.0, 0.0));
+                this.mCalculatedLabelSizes.add(FSize.getInstance(0.0, 0.0))
                 requiredWidth += if (drawingForm) {
                     formSize
                 } else {
                     0.0
-                };
+                }
 
                 if (stackedStartIndex == -1) {
                     // mark this index as we might want to break here later
@@ -701,7 +701,7 @@ public class Legend <: ComponentBase {
                     0.0
                 } else {
                     xEntrySpace
-                };
+                }
 
                 if (!wordWrapEnabled // No word wrapping, it must fit.
                     // The line is empty, it must fit
@@ -713,25 +713,24 @@ public class Legend <: ComponentBase {
                 } else { // It doesn't fit, we need to wrap a line
 
                     // Add current line size to array
-                    this.mCalculatedLineSizes.append(FSize.getInstance(currentLineWidth, labelLineHeight));
+                    this.mCalculatedLineSizes.add(FSize.getInstance(currentLineWidth, labelLineHeight))
                     maxLineWidth = max(maxLineWidth, currentLineWidth)
 
                     // Start a new line
-                    this.mCalculatedLabelBreakPoints.set(
-                        if (stackedStartIndex > -1) {
+                    this.mCalculatedLabelBreakPoints.add(
+                        true, at: if (stackedStartIndex > -1) {
                             stackedStartIndex
                         } else {
                             i
-                        },
-                        true
-                    );
+                        }
+                    )
 
                     currentLineWidth = requiredWidth
                 }
 
                 if (i == entryCount - 1) {
                     // Add last line size to array
-                    this.mCalculatedLineSizes.append(FSize.getInstance(currentLineWidth, labelLineHeight));
+                    this.mCalculatedLineSizes.add(FSize.getInstance(currentLineWidth, labelLineHeight))
                     maxLineWidth = max(maxLineWidth, currentLineWidth)
                 }
             }
@@ -740,7 +739,7 @@ public class Legend <: ComponentBase {
                 -1
             } else {
                 stackedStartIndex
-            };
+            }
         }
 
         this.mNeededWidth = maxLineWidth

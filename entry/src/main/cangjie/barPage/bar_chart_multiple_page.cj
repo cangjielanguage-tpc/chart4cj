@@ -4,9 +4,6 @@
 
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -41,7 +38,7 @@ class BarChartMultiplePage {
         this.model.setDrawBarShadow(false)
 
         this.model.setDrawValueAboveBar(true)
-        this.model.setHighlightFullBarEnabled(false)
+        this.model.setHighlightFullBarEnabled(true)
 
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(leftaxis) <- this.leftAxis) {
@@ -89,10 +86,10 @@ class BarChartMultiplePage {
         let randomMultiplier: Int64 = range
 
         for (i in startYear..endYear) {
-            values1.append(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
-            values2.append(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
-            values3.append(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
-            values4.append(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
+            values1.add(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
+            values2.add(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
+            values3.add(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
+            values4.add(BarEntry(Float64(i), (Random().nextFloat64() * Float64(randomMultiplier))))
         }
 
         var set1: ?BarDataSet
@@ -122,10 +119,10 @@ class BarChartMultiplePage {
             set4().setColorsByArr([UInt32(ChartColor.rgb(255, 102, 0))])
 
             let dataSets: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
-            dataSets.append(set1())
-            dataSets.append(set2())
-            dataSets.append(set3())
-            dataSets.append(set4())
+            dataSets.add(set1())
+            dataSets.add(set2())
+            dataSets.add(set3())
+            dataSets.add(set4())
 
             let data: BarData = BarData(dataSets)
             this.model.setData(data)

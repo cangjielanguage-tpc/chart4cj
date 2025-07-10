@@ -22,7 +22,7 @@ public class CircleShapeRenderer <: IShapeRenderer {
             Utils.resetContext2DStyle(c, renderPaint)
             c.beginPath()
             let path: Path2D = Path2D()
-            path.arc(posX, posY, shapeHoleSizeHalf + shapeStrokeSizeHalf, 0.0, 2.0 * Float64.PI)
+            path.arc(posX, posY, shapeHoleSizeHalf + shapeStrokeSizeHalf, 0.0, 2.0 * Float64.getPI())
             c.stroke(path)
             c.closePath()
 
@@ -34,7 +34,7 @@ public class CircleShapeRenderer <: IShapeRenderer {
                 Utils.resetContext2DStyle(c, renderPaint)
                 c.beginPath()
                 let path: Path2D = Path2D()
-                path.arc(posX, posY, shapeHoleSizeHalf, 0.0, 2.0 * Float64.PI)
+                path.arc(posX, posY, shapeHoleSizeHalf, 0.0, 2.0 * Float64.getPI())
                 //TODO c.fill(path)
                 c.stroke(path)
                 c.closePath()
@@ -44,7 +44,7 @@ public class CircleShapeRenderer <: IShapeRenderer {
 
             Utils.resetContext2DStyle(c, renderPaint)
             c.beginPath()
-            c.arc(posX, posY, shapeHalf, 0.0, 2.0 * Float64.PI)
+            c.arc(posX, posY, shapeHalf, 0.0, 2.0 * Float64.getPI())
             c.stroke()
             c.closePath()
         }

@@ -63,7 +63,7 @@ public class CandleDataSet <: LineScatterCandleRadarDataSet<CandleEntry> & ICand
         let entries = ArrayList<CandleEntry>()
         if (let Some(entry) <- this.mEntries) {
             for (i in 0..entry.size) {
-                entries.append(entry[i].copy())
+                entries.add(entry[i].copy())
             }
         }
         let copied = CandleDataSet(entries, this.getLabel())

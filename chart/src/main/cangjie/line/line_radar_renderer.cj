@@ -24,7 +24,7 @@ public open class LineRadarRenderer <: LineScatterCandleRadarRenderer {
             UInt32(ChartColor.argb(fillAlpha / 255.0, Int64(color >> 16) & 0xff, Int64(color >> 8) & 0xff,
                 Int64(color) & 0xff))))
         // 使用修改后的颜色值进行绘制,cangjie UI 暂不支持以下接口
-        //c.fill(filledPath)
+        c.fill(filledPath)
     }
 
     /**
@@ -38,7 +38,7 @@ public open class LineRadarRenderer <: LineScatterCandleRadarRenderer {
         if (this.clipPathSupported()) {
             c.save()
             //cangjie UI 暂不支持以下两个接口
-            //c.clip(filledPath)
+            c.clip(filledPath)
 
             if (let Some(handle) <- this.mViewPortHandler) {
                 c.rect(
@@ -77,7 +77,7 @@ public open class LineRadarRenderer <: LineScatterCandleRadarRenderer {
 
         c.fillStyle(gradient)
         //cangjie UI 暂不支持以下接口
-        //c.fill(filledPath)
+        c.fill(filledPath)
     }
 
     public open func drawData(c: CanvasRenderingContext2D): Unit {}

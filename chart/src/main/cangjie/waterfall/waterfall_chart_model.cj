@@ -30,7 +30,7 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
         if (let Some(data: WaterfallData) <- this.mData) {
             return data
         } else {
-            return None;
+            return None
         }
     }
 
@@ -77,7 +77,7 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
     }
 
     public func setDrawBarShadow(enabled: Bool): Unit  {
-        this.mDrawBarShadow = enabled;
+        this.mDrawBarShadow = enabled
     }
 
     public func isDrawBarShadowEnabled(): Bool {

@@ -4,28 +4,19 @@
 
 package ohos_app_cangjie_entry.eventMoreLineCharts
 
-internal import ohos.base.*
-internal import ohos.component.*
-internal import ohos.state_manage.*
+internal import kit.UIKit.*
 
-
-internal import ohos.ability.Ability
-internal import ohos.ability.Want
-internal import ohos.ability.LaunchParam
-internal import ohos.window.WindowStage
-
-internal import ohos.ability.AbilityStage
-internal import ohos.ability.LaunchReason
 internal import ohos.hilog.*
 
-internal import std.sync.*
-internal import std.collection.*
-internal import std.time.Duration
+
+internal import std.collection.ArrayList
+internal import std.core.Duration
 internal import std.math.*
-internal import std.random.*
-internal import std.convert.*
-internal import std.format.*
+internal import std.random.Random
+internal import std.convert.Formattable
+internal import std.convert.Parsable
 internal import std.time.*
+
 internal import chart.pie.*
 internal import chart.utils.*
 internal import chart.components.*

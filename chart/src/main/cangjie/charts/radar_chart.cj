@@ -3,9 +3,6 @@
  */
 package chart.charts
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Component
@@ -22,7 +19,7 @@ public class RadarChart {
                 {
                 oldArea: Area, newArea: Area => if (((newArea.width != oldArea.width) || (newArea.height != oldArea.
                     height))) {
-                    this.model.onChartSizeChanged(px2vp(newArea.width.px)().value, px2vp(newArea.height.px)().value, px2vp(oldArea.width.px)().value, px2vp(oldArea.height.px)().value)
+                    this.model.onChartSizeChanged(newArea.width, newArea.height, oldArea.width, oldArea.height)
                     this.model.onDraw(this.context2D)
                     let jobs = this.model.mJobs
                     let length = jobs.size

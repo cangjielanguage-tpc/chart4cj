@@ -7,7 +7,7 @@ public class BubblesEntry <: EntryOhos {
     private var mSize: Float64 = 0.0
 
     public init(x: Float64, y: Float64, size!: Float64 = 0.0, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: ?Any = Option<Any>.None) {
-        super(x, y, icon: icon, data: data);
+        super(x, y, icon: icon, data: data)
         this.mSize = size
     }
 

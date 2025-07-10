@@ -4,6 +4,7 @@
 package chart.bar
 
 public class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IBarDataSet {
+    let FLAG_DATA: String = "BarDataSet"
     /**
      * the maximum number of bars that are stacked upon each other, this value
      * is calculated from the Entries that are added to the DataSet
@@ -39,7 +40,7 @@ public class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IBarDat
 
     private func calcStackSize(yVals: ArrayList<BarEntry>): Unit {
         for (i in 0..yVals.size) {
-            let vals: Array<Float64> = yVals[i].getYVals();
+            let vals: Array<Float64> = yVals[i].getYVals()
 
             if (vals.size > this.mStackSize) {
                 this.mStackSize = vals.size
@@ -52,7 +53,7 @@ public class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IBarDat
 
         if (let Some(m) <- this.mEntries) {
             for (i in 0..m.size) {
-                entries.append(m[i].copy())
+                entries.add(m[i].copy())
             }
         }
         let copied = BarDataSet(entries, this.getLabel())
@@ -93,7 +94,7 @@ public class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IBarDat
     public func setGradientColor(startColor: UInt32, endColor: UInt32): Unit {
         if (let Some(f) <- this.mFills) {
             f.clear()
-            f.insert(f.size - 1, Fill(startColor, endColor))
+            f.add(Fill(startColor, endColor), at: f.size - 1)
         }
     }
 
@@ -245,5 +246,9 @@ public class BarDataSet <: BarLineScatterCandleBubbleDataSet<BarEntry> & IBarDat
 
     public operator func !=(s: Any): Bool {
         return !(this == s)
+    }
+
+    public func toString(): String {
+        return FLAG_DATA
     }
 }

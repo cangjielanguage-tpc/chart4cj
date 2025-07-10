@@ -3,18 +3,8 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import std.collection.{ArrayList}
-import std.math.*
-import std.random.*
-import chart.pie.*
-import chart.utils.*
-import chart.charts.*
-import chart.components.*
-import chart.scatter.*
+
 
 @Entry
 @Component
@@ -95,9 +85,9 @@ class ScatterChartPageReadme {
 
         // 创建散点图数据集合
         let dataSets: ArrayList<IScatterDataSet> = ArrayList<IScatterDataSet>()
-        dataSets.append(set1) // add the data sets
-        dataSets.append(set2)
-        dataSets.append(set3)
+        dataSets.add(set1) // add the data sets
+        dataSets.add(set2)
+        dataSets.add(set3)
 
         // 创建散点图数据
         let dataResult: ScatterData = ScatterData(dataSets)
@@ -116,7 +106,7 @@ class ScatterChartPageReadme {
         for (i in 0..Int64(xRange)) {
             let x = Float64(i)
             let y = Random().nextFloat64() * yRange
-            values.append(EntryOhos(x, y))
+            values.add(EntryOhos(x, y))
         }
         return values
     }

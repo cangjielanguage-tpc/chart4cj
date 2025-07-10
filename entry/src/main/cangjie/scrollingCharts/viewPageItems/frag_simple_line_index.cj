@@ -3,19 +3,9 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.viewPageItems
 
-import ohos.hilog.*
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+
 import ohos.state_macro_manage.*
-import chart.pie.*
-import chart.utils.*
-import chart.components.*
-import chart.charts.*
-import chart.line.*
-import std.collection.{ArrayList}
-import ohos_app_cangjie_entry.scrollingCharts.data.Cosine
-import ohos_app_cangjie_entry.scrollingCharts.data.Sine
+
 
 @Entry
 @Component
@@ -67,13 +57,13 @@ public class fragSimpleLineIndex {
         let valuesSine = ArrayList<EntryOhos>();
         let sine: Array<Float64> = Sine().data;
         for (i in 0..sine.size) {
-            valuesSine.append(EntryOhos(Float64(i), sine[i]));
+            valuesSine.add(EntryOhos(Float64(i), sine[i]));
         }
 
         let valuesCosine = ArrayList<EntryOhos>();
         let cosine: Array<Float64> = Cosine().data;
         for (i in 0..cosine.size) {
-            valuesCosine.append(EntryOhos(Float64(i), cosine[i]));
+            valuesCosine.add(EntryOhos(Float64(i), cosine[i]));
         }
 
         let dataSet = ArrayList<ILineDataSet>();
@@ -94,8 +84,8 @@ public class fragSimpleLineIndex {
         set2.setColorByColor(0xfff78c);
         set2.setDrawCircles(false);
 
-        dataSet.append(set1);
-        dataSet.append(set2);
+        dataSet.add(set1);
+        dataSet.add(set2);
 
         return LineData(dataSet)
     }

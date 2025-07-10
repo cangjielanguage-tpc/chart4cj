@@ -42,24 +42,24 @@ class MultiplePage {
 
         for (i in 0..count) {
             let val: Float64 = Random().nextFloat64() * range + 3.0
-            values1.append(EntryOhos(Float64(i), val))
+            values1.add(EntryOhos(Float64(i), val))
         }
 
         for (i in 0..count) {
             let val: Float64 = Random().nextFloat64() * range + 3.0
-            values2.append(EntryOhos(Float64(i), val))
+            values2.add(EntryOhos(Float64(i), val))
         }
 
         for (i in 0..count) {
             let val: Float64 = Random().nextFloat64() * range + 3.0
-            values3.append(EntryOhos(Float64(i), val))
+            values3.add(EntryOhos(Float64(i), val))
         }
 
         let dataSet = ArrayList<ILineDataSet>()
 
         let gradientFillColor = ArrayList<ChartColorStop>()
-        gradientFillColor.append((0xffffff, 0.3))
-        gradientFillColor.append((0x00ffff, 1.0))
+        gradientFillColor.add((0xffffff, 0.3))
+        gradientFillColor.add((0x00ffff, 1.0))
 
         let set1 = LineDataSet(values1, "DataSet 1")
         set1.setDrawFilled(false)
@@ -73,7 +73,7 @@ class MultiplePage {
         set1.setColorByColor(0x008000)
         set1.setLineWidth(2.5)
         set1.enableDashedLine(10, 10)
-        dataSet.append(set1)
+        dataSet.add(set1)
 
         let set2 = LineDataSet(values2, "DataSet 2")
         set2.setDrawFilled(false)
@@ -86,7 +86,7 @@ class MultiplePage {
         set2.setMode(Mode.LINEAR)
         set2.setColorByColor(0xFFA500)
         set2.setLineWidth(2.5)
-        dataSet.append(set2)
+        dataSet.add(set2)
 
         let set3 = LineDataSet(values3, "DataSet 3")
         set3.setDrawFilled(false)
@@ -99,7 +99,7 @@ class MultiplePage {
         set3.setMode(Mode.LINEAR)
         set3.setColorByColor(0xFFFF00)
         set3.setLineWidth(2.5)
-        dataSet.append(set3)
+        dataSet.add(set3)
 
         let lineData: LineData = LineData(dataSet)
 

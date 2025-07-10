@@ -3,24 +3,8 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import std.collection.*
-import std.math.*
-import std.random.*
-import chart.pie.*
-import chart.utils.{Mode, AxisDependency, ColorTemplate, ChartColor}
-import chart.charts.*
-import chart.combine.*
-import chart.line.*
-import chart.waterfall.*
-import chart.bar.*
-import chart.scatter.*
-import chart.candle.*
-import chart.bubble.*
-import chart.components.*
+
 
 @Entry
 @Component
@@ -87,7 +71,7 @@ class CombinedChartPageReadme {
         var entries: ArrayList<EntryOhos> = ArrayList()
 
         for (index in 0..this.count) {
-            entries.append(EntryOhos(Float64(index) + 0.5, this.getRandom(15.0, 5.0)))
+            entries.add(EntryOhos(Float64(index) + 0.5, this.getRandom(15.0, 5.0)))
         }
 
         let set: LineDataSet = LineDataSet(entries, "Line DataSet") //创建线形图数据集合
@@ -108,7 +92,7 @@ class CombinedChartPageReadme {
         var values: ArrayList<WaterfallEntry> = ArrayList<WaterfallEntry>()
 
         for (i in 0..this.count - 1) {
-            values.append(WaterfallEntry(Float64(i) + 0.5, 35.0, 50.0))
+            values.add(WaterfallEntry(Float64(i) + 0.5, 35.0, 50.0))
         }
 
         let dataSet = WaterfallDataSet(values, "Waterfall")
@@ -118,7 +102,7 @@ class CombinedChartPageReadme {
         dataSet.setDrawValues(false) //不绘制值
 
         let dataSetList: ArrayList<IWaterfallDataSet> = ArrayList<IWaterfallDataSet>()
-        dataSetList.append(dataSet)
+        dataSetList.add(dataSet)
 
         let waterfallData: WaterfallData = WaterfallData(dataSetList)
         waterfallData.setBarWidth(0.6) //设置瀑布图宽度
@@ -131,10 +115,10 @@ class CombinedChartPageReadme {
 
         for (index in 0..this.count) {
             // 普通柱状图
-            entries1.append(BarEntry(0.0, this.getRandom(10.0, 6.0)))
+            entries1.add(BarEntry(0.0, this.getRandom(10.0, 6.0)))
 
             // 堆叠
-            entries2.append(BarEntry(0.0, [this.getRandom(10.0, 6.0), this.getRandom(10.0, 6.0)]))
+            entries2.add(BarEntry(0.0, [this.getRandom(10.0, 6.0), this.getRandom(10.0, 6.0)]))
         }
 
         let set1: BarDataSet = BarDataSet(entries1, "Bar 1")
@@ -157,8 +141,8 @@ class CombinedChartPageReadme {
         let barWidth = 0.45 // 柱状图宽度
 
         let set: ArrayList<IBarDataSet> = ArrayList()
-        set.append(set1)
-        set.append(set2)
+        set.add(set1)
+        set.add(set2)
         let d: BarData = BarData(set)
         d.setBarWidth(barWidth) //设置柱状图宽度
 
@@ -173,7 +157,7 @@ class CombinedChartPageReadme {
         var entries: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
 
         for (index in 0..this.count) {
-            entries.append(EntryOhos(Float64(index) + 0.25, this.getRandom(10.0, 55.0)))
+            entries.add(EntryOhos(Float64(index) + 0.25, this.getRandom(10.0, 55.0)))
         }
 
         let set: ScatterDataSet = ScatterDataSet(entries, "Scatter DataSet")
@@ -191,7 +175,7 @@ class CombinedChartPageReadme {
         var entries: ArrayList<CandleEntry> = ArrayList()
 
         for (index in 0..this.count : 2) {
-            entries.append(CandleEntry(Float64(index + 1), shadowH: 90.0, shadowL: 70.0, open: 85.0, close: 75.0))
+            entries.add(CandleEntry(Float64(index + 1), shadowH: 90.0, shadowL: 70.0, open: 85.0, close: 75.0))
         }
 
         let set: CandleDataSet = CandleDataSet(entries, "Candle DataSet")
@@ -212,7 +196,7 @@ class CombinedChartPageReadme {
         for (index in 0..this.count) {
             let y = this.getRandom(10.0, 105.0)
             let size = this.getRandom(20.0, 30.0)
-            entries.append(BubblesEntry(Float64(index) + 0.5, y, size: size))
+            entries.add(BubblesEntry(Float64(index) + 0.5, y, size: size))
         }
 
         let set: BubbleDataSet = BubbleDataSet(entries, "Bubble DataSet")

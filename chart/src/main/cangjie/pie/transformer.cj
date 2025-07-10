@@ -85,7 +85,7 @@ public open class Transformer {
          }
 
          var tmpArray = valuePoints.toArray()
-         this.getValueToPixelMatrix().mapPoints(tmpArray);
+         this.getValueToPixelMatrix().mapPoints(tmpArray)
          return tmpArray
      }
 
@@ -97,7 +97,7 @@ public open class Transformer {
         return mMBuffer1
     }
 
-    protected var valuePointsForGenerateTransformedValuesBubble: Array<Float64> = Array<Float64>(1, item: 0.0)
+    protected var valuePointsForGenerateTransformedValuesBubble: Array<Float64> = Array<Float64>(1, repeat: 0.0)
 
     /**
      * Transforms an List of Entry into a float array containing the x and
@@ -110,7 +110,7 @@ public open class Transformer {
         let count = (tos - froms + 1) * 2
 
         if (this.valuePointsForGenerateTransformedValuesBubble.size != count) {
-            this.valuePointsForGenerateTransformedValuesBubble = Array<Float64>(count, item: 0.0)
+            this.valuePointsForGenerateTransformedValuesBubble = Array<Float64>(count, repeat: 0.0)
         }
         let valuePoints: Array<Float64> = this.valuePointsForGenerateTransformedValuesBubble
 
@@ -163,7 +163,7 @@ public open class Transformer {
         }
 
         var tmpArray = valuePoints.toArray()
-        this.getValueToPixelMatrix().mapPoints(tmpArray);
+        this.getValueToPixelMatrix().mapPoints(tmpArray)
         return tmpArray
     }
 
@@ -199,7 +199,7 @@ public open class Transformer {
         }
 
         var tmpArray = valuePoints.toArray()
-        this.getValueToPixelMatrix().mapPoints(tmpArray);
+        this.getValueToPixelMatrix().mapPoints(tmpArray)
         return tmpArray
     }
 
@@ -308,7 +308,7 @@ public open class Transformer {
     /**
      * buffer for performance
      */
-    var ptsBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
+    var ptsBuffer: Array<Float64> = Array<Float64>(2, repeat: 0.0)
 
     /**
      * Returns a recyclable MPPointD instance.
