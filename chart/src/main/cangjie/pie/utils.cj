@@ -11,6 +11,8 @@ public abstract class Utils {
     public static let FDEG2RAD: Float64 = (Float64.getPI() / 180.0)
     public static let DOUBLE_EPSILON: Float64 = 4.9E-324
     public static let FLOAT_EPSILON: Float64 = 1.4E-45
+    public static let contextSettings: RenderingContextSettings = RenderingContextSettings(antialias: true)
+    public static let offCanvasContext2d: OffscreenCanvasRenderingContext2D = OffscreenCanvasRenderingContext2D(500, 500, Utils.contextSettings)
 
     /**
      * initialize method, called inside the Chart.init() method.
@@ -37,8 +39,7 @@ public abstract class Utils {
      * @return
      */
     public static func calcTextWidth(paint: ChartPaint, demoText: String): Float64 {
-        let context2: MeasureOptions = MeasureOptions(textContent: demoText,
-            fontSize: px2fp(vp2px(paint.getTextSize().vp)()))
+        let context2: MeasureOptions = MeasureOptions(textContent: demoText)
         let textSize: MeasureSize = Measure.MeasureTextSize(context2)
         return px2vp(textSize.width.px)().value
     }
@@ -57,6 +58,42 @@ public abstract class Utils {
         let context2: MeasureOptions = MeasureOptions(textContent: demoText)
         let textSize: MeasureSize = Measure.MeasureTextSize(context2)
         return px2vp(textSize.height.px)().value
+    }
+
+    public static func resetContext2DStyle(context2D: CanvasRenderingContext2D, paint: ChartPaint) {
+        match (paint.getStyle()) {
+            case Style.FILL => context2D.fillStyle(paint.getFillStyle())
+            case Style.STROKE => context2D.strokeStyle(paint.getStrokeStyle())
+            case Style.FILL_AND_STROKE =>
+                context2D.fillStyle(paint.getFillStyle())
+                context2D.strokeStyle(paint.getStrokeStyle())
+            case _ =>
+                context2D.fillStyle(paint.getFillStyle())
+                context2D.strokeStyle(paint.getStrokeStyle())
+        }
+
+        if (let Some(style2) <- paint.getFillStyle2()) {
+            context2D.fillStyle(style2)
+        }
+
+        if (let Some(globalAlpha) <- paint.getGlobalAlpha()) {
+            context2D.globalAlpha(globalAlpha)
+        } else {
+            context2D.globalAlpha(1.0)
+        }
+        context2D.lineWidth(paint.getStrokeWidth())
+        context2D.textAlign(paint.getTextAlign())
+        context2D.textBaseline(paint.getTextBaseline())
+        context2D.font(size: paint.getTextSize())
+
+        let dashEffect: ?DashPathEffect = paint.getDashPathEffect()
+        if (let Some(dashE) <- dashEffect) {
+            context2D.lineDash(dashE.getDash())
+            context2D.lineDashOffset(dashE.getOffset())
+        } else {
+            context2D.lineDash([0.0, 0.0])
+            context2D.lineDashOffset(0.0)
+        }
     }
 
     public static func calcTextHeight(c: CanvasRenderingContext2D, paint: ChartPaint, demoText: String): Float64 {
@@ -216,10 +253,10 @@ public abstract class Utils {
 
     private static var mDrawableBoundsCache: ChartRect = ChartRect()
 
-    public static func drawImage(canvas: CanvasRenderingContext2D, drawable: ChartPixelMap, x: Float64, y: Float64): Unit {
+    public static func drawImage(canvas: CanvasRenderingContext2D, drawable: ChartPixelMap, x: Float64, y: Float64, width: Float64, height: Float64): Unit {
         let pixelMap = drawable.getIcon()
         if (pixelMap.isSome()) {
-            canvas.drawImage(pixelMap(), x, y)
+            canvas.drawImage(pixelMap(), x-width/2.0, y-height/2.0, width , height)
         }
     }
 
@@ -345,39 +382,6 @@ public abstract class Utils {
 
     public static func getSDKInt(): Int64 {
         return DeviceInfo.sdkApiVersion
-    }
-
-    public static func resetContext2DStyle(context2D: CanvasRenderingContext2D, paint: ChartPaint) {
-        match (paint.getStyle()) {
-            case Style.FILL =>
-                let c: Color = paint.getFillStyle()
-                context2D.fillStyle(paint.getFillStyle())
-            case Style.STROKE => context2D.strokeStyle(paint.getStrokeStyle())
-            case Style.FILL_AND_STROKE =>
-                context2D.fillStyle(paint.getFillStyle())
-                context2D.strokeStyle(paint.getStrokeStyle())
-            case _ =>
-                context2D.fillStyle(paint.getFillStyle())
-                context2D.strokeStyle(paint.getStrokeStyle())
-        }
-
-        if (let Some(style2) <- paint.getFillStyle2()) {
-            context2D.fillStyle(style2)
-        }
-
-        if (let Some(globalAlpha) <- paint.getGlobalAlpha()) {
-            context2D.globalAlpha(globalAlpha)
-        }
-        context2D.lineWidth(paint.getStrokeWidth())
-        context2D.textAlign(paint.getTextAlign())
-        context2D.textBaseline(paint.getTextBaseline())
-        context2D.font(size: paint.getTextSize().vp)
-
-        let dashEffect: ?DashPathEffect = paint.getDashPathEffect()
-        if (let Some(dashE) <- dashEffect) {
-            context2D.lineDash(dashE.getDash())
-            context2D.lineDashOffset(dashE.getOffset())
-        }
     }
 
     public static func parseInt(num: Float64): Float64 {

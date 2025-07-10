@@ -33,3 +33,13 @@ extend<T> ArrayList<T> <: ArrayListInterface<T> {
         }
     }
 }
+
+public class AngularVelocitySample {
+    public var time: Int64 = 0
+    public var angle: Float64 = 0.0
+
+    public init(time: Int64, angle: Float64) {
+        this.time = time
+        this.angle = angle
+    }
+}

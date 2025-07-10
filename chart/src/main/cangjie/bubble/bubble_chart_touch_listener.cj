@@ -2,10 +2,9 @@
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  */
 package chart.bubble
-import ohos.system_date_time.SystemDateTime
 
-public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleDataSet, BubblesEntry> {
-    /**
+public class BubbleChartTouchListener<: ChartTouchListener<BubbleData, IBubbleDataSet, BubblesEntry>{
+  /**
      * the original touch-matrix from the chart
      */
     private var mMatrix: Matrix = Matrix()
@@ -39,23 +38,21 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
      * the minimum distance between the pointers that will trigger a zoom gesture
      */
     private var mMinScalePointerDistance: Float64 = 0.0
-
     private var mStartPointX: Float64 = 0.0
     private var mStartPointY: Float64 = 0.0
     private var mSingleTapThreshold: Int64 = 10
-
     private var mLongPressStatus: Bool = false
     private var isDragging: Bool = false
 
-    var bubbleChartModel: BubbleChartModel
+    private var downTime: Int64 = 0
+    private var downPointX: Float64 = -1.0
+    private var downPointY: Float64 = -1.0
+    private var maxSwipePointX: Float64 = -1.0
+    private var maxSwipePointY: Float64 = -1.0
     private var animatorIsPlaying: Bool = false
-    var downTime: Int64 = 0
-    var downPointX: Float64 = -1.0
-    var downPointY: Float64 = -1.0
-    var maxSwipePointX: Float64 = -1.0
-    var maxSwipePointY: Float64 = -1.0
     private var animatorResult: ?AnimatorResult = Option<AnimatorResult>.None
 
+    var bubbleChartModel: BubbleChartModel
 
     /**
      * Constructor with initialization parameters.
@@ -77,61 +74,64 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
 
     public func onTouch(event: TouchEvent) {
         match (event.eventType) {
-            case TouchType.Down => this.actionDown(true, event)
-            case TouchType.Move => this.actionMove(true, event)
-            case TouchType.Up => this.actionUp(true, event)
-            case TouchType.Cancel => this.actionUp(true, event)
+            case TouchType.Down => this.actionDown(true, event, Option<GestureEvent>.None)
+            case TouchType.Move => this.actionMove(true, event, Option<GestureEvent>.None)
+            case TouchType.Up => this.actionUp(true, event, Option<GestureEvent>.None)
+            case TouchType.Cancel => this.actionUp(true, event, Option<GestureEvent>.None)
             case _ => ()
         }
     }
 
-    public func actionDown(isTouchEvent: Bool, event: Any): Unit {
+    public func actionDown(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         if (!this.bubbleChartModel.isDragEnabled() && (!this.bubbleChartModel.isScaleXEnabled() &&
             !this.bubbleChartModel.isScaleYEnabled())) {
             return
         }
         var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
-        if (this.animatorResult.isSome() && this.animatorIsPlaying) {
-            this.animatorResult().pause()
-            this.animatorIsPlaying = false
-        }
         if (isTouchEvent) {
-            let touchEvent = event as TouchEvent
+            if (this.animatorResult.isSome() && this.animatorIsPlaying) {
+                this.animatorResult().pause()
+                this.animatorIsPlaying = false
+            }
             if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                xCoordinate = touchEvent().touches[0].x
+                yCoordinate = touchEvent().touches[0].y
             }
-            xCoordinate = touchEvent().touches[0].x
-            yCoordinate = touchEvent().touches[0].y
-            this.downTime = SystemDateTime.getCurrentTime()
+
+            // down initial value
+            this.downTime = DateTime.now().nanosecond
             this.downPointX = xCoordinate
             this.downPointY = yCoordinate
+
         } else {
- //TODO
-            let gestureEvent = event as GestureEvent
             if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
+            } else {
+                xCoordinate = gestureEvent().fingerList[0].localX
+                yCoordinate = gestureEvent().fingerList[0].localY
             }
-            xCoordinate = gestureEvent().fingerList[0].localX
-            yCoordinate = gestureEvent().fingerList[0].localY
+
         }
         this.mStartPointX = xCoordinate
         this.mStartPointY = yCoordinate
 
-        this.startAction(isTouchEvent, event)
+        this.startAction(isTouchEvent, touchEvent, gestureEvent)
         this.stopDeceleration()
-        this.saveTouchStart(isTouchEvent, event)
+        this.saveTouchStart(isTouchEvent, touchEvent, gestureEvent)
     }
 
-    public func actionPinchDown(isTouchEvent: Bool, event: Any): Unit {
+    public func actionPinchDown(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         this.bubbleChartModel.disableScroll()
-        this.saveTouchStart(true, event)
+        this.saveTouchStart(true, touchEvent, gestureEvent)
         // get the distance between the pointers on the x-axis
-        this.mSavedXDist = BubbleChartTouchListener.getXDist(isTouchEvent, event)
+        this.mSavedXDist = BubbleChartTouchListener.getXDist(isTouchEvent, touchEvent, gestureEvent)
         // get the distance between the pointers on the y-axis
-        this.mSavedYDist = BubbleChartTouchListener.getYDist(isTouchEvent, event)
+        this.mSavedYDist = BubbleChartTouchListener.getYDist(isTouchEvent, touchEvent, gestureEvent)
         // get the total distance between the pointers
-        this.mSavedDist = BubbleChartTouchListener.spacing(isTouchEvent, event)
+        this.mSavedDist = BubbleChartTouchListener.spacing(isTouchEvent, touchEvent, gestureEvent)
         if (this.mSavedDist > 10.0) {
             if (this.bubbleChartModel.isPinchZoomEnabled()) {
                 this.mTouchMode = 4 //ChartTouchListener.PINCH_ZOOM
@@ -151,142 +151,76 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
                 }
             }
             // determine the touch-pointer center
-            BubbleChartTouchListener.midPoint(this.mTouchPointCenter, isTouchEvent, event)
+            BubbleChartTouchListener.midPoint(this.mTouchPointCenter, isTouchEvent, touchEvent, gestureEvent)
         }
     }
 
-    public func actionMove(isTouchEvent: Bool, event: Any): Unit {
-        let l:? OnChartGestureListener = this.bubbleChartModel.getOnChartGestureListener()
-        if (let Some(listener) <- l) {
-        	if (this.bubbleChartModel.getLongPressCursorEnabled()) {
+    public func actionMove(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
+        let l: ?OnChartGestureListener = this.bubbleChartModel.getOnChartGestureListener()
+        if(let Some(listener) <- l) {
+            if (this.bubbleChartModel.getLongPressCursorEnabled()) {
                 if (this.mLongPressStatus) {
-                    listener.onChartMove(isTouchEvent, event)
+                    listener.onChartMove(isTouchEvent, touchEvent, gestureEvent)
                 }
-        	} else {
-                	listener.onChartMove(isTouchEvent, event)
-                }
+            } else {
+                listener.onChartMove(isTouchEvent, touchEvent, gestureEvent)
+            }
         }
 
-        var xCoordinate: Float64 =  0.0
+        var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
-
         if (isTouchEvent) {
-        	let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                xCoordinate = touchEvent().touches[0].x
+                yCoordinate = touchEvent().touches[0].y
             }
-            xCoordinate = touch().touches[0].x
-            yCoordinate = touch().touches[0].y
-            if (this.bubbleChartModel.getLongPressCursorEnabled() && this.mLongPressStatus) {
-        	    this.calculateLongPress(touch())
-            }
+            if (this.bubbleChartModel.getLongPressCursorEnabled() && !this.mLongPressStatus) {
+                this.calculateLongPress(touchEvent())
+              }
         } else {
-        	let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
+            } else {
+                xCoordinate = gestureEvent().fingerList[0].localX
+                yCoordinate = gestureEvent().fingerList[0].localY
             }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
         }
-
         this.isDragging = false
+
         // long press cursor response capability
         if (this.bubbleChartModel.getLongPressCursorEnabled()) {
-            this.longPressCursorAction(isTouchEvent, event, xCoordinate, yCoordinate)
+            this.longPressCursorAction(isTouchEvent, touchEvent, gestureEvent, xCoordinate, yCoordinate)
             return
         }
-        if (!this.bubbleChartModel.getViewPortHandler().isInBounds(xCoordinate, yCoordinate)) {
-        	this.bubbleChartModel.highlightValueForObject(Option<Highlight>.None, true)
+
+         if (!this.bubbleChartModel.getViewPortHandler().isInBounds(xCoordinate, yCoordinate)) {
+            this.bubbleChartModel.highlightValueForObject(Option<Highlight>.None, true)
         }
 
-
         if (this.mTouchMode == 1 /*ChartTouchListener.DRAG*/ ) {
-            actionMoveTouchModeIs1(isTouchEvent, event, xCoordinate, yCoordinate)
-            this.mMatrix = this.bubbleChartModel.getViewPortHandler().refresh(this.mMatrix, this.bubbleChartModel, true)
+            actionMoveTouchModeIs1(isTouchEvent, touchEvent, gestureEvent, xCoordinate, yCoordinate)
         } else if (this.mTouchMode == 2 || this.mTouchMode == 3 || this.mTouchMode == 4) {
             this.bubbleChartModel.disableScroll()
             if (this.bubbleChartModel.isScaleXEnabled() || this.bubbleChartModel.isScaleYEnabled() && this.bubbleChartModel.isPinchZoomEnabled()) {
-                this.performZoom(isTouchEvent, event)
+                this.performZoom(isTouchEvent, touchEvent, gestureEvent)
             }
-            this.mMatrix = this.bubbleChartModel.getViewPortHandler().refresh(this.mMatrix, this.bubbleChartModel, true)
+           // this.mMatrix = this.bubbleChartModel.getViewPortHandler().refresh(this.mMatrix, this.bubbleChartModel, true)
         } else if (this.mTouchMode == 0 &&
             abs(
             BubbleChartTouchListener.distance(xCoordinate, this.mTouchStartPoint.x, yCoordinate,
             this.mTouchStartPoint.y)) > this.mDragTriggerDist && this.bubbleChartModel.getViewPortHandler().isInBounds(
             xCoordinate, yCoordinate)) {
-            actionMoveTouchModeIs0(isTouchEvent, event, xCoordinate, yCoordinate)
+            actionMoveTouchModeIs0(isTouchEvent, touchEvent, gestureEvent, xCoordinate, yCoordinate)
         }
 
         // perform the transformation, update the chart
-        this.mMatrix = this.bubbleChartModel.getViewPortHandler().refresh(
-            this.mMatrix,
-            (this.bubbleChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(
-                ),
-            true
-        )
+        this.mMatrix = this.bubbleChartModel.getViewPortHandler().refresh(this.mMatrix,this.bubbleChartModel,true)
     }
 
-    private func actionMoveisTouchEventFunc(isTouchEvent: Bool, event: Any): (Float64, Float64) {
-        var xCoordinate: Float64 = 0.0
-        var yCoordinate: Float64 = 0.0
-        if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
-                return (xCoordinate, yCoordinate)
-            }
-            xCoordinate = touch().touches[0].x
-            yCoordinate = touch().touches[0].y
-            if (this.bubbleChartModel.getLongPressCursorEnabled() && !this.mLongPressStatus) {
-                this.calculateLongPress(touch())
-            }
-            return (xCoordinate, yCoordinate)
-        } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
-                return (xCoordinate, yCoordinate)
-            }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
-            return (xCoordinate, yCoordinate)
-        }
-    }
-    protected static func distance(eventX: Float64, startX: Float64, eventY: Float64, startY: Float64 ){
-        let dx: Float64 = eventX - startX
-        let dy: Float64 = eventY - startY
-        return sqrt(dx*dx + dy * dy)
-    }
 
-    private func calculateLongPress(event: TouchEvent) {
-        let curTime: Int64 = SystemDateTime.getCurrentTime()
-        if (this.downTime > 0 && this.downPointX != -1.0 && (curTime - this.downTime) >= Int64(this.bubbleChartModel.getLongPressDuration())) {
-        	let curPointX: Float64 = event.touches[0].x
-        	let curPointY: Float64 = event.touches[0].y
-        	let rangePointX: Float64 = abs(curPointX - this.downPointX)
-        	let rangePointY: Float64 = abs(curPointY - this.downPointY)
-            if (rangePointX > this.maxSwipePointX) {
-                this.maxSwipePointX = rangePointX
-            }
-            if (rangePointY > this.maxSwipePointY) {
-                this.maxSwipePointY = rangePointY
-            }
-            if (this.maxSwipePointX <= 1.0 && this.maxSwipePointY <= 1.0) {
-                this.mLongPressStatus = true
-                this.resetSwipeParm()
-                let h: ?Highlight = this.bubbleChartModel.getHighlightByTouchPoint(curPointX, curPointY)
-                if (let Some(high) <- h) {
-                    this.performHighlight(high, Option<TouchEvent>.None)
-                }
-            }
-        }
-    }
-    private func resetSwipeParm() {
-        this.downTime = 0
-        this.downPointX = -1.0
-        this.downPointY = -1.0
-        this.maxSwipePointX = -1.0
-        this.maxSwipePointY = -1.0
-    }
-    private func actionMoveTouchModeIs1(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64): Unit {
+    private func actionMoveTouchModeIs1(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, xCoordinate: Float64, yCoordinate: Float64): Unit {
         this.bubbleChartModel.disableScroll()
         let x: Float64 = if (this.bubbleChartModel.isDragXEnabled()) {
             xCoordinate - this.mTouchStartPoint.x
@@ -298,10 +232,10 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
         } else {
             0.0
         }
-        this.performDrag(isTouchEvent, event, x, y)
+        this.performDrag(isTouchEvent, touchEvent, gestureEvent, x, y)
     }
 
-    private func actionMoveTouchModeIs0(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64) {
+    private func actionMoveTouchModeIs0(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, xCoordinate: Float64, yCoordinate: Float64) {
         if (this.bubbleChartModel.isDragEnabled()) {
             this.isDragging = true
 
@@ -318,17 +252,18 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
             } else {
                 if (this.bubbleChartModel.isHighlightPerDragEnabled()) {
                     this.mLastGesture = ChartGesture.DRAG
-                    this.performHighlightDrag(isTouchEvent, event, false)
+                    this.performHighlightDrag(isTouchEvent, touchEvent, gestureEvent, false)
                 }
             }
         }
     }
 
-    private func touchMode0Or7(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64): Unit {
+    private func touchMode0Or71(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, xCoordinate: Float64, yCoordinate: Float64): Unit {
         if (this.bubbleChartModel.isDragEnabled()) {
             this.isDragging = true
 
             let shouldPan: Bool = !this.bubbleChartModel.isFullyZoomedOut() || !this.bubbleChartModel.hasNoDragOffset()
+
             if (shouldPan && !this.mLongPressStatus) {
                 let distanceX: Float64 = abs(xCoordinate - this.mTouchStartPoint.x)
                 let distanceY: Float64 = abs(yCoordinate - this.mTouchStartPoint.y)
@@ -337,21 +272,21 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
                     isDragYEnabled() || distanceY <= distanceX)) {
                     this.mLastGesture = ChartGesture.DRAG
                     this.mTouchMode = 1
-                    this.performHighlightDrag(isTouchEvent, event, false)
+                    this.bubbleChartModel.highlightValueForObject(Option<Highlight>.None, true)
                 }
             } else if (this.mLongPressStatus) {
                 if (this.bubbleChartModel.isHighlightPerDragEnabled()) {
                     this.mLastGesture = ChartGesture.DRAG
-                    this.performHighlightDrag(isTouchEvent, event, false)
+                    this.performHighlightDrag(isTouchEvent, touchEvent, gestureEvent, false)
                 }
             } else if (!this.mLongPressStatus) {
                 // response event of sliding left or right
-                this.bubbleChartModel.getOnChartGestureListener()?.onChartTranslate(isTouchEvent, event,
+                this.bubbleChartModel.getOnChartGestureListener()?.onChartTranslate(isTouchEvent, touchEvent, gestureEvent,
                     xCoordinate - this.mStartPointX, yCoordinate - this.mStartPointY)
             }
         }
     }
-    private func longPressCursorAction(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64) {
+    private func longPressCursorAction(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, xCoordinate: Float64, yCoordinate: Float64) {
         if (this.mTouchMode == 1) {
             this.bubbleChartModel.disableScroll()
             let x: Float64 = if (this.bubbleChartModel.isDragXEnabled()) {
@@ -364,53 +299,106 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
             } else {
                 0.0
             }
-            this.performDrag(isTouchEvent, event, x, y)
+            if (!this.bubbleChartModel.getSwipeEnabled()) {
+                this.bubbleChartModel.highlightValueForObject(Option<Highlight>.None, true)
+            }
+            this.performDrag(isTouchEvent, touchEvent, gestureEvent, x, y)
         } else if (this.mTouchMode == 2 || this.mTouchMode == 3 || this.mTouchMode == 4) {
             this.bubbleChartModel.disableScroll()
-            if ((this.bubbleChartModel.isScaleXEnabled() || this.bubbleChartModel.isScaleYEnabled()) && this.bubbleChartModel.isPinchZoomEnabled()) {
-                this.performZoom(isTouchEvent, event)
-                this.performHighlightDrag(isTouchEvent, event, false)
+            if (this.bubbleChartModel.isScaleXEnabled() || this.bubbleChartModel.isScaleYEnabled()) {
+                this.performZoom(isTouchEvent, touchEvent, gestureEvent)
+                this.bubbleChartModel.highlightValueForObject(Option<Highlight>.None, true)
+                this.performHighlightDrag(isTouchEvent, touchEvent, gestureEvent, false)
             }
-        } else if ((this.mTouchMode == 0 || this.mTouchMode == 7)
-            &&
-            abs(
-            BubbleChartTouchListener.distance(xCoordinate, this.mTouchStartPoint.x, yCoordinate,
+        } else if ((this.mTouchMode == 0 || this.mTouchMode == 7)&&abs(BubbleChartTouchListener.distance(xCoordinate, this.mTouchStartPoint.x, yCoordinate,
             this.mTouchStartPoint.y)) > this.mDragTriggerDist) {
-            touchMode0Or7(isTouchEvent, event, xCoordinate, yCoordinate)
+                touchMode0Or71(isTouchEvent, touchEvent, gestureEvent, xCoordinate, yCoordinate)
         }
 
         // perform the transformation, update the chart
-        this.mMatrix = this.bubbleChartModel.getViewPortHandler().refresh(
-            this.mMatrix,
-            this.bubbleChartModel,
-            true
-        )
+        this.mMatrix = this.bubbleChartModel.getViewPortHandler().refresh(this.mMatrix,this.bubbleChartModel,true)
     }
 
-    public func actionUp(isTouchEvent: Bool, event: Any): Unit {
+    private func calculateLongPress(event: TouchEvent): Unit {
+        let curTime: Int64 = DateTime.now().nanosecond
+        if (this.downTime > 0 && this.downPointX != -1.0 && (curTime - this.downTime) >= this.bubbleChartModel.getLongPressDuration()) {
+            let curPointX: Float64 = event.touches[0].x
+            let curPointY: Float64 = event.touches[0].y
+            let rangePointX: Float64 = abs(curPointX - this.downPointX)
+            let rangePointY: Float64 = abs(curPointY - this.downPointY)
+            if (rangePointX > this.maxSwipePointX) {
+                this.maxSwipePointX = rangePointX
+            }
+            if (rangePointY > this.maxSwipePointY) {
+                this.maxSwipePointY = rangePointY
+            }
+            if (this.maxSwipePointX <= 1.0 && this.maxSwipePointY <= 1.0) {
+                this.mLongPressStatus = true
+                this.resetSwipeParam()
+                let h: ?Highlight = this.bubbleChartModel.getHighlightByTouchPoint(curPointX, curPointY)
+                if (let Some(highlight) <- h) {
+                    this.performHighlight(highlight, Option<TouchEvent>.None)
+                }
+            }
+        }
+    }
+
+    private func calculateSwipe(event: TouchEvent, isTouchEvent: Bool): Unit {
         this.mLongPressStatus = false
+        let curPointX: Float64 = event.touches[0].x
+        let curPointY: Float64 = event.touches[0].y
+        if (this.downPointX != -1.0 && abs(curPointX - this.downPointX) <= 10.0) {
+            let h: ?Highlight = this.bubbleChartModel.getHighlightByTouchPoint(curPointX, curPointY)
+            if (let Some(highlight) <- h) {
+                this.performHighlight(highlight, Option<TouchEvent>.None)
+            }
+            let l: ?OnChartGestureListener = this.bubbleChartModel.getOnChartGestureListener()
+            l?.onChartMove(isTouchEvent, event, Option<GestureEvent>.None)
+        } else if (this.downPointX != -1.0 && abs(curPointX - this.downPointX) >= 50.0) {
+            let x: Float64 = if(this.bubbleChartModel.isDragXEnabled()) { curPointX - this.mTouchStartPoint.x}else {0.0 }
+            let y: Float64 = if(this.bubbleChartModel.isDragYEnabled()) {curPointY - this.mTouchStartPoint.y }else { 0.0}
+            this.bubbleChartModel.highlightValueForObject(Option<Highlight>.None, true)
+            if (this.bubbleChartModel.getSwipeEnabled()) {
+                this.performSwipe(true, event, Option<GestureEvent>.None, x, y)
+            }
+        }
+        this.resetSwipeParam()
+    }
+
+    private func resetSwipeParam(): Unit {
+        this.downTime = 0
+        this.downPointX = -1.0
+        this.downPointY = -1.0
+        this.maxSwipePointX = -1.0
+        this.maxSwipePointY = -1.0
+    }
+
+
+    public func actionUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         var gestureFingersCount: Int64 = 1
         var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                xCoordinate = touchEvent().touches[0].x
+                yCoordinate = touchEvent().touches[0].y
+                gestureFingersCount = touchEvent().touches.size
             }
-            xCoordinate = touch().touches[0].x
-            yCoordinate = touch().touches[0].y
-            gestureFingersCount = touch().touches.size
+
             if (this.bubbleChartModel.getLongPressCursorEnabled()) {
-                this.calculateSwipe(touch(), isTouchEvent)
+                this.calculateSwipe(touchEvent(), isTouchEvent)
             }
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
+            } else {
+                xCoordinate = gestureEvent().fingerList[0].localX
+                yCoordinate = gestureEvent().fingerList[0].localY
+                gestureFingersCount = gestureEvent().fingerList.size
             }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
-            gestureFingersCount = gesture().fingerList.size
+
         }
 
         if (abs(xCoordinate) > Float64(Utils.getMinimumFlingVelocity()) || abs(yCoordinate) > Float64(Utils.
@@ -418,7 +406,7 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
             if (this.mTouchMode == 1 /* ChartTouchListener.DRAG*/ && this.bubbleChartModel.isDragDecelerationEnabled()) {
                 this.stopDeceleration()
 
-                this.mDecelerationLastTime = DateTime.now().second * 1000
+                this.mDecelerationLastTime = DateTime.now().nanosecond
 
                 this.mDecelerationCurrentPoint.x = xCoordinate
                 this.mDecelerationCurrentPoint.y = yCoordinate
@@ -426,44 +414,32 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
         }
 
         if (this.mTouchMode == 2 || this.mTouchMode == 3 || this.mTouchMode == 4 || this.mTouchMode == 5) {
-
-            // Range might have changed, which means that Y-axis labels
-            // could have changed in size, affecting Y-axis size.
-            // So we need to recalculate offsets.
             this.bubbleChartModel.calculateOffsets()
         }
 
         this.mTouchMode = 0
         this.bubbleChartModel.enableScroll()
 
-        this.endAction(isTouchEvent, event)
+        this.endAction(isTouchEvent, touchEvent, gestureEvent)
 
         if (gestureFingersCount >= 2) {
             this.mTouchMode = 5
         }
-        this.saveTouchStart(isTouchEvent, event)
+        this.saveTouchStart(isTouchEvent, touchEvent, gestureEvent)
     }
 
-    public func actionPinchUp(isTouchEvent: Bool, event: Any): Unit {
+    public func actionPinchUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         this.mTouchMode = 5
 
         // perform the transformation, update the chart
-        this.mMatrix = this.bubbleChartModel.getViewPortHandler().refresh(
-            this.mMatrix,
-            this.bubbleChartModel,
-            true
-        )
+        this.mMatrix = this.bubbleChartModel.getViewPortHandler().refresh(this.mMatrix, this.bubbleChartModel, true)
     }
 
-    public func actionCancel(isTouchEvent: Bool, event: Any): Unit {
+    public func actionCancel(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         this.mTouchMode = 0
-        this.endAction(isTouchEvent, event)
+        this.endAction(isTouchEvent, touchEvent, gestureEvent)
         // perform the transformation, update the chart
-        this.mMatrix = this.bubbleChartModel.getViewPortHandler().refresh(
-            this.mMatrix,
-            this.bubbleChartModel,
-            true
-        )
+        this.mMatrix = this.bubbleChartModel.getViewPortHandler().refresh(this.mMatrix,this.bubbleChartModel,true)
     }
 
     /**
@@ -476,25 +452,34 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
      *
      * @param event
      */
-    private func saveTouchStart(isTouchEvent: Bool, event: Any) {
+    private func saveTouchStart(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mSavedMatrix.set(this.mMatrix)
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                this.mTouchStartPoint.x = touchEvent().touches[0].x
+                this.mTouchStartPoint.y = touchEvent().touches[0].y
             }
-            this.mTouchStartPoint.x = touch().touches[0].x
-            this.mTouchStartPoint.y = touch().touches[0].y
+
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
+            } else {
+                this.mTouchStartPoint.x = gestureEvent().fingerList[0].globalX
+                this.mTouchStartPoint.y = gestureEvent().fingerList[0].globalY
             }
-            this.mTouchStartPoint.x = gesture().fingerList[0].globalX
-            this.mTouchStartPoint.y = gesture().fingerList[0].globalY
+
         }
 
-        this.mClosestDataSetToTouch = this.bubbleChartModel.getBubbleDataSetByTouchPoint(this.mTouchStartPoint.x, this.mTouchStartPoint.y)
+        this.mClosestDataSetToTouch = this.bubbleChartModel.getBubbleDataSetByTouchPoint(this.mTouchStartPoint.x,this.mTouchStartPoint.y)
+    }
+
+    private func performSwipe(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, distanceX: Float64, distanceY: Float64) {
+        let l: ?OnChartGestureListener = this.bubbleChartModel.getOnChartGestureListener()
+        if (let Some(listener) <- l) {
+            listener.onChartTranslate(isTouchEvent, touchEvent, gestureEvent, distanceX, distanceY)
+        }
     }
 
     /**
@@ -502,7 +487,7 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
      *
      * @param event
      */
-    private func performDrag(isTouchEvent: Bool, event: Any, distanceX: Float64, distanceY: Float64) {
+    private func performDrag(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, distanceX: Float64, distanceY: Float64) {
         this.mLastGesture = ChartGesture.DRAG
 
         this.mMatrix.set(this.mSavedMatrix)
@@ -515,16 +500,15 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
             newDistanceY = -distanceY
         }
 
-        this.mMatrix.postTranslate(distanceX, newDistanceY)
-
         if (let Some(listener) <- l) {
-            listener.onChartTranslate(isTouchEvent, event, distanceX, distanceY)
+            listener.onChartTranslate(isTouchEvent, touchEvent, gestureEvent, distanceX, distanceY)
         }
-        this.bubbleChartModel.invalidate()
+        this.mMatrix.postTranslate(distanceX, newDistanceY)
+        //this.bubbleChartModel.invalidate()
     }
 
     private func performZoomTouchModeIs4(totalDist: Float64, h: ViewPortHandler, l: ?OnChartGestureListener,
-        t: MPPointF, isTouchEvent: Bool, event: Any) {
+        t: MPPointF, isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mLastGesture = ChartGesture.PINCH_ZOOM
 
         let scale: Float64 = totalDist / this.mSavedDist // total scale
@@ -559,16 +543,16 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
             this.mMatrix.postScale(scaleX, scaleY, centerX: t.x, centerY: t.y)
 
             if (let Some(listener) <- l) {
-                listener.onChartScale(isTouchEvent, event, scaleX, scaleY)
+                listener.onChartScale(isTouchEvent, touchEvent, gestureEvent, scaleX, scaleY)
             }
         }
     }
 
-    private func performZoomTouchModeIs2(h: ViewPortHandler, isTouchEvent: Bool, event: Any, t: MPPointF,
+    private func performZoomTouchModeIs2(h: ViewPortHandler, isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, t: MPPointF,
         l: ?OnChartGestureListener) {
         this.mLastGesture = ChartGesture.X_ZOOM
 
-        let xDist: Float64 = BubbleChartTouchListener.getXDist(isTouchEvent, event)
+        let xDist: Float64 = BubbleChartTouchListener.getXDist(isTouchEvent, touchEvent, gestureEvent)
         let scaleX: Float64 = xDist / this.mSavedXDist // x-axis scale
 
         let isZoomingOut: Bool = (scaleX < 1.0)
@@ -583,16 +567,16 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
             this.mMatrix.postScale(scaleX, 1.0, centerX: t.x, centerY: t.y)
 
             if (let Some(listener) <- l) {
-                listener.onChartScale(isTouchEvent, event, scaleX, 1.0)
+                listener.onChartScale(isTouchEvent, touchEvent, gestureEvent, scaleX, 1.0)
             }
         }
     }
 
     private func performZoomTouchModeIs3(totalDist: Float64, h: ViewPortHandler, l: ?OnChartGestureListener,
-        t: MPPointF, isTouchEvent: Bool, event: Any) {
+        t: MPPointF, isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mLastGesture = ChartGesture.Y_ZOOM
 
-        let yDist: Float64 = BubbleChartTouchListener.getYDist(isTouchEvent, event)
+        let yDist: Float64 = BubbleChartTouchListener.getYDist(isTouchEvent, touchEvent, gestureEvent)
         let scaleY: Float64 = yDist / this.mSavedYDist // y-axis scale
 
         let isZoomingOut: Bool = (scaleY < 1.0)
@@ -607,7 +591,7 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
             this.mMatrix.postScale(1.0, scaleY, centerX: t.x, centerY: t.y)
 
             if (let Some(listener) <- l) {
-                listener.onChartScale(isTouchEvent, event, 1.0, scaleY)
+                listener.onChartScale(isTouchEvent, touchEvent, gestureEvent, 1.0, scaleY)
             }
         }
     }
@@ -616,21 +600,19 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
      *
      * @param event
      */
-    private func performZoom(isTouchEvent: Bool, event: Any) {
+    private func performZoom(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         var gestureFingersCount: Int64 = 1
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            gestureFingersCount = touch().touches.size
+            gestureFingersCount = touchEvent().touches.size
         } else {
-            let gesture = event as GestureEvent
-            gestureFingersCount = gesture().fingerList.size
+            gestureFingersCount = gestureEvent().fingerList.size
         }
         if (gestureFingersCount >= 2) { // two finger zoom
 
             let l: ?OnChartGestureListener = this.bubbleChartModel.getOnChartGestureListener()
 
             // get the distance between the pointers of the touch event
-            let totalDist: Float64 = BubbleChartTouchListener.spacing(isTouchEvent, event)
+            let totalDist: Float64 = BubbleChartTouchListener.spacing(isTouchEvent, touchEvent, gestureEvent)
 
             if (totalDist > this.mMinScalePointerDistance) {
 
@@ -640,11 +622,11 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
 
                 // take actions depending on the activated touch mode
                 if (this.mTouchMode == 4 /* ChartTouchListener.PINCH_ZOOM*/ ) {
-                    performZoomTouchModeIs4(totalDist, h, l, t, isTouchEvent, event)
+                    performZoomTouchModeIs4(totalDist, h, l, t, isTouchEvent, touchEvent, gestureEvent)
                 } else if (this.mTouchMode == 2 /*ChartTouchListener.X_ZOOM*/ && this.bubbleChartModel.isScaleXEnabled()) {
-                    performZoomTouchModeIs2(h, isTouchEvent, event, t, l)
+                    performZoomTouchModeIs2(h, isTouchEvent, touchEvent, gestureEvent, t, l)
                 } else if (this.mTouchMode == 3 /* ChartTouchListener.Y_ZOOM*/ && this.bubbleChartModel.isScaleYEnabled()) {
-                    performZoomTouchModeIs3(totalDist, h, l, t, isTouchEvent, event)
+                    performZoomTouchModeIs3(totalDist, h, l, t, isTouchEvent, touchEvent, gestureEvent)
                 }
 
                 MPPointF.recycleInstance(t)
@@ -657,45 +639,39 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
      *
      * @param e
      */
-    func performHighlightDrag(isTouchEvent: Bool, event: Any, isLongPressed: Bool) {
+    func performHighlightDrag(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, isLongPressed: Bool) {
         var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                xCoordinate = touchEvent().touches[0].x
+                yCoordinate = touchEvent().touches[0].y
             }
-            xCoordinate = touch().touches[0].x
-            yCoordinate = touch().touches[0].y
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
+            } else {
+                xCoordinate = gestureEvent().fingerList[0].localX
+                yCoordinate = gestureEvent().fingerList[0].localY
             }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
         }
         let h: ?Highlight = this.bubbleChartModel.getHighlightByTouchPoint(xCoordinate, yCoordinate)
-        if (!h.isNone()) {
-        	if (mLastHighlighted.isNone()) {
-        		this.mLastHighlighted = h
-                this.bubbleChartModel.highlightValueForObject(mLastHighlighted, true)
-        	} else if (!mLastHighlighted().equalTo(h())) {
-                if (!isLongPressed) {
-                    this.mLastHighlighted = h
-                }
-                this.bubbleChartModel.highlightValueForObject(
-                    if (isLongPressed) {
-                        this.mLastHighlighted
-                    } else {
-                        h
-                    },
-                    true
-                )
-        	} else {
-
-        	}
+        if(h.isSome() && this.mLastHighlighted.isSome() && !h().equalTo(this.mLastHighlighted())) {
+            if (!isLongPressed) {
+                this.mLastHighlighted = h
+            }
+            this.bubbleChartModel.highlightValueForObject(
+                if (isLongPressed) {
+                    this.mLastHighlighted
+                } else {
+                    h
+                },
+                true
+            )
         }
+
     }
 
     /**
@@ -709,25 +685,25 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
      * @param point
      * @param event
      */
-    private static func midPoint(point: MPPointF, isTouchEvent: Bool, event: Any) {
+    private static func midPoint(point: MPPointF, isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         var x: Float64 = 0.0
         var y: Float64 = 0.0
 
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                x = touchEvent().touches[0].x + touchEvent().touches[1].x
+                y = touchEvent().touches[0].y + touchEvent().touches[1].y
             }
-            x = touch().touches[0].x + touch().touches[1].x
-            y = touch().touches[0].y + touch().touches[1].y
         } else {
- //TODO
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
+            } else {
+                x = gestureEvent().fingerList[0].localX + gestureEvent().fingerList[1].localX
+                y = gestureEvent().fingerList[0].localY + gestureEvent().fingerList[1].localY
             }
-            x = gesture().fingerList[0].localX + gesture().fingerList[1].localX
-            y = gesture().fingerList[0].localY + gesture().fingerList[1].localY
+
         }
         point.x = (x / 2.0)
         point.y = (y / 2.0)
@@ -739,25 +715,26 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
      * @param event
      * @return
      */
-    private static func spacing(isTouchEvent: Bool, event: Any): Float64 {
+    private static func spacing(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Float64 {
         var x: Float64 = 0.0
         var y: Float64 = 0.0
 
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return 0.0
+            } else {
+                x = touchEvent().touches[0].x - touchEvent().touches[1].x
+                y = touchEvent().touches[0].y - touchEvent().touches[1].y
             }
-            x = touch().touches[0].x - touch().touches[1].x
-            y = touch().touches[0].y - touch().touches[1].y
+
         } else {
- //TODO
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return 0.0
+            } else {
+                x = gestureEvent().fingerList[0].localX - gestureEvent().fingerList[1].localX
+                y = gestureEvent().fingerList[0].localY - gestureEvent().fingerList[1].localY
             }
-            x = gesture().fingerList[0].localX - gesture().fingerList[1].localX
-            y = gesture().fingerList[0].localY - gesture().fingerList[1].localY
+
         }
 
         return sqrt(x * x + y * y)
@@ -770,21 +747,22 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
      * @param e
      * @return
      */
-    private static func getXDist(isTouchEvent: Bool, e: Any): Float64 {
+    private static func getXDist(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Float64 {
         var x: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return 0.0
+            } else {
+                x = abs(touchEvent().touches[0].x - touchEvent().touches[1].x)
             }
-            x = abs(touch().touches[0].x - touch().touches[1].x)
+
         } else {
- //TODO
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return 0.0
+            } else {
+                x = abs(gestureEvent().fingerList[0].localX - gestureEvent().fingerList[1].localX)
             }
-            x = abs(gesture().fingerList[0].localX - gesture().fingerList[1].localX)
+
         }
         return x
     }
@@ -796,21 +774,22 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
      * @param e
      * @return
      */
-    private static func getYDist(isTouchEvent: Bool, e: Any): Float64 {
+    private static func getYDist(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Float64 {
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return 0.0
+            } else {
+                y = abs(touchEvent().touches[0].y - touchEvent().touches[1].y)
             }
-            y = abs(touch().touches[0].y - touch().touches[1].y)
+
         } else {
- //TODO
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return 0.0
+            } else {
+                y = abs(gestureEvent().fingerList[0].localY - gestureEvent().fingerList[1].localY)
             }
-            y = abs(gesture().fingerList[0].localY - gesture().fingerList[1].localY)
+
         }
         return y
     }
@@ -875,24 +854,25 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
         this.mDragTriggerDist = Utils.handleDataValues(dragTriggerDistance)
     }
 
-    public func onDoubleTap(isTouchEvent: Bool, e: Any): Unit {
+    public func onDoubleTap(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         var x: Float64 = 0.0
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                x = touchEvent().touches[0].x
+                y = touchEvent().touches[0].y
             }
-            x = touch().touches[0].x
-            y = touch().touches[0].y
+
         } else {
- //TODO
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
+            } else {
+                x = gestureEvent().fingerList[0].localX
+                y = gestureEvent().fingerList[0].localY
             }
-            x = gesture().fingerList[0].localX
-            y = gesture().fingerList[0].localY
+
         }
 
         this.mLastGesture = ChartGesture.DOUBLE_TAP
@@ -900,11 +880,11 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
         let l: ?OnChartGestureListener = this.bubbleChartModel.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartDoubleTapped(isTouchEvent, e)
+            listener.onChartDoubleTapped(isTouchEvent, touchEvent, gestureEvent)
         }
         let chartData = this.bubbleChartModel.getBubbleData()
         // check if double-tap zooming is enabled
-        if (this.bubbleChartModel.isDoubleTapToZoomEnabled() && (chartData().getEntryCount() > 0)) {
+        if (this.bubbleChartModel.isDoubleTapToZoomEnabled() && chartData.isSome() && chartData().getEntryCount() > 0) {
             let trans: MPPointF = this.getTrans(x, y)
 
             let scaleX: Float64 = if (this.bubbleChartModel.isScaleXEnabled()) {
@@ -925,23 +905,22 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
             }
 
             if (let Some(listener) <- l) {
-                listener.onChartScale(isTouchEvent, e, scaleX, scaleY)
+                listener.onChartScale(isTouchEvent, touchEvent, gestureEvent, scaleX, scaleY)
             }
 
             MPPointF.recycleInstance(trans)
         }
     }
 
-    public func onLongPressed(isTouchEvent: Bool, e: Any) {
-        this.startAction(isTouchEvent, e)
+    public func onLongPressed(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
+        this.startAction(isTouchEvent, touchEvent, gestureEvent)
 
-//        this.mLongPressStatus = true
         this.mLastGesture = ChartGesture.LONG_PRESS
 
         let l: ?OnChartGestureListener = this.bubbleChartModel.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartLongPressed(isTouchEvent, e)
+            listener.onChartLongPressed(isTouchEvent, touchEvent, gestureEvent)
         }
 
         if (!this.bubbleChartModel.isHighlightPerLongPressEnabled()) {
@@ -953,69 +932,68 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
         var x: Float64 = 0.0
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                x = touchEvent().touches[0].x
+                y = touchEvent().touches[0].y
             }
-            x = touch().touches[0].x
-            y = touch().touches[0].y
+
         } else {
- //TODO
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
             }
-            x = gesture().fingerList[0].localX
-            y = gesture().fingerList[0].localY
+            x = gestureEvent().fingerList[0].localX
+            y = gestureEvent().fingerList[0].localY
         }
         let h: ?Highlight = this.bubbleChartModel.getHighlightByTouchPoint(x, y)
         if (let Some(highlight) <- h) {
             if (!this.bubbleChartModel.getLongPressCursorEnabled()) {
-            	this.performHighlight(highlight, Option<TouchEvent>.None)
+                this.performHighlight(highlight, Option<TouchEvent>.None)
             }
+
         }
     }
 
-    public func getXyByEvent(isTouchEvent: Bool, e: Any): (Float64, Float64) {
+    public func getXyByEvent(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): (Float64, Float64) {
         var x: Float64 = 0.0
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return (0.0, 0.0)
+            } else {
+                x = touchEvent().touches[0].x
+                y = touchEvent().touches[0].y
             }
-            x = touch().touches[0].x
-            y = touch().touches[0].y
+
         } else {
- //TODO
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return (0.0, 0.0)
             }
-            x = gesture().fingerList[0].localX
-            y = gesture().fingerList[0].localY
+            x = gestureEvent().fingerList[0].localX
+            y = gestureEvent().fingerList[0].localY
         }
         return (x, y)
     }
 
-    public func onLongPressUp(isTouchEvent: Bool, e: Any) {
+    public func onLongPressUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mLastGesture = ChartGesture.LONG_PRESS
-        this.endAction(isTouchEvent, e)
+        this.endAction(isTouchEvent, touchEvent, gestureEvent)
     }
 
-    public func onLongPressCancel(isTouchEvent: Bool, e: Any) {
+    public func onLongPressCancel(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mLastGesture = ChartGesture.LONG_PRESS
-        this.endAction(isTouchEvent, e)
+        this.endAction(isTouchEvent, touchEvent, gestureEvent)
     }
 
-    public func onSingleTapUp(isTouchEvent: Bool, e: Any): Unit {
-        this.actionDown(isTouchEvent, e)
+    public func onSingleTapUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
+        this.actionDown(isTouchEvent, touchEvent, gestureEvent)
         this.mLastGesture = ChartGesture.SINGLE_TAP
 
         let l: ?OnChartGestureListener = this.bubbleChartModel.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartSingleTapped(isTouchEvent, e)
+            listener.onChartSingleTapped(isTouchEvent, touchEvent, gestureEvent)
         }
 
         if (!this.bubbleChartModel.isHighlightPerTapEnabled()) {
@@ -1025,29 +1003,29 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
         var x: Float64 = 0.0
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                x = touchEvent().touches[0].x
+                y = touchEvent().touches[0].y
             }
-            x = touch().touches[0].x
-            y = touch().touches[0].y
+
         } else {
- //TODO
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
             }
-            x = gesture().fingerList[0].localX
-            y = gesture().fingerList[0].localY
+            x = gestureEvent().fingerList[0].localX
+            y = gestureEvent().fingerList[0].localY
         }
         let h: ?Highlight = this.bubbleChartModel.getHighlightByTouchPoint(x, y)
         if (let Some(highlight) <- h) {
             if (!this.bubbleChartModel.getLongPressCursorEnabled()) {
                 this.performHighlight(highlight, Option<TouchEvent>.None)
             }
+
         }
 
-        this.actionUp(isTouchEvent, e)
+        this.actionUp(isTouchEvent, touchEvent, gestureEvent)
     }
 
     public func onFling(isTouchEvent: Bool, e1: TouchEvent, e2: TouchEvent, velocityX: Float64, velocityY: Float64): Bool {
@@ -1056,7 +1034,7 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
         let l: ?OnChartGestureListener = this.bubbleChartModel.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartFling(isTouchEvent, e1, e2, velocityX, velocityY)
+            listener.onChartFling(isTouchEvent, e1, Option<GestureEvent>.None, e2, velocityX, velocityY)
         }
 
         return false
@@ -1068,16 +1046,16 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
     }
 
     public func computeScroll(event: GestureEvent) {
-        var angle = event.angle;
-        angle = (angle * Float64.getPI()) / 180.0;
-        var speedX = event.speed * cos(angle);
-        var speedY = event.speed * sin(angle);
+        var angle = event.angle
+        angle = (angle * Float64.getPI()) / 180.0
+        var speedX = event.speed * cos(angle)
+        var speedY = event.speed * sin(angle)
         if (speedX == 0.0 && speedY == 0.0) {
-            return;
+            return
         }
 
-        speedX *= this.bubbleChartModel.getDragDecelerationFrictionCoef() / 30.0;
-        speedY *= this.bubbleChartModel.getDragDecelerationFrictionCoef() / 30.0;
+        speedX *= this.bubbleChartModel.getDragDecelerationFrictionCoef() / 30.0
+        speedY *= this.bubbleChartModel.getDragDecelerationFrictionCoef() / 30.0
 
         let dragDistanceX: Float64 =  if(this.bubbleChartModel.isDragXEnabled()) { speedX} else {0.0 }
         let dragDistanceY: Float64 = if(this.bubbleChartModel.isDragYEnabled()) {speedY }else { 0.0}
@@ -1091,55 +1069,26 @@ public class BubbleChartTouchListener <: ChartTouchListener<BubbleData, IBubbleD
             iterations: 1,
             begin: 0.0,
             end: 1.0
-        );
+        )
 
         if (let Some(animatorResult) <- this.animatorResult) {
-            this.animatorIsPlaying = false;
-            animatorResult.reset(options);
+            this.animatorIsPlaying = false
+            animatorResult.reset(options)
         } else {
-            this.animatorResult = AnimatorResult(options);
+            this.animatorResult = AnimatorResult(options)
         }
 
         this.animatorResult().onframe = {value: Float64 =>
-            let x = (dragDistanceX * value);
-            let y = (dragDistanceY * value);
-            this.performDrag(false, event, x, y);
-            this.mMatrix = this.bubbleChartModel.getViewPortHandler().refresh(this.mMatrix, this.bubbleChartModel, true);
+            let x = (dragDistanceX * value)
+            let y = (dragDistanceY * value)
+            this.performDrag(false, Option<TouchEvent>.None , event, x, y)
+            this.mMatrix = this.bubbleChartModel.getViewPortHandler().refresh(this.mMatrix, this.bubbleChartModel, true)
         }
 
         this.animatorResult().onfinish = { =>
-            this.animatorIsPlaying = false;
+            this.animatorIsPlaying = false
         }
-        this.animatorResult().play();
-        this.animatorIsPlaying = true;
-    }
-
-    private func calculateSwipe(event: TouchEvent, isTouchEvent: Bool) {
-        this.mLongPressStatus = false
-        let curPointX: Float64 = event.touches[0].x;
-        let curPointY: Float64 = event.touches[0].y;
-        if (this.downPointX != -1.0 && abs(curPointX - this.downPointX) <= 10.0) {
-            let h: ?Highlight = this.bubbleChartModel.getHighlightByTouchPoint(curPointX, curPointY);
-            if (let Some(highlight) <- h) {
-                this.performHighlight(highlight, Option<TouchEvent>.None);
-            }
-            let l: ?OnChartGestureListener = this.bubbleChartModel.getOnChartGestureListener();
-            if (let Some(listener) <- l) {
-            	listener.onChartMove(isTouchEvent, event);
-            }
-        } else if (this.downPointX != -1.0 && abs(curPointX - this.downPointX) >= 50.0) {
-            let x: Float64 = if(this.bubbleChartModel.isDragXEnabled()) { curPointX - this.mTouchStartPoint.x}else {0.0 }
-            let y: Float64 = if(this.bubbleChartModel.isDragYEnabled()) {curPointY - this.mTouchStartPoint.y }else { 0.0}
-            this.bubbleChartModel.highlightValueForObject(Option<Highlight>.None, true);
-            if (this.bubbleChartModel.getSwipeEnabled()) {
-                this.performSwipe(true, event, x, y);
-            }
-        }
-    }
-    private func performSwipe(isTouchEvent: Bool, event: Any, distanceX: Float64, distanceY: Float64) {
-        let l: ?OnChartGestureListener = this.bubbleChartModel.getOnChartGestureListener();
-        if (let Some(listener) <- l) {
-            listener.onChartTranslate(isTouchEvent, event, distanceX, distanceY);
-        }
+        this.animatorResult().play()
+        this.animatorIsPlaying = true
     }
 }

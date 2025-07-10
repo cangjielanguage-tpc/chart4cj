@@ -3,6 +3,10 @@
  */
 package ohos_app_cangjie_entry.waterfallPage
 
+internal import ohos.resource_manager.*
+internal import ohos_app_cangjie_entry.utils.Util
+internal import ohos_app_cangjie_entry.globalAbilityContext
+
 internal import kit.UIKit.*
 
 internal import std.collection.ArrayList

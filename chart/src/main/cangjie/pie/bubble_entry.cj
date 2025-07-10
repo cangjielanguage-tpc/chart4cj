@@ -4,6 +4,7 @@
 package chart.pie
 
 public class BubblesEntry <: EntryOhos {
+    let FLAG: String = "BubblesEntry"
     private var mSize: Float64 = 0.0
 
     public init(x: Float64, y: Float64, size!: Float64 = 0.0, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None, data!: ?Any = Option<Any>.None) {
@@ -26,5 +27,8 @@ public class BubblesEntry <: EntryOhos {
 
     public func setSize(size: Float64): Unit {
         this.mSize = size
+    }
+    public func toString(): String {
+        return FLAG
     }
 }

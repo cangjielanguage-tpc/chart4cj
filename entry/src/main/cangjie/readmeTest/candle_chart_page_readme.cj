@@ -27,6 +27,8 @@ class CandleChartPageReadme {
         this.model.setMaxVisibleValueCount(60) // 设置图表最大可见数值数量
         this.model.setDrawGridBackground(true) // 设置绘制网格背景
         this.model.setGridBackgroundColor(0xffffff) // 设置绘制网格背景颜色
+        this.model.setDrawMarkers(true)
+        this.model.setMarker(MarkerView())
 
         let xAxis: ?XAxis = this.model.getXAxis() // 获取 X 轴对象
         if (let Some(x) <- xAxis) {
@@ -96,6 +98,9 @@ class CandleChartPageReadme {
         dataSet.setIncreasingColor(0xcd4e2e) // 设置蜡烛图上涨蜡烛的颜色
         dataSet.setIncreasingPaintStyle(Style.STROKE) // 设置蜡烛图上涨蜡烛的绘制样式为描边
         dataSet.setNeutralColor(0x0000ff) // 设置蜡烛图中性蜡烛的颜色
+
+        dataSet.setHighlightEnabled(true)
+        dataSet.setHighLightColor(Color.RED.toUInt32())
 
         // 创建蜡烛图数据
         let data: CandleData = CandleData([dataSet])

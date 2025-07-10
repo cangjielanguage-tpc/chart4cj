@@ -20,6 +20,7 @@ class HorizontalBarNegativeChartPage {
 
         this.model.setDrawBarShadow(false)
         this.model.setDrawValueAboveBar(true)
+        this.model.setDragDecelerationEnabled(true);
 
         let description: Description = this.model.getDescription()
 
@@ -29,9 +30,10 @@ class HorizontalBarNegativeChartPage {
 
         let xAxis: ?XAxis = this.model.getXAxis()
         if (let Some(xaxis) <- this.xAxis) {
-            xaxis.setPosition(XAxisPosition.BOTTOM)
-            xaxis.setDrawGridLines(false)
-            xaxis.setLabelCount(7, Option<Bool>.None)
+            xaxis.setPosition(XAxisPosition.BOTTOM);
+            xaxis.setDrawGridLines(false);
+            xaxis.setGranularity(1.0);
+            xaxis.setLabelCount(7, false);
             xaxis.setDrawAxisLine(true)
         }
 

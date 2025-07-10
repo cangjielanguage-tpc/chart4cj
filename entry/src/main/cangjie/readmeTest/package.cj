@@ -3,6 +3,8 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
+internal import ohos_app_cangjie_entry.customcomponents.*
+
 internal import kit.UIKit.*
 
 internal import chart.utils.*
@@ -22,6 +24,12 @@ internal import std.collection.{ArrayList}
 internal import std.math.*
 internal import std.random.Random
 internal import std.convert.Formattable
+import ohos.state_macro_manage.*
 
+extend<T> Option<T> {
+    operator func ()(): T {
+        this.getOrThrow()
+    }
+}
 
 

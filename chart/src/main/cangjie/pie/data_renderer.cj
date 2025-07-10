@@ -36,14 +36,14 @@ public abstract class DataRenderer <: Renderer {
 
         this.mValuePaint = ChartPaint()
 
-        this.mValuePaint.setColor("#3F3F3F")
+        this.mValuePaint.setColor(Color(0x3F3F3F))
         this.mValuePaint.setTextAlign(TextAlignStyle.Center)
         this.mValuePaint.setTextSize(9.0)
 
         this.mHighlightPaint = ChartPaint()
         this.mHighlightPaint.setStyle(Style.STROKE)
         this.mHighlightPaint.setStrokeWidth(2.0)
-        this.mHighlightPaint.setColor("#FFBB73")
+        this.mHighlightPaint.setColor(Color(0xFFBB73))
     }
 
     /**

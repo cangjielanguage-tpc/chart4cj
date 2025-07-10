@@ -4,6 +4,7 @@
 package chart.pie
 
 public class BarEntry <: EntryOhos {
+    let FLAG: String = "BarEntry"
     private var mYVals: Array<Float64> = []
     private var mRanges: ?Array<RangeChart> = None
     private var mNegativeSum: Float64 = 0.0
@@ -165,5 +166,9 @@ public class BarEntry <: EntryOhos {
                 }
             }
 
+    }
+
+    public func toString(): String {
+        return FLAG
     }
 }

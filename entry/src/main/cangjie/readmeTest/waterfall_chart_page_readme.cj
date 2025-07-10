@@ -44,6 +44,9 @@ class WaterfallChartPageReadme {
         this.model.setDrawBarShadow(false)
         // 设置瀑布图的数值在柱体上方
         this.model.setDrawValueAboveBar(true)
+        this.model.setHighlightFullBarEnabled(true)
+        this.model.setDrawMarkers(true)
+        this.model.setMarker(MarkerView())
 
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(laxis) <- this.leftAxis) {
@@ -92,6 +95,8 @@ class WaterfallChartPageReadme {
         // 为柱体添加颜色信息
         this.dataSet.setColorByColor(0x2b89ab)
         this.dataSet.setValueTextSize(10.0)
+        this.dataSet.setHighlightEnabled(true)
+        this.dataSet.setHighLightColor(Color.RED.toUInt32())
 
         let dataSetList: ArrayList<IWaterfallDataSet> = ArrayList<IWaterfallDataSet>()
         dataSetList.add(this.dataSet)

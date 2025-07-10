@@ -20,6 +20,7 @@ class HorizontalBarChartPage {
 
         this.model.setDrawBarShadow(false)
         this.model.setDrawValueAboveBar(true)
+        this.model.setHighlightFullBarEnabled(true)
 
         let description: Description = this.model.getDescription()
 
@@ -71,6 +72,9 @@ class HorizontalBarChartPage {
         dataSet.setDrawIcons(false)
 
         dataSet.setColorByColor(0x8CEAFF)
+
+        dataSet.setHighlightEnabled(true)
+        dataSet.setHighLightColor(Color.RED.toUInt32())
 
         let dataSetList: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
         dataSetList.add(dataSet)

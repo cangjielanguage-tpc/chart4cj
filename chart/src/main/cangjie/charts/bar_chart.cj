@@ -5,6 +5,7 @@
 package chart.charts
 
 import ohos.state_macro_manage.*
+import ohos.hilog.Hilog
 
 @Component
 public class BarChart {
@@ -13,13 +14,13 @@ public class BarChart {
     private var setting: ?RenderingContextSettings = Option<RenderingContextSettings>.None
     private var context2D: ?CanvasRenderingContext2D = Option<CanvasRenderingContext2D>.None
 
-    @State var customUiInfo: ?BarCustomUiInfo = Option<BarCustomUiInfo>.None
+    @State var customUiInfo: BarCustomUiInfo = BarCustomUiInfo()
     @State var customUiTriggerEvent: EventType = EventType.LongPress
-
     @BuilderParam var customUiBuilder: () -> Unit = emptyBuilder
 
     protected override func aboutToAppear() {
         this.setting = RenderingContextSettings(antialias: this.antiAliasing)
+        this.context2D = CanvasRenderingContext2D(this.setting())
         this.context2D = CanvasRenderingContext2D(this.setting())
     }
 
@@ -31,29 +32,26 @@ public class BarChart {
         this.model.invalidate()
     }
 
-    public func calcCustomUiInfo(ev: Any) {
-        if(let Some(customUiInfo) <- this.customUiInfo) {
-            if(customUiInfo.width == 0.0 || customUiInfo.height == 0.0) {
-                return
-            }
-            let pos = this.model.calcPosition(false, ev)
-            let entryData = this.model.getBarEntryByTouchPoint(pos[0], pos[1])
-            if (let Some(entry) <- entryData) {
-                let vph = this.model.getViewPortHandler()
-                let isInbounds = vph.isInBounds(pos[0], pos[1])
-                // 距离左侧距离
-                let offsetLeft = pos[0] - vph.offsetLeft()
-                // 距离右侧
-                let offsetRight = vph.getChartWidth() - pos[0] - vph.offsetRight()
-                customUiInfo.isInbounds = isInbounds
-                customUiInfo.x = pos[0]
-                customUiInfo.y = pos[1]
-                customUiInfo.offsetLeft = offsetLeft
-                customUiInfo.offsetRight = offsetRight
-                customUiInfo.data = entry
-
-                customUiInfo.showUi = true
-            }
+    public func calcCustomUiInfo(touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
+        if(this.customUiInfo.width == 0.0 || this.customUiInfo.height == 0.0) {
+            return
+        }
+        let pos = this.model.calcPosition(false, touchEvent, gestureEvent)
+        let entryData = this.model.getBarEntryByTouchPoint(pos[0], pos[1])
+        if (let Some(entry) <- entryData) {
+            let vph = this.model.getViewPortHandler()
+            let isInbounds = vph.isInBounds(pos[0], pos[1])
+            // 距离左侧距离
+            let offsetLeft = pos[0] - vph.offsetLeft()
+            // 距离右侧
+            let offsetRight = vph.getChartWidth() - pos[0] - vph.offsetRight()
+            this.customUiInfo.isInbounds = isInbounds
+            this.customUiInfo.x = pos[0]
+            this.customUiInfo.y = pos[1]
+            this.customUiInfo.offsetLeft = offsetLeft
+            this.customUiInfo.offsetRight = offsetRight
+            this.customUiInfo.data = entry
+            this.customUiInfo.showUi = true
         }
     }
 
@@ -83,57 +81,55 @@ public class BarChart {
                             SwipeGesture()
                                 .onAction({event: GestureEvent =>
                                     if (this.model.isDragDecelerationEnabled()) {
-                                        this.model.computeScroll(event);
+                                        this.model.computeScroll(event)
                                     }
                                 }),
                             TapGesture( count: 2 )
                                 .onAction({event: GestureEvent =>
-                                    this.model.onDoubleTap(false, event);
+                                    this.model.onDoubleTap(false, Option<TouchEvent>.None, event)
                                     if (this.customUiTriggerEvent == EventType.DoubleTap &&
                                         this.model.getEventControl().eventIsEnable(EventType.DoubleTap)() && this.model.getTouchEnabled()
                                     ) {
-                                        this.calcCustomUiInfo(event);
+                                        this.calcCustomUiInfo(Option<TouchEvent>.None, event)
                                     }
                                 }),
                             TapGesture( count: 1 )
                                 .onAction({event: GestureEvent =>
-                                    this.model.onSingleTapUp(false, event);
+                                    this.model.onSingleTapUp(false, Option<TouchEvent>.None, event)
                                     if (this.customUiTriggerEvent == EventType.SingleTap &&
                                         this.model.getEventControl().eventIsEnable(EventType.SingleTap)() && this.model.getTouchEnabled()
                                     ) {
-                                        this.calcCustomUiInfo(event);
+                                        this.calcCustomUiInfo(Option<TouchEvent>.None, event)
                                     }
                                 }),
                             LongPressGesture()
                                 .onAction({event: GestureEvent =>
-                                    this.model.onLongPress(false, LongPressType.DOWN, event);
+                                    this.model.onLongPress(false, LongPressType.DOWN, Option<TouchEvent>.None, event)
                                     if (this.customUiTriggerEvent == EventType.LongPress &&
                                         this.model.getEventControl().eventIsEnable(EventType.LongPress)() && this.model.getTouchEnabled()
                                     ) {
-                                        this.calcCustomUiInfo(event);
+                                        this.calcCustomUiInfo(Option<TouchEvent>.None, event)
                                     }
                                 })
                                 .onActionEnd({event: GestureEvent =>
-                                    this.model.onLongPress(false, LongPressType.UP, event);
+                                    this.model.onLongPress(false, LongPressType.UP, Option<TouchEvent>.None, event)
                                 }),
                             PinchGesture( fingers: 2 )
                                 .onActionStart({event: GestureEvent =>
-                                    this.model.onPinch(false, PinchActionType.START, event);
+                                    this.model.onPinch(false, PinchActionType.START, Option<TouchEvent>.None, event)
                                 })
                                 .onActionUpdate({event: GestureEvent =>
-                                    this.model.onPinch(false, PinchActionType.UPDATE, event);
+                                    this.model.onPinch(false, PinchActionType.UPDATE, Option<TouchEvent>.None, event)
                                 })
                                 .onActionEnd({event: GestureEvent =>
-                                    this.model.onPinch(false, PinchActionType.END, event);
+                                    this.model.onPinch(false, PinchActionType.END, Option<TouchEvent>.None, event)
                                 })
                         ]
                         )
                     )
-//                    .scale(x: if(this.model.getHorizontalFlip()) { -1} else { 1} )
                 }
-
                 // 自定义ui
-                if (this.customUiInfo.isSome() && this.customUiInfo().showUi) {
+                if (customUiInfo.width != 0.0 && customUiInfo.height != 0.0 && this.customUiInfo.showUi) {
                     this.customUiBuilder()
                 }
 

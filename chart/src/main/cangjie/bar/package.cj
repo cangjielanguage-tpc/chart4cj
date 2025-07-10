@@ -11,6 +11,7 @@ internal import ohos.component.*
 internal import ohos.base.*
 internal import ohos.device_info.*
 internal import ohos.animator.*
+internal import ohos.hilog.*
 
 internal import std.collection.{ArrayList,HashMap}
 internal import std.math.*

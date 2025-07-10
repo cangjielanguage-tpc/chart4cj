@@ -10,6 +10,7 @@ public open class Transformer {
      */
     protected var mMatrixOffset: Matrix = Matrix()
     protected var mViewPortHandler: ViewPortHandler
+    protected var matrix2D: Matrix2D = Matrix2D()
     protected var resultPath: Path2D = Path2D()
 
     public init(viewPortHandler: ViewPortHandler) {
@@ -25,7 +26,7 @@ public open class Transformer {
      * @param yChartMin
      */
     public func prepareMatrixValuePx(xChartMin: Float64, deltaX: Float64, deltaY: Float64, yChartMin: Float64) {
-        var scaleX: Float64 = this.mViewPortHandler.contentWidth() / deltaX
+        var scaleX: Float64 =   this.mViewPortHandler.contentWidth() / deltaX
         var scaleY: Float64 = this.mViewPortHandler.contentHeight() / deltaY
 
         if (scaleX == Float64.Max) {
@@ -88,14 +89,6 @@ public open class Transformer {
          this.getValueToPixelMatrix().mapPoints(tmpArray)
          return tmpArray
      }
-
-    public var mMBuffer1: Matrix = Matrix()
-    public func getValueToPixelMatrix(): Matrix {
-        mMBuffer1.set(mMatrixValueToPx)
-        mMBuffer1.postConcat(mViewPortHandler.mMatrixTouch)
-        mMBuffer1.postConcat(mMatrixOffset)
-        return mMBuffer1
-    }
 
     protected var valuePointsForGenerateTransformedValuesBubble: Array<Float64> = Array<Float64>(1, repeat: 0.0)
 
@@ -202,6 +195,28 @@ public open class Transformer {
         this.getValueToPixelMatrix().mapPoints(tmpArray)
         return tmpArray
     }
+
+    public func pathValueToPixel(path2d: Path2D): Path2D {
+        var path: Path2D = path2d
+        path = this.pathTransform(path, this.mMatrixValueToPx)
+        path = this.pathTransform(path, this.mViewPortHandler.getMatrixTouch())
+        path = this.pathTransform(path, this.mMatrixOffset)
+        return path
+    }
+
+    public func pathTransform(path: Path2D, matrix: Matrix): Path2D {
+        let values = matrix.getValues()
+        this.matrix2D.scaleX = values[Matrix.MSCALE_X]
+        this.matrix2D.scaleY = values[Matrix.MSCALE_Y]
+        this.matrix2D.translateX = vp2px(values[Matrix.MTRANS_X])().value
+        this.matrix2D.translateY = vp2px(values[Matrix.MTRANS_Y])().value
+        this.matrix2D.rotateX = values[Matrix.MSKEW_X]
+        this.matrix2D.rotateY = values[Matrix.MSKEW_Y]
+        this.resultPath = Path2D()
+        this.resultPath.addPath(path, this.matrix2D)
+        return this.resultPath
+    }
+
 
     /**
      * Transform an array of points with all matrices. VERY IMPORTANT: Keep
@@ -366,8 +381,15 @@ public open class Transformer {
         return this.mMatrixOffset
     }
 
-    var mMBuffer2: Matrix = Matrix()
+    public var mMBuffer1: Matrix = Matrix()
+    public func getValueToPixelMatrix(): Matrix {
+        mMBuffer1.set(mMatrixValueToPx)
+        mMBuffer1.postConcat(mViewPortHandler.mMatrixTouch)
+        mMBuffer1.postConcat(mMatrixOffset)
+        return mMBuffer1
+    }
 
+    var mMBuffer2: Matrix = Matrix()
     public func getPixelToValueMatrix(): Matrix {
         getValueToPixelMatrix().invert(mMBuffer2)
         return mMBuffer2

@@ -10,11 +10,13 @@ internal import ohos.component.*
 internal import ohos.base.*
 internal import ohos.device_info.*
 internal import ohos.animator.*
+internal import ohos.hilog.*
 
 internal import std.collection.{ArrayList}
 internal import std.math.*
 internal import std.convert.*
 internal import std.sort.*
+internal import std.time.DateTime
 
 extend<T> Option<T> {
     operator func ()(): T {

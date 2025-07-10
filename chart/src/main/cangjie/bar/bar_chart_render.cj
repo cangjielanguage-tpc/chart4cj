@@ -402,7 +402,9 @@ public open class BarChartRenderer <: DataRenderer {
                                 c,
                                 icon(),
                                 Utils.parseInt(px),
-                                Utils.parseInt(py)
+                                Utils.parseInt(py),
+                                icon().getWidth(),
+                                icon().getHeight()
                             )
                         }
                     }
@@ -466,7 +468,9 @@ public open class BarChartRenderer <: DataRenderer {
                                     c,
                                     icon(),
                                     Utils.parseInt(px),
-                                    Utils.parseInt(py)
+                                    Utils.parseInt(py),
+                                    icon().getWidth(),
+                                    icon().getHeight()
                                 )
                             }
 
@@ -534,7 +538,9 @@ public open class BarChartRenderer <: DataRenderer {
                                         c,
                                         icon(),
                                         (x + iconsOffset.x),
-                                        (y + iconsOffset.y)
+                                        (y + iconsOffset.y),
+                                        icon().getWidth(),
+                                        icon().getHeight()
                                     )
                                 }
                             }
@@ -613,9 +619,7 @@ public open class BarChartRenderer <: DataRenderer {
 
             let trans: ?Transformer = this.mChart.getTransformer(set().getAxisDependency())
             var highLightColor: UInt32 = set().getHighLightColor()
-            if (highLightColor == 0) {
-                highLightColor = 0x000000
-            }
+
             this.mHighlightPaint.setColor(Color(highLightColor))
             this.mHighlightPaint.setGlobalAlpha(set().getHighLightAlpha() / 255.0)
 

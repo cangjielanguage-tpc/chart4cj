@@ -32,6 +32,12 @@ class BarChartPageReadme {
         this.model.setGridBackgroundColor(0x500000ff) // 设置图表网格背景颜色
         this.model.setDrawBarShadow(false) // 设置不绘制图的柱体阴影背景
         this.model.setDrawValueAboveBar(true) // 设置瀑布图的数值在柱体上方
+        this.model.setHighlightFullBarEnabled(true)
+        this.model.setDrawMarkers(true)
+        this.model.setMarker(MarkerView())
+
+        this.model.setLongPressCursorEnabled(true)
+        this.model.setDrawLongPressMarkers(true)
 
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(leftaxis) <- this.leftAxis) {
@@ -101,12 +107,20 @@ class BarChartPageReadme {
         } else {
             set1 = BarDataSet(values1, "Company A")
             set1().setColorsByArr([0x2b89ab]) // 设置柱状图颜色
+            set1().setHighlightEnabled(true)
+            set1().setHighLightColor(Color.RED.toUInt32())
             set2 = BarDataSet(values2, "Company B")
             set2().setColorsByArr([0xcd4e2e])
+            set2().setHighlightEnabled(true)
+            set2().setHighLightColor(Color.RED.toUInt32())
             set3 = BarDataSet(values3, "Company C")
             set3().setColorsByArr([0xacc045])
+            set3().setHighlightEnabled(true)
+            set3().setHighLightColor(Color.RED.toUInt32())
             set4 = BarDataSet(values4, "Company D")
             set4().setColorsByArr([0x224058])
+            set4().setHighlightEnabled(true)
+            set4().setHighLightColor(Color.RED.toUInt32())
 
             let dataSets: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
             dataSets.add(set1())
@@ -115,6 +129,7 @@ class BarChartPageReadme {
             dataSets.add(set4())
 
             let data: BarData = BarData(dataSets)
+            data.setHighlightEnabled(true)
             this.model.setData(data)
         }
 
@@ -133,12 +148,7 @@ class BarChartPageReadme {
             // 可通过 barData.notifyDataSetChanged() 来触发数据更新，
             // 可通过 this.model.notifyDataSetChanged() 来触发坐标轴数据更新，
             // 可通过 this.model.invalidate() 来触发绘制更新。
-            BarChart(model: this.model)
+            BarChart( model: this.model)
         }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
-    }
-}
-extend<T> Option<T> {
-    operator func ()(): T {
-        this.getOrThrow()
     }
 }

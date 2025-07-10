@@ -3,9 +3,9 @@
 </div>
 
 <p align="center">
-<img alt="" src="https://img.shields.io/badge/release-v0.0.2-brightgreen" style="display: inline-block;" />
+<img alt="" src="https://img.shields.io/badge/release-v1.0.0-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/build-pass-brightgreen" style="display: inline-block;" />
-<img alt="" src="https://img.shields.io/badge/cjc-v0.53.18-brightgreen" style="display: inline-block;" />
+<img alt="" src="https://img.shields.io/badge/cjc-v1.0.0-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/cjcov-NA-brightgreen" style="display: inline-block;" />
 <img alt="" src="https://img.shields.io/badge/project-open-brightgreen" style="display: inline-block;" />
 </p>
@@ -21,7 +21,7 @@ chart4cj 是一个包含各种类型图表的图表库，主要用于业务数�
 - 支持柱状图（水平、垂直）
 - 支持气泡图
 - 支持瀑布图
-- 支持线形图(暂不支持曲线及其填充)
+- 支持线形图
 - 支持蜡烛图
 - 支持散点图
 - 支持雷达图
@@ -61,29 +61,29 @@ flowchart TD
 ### 源码目录
 
 ```shell
-├─AppScope
-├─doc        # API文档和使用手册存放目录                   
-├─entry      # 示例代码文件夹                  
-├─chart    # chart 库文件夹                   
-│  └─src
-│      └─main
-│          ├─cangjie
-│          │  └─src           # 框架代码目录   
-│          │      ├─bar       # 柱状图代码目录
-│          │      ├─basedata  # 基础依赖目录
-│          │      ├─bubble    # 气泡图代码目录
-│          │      ├─candle    # 蜡烛图代码目录
-│          │      ├─charts    # 各类型图表目录
-│          │      ├─components # 组件目录
-│          │      ├─line      # 线形图状图代码目录
-│          │      ├─pie       # 饼状图图代码目录
-│          │      ├─radar     # 雷达图代码目录
-│          │      ├─scatter   # 散点图代码目录
-│          │      ├─utils     # 工具类目录
-│          │      ├─waterfall # 瀑布图代码目录
-│          └─resources
-├─hvigor  # 构建工具目录
-├─README.md  # chart4cj 介绍及使用说明
+├─ AppScope
+├─ doc        # API文档和使用手册存放目录                   
+├─ entry      # 示例代码文件夹                  
+├─ chart    # chart 库文件夹                   
+│  └─ src
+│      └─ main
+│          ├─ cangjie
+│          │  └─ src            # 框架代码目录   
+│          │      ├─ bar        # 柱状图代码目录
+│          │      ├─ basedata   # 基础依赖目录
+│          │      ├─ bubble     # 气泡图代码目录
+│          │      ├─ candle     # 蜡烛图代码目录
+│          │      ├─ charts     # 各类型图表目录
+│          │      ├─ components # 组件目录
+│          │      ├─ line       # 线形图状图代码目录
+│          │      ├─ pie        # 饼状图图代码目录
+│          │      ├─ radar      # 雷达图代码目录
+│          │      ├─ scatter    # 散点图代码目录
+│          │      ├─ utils      # 工具类目录
+│          │      └─ waterfall  # 瀑布图代码目录
+│          └─ resources
+├─ hvigor  # 构建工具目录
+└─ README.md  # chart4cj 介绍及使用说明
 ```
 ## 接口说明
 
@@ -1810,14 +1810,8 @@ class CombinedChartPageReadme {
 
 在下述版本验证通过：
 
-    DevEco Studio 5.0.7.200
-    Cangjie Support Plugin 5.0.7.100
-
-    1. 仓颉 UI 未支持手势组件，影响图表手势操作后的高亮、缩放、平移、旋转功能；
-    2. 线形图曲线模式暂不支持；
-    3. 饼状图、线形图填充效果暂不支持；
-    4. 散点图的的散布形状不支持实心圆，仅支持空心圆；
-    5. 雷达图暂不支持填充功能；
+    DevEco Studio 5.1.0 Release
+    Cangjie Support Plugin 5.1.0.828
 
 ## 开源协议
 

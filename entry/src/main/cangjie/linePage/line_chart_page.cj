@@ -41,6 +41,9 @@ class LineChartPage {
 
         this.model.setMaxVisibleValueCount(60)
         this.model.setDrawGridBackground(false)
+        this.model.setLongPressCursorEnabled(true)
+        this.model.setDrawLongPressMarkers(true)
+        this.model.setLongPressMarker(LongPressMarkerView())
 
         this.limitLine1 = LimitLine(120.0, "Upper Limit")
         this.limitLine1.setLineWidth(4.0)

@@ -36,6 +36,8 @@ public class ContentItemData {
             ContentItem("Filled", d: "Colored area between two lines.", pagePath: "FilledAxisPage"))
         ContentItemData.itemData.add(
             ContentItem("Colorful", d: "Colorful line chart.", pagePath: "ColorfulPage"))
+        ContentItemData.itemData.add(
+            ContentItem("Cubic", d: "Cubic line chart.", pagePath: "CubicAxisPage"))
 
         //Bar Charts
         ContentItemData.itemData.add(ContentItem("Bar Charts"))
@@ -43,6 +45,8 @@ public class ContentItemData {
         ContentItemData.itemData.add(ContentItem("Basic ", d: "Simple bar chart.", pagePath: "ScrollBarChartPage"))
         ContentItemData.itemData.add(
             ContentItem("Basic Extension ", d: "Simple bar chart.", pagePath: "ScrollBarChartPage2"))
+        ContentItemData.itemData.add(
+            ContentItem("CustomUI ", d: "CustomUI.", pagePath: "BarCustomUIChartPage"))
         ContentItemData.itemData.add(
             ContentItem("Multiple", d: "Show multiple data sets.", pagePath: "BarChartMultiplePage"))
         ContentItemData.itemData.add(
@@ -62,6 +66,8 @@ public class ContentItemData {
             ContentItem("Stacked", d: "Stacked bar chart", pagePath: "StackedBarChartPage"))
         ContentItemData.itemData.add(
             ContentItem("Stacked 2", d: "Stacked bar chart with negative values", pagePath: "StackedNegativePage"))
+        ContentItemData.itemData.add(
+            ContentItem("SimpleWaterfallChartPage", d: "SimpleWaterfallChartPage", pagePath: "SimpleWaterfallChartPage"))
 
         //Pie Charts
         ContentItemData.itemData.add(ContentItem("Pie Charts"))

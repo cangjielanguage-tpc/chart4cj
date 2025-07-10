@@ -99,7 +99,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
     private var mExtraLeftOffset: Float64 = 0.0
     protected var width: Float64 = Utils.handleDataValues(50.0)
     protected var height: Float64 = Utils.handleDataValues(50.0)
-    protected var mHitTestMode: HitTestMode = HitTestMode.Default;
+    protected var mHitTestMode: HitTestMode = HitTestMode.Default
 
     public func getYChartMin(): Float64
 
@@ -515,10 +515,6 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
     public func highlightValueForObject(high: ?Highlight, callListener: Bool): Unit {
         var highlight = high
 
-        //    let callListenerBool: Bool = match (callListener) {
-        //    	case Some(_) => callListener()
-        //        case None => false
-        //    }
         var e: ?E = Option<E>.None
 
         if (highlight.isNone()) {
@@ -630,26 +626,16 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      * draws all MarkerViews on the highlighted positions
      */
     protected open func drawMarkers(c: CanvasRenderingContext2D): Unit {
-//        match (mLastGesture) {
-//            case LastGesture.SINGLE_TAP => ()
-//            case _ => return
-//        }
         if(this.mLastGesture != LastGesture.SINGLE_TAP) {
             return
         }
-
-        // let paints: ChartPaint[] = []
-
-        // if there is no marker view or drawing marker is disabled
-        if (this.mMarker.isNone() || this.isDrawMarkersEnabled() || !this.valuesToHighlight()) {
+        if (this.mMarker.isNone() || !this.isDrawMarkersEnabled() || !this.valuesToHighlight()) {
             return
         }
-
         if (let Some(h) <- this.mIndicesToHighlight) {
             if (let Some(md) <- this.mData) {
                 for (highlight in h) {
                     var dataSet: ?S = md.getDataSetByIndex(highlight.getDataSetIndex())
-
                     if (let Some(d) <- dataSet) {
                         let e: ?E = md.getEntryForHighlight(highlight)
                         var entryIndex: Int64
@@ -676,11 +662,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         // return paints
     }
 
-    protected func drawLongPressMarkers(c: CanvasRenderingContext2D): Unit {
-//        match (mLastGesture) {
-//            case LastGesture.LONG_PRESS => ()
-//            case _ => return
-//        }
+    protected open func drawLongPressMarkers(c: CanvasRenderingContext2D): Unit {
         if(this.mLastGesture != LastGesture.LONG_PRESS ) {
             return
         }
@@ -1335,16 +1317,6 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
     }
 
     /**
-     * Sets a custom highligher object for the chart that handles / processes
-     * all highlight touch events performed on the chart-view.
-     *
-     * @param highlighter
-     */
-    public func setHighlighter<P, D, S, E>(highlighter: ChartHighlighter<P, D, S, E>) where P <: BarLineScatterCandleBubbleDataProvider<D, S, E> {
-        this.mHighlighter = highlighter
-    }
-
-    /**
      * Returns a recyclable MPPointF instance.
      *
      * @return
@@ -1411,6 +1383,6 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         }
     }
     public func getHitTestMode(): HitTestMode {
-        return this.mHitTestMode;
+        return this.mHitTestMode
     }
 }

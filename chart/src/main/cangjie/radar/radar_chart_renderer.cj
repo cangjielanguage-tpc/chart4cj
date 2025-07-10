@@ -214,7 +214,9 @@ public class RadarChartRenderer <: LineRadarRenderer {
                                 c,
                                 icon,
                                 floor(pIcon.x),
-                                floor(pIcon.y)
+                                floor(pIcon.y),
+                                icon.getWidth(),
+                                icon.getHeight()
                             )
                         }
                     }
@@ -351,7 +353,7 @@ public class RadarChartRenderer <: LineRadarRenderer {
                 }
 
                 high.setDraw(pOut.x, pOut.y)
-                //TODO this.drawHighlightLines(c, pOut.x, pOut.y, set())
+                this.drawHighlightLines(c, pOut.x, pOut.y, set())
                 if (set().isDrawHighlightCircleEnabled()) {
                     if (!pOut.x.isNaN() && !pOut.y.isNaN()) {
                         var strokeColor: UInt32 = set().getHighlightCircleStrokeColor()
@@ -413,8 +415,7 @@ public class RadarChartRenderer <: LineRadarRenderer {
             this.mHighlightCirclePaint.setStyle(Style.FILL)
             Utils.resetContext2DStyle(c, this.mHighlightCirclePaint)
             c.closePath()
-            //TODO c.fill(p)
-            c.stroke(p)
+            c.fill(p)
         }
 
         if (strokeColor != ColorTemplate.COLOR_NONE) {
@@ -429,5 +430,54 @@ public class RadarChartRenderer <: LineRadarRenderer {
         }
 
         c.restore()
+    }
+
+    protected func drawHighlightLines(c: CanvasRenderingContext2D, x: Float64, y: Float64, set: IRadarDataSet): Unit {
+        let highLightColor = set.getHighLightColor()
+        this.mHighlightPaint.setColor(Color(highLightColor))
+
+        this.mHighlightPaint.setStrokeWidth(set.getHighlightLineWidth())
+        this.mHighlightPaint.setDashPathEffect(set.getDashPathEffectHighlight())
+        Utils.resetContext2DStyle(c, this.mHighlightPaint)
+        if (set.isVerticalHighlightIndicatorEnabled()) {
+            c.beginPath()
+
+            c.moveTo(x, if (let Some(handle) <- this.mViewPortHandler) {
+                handle.contentTop()
+            } else {
+                0.0
+            })
+            c.lineTo(x, if (let Some(handle) <- this.mViewPortHandler) {
+                handle.contentBottom()
+            } else {
+                0.0
+            })
+            c.stroke()
+            c.closePath()
+        }
+
+        if (set.isHorizontalHighlightIndicatorEnabled()) {
+            c.beginPath()
+
+            c.moveTo(
+                if (let Some(handle) <- this.mViewPortHandler) {
+                    handle.contentLeft()
+                } else {
+                    0.0
+                },
+                y
+            )
+            c.lineTo(
+                if (let Some(handle) <- this.mViewPortHandler) {
+                    handle.contentRight()
+                } else {
+                    0.0
+                },
+                y
+            )
+
+            c.stroke()
+            c.closePath()
+        }
     }
 }

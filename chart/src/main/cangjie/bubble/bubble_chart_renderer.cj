@@ -188,7 +188,9 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
                                         c,
                                         i,
                                         (x + iconsOffset.x),
-                                        (y + iconsOffset.y)
+                                        (y + iconsOffset.y),
+                                        i.getWidth(),
+                                        i.getHeight()
                                     )
                                 }
                             }
@@ -297,6 +299,7 @@ public class BubbleChartRenderer <: BarLineScatterCandleBubbleRenderer {
             return
         }
     }
+
     protected func isInboundsX(e: ?BubblesEntry, dataSet: IBubbleDataSet): Bool {
         if (let Some(entry) <- e) {
             let entryIndex = dataSet.getEntryIndexByEntry(entry)

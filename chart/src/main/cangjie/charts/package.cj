@@ -15,7 +15,7 @@ internal import chart.pie.{PieChartModel,PieData, IPieDataSet, PiEntry,IBarDataS
 internal import chart.bar.{BarChartModel,HorizontalBarChartModel,BarData,EventType,BarCustomUiInfo}
 internal import chart.bubble.{BubbleChartModel,BubbleData}
 internal import chart.waterfall.{WaterfallChartModel,WaterfallData,IWaterfallDataSet}
-internal import chart.line.{LineChartModel}
+internal import chart.line.{LineChartModel,LineCustomUiInfo}
 internal import chart.candle.{CandleStickChartModel,CandleData}
 internal import chart.scatter.{ScatterChartModel,ScatterData}
 internal import chart.radar.{RadarChartModel,RadarData, IRadarDataSet, RadarEntry}

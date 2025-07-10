@@ -44,9 +44,10 @@ class ScrollBarChartPage {
         this.model.setDrawBarShadow(false)
 
         this.model.setDrawValueAboveBar(false)
-        this.model.setHighlightFullBarEnabled(false)
-        //设置长按事件自定义view
-        //this.model.setLongPressMarker(LongPressMarkerView())
+        this.model.setHighlightFullBarEnabled(true)
+        this.model.setDrawMarkers(true)
+        this.normalMarker = MarkerView()
+        this.model.setMarker(this.normalMarker())
 
         this.limitLine1 = LimitLine(120.0, "Upper Limit")
         this.limitLine1.setLineWidth(4.0)
@@ -80,8 +81,7 @@ class ScrollBarChartPage {
             xaxis.setPosition(XAxisPosition.BOTTOM)
         }
 
-        this.normalMarker = MarkerView()
-        this.model.setMarker(this.normalMarker())
+
         //this.stackMarker = new CustomMarkerView()
         this.barData = this.getNormalData()
         this.model.setData(this.barData)
@@ -114,6 +114,8 @@ class ScrollBarChartPage {
         let dataSet: BarDataSet = BarDataSet(values, "DataSet")
         dataSet.setDrawIcons(false)
         dataSet.setColorByColor(0xFFC0CB)
+        dataSet.setHighlightEnabled(true)
+        dataSet.setHighLightColor(Color.RED.toUInt32())
 
         let dataSetList: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
         dataSetList.add((dataSet as IBarDataSet)())

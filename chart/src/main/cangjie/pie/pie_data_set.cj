@@ -194,9 +194,8 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
     }
 
     /** Gets the color for the highlighted sector */
-    // @Nullable
-    public func getHighlightColor(): UInt32 {
-        return this.mHighlightColor()
+    public func getHighlightColor(): ?UInt32 {
+        return this.mHighlightColor
     }
 
     /** Sets the color for the highlighted sector (null for using entry color) */

@@ -16,8 +16,6 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
 
     public init() {
         super()
-        // 子类去实现
-        //this.mChartTouchListener = PieRadarChartTouchListener<D, S, E>(this)
     }
 
     public func getMaxVisibleCount(): Int64 {
@@ -38,52 +36,32 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
         }
 
         match (event.eventType) {
-            case TouchType.Down => this.mChartTouchListener().actionDown(true, event)
-            case TouchType.Move => this.mChartTouchListener().actionMove(true, event)
-            case TouchType.Up => this.mChartTouchListener().actionUp(true, event)
+            case TouchType.Down => this.mChartTouchListener().actionDown(true, event, Option<GestureEvent>.None)
+            case TouchType.Move => this.mChartTouchListener().actionMove(true, event, Option<GestureEvent>.None)
+            case TouchType.Up => this.mChartTouchListener().actionUp(true, event, Option<GestureEvent>.None)
             case _ => ()
         }
     }
 
-    public func onSingleTapUp(isTouchEvent: Bool, event: TouchEvent): Unit {
+    public func onSingleTapUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         if (!this.mTouchEnabled) {
             return
         }
 
-        this.mChartTouchListener().onSingleTapUp(isTouchEvent, event)
+        this.mChartTouchListener().onSingleTapUp(isTouchEvent, touchEvent, gestureEvent)
     }
-//TODO GestureEvent 暂未支持
-//    public func onSingleTapUp(isTouchEvent: Bool, event: GestureEvent): Unit {
-//        if (!this.mTouchEnabled) {
-//            return
-//        }
-//
-//        this.mChartTouchListener().onSingleTapUp(isTouchEvent, event)
-//    }
 
-    public func onDoubleTap(isTouchEvent: Bool, event: TouchEvent): Unit {
+    public func onDoubleTap(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         if (!this.mTouchEnabled) {
             return
         }
-        this.mChartTouchListener().onDoubleTap(isTouchEvent, event)
+        this.mChartTouchListener().onDoubleTap(isTouchEvent, touchEvent, gestureEvent)
     }
- //TODO
-//    public func onDoubleTap(isTouchEvent: Bool, event: GestureEvent): Unit {
-//        if (!this.mTouchEnabled) {
-//            return
-//        }
-//        this.mChartTouchListener().onDoubleTap(isTouchEvent, event)
-//    }
 
     public func getData(): Any {
         return this.mData
     }
 
-    public func computeScroll(): Unit {
-        if (this.mChartTouchListener is PieRadarChartTouchListener<D, S, E>) {
-            (this.mChartTouchListener as PieRadarChartTouchListener<D, S, E>)().computeScroll()
-        }
-    }
 
     public open func notifyDataSetChanged() {
         if (let Some(md: ChartData<IPieDataSet, PiEntry>) <- this.mData) {
@@ -193,13 +171,6 @@ public abstract class PieRadarChartBaseModel<D, S, E> <: ChartModel<D, S, E> whe
         }
 
         let minOffset: Float64 = Utils.handleDataValues(this.mMinOffset)
-
-        //    if (this is RadarChartModel) {
-        //      const x: XAxis = this.getXAxis()
-        //      if (x.isEnabled() && x.isDrawLabelsEnabled()) {
-        //        minOffset = Math.max(minOffset, x.mLabelRotatedWidth)
-        //      }
-        //    }
 
         legendTop += this.getExtraTopOffset()
         legendRight += this.getExtraRightOffset()

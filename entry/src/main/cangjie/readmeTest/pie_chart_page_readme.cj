@@ -48,6 +48,8 @@ class PieChartPageReadme {
         this.model.setEntryLabelColor(0xFF000000)
         this.model.setEntryLabelTextSize(18.0)
         this.model.setRotationAngle(0.0) // 设置旋转角度
+        this.model.setDrawMarkers(true)
+        this.model.setMarker(MarkerView())
 
         // 通过触摸启用图表的旋转
         this.model.setRotationEnabled(true)
@@ -77,6 +79,8 @@ class PieChartPageReadme {
         dataSet.setIconsOffset(MPPointF(0.0, 40.0))
         // 设置选中时数据项的偏移距离
         dataSet.setSelectionShift(5.0)
+        dataSet.setHighlightColor(Color.PINK.toUInt32())
+        dataSet.setHighlightEnabled(true)
 
         // 添加颜色
         var colors: ArrayList<UInt32> = ArrayList<UInt32>()

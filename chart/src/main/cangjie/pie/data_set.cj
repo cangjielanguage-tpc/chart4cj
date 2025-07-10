@@ -462,32 +462,32 @@ public abstract open class DataSet<E> <: BaseDataSet<E> where E <: EntryOhos {
         }
         var low: Int64 = 0
         var high: Int64 = this.mEntries().size - 1
-
         while (low <= high) {
             var m: Int64 = (high + low) / 2
             m = Int64(Utils.parseInt(Float64(m)))
-            var entry: E = this.mEntries().get(m)()
+            var entry: ?E = this.mEntries().get(m)
             // if we have a match
-            if (xValue == entry.getX()) {
+            if (entry.isSome() && xValue == entry().getX()) {
                 while (m > 0 && this.mEntries().get(m - 1)().getX() == xValue) {
                     m--
                 }
 
                 high = this.mEntries().size
-
                 // loop over all "equal" entries
                 for (i in m..high) {
                     if (let Some(entriesTemp) <- this.mEntries) {
-                        entry = entriesTemp[m]
-                        if (entry.getX() == xValue) {
-                            entriesTemp.add(entry)
+                        entry = entriesTemp.get(m)
+                        if (entry().getX() == xValue) {
+                            entries.add(entry())
+                        } else {
+                            break
                         }
                     }
                 }
 
                 break
             } else {
-                if (xValue > entry.getX()) {
+                if (entry.isSome() && xValue > entry().getX()) {
                     low = m + 1
                 } else {
                     high = m - 1

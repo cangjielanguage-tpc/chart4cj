@@ -303,9 +303,6 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
         return this.mFillFormatter
     }
 
-    public func getDashPathEffectHighlight(): ?DashPathEffect {
-        return None
-    }
     public func isDrawSteppedEnabled(): Bool {
         return this.mMode == Mode.STEPPED
     }

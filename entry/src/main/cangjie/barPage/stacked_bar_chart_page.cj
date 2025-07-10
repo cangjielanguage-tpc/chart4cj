@@ -105,7 +105,7 @@ class StackedBarChartPage {
         dataSets.add(set1)
 
         let data: BarData = BarData(dataSets)
-        data.setValueTextColor(0xffffff)
+        data.setValueTextColor(0x000000)
         return data
     }
     private func getColors(): Array<UInt32> {

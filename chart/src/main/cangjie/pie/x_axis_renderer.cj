@@ -110,11 +110,11 @@ public open class XAxisRenderer <: AxisRenderer {
         let pointF: MPPointF = MPPointF.getInstance(0.0, 0.0)
         if (this.mXAxis.getPosition() == XAxisPosition.TOP) {
             pointF.x = 0.5
-            pointF.y = 0.8
+            pointF.y = 3.0
             this.drawLabels(c, this.mViewPortHandler().contentTop() - yoffset, pointF)
         } else if (this.mXAxis.getPosition() == XAxisPosition.TOP_INSIDE) {
             pointF.x = 0.5
-            pointF.y = 1.5
+            pointF.y = 1.0
             this.drawLabels(c, this.mViewPortHandler().contentTop() + yoffset + Float64(this.mXAxis.mLabelRotatedHeight),
                 pointF)
         } else if (this.mXAxis.getPosition() == XAxisPosition.BOTTOM) {

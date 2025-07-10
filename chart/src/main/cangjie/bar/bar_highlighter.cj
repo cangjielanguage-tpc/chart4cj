@@ -116,8 +116,7 @@ public open class BarHighlighter <: IHighlighter {
     }
 
     protected open func getDistance(x1: Float64, y1: Float64, x2: Float64, y2: Float64): Float64 {
-        let sum: Float64 = pow(x1-x2,2) + pow(y1-y2,2)
-        return sqrt(sum)
+        return abs(x1 - x2)
     }
 
     protected func getData(): ?BarData {
@@ -137,7 +136,6 @@ public open class BarHighlighter <: IHighlighter {
 
     protected func getHighlightForX(xVal: Float64, x: Float64, y: Float64): ?Highlight {
         let closestValues: ArrayList<Highlight> = this.getHighlightsAtXValue(xVal, x, y)
-
         if (closestValues.isEmpty()) {
             return None
         }
@@ -158,8 +156,7 @@ public open class BarHighlighter <: IHighlighter {
             }
         }
 
-        let detail: ?Highlight = this.getClosestHighlightByPixel(closestValues, x, y, axis,
-            this.mChart.getMaxHighlightDistance())
+        let detail: ?Highlight = this.getClosestHighlightByPixel(closestValues, x, y, axis, this.mChart.getMaxHighlightDistance())
 
         return detail
     }
@@ -176,8 +173,9 @@ public open class BarHighlighter <: IHighlighter {
                     if(!dataSet().isHighlightEnabled()) {
                        continue
                     }
+
+                    this.mHighlightBuffer.add(all: this.buildHighlights(s, i, xVal, Rounding.CLOSEST))
                 }
-                this.mHighlightBuffer.add(all: this.buildHighlights(dataSet(), i, xVal, Rounding.CLOSEST))
             }
         }
 
@@ -189,7 +187,6 @@ public open class BarHighlighter <: IHighlighter {
 
         //noinspection unchecked
         var entries: ArrayList<BarEntry> = set.getEntriesForXValue(xVal)
-
         if (entries.size == 0) {
             // Try to find closest x-value and take all entries for that x-value
             let closest: ?BarEntry = set.getEntryForXValue(xVal, Float64.NaN, rounding: rounding)
@@ -226,7 +223,6 @@ public open class BarHighlighter <: IHighlighter {
 
         for (i in 0..closestValues.size) {
             let high: Highlight = closestValues[i]
-
             if (axis.isNone() || high.getAxis()() == axis()) {
                 var cDistance: Float64 = 0.0
                 if ((this.mChart.getBarData())().isHighlightByXDistance()) {
@@ -234,7 +230,6 @@ public open class BarHighlighter <: IHighlighter {
                 } else {
                     cDistance = this.getDistance(x, y, high.getXPx(), high.getYPx())
                 }
-
                 if (cDistance < distance) {
                     closest = high
                     distance = cDistance

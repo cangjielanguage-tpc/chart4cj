@@ -27,6 +27,8 @@ class BubbleChartPageReadme {
 
         this.model.setMaxVisibleValueCount(60) // 设置图表最大可见数值数量
         this.model.setDrawGridBackground(false) // 设置不绘制网格背景
+        this.model.setDrawMarkers(true)
+        this.model.setMarker(MarkerView())
 
         let xAxis: ?XAxis = this.model.getXAxis() // 获取 X 轴对象
         if (let Some(x) <- xAxis) {
@@ -65,6 +67,9 @@ class BubbleChartPageReadme {
         // 创建散点图数据集
         let dataSet: BubbleDataSet = BubbleDataSet(values, "DataSet")
         dataSet.setDrawIcons(false)
+
+        dataSet.setHighlightEnabled(true)
+        dataSet.setHighLightColor(Color.RED.toUInt32())
 
         // 创建散点图数据集合
         let dataSetList: ArrayList<BubbleDataSet> = ArrayList<BubbleDataSet>()

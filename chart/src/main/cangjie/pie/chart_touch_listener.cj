@@ -40,11 +40,11 @@ public abstract class ChartTouchListener<D, S, E> where  D <: ChartData<S, E>,
      *
      * @param me
      */
-    public func startAction(isTouchEvent: Bool, me: Any) {
+    public func startAction(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         let l: ?OnChartGestureListener = this.mChart.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartGestureStart(isTouchEvent, me, this.mLastGesture)
+            listener.onChartGestureStart(isTouchEvent, touchEvent, gestureEvent, this.mLastGesture)
         }
     }
 
@@ -53,11 +53,11 @@ public abstract class ChartTouchListener<D, S, E> where  D <: ChartData<S, E>,
      *
      * @param me
      */
-    public func endAction(isTouchEvent: Bool, me: Any) {
+    public func endAction(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         let l: ?OnChartGestureListener = this.mChart.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartGestureStart(isTouchEvent, me, this.mLastGesture)
+            listener.onChartGestureStart(isTouchEvent, touchEvent, gestureEvent, this.mLastGesture)
         }
     }
 
@@ -120,25 +120,25 @@ public abstract class ChartTouchListener<D, S, E> where  D <: ChartData<S, E>,
 
     //public func onTouch(event: TouchEvent): Unit
 
-    public func onSingleTapUp(isTouchEvent: Bool, event: Any): Unit
+    public func onSingleTapUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 
-    public func onDoubleTap(isTouchEvent: Bool, event: Any): Unit
+    public func onDoubleTap(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 
-    public func onLongPressed(isTouchEvent: Bool, event: Any): Unit
+    public func onLongPressed(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 
-    public func onLongPressUp(isTouchEvent: Bool, event: Any): Unit
+    public func onLongPressUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 
-    public func onLongPressCancel(isTouchEvent: Bool, event: Any): Unit
+    public func onLongPressCancel(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 
-    public func actionDown(isTouchEvent: Bool, touchEvent: Any): Unit
+    public func actionDown(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 
-    public func actionMove(isTouchEvent: Bool, touchEvent: Any): Unit
+    public func actionMove(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 
-    public func actionUp(isTouchEvent: Bool, touchEvent: Any): Unit
+    public func actionUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 
-    public func actionCancel(isTouchEvent: Bool, event: Any): Unit
+    public func actionCancel(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 
-    public func actionPinchDown(isTouchEvent: Bool, event: Any): Unit
+    public func actionPinchDown(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 
-    public func actionPinchUp(isTouchEvent: Bool, event: Any): Unit
+    public func actionPinchUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 }

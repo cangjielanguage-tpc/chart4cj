@@ -13,10 +13,10 @@ internal import ohos.component.*
 internal import ohos.base.*
 internal import ohos.device_info.*
 internal import ohos.animator.*
-//internal import std.unicode.{UnicodeExtension}
 internal import std.time.*
 internal import std.convert.*
 internal import std.convert.*
+internal import std.regex.*
 internal import ohos.image.*
 internal import ohos.measure.Size as MeasureSize
 internal import ohos.measure.MeasureOptions
@@ -31,5 +31,5 @@ extend<T> Option<T> {
 
 public enum Event {
     | TouchEvent
-    //TODO | GestureEvent
+    | GestureEvent
 }

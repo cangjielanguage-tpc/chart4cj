@@ -24,6 +24,7 @@ class HalfPieChartPage {
         this.model.animateX(1000)
         this.model.setUsePercentValues(true)
         this.model.getDescription().setEnabled(false)
+        this.model.setExtraOffsets(5.0, 10.0, 5.0, 5.0);
 
         this.model.setDragDecelerationFrictionCoef(0.95)
 

@@ -87,6 +87,9 @@ class ScrollBarChartPage2 {
         this.model.setDrawValueAboveBar(false)
         this.model.setHighlightFullBarEnabled(false)
 
+        this.model.setDrawMarkers(true)
+        this.model.setMarker(BarMarkerView())
+
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(leftaxis) <- this.leftAxis) {
             leftaxis.setAxisMinimum(0.0)

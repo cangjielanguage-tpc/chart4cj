@@ -1,19 +1,19 @@
 /*
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  */
-package chart.pie
+package chart.scatter
 
-public open class ChartHighlighter<P, D, S, E> <: IHighlighter where P <: BarLineScatterCandleBubbleDataProvider<D, S, E> ,D <: ChartData<S, E>, S <: IDataSet<E>, E<: EntryOhos {
+public class ScatterHighlighter <: IHighlighter {
     /**
      * instance of the data-provider
      */
-    protected var mChart: P
+    protected var mChart: ScatterDataProvider
     /**
      * buffer for storing previously highlighted values
      */
     protected var mHighlightBuffer: ArrayList<Highlight> = ArrayList<Highlight>()
 
-    public init(chart: P) {
+    public init(chart: ScatterDataProvider) {
         this.mChart = chart
     }
 
@@ -22,7 +22,7 @@ public open class ChartHighlighter<P, D, S, E> <: IHighlighter where P <: BarLin
         let xVal: Float64 = pos.x
         MPPointD.recycleInstance(pos)
 
-        let high: Highlight = this.getHighlightForX(xVal, x, y)()
+        let high: ?Highlight = this.getHighlightForX(xVal, x, y)
         return high
     }
 
@@ -128,11 +128,11 @@ public open class ChartHighlighter<P, D, S, E> <: IHighlighter where P <: BarLin
     protected func getHighlightsAtXValue(xVal: Float64, x: Float64, y: Float64): ArrayList<Highlight> {
         this.mHighlightBuffer.clear()
 
-        let data: ?D = this.mChart.getData() as D
+        let data: ?ScatterData = this.mChart.getScatterData()
         if (let Some(d) <- data) {
             let dataSetCount: Int64 = d.getDataSetCount()
             for (i in 0..dataSetCount) {
-                let dataSet: ?S = d.getDataSetByIndex(i)
+                let dataSet: ?IScatterDataSet = d.getDataSetByIndex(i)
                 if(let Some(s) <- dataSet) {
                     if(!dataSet().isHighlightEnabled()) {
                        continue
@@ -154,15 +154,15 @@ public open class ChartHighlighter<P, D, S, E> <: IHighlighter where P <: BarLin
      * @param rounding
      * @return
      */
-    protected open func buildHighlights(set: S, dataSetIndex: Int64, xVal: Float64, rounding: Rounding): ArrayList<Highlight> {
+    protected open func buildHighlights(set: IScatterDataSet, dataSetIndex: Int64, xVal: Float64, rounding: Rounding): ArrayList<Highlight> {
         let highlights: ArrayList<Highlight> = ArrayList<Highlight>()
 
         //noinspection unchecked
-        var entries: ArrayList<E> = set.getEntriesForXValue(xVal)
+        var entries: ArrayList<EntryOhos> = set.getEntriesForXValue(xVal)
 
         if (entries.size == 0) {
             // Try to find closest x-value and take all entries for that x-value
-            let closest: ?E = set.getEntryForXValue(xVal, Float64.NaN, rounding: rounding)
+            let closest: ?EntryOhos = set.getEntryForXValue(xVal, Float64.NaN, rounding: rounding)
             if ( let Some(c) <- closest) {
                 //noinspection unchecked
                 entries = set.getEntriesForXValue(c.getX())
@@ -210,7 +210,7 @@ public open class ChartHighlighter<P, D, S, E> <: IHighlighter where P <: BarLin
 
             if (axis.isNone() || high.getAxis()() == axis()) {
                 var cDistance: Float64 = 0.0
-                if ((this.mChart.getData() as D)().isHighlightByXDistance()) {
+                if (this.mChart.getScatterData()().isHighlightByXDistance()) {
                     cDistance = abs(x - high.getXPx())
                 } else {
                     cDistance = this.getDistance(x, y, high.getXPx(), high.getYPx())

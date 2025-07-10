@@ -107,16 +107,6 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
                 }
                 return Highlight(h().getX(), y: h().getY(), dataSetIndex: h().getDataSetIndex(), dataIndex: 0,
                         stackIndex: -1, xPx: h().getXPx(), yPx: h().getYPx(), axis: h().getAxis())
-
-//                if (let Some(hh) <- h) {
-//                    if (!this.isHighlightFullBarEnabled()) {
-//                        return None
-//                    }
-//                    return Highlight(hh.getX(), y: hh.getY(), dataSetIndex: hh.getDataSetIndex(), dataIndex: 0,
-//                        stackIndex: -1, xPx: hh.getXPx(), yPx: hh.getYPx(), axis: hh.getAxis())
-//                } else {
-//                    return None
-//                }
             } else {
                 return None
             }
@@ -320,9 +310,9 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
         return None
     }
 
-    public func calcPosition(isTouchEvent: Bool, event: Any): (Float64, Float64) {
+    public func calcPosition(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): (Float64, Float64) {
         if (let Some(listener: BarChartTouchListener) <- this.mChartTouchListener) {
-            return listener.getXyByEvent(isTouchEvent, event)
+            return listener.getXyByEvent(isTouchEvent, touchEvent, gestureEvent)
         }
         return (0.0, 0.0)
     }

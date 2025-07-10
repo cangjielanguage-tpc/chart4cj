@@ -20,4 +20,5 @@ internal import ohos_app_cangjie_entry.scrollingCharts.data.*
 internal import ohos_app_cangjie_entry.scrollingCharts.data.Cosine
 internal import ohos_app_cangjie_entry.scrollingCharts.data.Sine
 
+import ohos.state_macro_manage.*
 

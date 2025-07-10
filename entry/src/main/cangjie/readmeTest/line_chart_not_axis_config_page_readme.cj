@@ -13,6 +13,7 @@ class LineChartNotAxisConfigPageReadme {
     var minOffset: Float64 = 15.0
     var leftAxis: ?YAxis = None
     var rightAxis: ?YAxis = None
+    var xAxis: ?XAxis = None
     var lineData: LineData = LineData()
 
     protected override func aboutToAppear() {
@@ -25,7 +26,14 @@ class LineChartNotAxisConfigPageReadme {
             v.setDrawInside(false) // 设置图例绘制在图表外部
         }
 
+        this.xAxis = this.model.getXAxis()
+        if (let Some(xaxis) <- this.xAxis) {
+            xaxis.setPosition(XAxisPosition.BOTTOM) // 设置X轴位置在底部
+        }
+
         this.lineData = this.setData(10, 100.0)
+        this.model.setDrawMarkers(true)
+        this.model.setMarker(MarkerView())
         this.model.setData(this.lineData)
     }
 
@@ -49,6 +57,7 @@ class LineChartNotAxisConfigPageReadme {
             values3.add(EntryOhos(Float64(i), val))
         }
 
+
         let dataSet = ArrayList<ILineDataSet>()
 
         let gradientFillColor = ArrayList<ChartColorStop>()
@@ -56,7 +65,8 @@ class LineChartNotAxisConfigPageReadme {
         gradientFillColor.add((0x00ffff, 1.0))
 
         let set1 = LineDataSet(values1, "DataSet 1")
-        set1.setDrawFilled(false) //设置不渐变色填充
+        set1.setDrawFilled(true) //设置不渐变色填充
+        set1.setFillColor(Color.PINK.toUInt32())
         set1.setDrawValues(true) //设置数据标签显示
         set1.setDrawCircles(true) //折线点画圆圈
         set1.setCircleColor(0x2b89ab) // 设置数据点的颜色
@@ -64,26 +74,32 @@ class LineChartNotAxisConfigPageReadme {
         set1.setMode(Mode.LINEAR) //直线模式
         set1.setColorByColor(0x2b89ab) //设置折线颜色
         set1.setLineWidth(2.5) //设置线宽
+
+        set1.setHighlightEnabled(true)
+        set1.setHighLightColor(Color.RED.toUInt32())
+
         dataSet.add(set1)
 
         let set2 = LineDataSet(values2, "DataSet 2")
-        set2.setDrawFilled(false) //设置不渐变色填充
+        set2.setDrawFilled(true) //设置不渐变色填充
+        set1.setFillColor(Color.BLUE.toUInt32())
         set2.setDrawValues(true) //设置数据标签显示
         set2.setDrawCircles(true) //折线点画圆圈
         set2.setCircleColor(0xcd4e2e) // 设置数据点的颜色
         set2.setCircleRadius(4.0) // 设置半径大小
-        set2.setMode(Mode.STEPPED) //90度线模式
+        set2.setMode(Mode.HORIZONTAL_BEZIER) //90度线模式
         set2.setColorByColor(0xcd4e2e) //设置折线颜色
         set2.setLineWidth(2.5) //设置线宽
         dataSet.add(set2)
 
         let set3 = LineDataSet(values3, "DataSet 3")
-        set3.setDrawFilled(false) //设置不渐变色填充
+        set3.setDrawFilled(true) //设置不渐变色填充
+        set1.setFillColor(Color.GREEN.toUInt32())
         set3.setDrawValues(true) //设置数据标签显示
         set3.setDrawCircles(true) //折线点画圆圈
         set3.setCircleColor(0xacc045) // 设置数据点的颜色
         set3.setCircleRadius(4.0) // 设置半径大小
-        set3.setMode(Mode.LINEAR) //直线模式
+        set3.setMode(Mode.CUBIC_BEZIER) //直线模式
         set3.setColorByColor(0xacc045) //设置折线颜色
         set3.setLineWidth(2.5) //设置线宽
         dataSet.add(set3)

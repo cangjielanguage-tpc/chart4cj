@@ -34,7 +34,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
             this.mBarBuffers = Array<WaterfallBuffer>(d.getDataSetCount(), repeat: WaterfallBuffer(0, 0, false))
             for (i in 0..this.mBarBuffers.size) {
                 let dataSet: ?IWaterfallDataSet = d.getDataSetByIndex(i)
-                if (let Some(ds) <- dataSet) {
+                if (let Some(ds: IWaterfallDataSet) <- dataSet) {
                     let size: Int64 = ds.getEntryCount() * 4 * (if (ds.isStacked()) {
                         ds.getStackSize()
                     } else {
@@ -92,9 +92,10 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
             var x: Float64 = 0.0
             let count = min(Int64(ceil(Float64(dataSet.getEntryCount()) * phaseX)), dataSet.getEntryCount())
             for (i in 0..count) {
-                let e: WaterfallEntry = dataSet.getEntryForIndex(i)()
-
-                x = e.getX()
+                let entry: ?WaterfallEntry = dataSet.getEntryForIndex(i)
+                if(let Some(e) <- entry) {
+                    x = e.getX()
+                }
 
                 this.mWaterfallShadowRectBuffer.left = x - barWidthHalf
                 this.mWaterfallShadowRectBuffer.right = x + barWidthHalf
@@ -159,23 +160,33 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
         let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
         if (isSingleColor) {
             this.mRenderPaint.setColor(Color(dataSet.getColor()))
-            if (dataSet.getOpacity().size != 0) {
-                this.mRenderPaint.setFilter(dataSet.getOpacity())
-            }
-        }
-        var maxTop = 0.0
-        if (buffer.getArrayTop().size > 0) {
-        	maxTop = buffer.getArrayTop()[buffer.getArrayTop().size - 1]
+            let opacity = dataSet.getOpacity()
+            this.mRenderPaint.setGlobalAlpha(opacity)
+
         }
 
-        var minBottom = 0.0
-        if (buffer.getArrayBottom().size > 0) {
-            minBottom = buffer.getArrayBottom()[0]
+        let arrayTop = buffer.getArrayTop()
+        var maxTop = arrayTop[0]
+        for (i in 1..arrayTop.size) {
+            if (arrayTop[i] > maxTop) {
+                maxTop = arrayTop[i]
+            }
+        }
+
+        let arrayBottom = buffer.getArrayBottom()
+        var minBottom = arrayBottom[0]
+
+        for (i in 1..arrayBottom.size) {
+            if (arrayBottom[i] < minBottom) {
+                minBottom = arrayBottom[i]
+            }
         }
         if (dataSet.getEnableMaxOrMinHighlightColor()) {
             for (i in 0..Int64(min((ceil(Float64(dataSet.getEntryCount()) * phaseX)), Float64(dataSet.getEntryCount())))) {
-                let e: WaterfallEntry = dataSet.getEntryForIndex(i)()
-                this.initMaxAndMinHighlightData(e, dataSet, maxTop, minBottom)
+                let entry: ?WaterfallEntry = dataSet.getEntryForIndex(i)
+                if(let Some(e) <- entry) {
+                    this.initMaxAndMinHighlightData(e, dataSet, maxTop, minBottom)
+                }
             }
         }
         // 获取Y轴刻度范围数据
@@ -216,85 +227,102 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
                 //绘制数据
                 let radius = (right - left) / 2.0
+
+                var path = Path2D()
+                var outBarIsEllipse = false
                 if (abs(top - bottom) > (right - left)) {
-                    this.drawRoundedRectangles(c, left, top, right, bottom, radius)
+                    path = this.drawRoundedRectangles(c, left, top, right, bottom, radius)
                 } else {
-                    this.drawCircle(c, left, top, radius)
+                    outBarIsEllipse = true
+                    path = this.drawEllipse(c, left, top, right, bottom)
                 }
 
-                let e: WaterfallEntry = dataSet.getEntryForIndex(j / 4)()
-                //绘制Y轴刻度范围图
-                for (i in 0..yAxisSegmentList.size) {
-                    let h = yAxisSegmentList[i]
-                    //canvas画布的y轴与图表的y轴方向相反
-                    var maxY = h.getMinY()
-                    var minY = h.getMaxY()
-                    if (maxY > e.getMaxY() || (minY < e.getMaxY() && minY < e.getMinY())) {
-                        continue
-                    }
-                    maxY = if (maxY <= e.getMinY()) {
-                        e.getMinY()
-                    } else {
-                        maxY
-                    }
-                    minY = if (minY >= e.getMaxY()) {
-                        e.getMaxY()
-                    } else {
-                        minY
-                    }
-                    let yArray = [0.0, minY, 0.0, maxY]
-                    trans?.pointValuesToPixel(yArray)
-                    if (abs(yArray[1] - yArray[3]) > (right - left)) {
-                        c.save()
-                        c.fillStyle(Color(h.getColor()))
-                        this.newMethod(c, left, right, radius, yArray, e, minY, maxY)
-                        c.restore()
-                    } else {
-                        if (h.getMaxY() > e.getMaxY() || h.getMinY() < e.getMinY()) {
+                let entry: ?WaterfallEntry = dataSet.getEntryForIndex(j / 4)
+                if(let Some(e) <- entry) {
+                    //绘制Y轴刻度范围图
+                    for (i in 0..yAxisSegmentList.size) {
+                        let h = yAxisSegmentList[i]
+                        //canvas画布的y轴与图表的y轴方向相反
+                        var maxY = h.getMinY()
+                        var minY = h.getMaxY()
+                        if (maxY > e.getMaxY() || (minY < e.getMaxY() && minY < e.getMinY())) {
                             continue
                         }
-                        c.save()
-                        c.fillStyle(Color(h.getColor()))
-                        if (yArray[3] + 2.0 * radius > bottom) {
-                            this.drawCircle(c, left, bottom - 2.0 * radius, radius)
+                        maxY = if (maxY <= e.getMinY()) {
+                            e.getMinY()
                         } else {
-                            this.drawCircle(c, left, yArray[3], radius)
+                            maxY
                         }
-                        c.restore()
+                        minY = if (minY >= e.getMaxY()) {
+                            e.getMaxY()
+                        } else {
+                            minY
+                        }
+                        let yArray = [0.0, minY, 0.0, maxY]
+                        trans?.pointValuesToPixel(yArray)
+                        if (abs(yArray[1] - yArray[3]) > (right - left)) {
+                            c.save()
+                            c.fillStyle(Color(h.getColor()))
+                            this.newMethod(c, left, right, radius, yArray, e, minY, maxY)
+                            c.restore()
+                        } else {
+                            if (h.getMaxY() > e.getMaxY() || h.getMinY() < e.getMinY()) {
+                                continue
+                            }
+                            c.save()
+                            c.fillStyle(Color(h.getColor()))
+                            if (yArray[3] + 2.0 * radius > bottom) {
+                                this.drawCircle(c, left, bottom - 2.0 * radius, radius)
+                            } else {
+                                this.drawCircle(c, left, yArray[3], radius)
+                            }
+                            c.restore()
+                        }
                     }
-                }
 
-                let highlights = e.getHighlights()
-                let topNum = this.getHighlightTop(e)
-                //绘制标记点
-                for (i in 0..highlights.size) {
-                    let h = highlights[i]
-                    //canvas画布的y轴与图表的y轴方向相反
-                    let maxY = h.getMinY()
-                    let minY = h.getMaxY()
-                    let yArray = [0.0, minY, 0.0, maxY]
-                    trans?.pointValuesToPixel(yArray)
-                    if (abs(yArray[1] - yArray[3]) > (right - left)) {
+                    let highlights = e.getHighlights()
+                    let topNum = this.getHighlightTop(e)
+                    //绘制标记点
+                    for (i in 0..highlights.size) {
+                        let h = highlights[i]
+                        //canvas画布的y轴与图表的y轴方向相反
+                        let maxY = h.getMinY()
+                        let minY = h.getMaxY()
+                        let yArray = [0.0, minY, 0.0, maxY]
+                        trans?.pointValuesToPixel(yArray)
+
+                        if (yArray[1] == yArray[3]) {
+                            c.save()
+                            c.fillStyle(h.getColor())
+                            c.clip(path)
+                            if (outBarIsEllipse) {
+                                this.drawEllipse(c, left, top, right, bottom)
+                            } else {
+                                if (yArray[1] == top) {
+                                //绘制最高点
+                                    this.drawEllipse(c, left, top, right, top + radius * 2.0)
+                                } else {
+                                //绘制最低点
+                                    this.drawEllipse(c, left, bottom - radius * 2.0, right, bottom)
+                                }
+                            }
+                            c.restore()
+                            continue
+                        }
+
                         c.save()
-                        c.fillStyle(Color(h.getColor()))
+                        c.fillStyle(h.getColor())
+                        c.clip(path)
                         if (e.getHighlights().size == 1) {
                             this.drawRoundedRectangles(c, left, yArray[1], right, yArray[3], radius)
                         } else {
-                            
-                            this.drawHighlights(c, left, radius, yArray, i, right, h, topNum)
+                            this.drawHighlights(c, left, radius, yArray, i, right, h, topNum, outBarIsEllipse)
                         }
                         c.restore()
-                    } else {
-                        c.save()
-                        c.fillStyle(Color(h.getColor()))
-                        if (yArray[3] + 2.0 * radius > bottom) {
-                            this.drawCircle(c, left, bottom - 2.0 * radius, radius)
-                        } else {
-                            this.drawCircle(c, left, yArray[3], radius)
-                        }
-                        c.restore()
+
                     }
                 }
+
             }
 
             if (drawBorder) {
@@ -315,9 +343,13 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
     }
 
     private func drawHighlights(c: CanvasRenderingContext2D, left: Float64, radius: Float64, yArray: Array<Float64>,
-        i: Int64, right: Float64, h: WaterfallHighlight, topNum: Float64) {
+        i: Int64, right: Float64, h: WaterfallHighlight, topNum: Float64, outBarIsEllipse: Bool) {
         c.beginPath()
         c.moveTo(left + radius, yArray[1])
+        if (outBarIsEllipse) {
+            this.drawEllipse(c, left, yArray[1], right, yArray[3])
+            return
+        }
         if (i == 0) {
             this.brawBottomCircularCylinder(c, right, yArray, radius, left)
         } else if (h.getMaxY() == topNum) {
@@ -380,6 +412,28 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
         c.closePath()
         c.fill()
     }
+
+    protected func drawEllipse(c: CanvasRenderingContext2D, left: Float64, top: Float64, right: Float64, bottom: Float64): Path2D {
+        let path = Path2D()
+        let centerX = (left + right) / 2.0
+        let centerY = (top + bottom) / 2.0
+        let radiusX = (right - left) / 2.0
+        let radiusY = (bottom - top) / 2.0
+        path.ellipse(centerX, centerY, radiusX, radiusY, 0.0, 0.0, 2.0 * Float64.getPI())
+        path.closePath()
+        c.fill(path)
+        return path
+    }
+
+    protected func drawRect(c: CanvasRenderingContext2D, left: Float64, top: Float64, right: Float64, bottom: Float64) {
+        c.moveTo(left, top)
+        c.lineTo(left, bottom)
+        c.lineTo(right, bottom)
+        c.lineTo(right, top)
+        c.lineTo(left, top)
+        c.fill()
+    }
+
     private func drawCircle(c: CanvasRenderingContext2D, left: Float64, top: Float64, radius: Float64) {
         c.beginPath()
         c.arc(left + radius, top + radius, radius, 0.0, 2.0 * Float64.getPI())
@@ -388,19 +442,20 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
     }
 
     private func drawRoundedRectangles(c: CanvasRenderingContext2D, left: Float64, top: Float64, right: Float64,
-        bottom: Float64, radius: Float64) {
-        c.beginPath()
-        c.moveTo(left + radius, top)
-        c.lineTo(right - radius, top)
-        c.arc(right - radius, top + radius, radius, 3.0 / 2.0 * Float64.getPI(), 0.0)
-        c.lineTo(right, bottom - radius)
-        c.arc(right - radius, bottom - radius, radius, 0.0, Float64.getPI() / 2.0)
-        c.lineTo(left + radius, bottom)
-        c.arc(left + radius, bottom - radius, radius, Float64.getPI() / 2.0, Float64.getPI())
-        c.lineTo(left, top + radius)
-        c.arc(left + radius, top + radius, radius, Float64.getPI(), 3.0 / 2.0 * Float64.getPI())
-        c.closePath()
-        c.fill()
+        bottom: Float64, radius: Float64): Path2D {
+        let path = Path2D()
+        path.moveTo(left + radius, top)
+        path.lineTo(right - radius, top)
+        path.arc(right - radius, top + radius, radius, 3.0 / 2.0 * Float64.getPI(), 0.0)
+        path.lineTo(right, bottom - radius)
+        path.arc(right - radius, bottom - radius, radius, 0.0, Float64.getPI() / 2.0)
+        path.lineTo(left + radius, bottom)
+        path.arc(left + radius, bottom - radius, radius, Float64.getPI() / 2.0, Float64.getPI())
+        path.lineTo(left, top + radius)
+        path.arc(left + radius, top + radius, radius, Float64.getPI(), 30.0 / 2.0 * Float64.getPI())
+        path.closePath()
+        c.fill(path)
+        return path
     }
 
     private func initMaxAndMinHighlightData(e: WaterfallEntry, dataSet: WaterfallDataSet, maxTop: Float64,
@@ -445,96 +500,101 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
             let count: Int64 = waterfallData().getDataSetCount()
             for (i in 0..count) {
-                let dataSet: IWaterfallDataSet = dataSets[i]
-
-                if (!this.shouldDrawValues(dataSet)) {
-                    continue
-                }
-
-                // apply the text-styling defined by the DataSet
-                this.applyValueTextStyle(dataSet)
-
-                let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
-
-                // calculate the correct offset depending on the draw position of
-                // the value
-                let valueTextHeight: Float64 = Utils.calcTextHeight(c, this.mValuePaint, "8")
-                posOffset = (if (drawValueAboveBar) {
-                    -valueOffsetPlus
-                } else {
-                    valueTextHeight + valueOffsetPlus
-                })
-                negOffset = (if (drawValueAboveBar) {
-                    valueTextHeight + valueOffsetPlus
-                } else {
-                    -valueOffsetPlus
-                })
-
-                if (isInverted) {
-                    posOffset = -posOffset - valueTextHeight
-                    negOffset = -negOffset - valueTextHeight
-                }
-
-                // get the buffer
-                let buffer: WaterfallBuffer = this.mBarBuffers[i]
-
-                let iconsOffset: MPPointF = MPPointF.getInstance(dataSet.getIconsOffset())
-                iconsOffset.x = Utils.handleDataValues(iconsOffset.x)
-                iconsOffset.y = Utils.handleDataValues(iconsOffset.y)
-                let limit: Int64 = buffer.buffer.size * if (let Some(m) <- this.mAnimator) {
-                    Int64(m.getPhaseX())
-                } else {
-                    1
-                }
-                for (j in 0..limit : 4) {
-                    let x: Float64 = (buffer.buffer[j] + buffer.buffer[j + 2]) / 2.0
-
-                    if (this.mViewPortHandler.isNone() || !this.mViewPortHandler().isInBoundsRight(x)) {
-                        break
-                    }
-
-                    if (this.mViewPortHandler.isNone() || !this.mViewPortHandler().isInBoundsY(buffer.buffer[j + 1])
-                        || !this.mViewPortHandler().isInBoundsLeft(x)) {
+                let waterfallDataSet: ?IWaterfallDataSet = dataSets.get(i)
+                if(let Some(dataSet) <- waterfallDataSet) {
+                    if (!this.shouldDrawValues(dataSet)) {
                         continue
                     }
 
-                    let entry: ?WaterfallEntry = dataSet.getEntryForIndex(j / 4)
-                    if(let Some(waterfallEntry) <- entry) {
-                        let val: Float64 = waterfallEntry.getY()
+                    // apply the text-styling defined by the DataSet
+                    this.applyValueTextStyle(dataSet)
 
-                        if (dataSet.isDrawValuesEnabled()) {
-                            let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
-                            if (let Some(format) <- valueFormatter) {
-                                 this.drawValue(c, format, val, waterfallEntry, i, x, (buffer.buffer[j + 3] + posOffset),
-                                    Color(dataSet.getValueTextColor(j / 4)))
-                            }
-                        }
-                        let icon: ?ChartPixelMap = waterfallEntry.getIcon()
-                        if (let Some(i) <- icon) {
-                            if (dataSet.isDrawIconsEnabled()) {
-                                var px: Float64 = x
-                                var py: Float64 = if (val >= 0.0) {
-                                    (buffer.buffer[j + 1] + posOffset)
-                                } else {
-                                    (buffer.buffer[j + 3] + negOffset)
-                                }
+                    let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
 
-                                px += iconsOffset.x
-                                py += iconsOffset.y
+                    // calculate the correct offset depending on the draw position of
+                    // the value
+                    let valueTextHeight: Float64 = Utils.calcTextHeight(c, this.mValuePaint, "8")
+                    posOffset = (if (drawValueAboveBar) {
+                        -valueOffsetPlus
+                    } else {
+                        valueTextHeight + valueOffsetPlus
+                    })
+                    negOffset = (if (drawValueAboveBar) {
+                        valueTextHeight + valueOffsetPlus
+                    } else {
+                        -valueOffsetPlus
+                    })
 
-                                Utils.drawImage(
-                                    c,
-                                    i,
-                                    Utils.parseInt(px),
-                                    Utils.parseInt(py)
-                                )
-                            }
-                        }
+                    if (isInverted) {
+                        posOffset = -posOffset - valueTextHeight
+                        negOffset = -negOffset - valueTextHeight
                     }
 
+                    // get the buffer
+                    let buffer: WaterfallBuffer = this.mBarBuffers[i]
+
+                    let iconsOffset: MPPointF = MPPointF.getInstance(dataSet.getIconsOffset())
+                    iconsOffset.x = Utils.handleDataValues(iconsOffset.x)
+                    iconsOffset.y = Utils.handleDataValues(iconsOffset.y)
+                    let limit: Int64 = buffer.buffer.size * if (let Some(m) <- this.mAnimator) {
+                        Int64(m.getPhaseX())
+                    } else {
+                        1
+                    }
+                    for (j in 0..limit : 4) {
+                        let x: Float64 = (buffer.buffer[j] + buffer.buffer[j + 2]) / 2.0
+
+                        if (this.mViewPortHandler.isNone() || !this.mViewPortHandler().isInBoundsRight(x)) {
+                            break
+                        }
+
+                        if (this.mViewPortHandler.isNone() || !this.mViewPortHandler().isInBoundsY(buffer.buffer[j + 1])
+                            || !this.mViewPortHandler().isInBoundsLeft(x)) {
+                            continue
+                        }
+
+                        let entry: ?WaterfallEntry = dataSet.getEntryForIndex(j / 4)
+                        if(let Some(waterfallEntry) <- entry) {
+                            let val: Float64 = waterfallEntry.getY()
+
+                            if (dataSet.isDrawValuesEnabled()) {
+                                let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
+                                if (let Some(format) <- valueFormatter) {
+                                     this.drawValue(c, format, val, waterfallEntry, i, x, (buffer.buffer[j + 3] + posOffset),
+                                        Color(dataSet.getValueTextColor(j / 4)))
+                                }
+                            }
+                            let icon: ?ChartPixelMap = waterfallEntry.getIcon()
+                            if (let Some(i) <- icon) {
+                                if (dataSet.isDrawIconsEnabled()) {
+                                    var px: Float64 = x
+                                    var py: Float64 = if (val >= 0.0) {
+                                        (buffer.buffer[j + 1] + posOffset)
+                                    } else {
+                                        (buffer.buffer[j + 3] + negOffset)
+                                    }
+
+                                    px += iconsOffset.x
+                                    py += iconsOffset.y
+
+                                    Utils.drawImage(
+                                        c,
+                                        i,
+                                        Utils.parseInt(px),
+                                        Utils.parseInt(py),
+                                        i.getWidth(),
+                                        i.getHeight()
+                                    )
+                                }
+                            }
+                        }
+
+                    }
+
+                    MPPointF.recycleInstance(iconsOffset)
                 }
 
-                MPPointF.recycleInstance(iconsOffset)
+
             }
         }
     }
@@ -563,9 +623,7 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
             let trans: ?Transformer = this.mChart.getTransformer(set().getAxisDependency())
             var highLightColor: UInt32 = set().getHighLightColor()
-            if (highLightColor == 0) {
-                highLightColor = 0x000000
-            }
+
             this.mHighlightPaint.setColor(Color(highLightColor))
             this.mHighlightPaint.setGlobalAlpha(set().getHighLightAlpha() / 255.0)
 
@@ -583,26 +641,22 @@ public class WaterfallChartRenderer <: BarLineScatterCandleBubbleRenderer {
 
             let round = this.mBarRect.width() / 2.0
             if (this.mBarRect.height() >= this.mBarRect.width()) {
+
                 c.beginPath()
                 c.moveTo(this.mBarRect.left + round, this.mBarRect.top)
                 c.lineTo(this.mBarRect.right - round, this.mBarRect.top)
                 c.arc(this.mBarRect.right - round, this.mBarRect.top + round, round, 3.0 / 2.0 * Float64.getPI(), 0.0)
                 c.lineTo(this.mBarRect.right, this.mBarRect.bottom - round)
-                c.arc(this.mBarRect.right - round, this.mBarRect.bottom - round, round, 0.0, Float64.getPI() / 2.0)
+                c.arc(this.mBarRect.right - round, this.mBarRect.bottom - round, round, 0.0, Float64.getPI() / 20.0)
                 c.lineTo(this.mBarRect.left + round, this.mBarRect.bottom)
                 c.arc(this.mBarRect.left + round, this.mBarRect.bottom - round, round, Float64.getPI() / 2.0, Float64.getPI())
                 c.lineTo(this.mBarRect.left, this.mBarRect.top + round)
                 c.arc(this.mBarRect.left + round, this.mBarRect.top + round, round, Float64.getPI(), 3.0 / 2.0 * Float64.getPI())
                 c.closePath()
                 c.fill()
+
             } else {
-                c.beginPath()
-                let centerX = this.mBarRect.left + this.mBarRect.width() / 2.0
-                let centerY = this.mBarRect.top + this.mBarRect.height() / 2.0
-                c.moveTo(centerX, centerY)
-                c.arc(centerX, centerY, round, 0.0, 360.0, anticlockwise: false)
-                c.fill()
-                c.closePath()
+                this.drawEllipse(c, this.mBarRect.left, this.mBarRect.top, this.mBarRect.right, this.mBarRect.bottom)
             }
         }
     }

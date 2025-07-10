@@ -241,11 +241,11 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                             } else {
                                 -(valueTextWidth + valueOffsetPlus)
                             }
-                            negOffset = if (drawValueAboveBar) {
-                                -(valueTextWidth + valueOffsetPlus) - (buffer.buffer[j + 2] - buffer.buffer[j])
+                            negOffset = (if (drawValueAboveBar) {
+                                -(valueTextWidth + valueOffsetPlus)
                             } else {
-                                valueOffsetPlus - (buffer.buffer[j + 2] - buffer.buffer[j])
-                            }
+                                valueOffsetPlus
+                            }) - (buffer.buffer[j + 2] - buffer.buffer[j])
 
                             if (isInverted) {
                                 posOffset = -posOffset - valueTextWidth
@@ -279,7 +279,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                                 py += iconsOffset.y
 
                                 if (let Some(i) <- icon) {
-                                    Utils.drawImage(c, i, floor(px), floor(py))
+                                    Utils.drawImage(c, i, floor(px), floor(py),i.getWidth(),i.getHeight())
                                 }
                             }
                         }
@@ -370,7 +370,9 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                                             c,
                                             icon(),
                                             px,
-                                            py
+                                            py,
+                                            icon().getWidth(),
+                                            icon().getHeight()
                                         )
                                     }
                                 }
@@ -459,7 +461,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                                     if (barEntry.getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
                                         let icon: ?ChartPixelMap = barEntry.getIcon()
                                         if (let Some(i) <- icon) {
-                                            Utils.drawImage(c, i, (x + iconsOffset.x), (y + iconsOffset.y))
+                                            Utils.drawImage(c, i, (x + iconsOffset.x), (y + iconsOffset.y),i.getWidth(),i.getHeight())
                                         }
                                     }
                                     k += 2
@@ -508,14 +510,4 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
     public func setHighlightDrawPos(high: Highlight, bar: ChartRect) {
         high.setDraw(bar.centerY(), bar.right)
     }
-
-//    public func isDrawingValuesAllowed(chart: BarDataProvider) {
-//        let chartData: ?BarData = chart.getBarData()
-//        if (chartData.isSome() && this.mViewPortHandler.isSome()) {
-//            return chartData().getEntryCount() < chart.getMaxVisibleCount()
-//                * Int64(this.mViewPortHandler().getScaleY())
-//        } else {
-//            return false
-//        }
-//    }
 }

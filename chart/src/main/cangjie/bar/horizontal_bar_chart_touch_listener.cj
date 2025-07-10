@@ -74,15 +74,15 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
 
     public func onTouch(event: TouchEvent) {
         match (event.eventType) {
-            case TouchType.Down => this.actionDown(true, event)
-            case TouchType.Move => this.actionMove(true, event)
-            case TouchType.Up => this.actionUp(true, event)
-            case TouchType.Cancel => this.actionUp(true, event)
+            case TouchType.Down => this.actionDown(true, event, Option<GestureEvent>.None)
+            case TouchType.Move => this.actionMove(true, event, Option<GestureEvent>.None)
+            case TouchType.Up => this.actionUp(true, event, Option<GestureEvent>.None)
+            case TouchType.Cancel => this.actionUp(true, event, Option<GestureEvent>.None)
             case _ => ()
         }
     }
 
-    public func actionDown(isTouchEvent: Bool, event: Any): Unit {
+    public func actionDown(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         if (!this.horizontalBarChartModel.isDragEnabled() && (!this.horizontalBarChartModel.isScaleXEnabled() &&
             !this.horizontalBarChartModel.isScaleYEnabled())) {
             return
@@ -94,7 +94,6 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
                 this.animatorResult().pause()
                 this.animatorIsPlaying = false
             }
-            let touchEvent = event as TouchEvent
             if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
             }
@@ -106,7 +105,6 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
             this.downPointY = yCoordinate
 
         } else {
-            let gestureEvent = event as GestureEvent
             if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
             }
@@ -116,20 +114,20 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
         this.mStartPointX = xCoordinate
         this.mStartPointY = yCoordinate
 
-        this.startAction(isTouchEvent, event)
+        this.startAction(isTouchEvent, touchEvent, gestureEvent)
         this.stopDeceleration()
-        this.saveTouchStart(isTouchEvent, event)
+        this.saveTouchStart(isTouchEvent, touchEvent, gestureEvent)
     }
 
-    public func actionPinchDown(isTouchEvent: Bool, event: Any): Unit {
+    public func actionPinchDown(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         this.horizontalBarChartModel.disableScroll()
-        this.saveTouchStart(true, event)
+        this.saveTouchStart(true, touchEvent, gestureEvent)
         // get the distance between the pointers on the x-axis
-        this.mSavedXDist = HorizontalBarChartTouchListener.getXDist(isTouchEvent, event)
+        this.mSavedXDist = HorizontalBarChartTouchListener.getXDist(isTouchEvent, touchEvent, gestureEvent)
         // get the distance between the pointers on the y-axis
-        this.mSavedYDist = HorizontalBarChartTouchListener.getYDist(isTouchEvent, event)
+        this.mSavedYDist = HorizontalBarChartTouchListener.getYDist(isTouchEvent, touchEvent, gestureEvent)
         // get the total distance between the pointers
-        this.mSavedDist = HorizontalBarChartTouchListener.spacing(isTouchEvent, event)
+        this.mSavedDist = HorizontalBarChartTouchListener.spacing(isTouchEvent, touchEvent, gestureEvent)
         if (this.mSavedDist > 10.0) {
             if (this.horizontalBarChartModel.isPinchZoomEnabled()) {
                 this.mTouchMode = 4 //ChartTouchListener.PINCH_ZOOM
@@ -149,47 +147,45 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
                 }
             }
             // determine the touch-pointer center
-            HorizontalBarChartTouchListener.midPoint(this.mTouchPointCenter, isTouchEvent, event)
+            HorizontalBarChartTouchListener.midPoint(this.mTouchPointCenter, isTouchEvent, touchEvent, gestureEvent)
         }
     }
 
-    public func actionMove(isTouchEvent: Bool, event: Any): Unit {
-        let l: ?OnChartGestureListener = this.horizontalBarChartModel.getOnChartGestureListener();
+    public func actionMove(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
+        let l: ?OnChartGestureListener = this.horizontalBarChartModel.getOnChartGestureListener()
         if(let Some(listener) <- l) {
             if (this.horizontalBarChartModel.getLongPressCursorEnabled()) {
                 if (this.mLongPressStatus) {
-                    listener.onChartMove(isTouchEvent, event);
+                    listener.onChartMove(isTouchEvent, touchEvent, gestureEvent)
                 }
             } else {
-                listener.onChartMove(isTouchEvent, event);
+                listener.onChartMove(isTouchEvent, touchEvent, gestureEvent)
             }
         }
 
         var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
             }
-            xCoordinate = touch().touches[0].x
-            yCoordinate = touch().touches[0].y
+            xCoordinate = touchEvent().touches[0].x
+            yCoordinate = touchEvent().touches[0].y
             if (this.horizontalBarChartModel.getLongPressCursorEnabled() && !this.mLongPressStatus) {
-                this.calculateLongPress(touch());
+                this.calculateLongPress(touchEvent())
               }
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
             }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
+            xCoordinate = gestureEvent().fingerList[0].localX
+            yCoordinate = gestureEvent().fingerList[0].localY
         }
         this.isDragging = false
 
         // long press cursor response capability
         if (this.horizontalBarChartModel.getLongPressCursorEnabled()) {
-            this.longPressCursorAction(isTouchEvent, event, xCoordinate, yCoordinate)
+            this.longPressCursorAction(isTouchEvent, touchEvent, gestureEvent, xCoordinate, yCoordinate)
             return
         }
 
@@ -198,28 +194,27 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
         }
 
         if (this.mTouchMode == 1 /*ChartTouchListener.DRAG*/ ) {
-            actionMoveTouchModeIs1(isTouchEvent, event, xCoordinate, yCoordinate)
+            actionMoveTouchModeIs1(isTouchEvent, touchEvent, gestureEvent, xCoordinate, yCoordinate)
         } else if (this.mTouchMode == 2 || this.mTouchMode == 3 || this.mTouchMode == 4) {
             this.horizontalBarChartModel.disableScroll()
-            if (this.horizontalBarChartModel.isScaleXEnabled() || this.horizontalBarChartModel.isScaleYEnabled()) {
-                this.performZoom(isTouchEvent, event)
+            if (this.horizontalBarChartModel.isScaleXEnabled() || this.horizontalBarChartModel.isScaleYEnabled() && this.horizontalBarChartModel.isPinchZoomEnabled()) {
+                this.performZoom(isTouchEvent, touchEvent, gestureEvent)
             }
-            this.mMatrix = this.horizontalBarChartModel.getViewPortHandler().refresh(this.mMatrix, this.horizontalBarChartModel, true);
+            //this.mMatrix = this.horizontalBarChartModel.getViewPortHandler().refresh(this.mMatrix, this.horizontalBarChartModel, true)
         } else if (this.mTouchMode == 0 &&
             abs(
             HorizontalBarChartTouchListener.distance(xCoordinate, this.mTouchStartPoint.x, yCoordinate,
             this.mTouchStartPoint.y)) > this.mDragTriggerDist && this.horizontalBarChartModel.getViewPortHandler().isInBounds(
             xCoordinate, yCoordinate)) {
-            actionMoveTouchModeIs0(isTouchEvent, event, xCoordinate, yCoordinate)
+                actionMoveTouchModeIs0(isTouchEvent, touchEvent, gestureEvent, xCoordinate, yCoordinate)
         }
 
         // perform the transformation, update the chart
-        this.mMatrix = this.horizontalBarChartModel.getViewPortHandler().refresh(this.mMatrix,this.horizontalBarChartModel,true
-        )
+        this.mMatrix = this.horizontalBarChartModel.getViewPortHandler().refresh(this.mMatrix,this.horizontalBarChartModel,true)
     }
 
 
-    private func actionMoveTouchModeIs1(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64): Unit {
+    private func actionMoveTouchModeIs1(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, xCoordinate: Float64, yCoordinate: Float64): Unit {
         this.horizontalBarChartModel.disableScroll()
         let x: Float64 = if (this.horizontalBarChartModel.isDragXEnabled()) {
             xCoordinate - this.mTouchStartPoint.x
@@ -231,10 +226,10 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
         } else {
             0.0
         }
-        this.performDrag(isTouchEvent, event, x, y)
+        this.performDrag(isTouchEvent, touchEvent, gestureEvent, x, y)
     }
 
-    private func actionMoveTouchModeIs0(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64) {
+    private func actionMoveTouchModeIs0(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, xCoordinate: Float64, yCoordinate: Float64) {
         if (this.horizontalBarChartModel.isDragEnabled()) {
             this.isDragging = true
 
@@ -251,35 +246,13 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
             } else {
                 if (this.horizontalBarChartModel.isHighlightPerDragEnabled()) {
                     this.mLastGesture = ChartGesture.DRAG
-                    this.performHighlightDrag(isTouchEvent, event, false)
+                    this.performHighlightDrag(isTouchEvent, touchEvent, gestureEvent, false)
                 }
             }
         }
     }
 
-//    private func touchMode0Or7(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64): Unit {
-//        if (this.horizontalBarChartModel.isDragEnabled()) {
-//            this.isDragging = true
-//
-//            let shouldPan: Bool = !this.horizontalBarChartModel.isFullyZoomedOut() || !this.horizontalBarChartModel.hasNoDragOffset()
-//            if (shouldPan) {
-//                let distanceX: Float64 = abs(xCoordinate - this.mTouchStartPoint.x)
-//                let distanceY: Float64 = abs(yCoordinate - this.mTouchStartPoint.y)
-//                // Disable dragging in a direction that's disallowed
-//                if ((this.horizontalBarChartModel.isDragXEnabled() || distanceY >= distanceX) && (this.horizontalBarChartModel.
-//                    isDragYEnabled() || distanceY <= distanceX)) {
-//                    this.mLastGesture = ChartGesture.DRAG
-//                    this.mTouchMode = 1
-//                }
-//            } else {
-//                if (this.horizontalBarChartModel.isHighlightPerDragEnabled()) {
-//                    this.mLastGesture = ChartGesture.DRAG
-//                    this.performHighlightDrag(isTouchEvent, event, false)
-//                }
-//            }
-//        }
-//    }
-    private func touchMode0Or71(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64): Unit {
+    private func touchMode0Or71(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, xCoordinate: Float64, yCoordinate: Float64): Unit {
         if (this.horizontalBarChartModel.isDragEnabled()) {
             this.isDragging = true
 
@@ -293,22 +266,21 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
                     isDragYEnabled() || distanceY <= distanceX)) {
                     this.mLastGesture = ChartGesture.DRAG
                     this.mTouchMode = 1
-                    this.horizontalBarChartModel.highlightValueForObject(Option<Highlight>.None, true);
-//                    this.performHighlightDrag(isTouchEvent, event, false)
+                    this.horizontalBarChartModel.highlightValueForObject(Option<Highlight>.None, true)
                 }
             } else if (this.mLongPressStatus) {
                 if (this.horizontalBarChartModel.isHighlightPerDragEnabled()) {
                     this.mLastGesture = ChartGesture.DRAG
-                    this.performHighlightDrag(isTouchEvent, event, false)
+                    this.performHighlightDrag(isTouchEvent, touchEvent, gestureEvent, false)
                 }
             } else if (!this.mLongPressStatus) {
                 // response event of sliding left or right
-                this.horizontalBarChartModel.getOnChartGestureListener()?.onChartTranslate(isTouchEvent, event,
+                this.horizontalBarChartModel.getOnChartGestureListener()?.onChartTranslate(isTouchEvent, touchEvent, gestureEvent,
                     xCoordinate - this.mStartPointX, yCoordinate - this.mStartPointY)
             }
         }
     }
-    private func longPressCursorAction(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64) {
+    private func longPressCursorAction(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, xCoordinate: Float64, yCoordinate: Float64) {
         if (this.mTouchMode == 1) {
             this.horizontalBarChartModel.disableScroll()
             let x: Float64 = if (this.horizontalBarChartModel.isDragXEnabled()) {
@@ -322,23 +294,22 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
                 0.0
             }
             if (!this.horizontalBarChartModel.getSwipeEnabled()) {
-                this.horizontalBarChartModel.highlightValueForObject(Option<Highlight>.None, true);
+                this.horizontalBarChartModel.highlightValueForObject(Option<Highlight>.None, true)
             }
-            this.performDrag(isTouchEvent, event, x, y)
+            this.performDrag(isTouchEvent, touchEvent, gestureEvent, x, y)
         } else if (this.mTouchMode == 2 || this.mTouchMode == 3 || this.mTouchMode == 4) {
             this.horizontalBarChartModel.disableScroll()
             if (this.horizontalBarChartModel.isScaleXEnabled() || this.horizontalBarChartModel.isScaleYEnabled()) {
-                this.performZoom(isTouchEvent, event)
-                this.horizontalBarChartModel.highlightValueForObject(Option<Highlight>.None, true);
-                this.performHighlightDrag(isTouchEvent, event, false)
+                this.performZoom(isTouchEvent, touchEvent, gestureEvent)
+                this.horizontalBarChartModel.highlightValueForObject(Option<Highlight>.None, true)
+                this.performHighlightDrag(isTouchEvent, touchEvent, gestureEvent, false)
             }
         } else if ((this.mTouchMode == 0 || this.mTouchMode == 7)
             &&
             abs(
             HorizontalBarChartTouchListener.distance(xCoordinate, this.mTouchStartPoint.x, yCoordinate,
             this.mTouchStartPoint.y)) > this.mDragTriggerDist) {
-                touchMode0Or71(isTouchEvent, event, xCoordinate, yCoordinate)
-//                this.mMatrix = this.horizontalBarChartModel.getViewPortHandler().refresh(this.mMatrix, this.horizontalBarChartModel, true);
+                touchMode0Or71(isTouchEvent, touchEvent, gestureEvent, xCoordinate, yCoordinate)
         }
 
         // perform the transformation, update the chart
@@ -348,82 +319,79 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
     private func calculateLongPress(event: TouchEvent): Unit {
         let curTime: Int64 = DateTime.now().nanosecond
         if (this.downTime > 0 && this.downPointX != -1.0 && (curTime - this.downTime) >= this.horizontalBarChartModel.getLongPressDuration()) {
-            let curPointX: Float64 = event.touches[0].x;
-            let curPointY: Float64 = event.touches[0].y;
-            let rangePointX: Float64 = abs(curPointX - this.downPointX);
-            let rangePointY: Float64 = abs(curPointY - this.downPointY);
+            let curPointX: Float64 = event.touches[0].x
+            let curPointY: Float64 = event.touches[0].y
+            let rangePointX: Float64 = abs(curPointX - this.downPointX)
+            let rangePointY: Float64 = abs(curPointY - this.downPointY)
             if (rangePointX > this.maxSwipePointX) {
-                this.maxSwipePointX = rangePointX;
+                this.maxSwipePointX = rangePointX
             }
             if (rangePointY > this.maxSwipePointY) {
-                this.maxSwipePointY = rangePointY;
+                this.maxSwipePointY = rangePointY
             }
             if (this.maxSwipePointX <= 1.0 && this.maxSwipePointY <= 1.0) {
-                this.mLongPressStatus = true;
-                this.resetSwipeParam();
-                let h: ?Highlight = this.horizontalBarChartModel.getHighlightByTouchPoint(curPointX, curPointY);
+                this.mLongPressStatus = true
+                this.resetSwipeParam()
+                let h: ?Highlight = this.horizontalBarChartModel.getHighlightByTouchPoint(curPointX, curPointY)
                 if (let Some(highlight) <- h) {
-                    this.performHighlight(highlight, Option<TouchEvent>.None);
+                    this.performHighlight(highlight, Option<TouchEvent>.None)
                 }
             }
         }
     }
 
     private func calculateSwipe(event: TouchEvent, isTouchEvent: Bool): Unit {
-        this.mLongPressStatus = false;
-        let curPointX: Float64 = event.touches[0].x;
-        let curPointY: Float64 = event.touches[0].y;
+        this.mLongPressStatus = false
+        let curPointX: Float64 = event.touches[0].x
+        let curPointY: Float64 = event.touches[0].y
         if (this.downPointX != -1.0 && abs(curPointX - this.downPointX) <= 10.0) {
-            let h: ?Highlight = this.horizontalBarChartModel.getHighlightByTouchPoint(curPointX, curPointY);
+            let h: ?Highlight = this.horizontalBarChartModel.getHighlightByTouchPoint(curPointX, curPointY)
             if (let Some(highlight) <- h) {
-                this.performHighlight(highlight, Option<TouchEvent>.None);
+                this.performHighlight(highlight, Option<TouchEvent>.None)
             }
-            let l: ?OnChartGestureListener = this.horizontalBarChartModel.getOnChartGestureListener();
-            l?.onChartMove(isTouchEvent, event);
+            let l: ?OnChartGestureListener = this.horizontalBarChartModel.getOnChartGestureListener()
+            l?.onChartMove(isTouchEvent, event, Option<GestureEvent>.None)
         } else if (this.downPointX != -1.0 && abs(curPointX - this.downPointX) >= 50.0) {
             let x: Float64 = if(this.horizontalBarChartModel.isDragXEnabled()) { curPointX - this.mTouchStartPoint.x}else {0.0 }
             let y: Float64 = if(this.horizontalBarChartModel.isDragYEnabled()) {curPointY - this.mTouchStartPoint.y }else { 0.0}
-            this.horizontalBarChartModel.highlightValueForObject(Option<Highlight>.None, true);
+            this.horizontalBarChartModel.highlightValueForObject(Option<Highlight>.None, true)
             if (this.horizontalBarChartModel.getSwipeEnabled()) {
-                this.performSwipe(true, event, x, y);
+                this.performSwipe(true, event, Option<GestureEvent>.None, x, y)
             }
         }
-        this.resetSwipeParam();
+        this.resetSwipeParam()
     }
 
     private func resetSwipeParam(): Unit {
-        this.downTime = 0;
-        this.downPointX = -1.0;
-        this.downPointY = -1.0;
-        this.maxSwipePointX = -1.0;
-        this.maxSwipePointY = -1.0;
+        this.downTime = 0
+        this.downPointX = -1.0
+        this.downPointY = -1.0
+        this.maxSwipePointX = -1.0
+        this.maxSwipePointY = -1.0
     }
 
 
-    public func actionUp(isTouchEvent: Bool, event: Any): Unit {
-//        this.mLongPressStatus = false
+    public func actionUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         var gestureFingersCount: Int64 = 1
         var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
             }
-            xCoordinate = touch().touches[0].x
-            yCoordinate = touch().touches[0].y
-            gestureFingersCount = touch().touches.size
+            xCoordinate = touchEvent().touches[0].x
+            yCoordinate = touchEvent().touches[0].y
+            gestureFingersCount = touchEvent().touches.size
             if (this.horizontalBarChartModel.getLongPressCursorEnabled()) {
-                this.calculateSwipe(touch(), isTouchEvent);
+                this.calculateSwipe(touchEvent(), isTouchEvent)
             }
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
             }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
-            gestureFingersCount = gesture().fingerList.size
+            xCoordinate = gestureEvent().fingerList[0].localX
+            yCoordinate = gestureEvent().fingerList[0].localY
+            gestureFingersCount = gestureEvent().fingerList.size
         }
 
         if (abs(xCoordinate) > Float64(Utils.getMinimumFlingVelocity()) || abs(yCoordinate) > Float64(Utils.
@@ -445,24 +413,24 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
         this.mTouchMode = 0
         this.horizontalBarChartModel.enableScroll()
 
-        this.endAction(isTouchEvent, event)
+        this.endAction(isTouchEvent, touchEvent, gestureEvent)
 
         if (gestureFingersCount >= 2) {
             this.mTouchMode = 5
         }
-        this.saveTouchStart(isTouchEvent, event);
+        this.saveTouchStart(isTouchEvent, touchEvent, gestureEvent)
     }
 
-    public func actionPinchUp(isTouchEvent: Bool, event: Any): Unit {
+    public func actionPinchUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         this.mTouchMode = 5
 
         // perform the transformation, update the chart
         this.mMatrix = this.horizontalBarChartModel.getViewPortHandler().refresh(this.mMatrix, this.horizontalBarChartModel, true)
     }
 
-    public func actionCancel(isTouchEvent: Bool, event: Any): Unit {
+    public func actionCancel(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         this.mTouchMode = 0
-        this.endAction(isTouchEvent, event)
+        this.endAction(isTouchEvent, touchEvent, gestureEvent)
         // perform the transformation, update the chart
         this.mMatrix = this.horizontalBarChartModel.getViewPortHandler().refresh(this.mMatrix,this.horizontalBarChartModel,true)
     }
@@ -477,31 +445,29 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
      *
      * @param event
      */
-    private func saveTouchStart(isTouchEvent: Bool, event: Any) {
+    private func saveTouchStart(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mSavedMatrix.set(this.mMatrix)
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
             }
-            this.mTouchStartPoint.x = touch().touches[0].x
-            this.mTouchStartPoint.y = touch().touches[0].y
+            this.mTouchStartPoint.x = touchEvent().touches[0].x
+            this.mTouchStartPoint.y = touchEvent().touches[0].y
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
             }
-            this.mTouchStartPoint.x = gesture().fingerList[0].globalX
-            this.mTouchStartPoint.y = gesture().fingerList[0].globalY
+            this.mTouchStartPoint.x = gestureEvent().fingerList[0].globalX
+            this.mTouchStartPoint.y = gestureEvent().fingerList[0].globalY
         }
 
         this.mClosestDataSetToTouch = this.horizontalBarChartModel.getBarDataSetByTouchPoint(this.mTouchStartPoint.x,this.mTouchStartPoint.y)
     }
 
-    private func performSwipe(isTouchEvent: Bool, event: Any, distanceX: Float64, distanceY: Float64) {
-        let l: ?OnChartGestureListener = this.horizontalBarChartModel.getOnChartGestureListener();
+    private func performSwipe(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, distanceX: Float64, distanceY: Float64) {
+        let l: ?OnChartGestureListener = this.horizontalBarChartModel.getOnChartGestureListener()
         if (let Some(listener) <- l) {
-            listener.onChartTranslate(isTouchEvent, event, distanceX, distanceY);
+            listener.onChartTranslate(isTouchEvent, touchEvent, gestureEvent, distanceX, distanceY)
         }
     }
 
@@ -510,7 +476,7 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
      *
      * @param event
      */
-    private func performDrag(isTouchEvent: Bool, event: Any, distanceX: Float64, distanceY: Float64) {
+    private func performDrag(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, distanceX: Float64, distanceY: Float64) {
         this.mLastGesture = ChartGesture.DRAG
 
         this.mMatrix.set(this.mSavedMatrix)
@@ -524,14 +490,14 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
         }
 
         if (let Some(listener) <- l) {
-            listener.onChartTranslate(isTouchEvent, event, distanceX, distanceY)
+            listener.onChartTranslate(isTouchEvent, touchEvent, gestureEvent, distanceX, distanceY)
         }
         this.mMatrix.postTranslate(distanceX, newDistanceY)
         //this.horizontalBarChartModel.invalidate()
     }
 
     private func performZoomTouchModeIs4(totalDist: Float64, h: ViewPortHandler, l: ?OnChartGestureListener,
-        t: MPPointF, isTouchEvent: Bool, event: Any) {
+        t: MPPointF, isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mLastGesture = ChartGesture.PINCH_ZOOM
 
         let scale: Float64 = totalDist / this.mSavedDist // total scale
@@ -566,16 +532,16 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
             this.mMatrix.postScale(scaleX, scaleY, centerX: t.x, centerY: t.y)
 
             if (let Some(listener) <- l) {
-                listener.onChartScale(isTouchEvent, event, scaleX, scaleY)
+                listener.onChartScale(isTouchEvent, touchEvent, gestureEvent, scaleX, scaleY)
             }
         }
     }
 
-    private func performZoomTouchModeIs2(h: ViewPortHandler, isTouchEvent: Bool, event: Any, t: MPPointF,
+    private func performZoomTouchModeIs2(h: ViewPortHandler, isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, t: MPPointF,
         l: ?OnChartGestureListener) {
         this.mLastGesture = ChartGesture.X_ZOOM
 
-        let xDist: Float64 = HorizontalBarChartTouchListener.getXDist(isTouchEvent, event)
+        let xDist: Float64 = HorizontalBarChartTouchListener.getXDist(isTouchEvent, touchEvent, gestureEvent)
         let scaleX: Float64 = xDist / this.mSavedXDist // x-axis scale
 
         let isZoomingOut: Bool = (scaleX < 1.0)
@@ -590,16 +556,16 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
             this.mMatrix.postScale(scaleX, 1.0, centerX: t.x, centerY: t.y)
 
             if (let Some(listener) <- l) {
-                listener.onChartScale(isTouchEvent, event, scaleX, 1.0)
+                listener.onChartScale(isTouchEvent, touchEvent, gestureEvent, scaleX, 1.0)
             }
         }
     }
 
     private func performZoomTouchModeIs3(totalDist: Float64, h: ViewPortHandler, l: ?OnChartGestureListener,
-        t: MPPointF, isTouchEvent: Bool, event: Any) {
+        t: MPPointF, isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mLastGesture = ChartGesture.Y_ZOOM
 
-        let yDist: Float64 = HorizontalBarChartTouchListener.getYDist(isTouchEvent, event)
+        let yDist: Float64 = HorizontalBarChartTouchListener.getYDist(isTouchEvent, touchEvent, gestureEvent)
         let scaleY: Float64 = yDist / this.mSavedYDist // y-axis scale
 
         let isZoomingOut: Bool = (scaleY < 1.0)
@@ -614,7 +580,7 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
             this.mMatrix.postScale(1.0, scaleY, centerX: t.x, centerY: t.y)
 
             if (let Some(listener) <- l) {
-                listener.onChartScale(isTouchEvent, event, 1.0, scaleY)
+                listener.onChartScale(isTouchEvent, touchEvent, gestureEvent, 1.0, scaleY)
             }
         }
     }
@@ -623,21 +589,19 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
      *
      * @param event
      */
-    private func performZoom(isTouchEvent: Bool, event: Any) {
+    private func performZoom(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         var gestureFingersCount: Int64 = 1
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            gestureFingersCount = touch().touches.size
+            gestureFingersCount = touchEvent().touches.size
         } else {
-            let gesture = event as GestureEvent
-            gestureFingersCount = gesture().fingerList.size
+            gestureFingersCount = gestureEvent().fingerList.size
         }
         if (gestureFingersCount >= 2) { // two finger zoom
 
             let l: ?OnChartGestureListener = this.horizontalBarChartModel.getOnChartGestureListener()
 
             // get the distance between the pointers of the touch event
-            let totalDist: Float64 = HorizontalBarChartTouchListener.spacing(isTouchEvent, event)
+            let totalDist: Float64 = HorizontalBarChartTouchListener.spacing(isTouchEvent, touchEvent, gestureEvent)
 
             if (totalDist > this.mMinScalePointerDistance) {
 
@@ -647,11 +611,11 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
 
                 // take actions depending on the activated touch mode
                 if (this.mTouchMode == 4 /* ChartTouchListener.PINCH_ZOOM*/ ) {
-                    performZoomTouchModeIs4(totalDist, h, l, t, isTouchEvent, event)
+                    performZoomTouchModeIs4(totalDist, h, l, t, isTouchEvent, touchEvent, gestureEvent)
                 } else if (this.mTouchMode == 2 /*ChartTouchListener.X_ZOOM*/ && this.horizontalBarChartModel.isScaleXEnabled()) {
-                    performZoomTouchModeIs2(h, isTouchEvent, event, t, l)
+                    performZoomTouchModeIs2(h, isTouchEvent, touchEvent, gestureEvent, t, l)
                 } else if (this.mTouchMode == 3 /* ChartTouchListener.Y_ZOOM*/ && this.horizontalBarChartModel.isScaleYEnabled()) {
-                    performZoomTouchModeIs3(totalDist, h, l, t, isTouchEvent, event)
+                    performZoomTouchModeIs3(totalDist, h, l, t, isTouchEvent, touchEvent, gestureEvent)
                 }
 
                 MPPointF.recycleInstance(t)
@@ -664,26 +628,24 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
      *
      * @param e
      */
-    func performHighlightDrag(isTouchEvent: Bool, event: Any, isLongPressed: Bool) {
+    func performHighlightDrag(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, isLongPressed: Bool) {
         var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
             }
-            xCoordinate = touch().touches[0].x
-            yCoordinate = touch().touches[0].y
+            xCoordinate = touchEvent().touches[0].x
+            yCoordinate = touchEvent().touches[0].y
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
             }
-            xCoordinate = gesture().fingerList[0].localX
-            yCoordinate = gesture().fingerList[0].localY
+            xCoordinate = gestureEvent().fingerList[0].localX
+            yCoordinate = gestureEvent().fingerList[0].localY
         }
         let h: ?Highlight = this.horizontalBarChartModel.getHighlightByTouchPoint(xCoordinate, yCoordinate)
-        if(h.isSome() && !h().equalTo(this.mLastHighlighted())) {
+        if(h.isSome() && this.mLastHighlighted.isSome() && !h().equalTo(this.mLastHighlighted())) {
             if (!isLongPressed) {
                 this.mLastHighlighted = h
             }
@@ -710,24 +672,22 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
      * @param point
      * @param event
      */
-    private static func midPoint(point: MPPointF, isTouchEvent: Bool, event: Any) {
+    private static func midPoint(point: MPPointF, isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         var x: Float64 = 0.0
         var y: Float64 = 0.0
 
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
             }
-            x = touch().touches[0].x + touch().touches[1].x
-            y = touch().touches[0].y + touch().touches[1].y
+            x = touchEvent().touches[0].x + touchEvent().touches[1].x
+            y = touchEvent().touches[0].y + touchEvent().touches[1].y
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
             }
-            x = gesture().fingerList[0].localX + gesture().fingerList[1].localX
-            y = gesture().fingerList[0].localY + gesture().fingerList[1].localY
+            x = gestureEvent().fingerList[0].localX + gestureEvent().fingerList[1].localX
+            y = gestureEvent().fingerList[0].localY + gestureEvent().fingerList[1].localY
         }
         point.x = (x / 2.0)
         point.y = (y / 2.0)
@@ -739,24 +699,22 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
      * @param event
      * @return
      */
-    private static func spacing(isTouchEvent: Bool, event: Any): Float64 {
+    private static func spacing(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Float64 {
         var x: Float64 = 0.0
         var y: Float64 = 0.0
 
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return 0.0
             }
-            x = touch().touches[0].x - touch().touches[1].x
-            y = touch().touches[0].y - touch().touches[1].y
+            x = touchEvent().touches[0].x - touchEvent().touches[1].x
+            y = touchEvent().touches[0].y - touchEvent().touches[1].y
         } else {
-            let gesture = event as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return 0.0
             }
-            x = gesture().fingerList[0].localX - gesture().fingerList[1].localX
-            y = gesture().fingerList[0].localY - gesture().fingerList[1].localY
+            x = gestureEvent().fingerList[0].localX - gestureEvent().fingerList[1].localX
+            y = gestureEvent().fingerList[0].localY - gestureEvent().fingerList[1].localY
         }
 
         return sqrt(x * x + y * y)
@@ -769,20 +727,18 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
      * @param e
      * @return
      */
-    private static func getXDist(isTouchEvent: Bool, e: Any): Float64 {
+    private static func getXDist(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Float64 {
         var x: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return 0.0
             }
-            x = abs(touch().touches[0].x - touch().touches[1].x)
+            x = abs(touchEvent().touches[0].x - touchEvent().touches[1].x)
         } else {
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return 0.0
             }
-            x = abs(gesture().fingerList[0].localX - gesture().fingerList[1].localX)
+            x = abs(gestureEvent().fingerList[0].localX - gestureEvent().fingerList[1].localX)
         }
         return x
     }
@@ -794,20 +750,18 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
      * @param e
      * @return
      */
-    private static func getYDist(isTouchEvent: Bool, e: Any): Float64 {
+    private static func getYDist(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Float64 {
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return 0.0
             }
-            y = abs(touch().touches[0].y - touch().touches[1].y)
+            y = abs(touchEvent().touches[0].y - touchEvent().touches[1].y)
         } else {
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return 0.0
             }
-            y = abs(gesture().fingerList[0].localY - gesture().fingerList[1].localY)
+            y = abs(gestureEvent().fingerList[0].localY - gestureEvent().fingerList[1].localY)
         }
         return y
     }
@@ -872,23 +826,21 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
         this.mDragTriggerDist = Utils.handleDataValues(dragTriggerDistance)
     }
 
-    public func onDoubleTap(isTouchEvent: Bool, e: Any): Unit {
+    public func onDoubleTap(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         var x: Float64 = 0.0
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
             }
-            x = touch().touches[0].x
-            y = touch().touches[0].y
+            x = touchEvent().touches[0].x
+            y = touchEvent().touches[0].y
         } else {
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
             }
-            x = gesture().fingerList[0].localX
-            y = gesture().fingerList[0].localY
+            x = gestureEvent().fingerList[0].localX
+            y = gestureEvent().fingerList[0].localY
         }
 
         this.mLastGesture = ChartGesture.DOUBLE_TAP
@@ -896,7 +848,7 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
         let l: ?OnChartGestureListener = this.horizontalBarChartModel.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartDoubleTapped(isTouchEvent, e)
+            listener.onChartDoubleTapped(isTouchEvent, touchEvent, gestureEvent)
         }
         let chartData = this.horizontalBarChartModel.getBarData()
         // check if double-tap zooming is enabled
@@ -921,23 +873,22 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
             }
 
             if (let Some(listener) <- l) {
-                listener.onChartScale(isTouchEvent, e, scaleX, scaleY)
+                listener.onChartScale(isTouchEvent, touchEvent, gestureEvent, scaleX, scaleY)
             }
 
             MPPointF.recycleInstance(trans)
         }
     }
 
-    public func onLongPressed(isTouchEvent: Bool, e: Any) {
-        this.startAction(isTouchEvent, e)
+    public func onLongPressed(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
+        this.startAction(isTouchEvent, touchEvent, gestureEvent)
 
-//        this.mLongPressStatus = true
         this.mLastGesture = ChartGesture.LONG_PRESS
 
         let l: ?OnChartGestureListener = this.horizontalBarChartModel.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartLongPressed(isTouchEvent, e)
+            listener.onChartLongPressed(isTouchEvent, touchEvent, gestureEvent)
         }
 
         if (!this.horizontalBarChartModel.isHighlightPerLongPressEnabled()) {
@@ -949,19 +900,17 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
         var x: Float64 = 0.0
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
             }
-            x = touch().touches[0].x
-            y = touch().touches[0].y
+            x = touchEvent().touches[0].x
+            y = touchEvent().touches[0].y
         } else {
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
             }
-            x = gesture().fingerList[0].localX
-            y = gesture().fingerList[0].localY
+            x = gestureEvent().fingerList[0].localX
+            y = gestureEvent().fingerList[0].localY
         }
         let h: ?Highlight = this.horizontalBarChartModel.getHighlightByTouchPoint(x, y)
         if (let Some(highlight) <- h) {
@@ -972,45 +921,43 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
         }
     }
 
-    public func getXyByEvent(isTouchEvent: Bool, e: Any): (Float64, Float64) {
+    public func getXyByEvent(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): (Float64, Float64) {
         var x: Float64 = 0.0
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return (0.0, 0.0)
             }
-            x = touch().touches[0].x
-            y = touch().touches[0].y
+            x = touchEvent().touches[0].x
+            y = touchEvent().touches[0].y
         } else {
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return (0.0, 0.0)
             }
-            x = gesture().fingerList[0].localX
-            y = gesture().fingerList[0].localY
+            x = gestureEvent().fingerList[0].localX
+            y = gestureEvent().fingerList[0].localY
         }
         return (x, y)
     }
 
-    public func onLongPressUp(isTouchEvent: Bool, e: Any) {
+    public func onLongPressUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mLastGesture = ChartGesture.LONG_PRESS
-        this.endAction(isTouchEvent, e)
+        this.endAction(isTouchEvent, touchEvent, gestureEvent)
     }
 
-    public func onLongPressCancel(isTouchEvent: Bool, e: Any) {
+    public func onLongPressCancel(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mLastGesture = ChartGesture.LONG_PRESS
-        this.endAction(isTouchEvent, e)
+        this.endAction(isTouchEvent, touchEvent, gestureEvent)
     }
 
-    public func onSingleTapUp(isTouchEvent: Bool, e: Any): Unit {
-        this.actionDown(isTouchEvent, e)
+    public func onSingleTapUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
+        this.actionDown(isTouchEvent, touchEvent, gestureEvent)
         this.mLastGesture = ChartGesture.SINGLE_TAP
 
         let l: ?OnChartGestureListener = this.horizontalBarChartModel.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartSingleTapped(isTouchEvent, e)
+            listener.onChartSingleTapped(isTouchEvent, touchEvent, gestureEvent)
         }
 
         if (!this.horizontalBarChartModel.isHighlightPerTapEnabled()) {
@@ -1020,19 +967,17 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
         var x: Float64 = 0.0
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
             }
-            x = touch().touches[0].x
-            y = touch().touches[0].y
+            x = touchEvent().touches[0].x
+            y = touchEvent().touches[0].y
         } else {
-            let gesture = e as GestureEvent
-            if (gesture.isNone() || gesture().fingerList.size == 0) {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
             }
-            x = gesture().fingerList[0].localX
-            y = gesture().fingerList[0].localY
+            x = gestureEvent().fingerList[0].localX
+            y = gestureEvent().fingerList[0].localY
         }
         let h: ?Highlight = this.horizontalBarChartModel.getHighlightByTouchPoint(x, y)
         if (let Some(highlight) <- h) {
@@ -1042,7 +987,7 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
 
         }
 
-        this.actionUp(isTouchEvent, e)
+        this.actionUp(isTouchEvent, touchEvent, gestureEvent)
     }
 
     public func onFling(isTouchEvent: Bool, e1: TouchEvent, e2: TouchEvent, velocityX: Float64, velocityY: Float64): Bool {
@@ -1051,7 +996,7 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
         let l: ?OnChartGestureListener = this.horizontalBarChartModel.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartFling(isTouchEvent, e1, e2, velocityX, velocityY)
+            listener.onChartFling(isTouchEvent, e1, Option<GestureEvent>.None ,e2, velocityX, velocityY)
         }
 
         return false
@@ -1063,16 +1008,16 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
     }
 
     public func computeScroll(event: GestureEvent) {
-        var angle = event.angle;
-        angle = (angle * Float64.getPI()) / 180.0;
-        var speedX = event.speed * cos(angle);
-        var speedY = event.speed * sin(angle);
+        var angle = event.angle
+        angle = (angle * Float64.getPI()) / 180.0
+        var speedX = event.speed * cos(angle)
+        var speedY = event.speed * sin(angle)
         if (speedX == 0.0 && speedY == 0.0) {
-            return;
+            return
         }
 
-        speedX *= this.horizontalBarChartModel.getDragDecelerationFrictionCoef() / 30.0;
-        speedY *= this.horizontalBarChartModel.getDragDecelerationFrictionCoef() / 30.0;
+        speedX *= this.horizontalBarChartModel.getDragDecelerationFrictionCoef() / 30.0
+        speedY *= this.horizontalBarChartModel.getDragDecelerationFrictionCoef() / 30.0
 
         let dragDistanceX: Float64 =  if(this.horizontalBarChartModel.isDragXEnabled()) { speedX} else {0.0 }
         let dragDistanceY: Float64 = if(this.horizontalBarChartModel.isDragYEnabled()) {speedY }else { 0.0}
@@ -1086,26 +1031,26 @@ public class HorizontalBarChartTouchListener<: ChartTouchListener<BarData, IBarD
             iterations: 1,
             begin: 0.0,
             end: 1.0
-        );
+        )
 
         if (let Some(animatorResult) <- this.animatorResult) {
-            this.animatorIsPlaying = false;
-            animatorResult.reset(options);
+            this.animatorIsPlaying = false
+            animatorResult.reset(options)
         } else {
-            this.animatorResult = AnimatorResult(options);
+            this.animatorResult = AnimatorResult(options)
         }
 
         this.animatorResult().onframe = {value: Float64 =>
-            let x = (dragDistanceX * value);
-            let y = (dragDistanceY * value);
-            this.performDrag(false, event, x, y);
-            this.mMatrix = this.horizontalBarChartModel.getViewPortHandler().refresh(this.mMatrix, this.horizontalBarChartModel, true);
+            let x = (dragDistanceX * value)
+            let y = (dragDistanceY * value)
+            this.performDrag(false, Option<TouchEvent>.None, event, x, y)
+            this.mMatrix = this.horizontalBarChartModel.getViewPortHandler().refresh(this.mMatrix, this.horizontalBarChartModel, true)
         }
 
         this.animatorResult().onfinish = { =>
-            this.animatorIsPlaying = false;
+            this.animatorIsPlaying = false
         }
-        this.animatorResult().play();
-        this.animatorIsPlaying = true;
+        this.animatorResult().play()
+        this.animatorIsPlaying = true
     }
 }

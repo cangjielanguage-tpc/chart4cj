@@ -114,31 +114,33 @@ public class CombinedChartRenderer <: DataRenderer  {
             return
         }
 
-        for (index in 0..this.mRenderers.size) {
-            this.mRenderers[index].drawExtras(c)
+        for (indexT in 0..this.mRenderers.size) {
+            this.mRenderers[indexT].drawExtras(c)
             var data: ?ChartDataWrapper = Option<ChartDataWrapper>.None
 
-            match (this.mRenderers.get(index)) {
-                case Some(render: WaterfallChartRenderer) => data = render.mChart.getWaterfallData() as BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
-                    EntryOhos>
-                case Some(render: BarChartRenderer) => data = render.mChart.getBarData() as BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
-                    EntryOhos>
-                case Some(render: LineChartRenderer) => data = render.mChart.getLineData() as BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
-                    EntryOhos>
-                case Some(render: CandleStickChartRenderer) => data = render.mChart.getCandleData() as BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
-                    EntryOhos>
-                case Some(render: ScatterChartRenderer) => data = render.mChart.getScatterData() as BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
-                    EntryOhos>
-                case Some(render: BubbleChartRenderer) => data = render.mChart.getBubbleData() as BarLineScatterCandleBubbleData<IBarLineScatterCandleBubbleDataSet<EntryOhos>,
-                    EntryOhos>
+            match (this.mRenderers.get(indexT)) {
+                case Some(render: WaterfallChartRenderer) =>
+                    data = CombinedChartDataWrapper<IWaterfallDataSet, WaterfallEntry>(render.mChart.getWaterfallData()())
+                case Some(render: BarChartRenderer) =>
+                    data = CombinedChartDataWrapper<IBarDataSet, BarEntry>(render.mChart.getBarData()())
+                case Some(render: LineChartRenderer) =>
+                    data = CombinedChartDataWrapper<ILineDataSet, EntryOhos>(render.mChart.getLineData()())
+                case Some(render: CandleStickChartRenderer) =>
+                    data = CombinedChartDataWrapper<ICandleDataSet, CandleEntry>(render.mChart.getCandleData()())
+                case Some(render: ScatterChartRenderer) =>
+                    data = CombinedChartDataWrapper<IScatterDataSet, EntryOhos>(render.mChart.getScatterData()())
+                case Some(render: BubbleChartRenderer) =>
+                    data = CombinedChartDataWrapper<IBubbleDataSet, BubblesEntry>(render.mChart.getBubbleData()())
+
                 case _ => ()
             }
 
-            let dataIndex: Int64 = if (let Some(data) <- data) {
+            let dataIndex: Int64 = if (let Some(dataT) <- data) {
                 if (let Some(allData: CombinedData) <- tos<CombinedData>(chart().getData())) {
-                    allData.getAllData().indexOf(data)
+                    indexofT(dataT, allData.getAllData())
+                } else {
+                    -1
                 }
-                -1
             } else {
                 -1
             }
@@ -150,15 +152,43 @@ public class CombinedChartRenderer <: DataRenderer  {
                 }
             }
 
-            let bufferSize = this.mHighlightBuffer.size
-            var highlightArr = Array<Highlight>(bufferSize, repeat: Highlight(0.0))
-            for (i in 0..bufferSize) {
-                highlightArr[i] = this.mHighlightBuffer[i]
-            }
-            this.mRenderers[index].drawHighlighted(c, highlightArr)
+            this.mRenderers[indexT].drawHighlighted(c, this.mHighlightBuffer.toArray())
         }
     }
 
+    public func indexofT(dataT: ChartDataWrapper, dataObjects: ArrayList<ChartDataWrapper>): Int64 {
+        for( i in 0..dataObjects.size) {
+            let dataObject: ? ChartDataWrapper = dataObjects.get(i)
+            match(dataObject) {
+                case Some(bubbledata: CombinedChartDataWrapper<IBubbleDataSet, BubblesEntry>) =>
+                    if(dataT is CombinedChartDataWrapper<IBubbleDataSet, BubblesEntry>) {
+                        return i
+                    }
+                case Some(scatterdata: CombinedChartDataWrapper<IScatterDataSet, EntryOhos>) =>
+                    if(dataT is CombinedChartDataWrapper<IScatterDataSet, EntryOhos>) {
+                        return i
+                    }
+                case Some(linedata: CombinedChartDataWrapper<ILineDataSet, EntryOhos>) =>
+                    if(dataT is CombinedChartDataWrapper<ILineDataSet, EntryOhos>) {
+                        return i
+                    }
+                case Some(waterfalldata: CombinedChartDataWrapper<IWaterfallDataSet, WaterfallEntry>) =>
+                    if(dataT is CombinedChartDataWrapper<IWaterfallDataSet, WaterfallEntry>) {
+                        return i
+                    }
+                case Some(candledata: CombinedChartDataWrapper<ICandleDataSet, CandleEntry>) =>
+                    if(dataT is CombinedChartDataWrapper<ICandleDataSet, CandleEntry>) {
+                        return i
+                    }
+                case Some(bardata: CombinedChartDataWrapper<IBarDataSet, BarEntry>) =>
+                    if(dataT is CombinedChartDataWrapper<IBarDataSet, BarEntry>) {
+                        return i
+                    }
+                case _=> return -1
+            }
+        }
+        return -1
+    }
     /**
      * Returns the sub-renderer object at the specified index.
      *

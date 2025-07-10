@@ -3,6 +3,8 @@
  */
 package ohos_app_cangjie_entry.radarPage
 
+internal import ohos_app_cangjie_entry.customcomponents.*
+
 internal import kit.UIKit.*
 
 

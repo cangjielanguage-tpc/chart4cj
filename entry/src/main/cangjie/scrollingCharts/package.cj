@@ -20,6 +20,7 @@ internal import chart.components.*
 internal import ohos_app_cangjie_entry.scrollingCharts.listViewItems.*
 internal import ohos_app_cangjie_entry.scrollingCharts.viewPageItems.*
 internal import ohos.hilog.*
+import ohos.state_macro_manage.*
 
 
 extend<T> Option<T> {

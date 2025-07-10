@@ -30,6 +30,8 @@ class RadarChartPageReadme {
         this.model.setWebColor(0xFFCCCCCC)
         this.model.setWebLineWidthInner(0.3)
         this.model.setWebColorInner(0xFFCCCCCC)
+        this.model.setDrawMarkers(true)
+        this.model.setMarker(RadarMarkerView())
 
         let xAxis: ?XAxis = this.model.getXAxis() // 获取 X 轴对象
         if (let Some(xAxis) <- xAxis) {
@@ -75,13 +77,20 @@ class RadarChartPageReadme {
         // 创建雷达图数据集
         let set1: RadarDataSet = RadarDataSet(entries1, "Last Week")
         set1.setColorByColor(UInt32(ChartColor.rgb(103, 110, 129)))
+        set1.setFillColor(UInt32(ChartColor.rgb(103, 110, 129)))
         set1.setLineWidth(2.0)
+        set1.setHighLightColor(Color.GREEN.toUInt32())
+        set1.setDrawFilled(true)
+        set1.setHighlightEnabled(true)
 
         // 创建雷达图数据集
         let set2: RadarDataSet = RadarDataSet(entries2, "This Week")
         set2.setColorByColor(UInt32(ChartColor.rgb(121, 162, 175)))
-        set2.setLineWidth(2.0)
         set2.setFillColor(UInt32(ChartColor.rgb(121, 162, 175)))
+        set2.setLineWidth(2.0)
+        set2.setHighLightColor(Color.BLUE.toUInt32())
+        set2.setDrawFilled(true)
+        set2.setHighlightEnabled(true)
 
         // 创建雷达图数据集合
         let sets: ArrayList<IRadarDataSet> = ArrayList<IRadarDataSet>()

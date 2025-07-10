@@ -129,7 +129,6 @@ public class Legend <: ComponentBase {
             }
 
             let label: String = entry.label
-            //if (!label) continue
 
             let length: Float64 = Utils.calcTextWidth(p, label)
 
@@ -152,7 +151,6 @@ public class Legend <: ComponentBase {
 
         for (entry in this.mEntries) {
             let label: String = entry.label
-            // if (!label) continue
 
             let length: Float64 = Utils.calcTextHeight(p, label)
 

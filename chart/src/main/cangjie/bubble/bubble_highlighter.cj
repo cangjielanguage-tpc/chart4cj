@@ -2,23 +2,42 @@
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  */
 package chart.bubble
+import ohos.hilog.Hilog
 
-public open class BubbleHighlighter <: IHighlighter {
+public class BubbleHighlighter <: IHighlighter {
+    /**
+     * instance of the data-provider
+     */
     protected var mChart: BubbleDataProvider
+    /**
+     * buffer for storing previously highlighted values
+     */
     protected var mHighlightBuffer: ArrayList<Highlight> = ArrayList<Highlight>()
 
     public init(chart: BubbleDataProvider) {
-         this.mChart = chart
+        this.mChart = chart
     }
 
     public open func getHighlight(x: Float64, y: Float64): ?Highlight {
-        var pos: MPPointD = this.getValsForTouch(x, y)
+        let pos: MPPointD = this.getValsForTouch(x, y)
         let xVal: Float64 = pos.x
         MPPointD.recycleInstance(pos)
+
         let high: ?Highlight = this.getHighlightForX(xVal, x, y)
         return high
     }
+
+    /**
+     * Returns a recyclable MPPointD instance.
+     * Returns the corresponding xPos for a given touch-position in pixels.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     protected func getValsForTouch(x: Float64, y: Float64): MPPointD {
+
+        // take any transformer to determine the x-axis value
         let transformer: ?Transformer = this.mChart.getTransformer(AxisDependency.LEFT)
         var pos: MPPointD = MPPointD.getInstance(0.0, 0.0)
         match (transformer) {
@@ -29,9 +48,16 @@ public open class BubbleHighlighter <: IHighlighter {
         return pos
     }
 
+    /**
+     * Returns the corresponding Highlight for a given xVal and x- and y-touch position in pixels.
+     *
+     * @param xVal
+     * @param x
+     * @param y
+     * @return
+     */
     protected func getHighlightForX(xVal: Float64, x: Float64, y: Float64): ?Highlight {
         let closestValues: ArrayList<Highlight> = this.getHighlightsAtXValue(xVal, x, y)
-
         if (closestValues.isEmpty()) {
             return None
         }
@@ -51,13 +77,20 @@ public open class BubbleHighlighter <: IHighlighter {
                 AxisDependency.RIGHT
             }
         }
-
         let detail: ?Highlight = this.getClosestHighlightByPixel(closestValues, x, y, axis,
             this.mChart.getMaxHighlightDistance())
-
         return detail
     }
 
+    /**
+     * Returns the minimum distance from a touch value (in pixels) to the
+     * closest value (in pixels) that is displayed in the chart.
+     *
+     * @param closestValues
+     * @param pos
+     * @param axis
+     * @return
+     */
     protected func getMinimumDistance(closestValues: ArrayList<Highlight>, pos: Float64, axis: AxisDependency): Float64 {
         var distance: Float64 = Float64.Max
 
@@ -81,10 +114,19 @@ public open class BubbleHighlighter <: IHighlighter {
         return h.getYPx()
     }
 
+    /**
+     * Returns a list of Highlight objects representing the entries closest to the given xVal.
+     * The returned list contains two objects per DataSet (closest rounding up, closest rounding down).
+     *
+     * @param xVal the transformed x-value of the x-touch position
+     * @param x    touch position
+     * @param y    touch position
+     * @return
+     */
     protected func getHighlightsAtXValue(xVal: Float64, x: Float64, y: Float64): ArrayList<Highlight> {
         this.mHighlightBuffer.clear()
 
-        let data: ?BubbleData = this.getData()
+        let data: ?BubbleData = this.mChart.getBubbleData()
         if (let Some(d) <- data) {
             let dataSetCount: Int64 = d.getDataSetCount()
             for (i in 0..dataSetCount) {
@@ -93,15 +135,23 @@ public open class BubbleHighlighter <: IHighlighter {
                     if(!dataSet().isHighlightEnabled()) {
                        continue
                     }
-
-                    this.mHighlightBuffer.add(all: this.buildHighlights(s, i, xVal, Rounding.CLOSEST))
                 }
+                this.mHighlightBuffer.add(all: this.buildHighlights(dataSet(), i, xVal, Rounding.CLOSEST))
             }
         }
 
         return this.mHighlightBuffer
     }
 
+    /**
+     * An array of `Highlight` objects corresponding to the selected xValue and dataSetIndex.
+     *
+     * @param set
+     * @param dataSetIndex
+     * @param xVal
+     * @param rounding
+     * @return
+     */
     protected open func buildHighlights(set: IBubbleDataSet, dataSetIndex: Int64, xVal: Float64, rounding: Rounding): ArrayList<Highlight> {
         let highlights: ArrayList<Highlight> = ArrayList<Highlight>()
 
@@ -131,12 +181,23 @@ public open class BubbleHighlighter <: IHighlighter {
             }
 
             highlights.add(Highlight(e.getX(), y: e.getY(), dataSetIndex: dataSetIndex, dataIndex: 0, stackIndex: 0, xPx: pixels.x, yPx: pixels.y, axis: axisObj))
-            MPPointD.recycleInstance(pixels)
         }
 
         return highlights
     }
 
+    /**
+     * Returns the Highlight of the DataSet that contains the closest value on the
+     * y-axis.
+     *
+     * @param closestValues        contains two Highlight objects per DataSet closest to the selected x-position (determined by
+     *                             rounding up an down)
+     * @param x
+     * @param y
+     * @param axis                 the closest axis
+     * @param minSelectionDistance
+     * @return
+     */
     public func getClosestHighlightByPixel(closestValues: ArrayList<Highlight>, x: Float64, y: Float64,
         axis: ?AxisDependency, minSelectionDistance: Float64): ?Highlight {
         var closest: ?Highlight = None
@@ -147,7 +208,7 @@ public open class BubbleHighlighter <: IHighlighter {
 
             if (axis.isNone() || high.getAxis()() == axis()) {
                 var cDistance: Float64 = 0.0
-                if ((this.getData())().isHighlightByXDistance()) {
+                if (this.mChart.getBubbleData()().isHighlightByXDistance()) {
                     cDistance = abs(x - high.getXPx())
                 } else {
                     cDistance = this.getDistance(x, y, high.getXPx(), high.getYPx())
@@ -163,11 +224,17 @@ public open class BubbleHighlighter <: IHighlighter {
         return closest
     }
 
+    /**
+     * Calculates the distance between the two given points.
+     *
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @return
+     */
     protected open func getDistance(x1: Float64, y1: Float64, x2: Float64, y2: Float64): Float64 {
-        return abs(x1 - x2)
-    }
-
-    protected func getData(): ?BubbleData {
-        return this.mChart.getBubbleData()
+        let sun: Float64 = pow(x1 - x2, 2) + pow(y1 - y2, 2)
+        return sqrt(sun)
     }
 }

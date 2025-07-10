@@ -14,9 +14,7 @@ public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubblesEntry> & 
 
         this.calcMinMax()
     }
-    public override func toString(): String {
-        return FLAG_DATA
-    }
+
     public func setHighlightCircleWidth(width: Float64): Unit {
         this.mHighlightCircleWidth = Utils.handleDataValues(width)
     }
@@ -71,5 +69,9 @@ public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubblesEntry> & 
 
     public operator func !=(s: Any): Bool {
         return !(this == s)
+    }
+
+    public override func toString(): String {
+        return FLAG_DATA
     }
 }

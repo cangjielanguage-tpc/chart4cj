@@ -28,6 +28,8 @@ class ScatterChartPageReadme {
         this.model.setMaxVisibleValueCount(160)
         this.model.setDrawGridBackground(false)
         this.model.animateXY(2000, 2000)
+        this.model.setDrawMarkers(true)
+        this.model.setMarker(MarkerView())
 
         let xAxis: ?XAxis = this.model.getXAxis() // 获取X轴对象
         if (let Some(xAxis) <- xAxis) {
@@ -66,6 +68,9 @@ class ScatterChartPageReadme {
         let set1 = ScatterDataSet(values1, "DS 1")
         set1.setScatterShape(ChartShape.SQUARE)
         set1.setColorByColor(0x2b89ab)
+
+        set1.setHighlightEnabled(true)
+        set1.setHighLightColor(Color.RED.toUInt32())
 
         // 创建散点图数据集2
         let set2 = ScatterDataSet(values2, "DS 2")

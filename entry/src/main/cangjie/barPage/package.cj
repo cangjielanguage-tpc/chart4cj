@@ -4,6 +4,8 @@
 
 package ohos_app_cangjie_entry.barPage
 
+internal import ohos_app_cangjie_entry.customcomponents.*
+
 internal import kit.UIKit.*
 
 
@@ -19,6 +21,7 @@ internal import chart.utils.*
 internal import chart.components.*
 internal import chart.bar.*
 internal import chart.charts.*
+import ohos.state_macro_manage.Builder
 
 
 extend<T> Option<T> {
@@ -26,3 +29,4 @@ extend<T> Option<T> {
         this.getOrThrow()
     }
 }
+

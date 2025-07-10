@@ -31,12 +31,12 @@ public class HorizontalBarHighlighter <: BarHighlighter {
         return high
     }
 
-    protected func buildHighlights(set: IDataSet<EntryOhos>, dataSetIndex: Int64, xVal: Float64, rounding: Rounding): ArrayList<Highlight> {
+    protected func buildHighlights(set: IBarDataSet, dataSetIndex: Int64, xVal: Float64, rounding: Rounding): ArrayList<Highlight> {
         let highlights: ArrayList<Highlight> = ArrayList<Highlight>()
 
-        var entries: ArrayList<EntryOhos> = set.getEntriesForXValue(xVal)
+        var entries: ArrayList<BarEntry> = set.getEntriesForXValue(xVal)
         if (entries.size == 0) {
-            let closest: ?EntryOhos = set.getEntryForXValue(xVal, Float64.NaN, rounding: rounding)
+            let closest: ?BarEntry = set.getEntryForXValue(xVal, Float64.NaN, rounding: rounding)
             if (closest.isSome()) {
                 entries = set.getEntriesForXValue(closest().getX())
             }
@@ -62,7 +62,7 @@ public class HorizontalBarHighlighter <: BarHighlighter {
         return highlights
     }
 
-    public func getDistance(x1: Float64, y1: Float64, x2: Float64, y2: Float64): Float64 {
+    protected func getDistance(x1: Float64, y1: Float64, x2: Float64, y2: Float64): Float64 {
         return abs(y1 - y2)
     }
 }

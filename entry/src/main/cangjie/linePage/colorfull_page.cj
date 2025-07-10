@@ -63,14 +63,14 @@ class ColorfulPage {
         if (let Some(legend) <- legend) {
             legend.setEnabled(false)
         }
-
+        let pixelMap = Util.getPixelMap(@r(app.media.star).id, globalAbilityContext())
         let start: Int64 = 1
         let values: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
         for (i in start..40) {
             let val = Random().nextFloat64() * 41.0
 
             if (Random().nextFloat64() * 100.0 < 25.0) {
-                values.add(EntryOhos(Float64(i), val))
+                values.add(EntryOhos(Float64(i), val, icon: pixelMap))
             } else {
                 values.add(EntryOhos(Float64(i), val))
             }
@@ -78,7 +78,7 @@ class ColorfulPage {
 
         let dataSet: LineDataSet = LineDataSet(values, "DataSet")
         dataSet.setHighlightEnabled(false)
-        dataSet.setDrawIcons(false)
+        dataSet.setDrawIcons(true)
 
         dataSet.setMode(Mode.LINEAR)
         dataSet.setDrawCircles(true)

@@ -33,9 +33,9 @@ class CubicAxisPage {
             leftAxis.setLabelCount(7, false)
             leftAxis.setPosition(YAxisLabelPosition.OUTSIDE_CHART)
             leftAxis.setDrawGridLines(false)
-            leftAxis.setDrawLabels(true)
             leftAxis.setTextColor(Color.WHITE)
-            leftAxis.setAxisLineColor(Color.BLUE)
+            leftAxis.setDrawAxisLine(false)
+            leftAxis.setDrawLabels(true)
         }
 
         this.rightAxis = this.model.getAxisRight()
@@ -85,6 +85,6 @@ class CubicAxisPage {
     func build() {
         Column {
             LineChart(model: this.model)
-        }.width(100.percent).height(70.percent).backgroundColor(Color.WHITE)
+        }.width(100.percent).height(70.percent).backgroundColor(Color(104, 241, 175));
     }
 }

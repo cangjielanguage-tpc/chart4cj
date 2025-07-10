@@ -142,8 +142,8 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
         this.opacity = value
     }
 
-    public func getOpacity(): String {
-        return "opacity(${this.opacity}%)"
+    public func getOpacity(): Float64 {
+        return this.opacity
     }
 
     public func setMaxTopHighLightEXIST(value: Bool) {

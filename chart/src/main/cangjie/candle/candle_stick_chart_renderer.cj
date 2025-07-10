@@ -331,7 +331,9 @@ public class CandleStickChartRenderer <: LineScatterCandleRadarRenderer {
                                             c,
                                             icon,
                                             (x + iconsOffset.x),
-                                            (y + iconsOffset.y)
+                                            (y + iconsOffset.y),
+                                            icon.getWidth(),
+                                            icon.getHeight()
                                         )
                                     }
                                 }
@@ -386,12 +388,79 @@ public class CandleStickChartRenderer <: LineScatterCandleRadarRenderer {
                     pix = transformer.getPixelForValues(e().getX(), y)
                 }
                 high.setDraw((pix.x), (pix.y))
-                if (let Some(set: ILineScatterCandleRadarDataSet<EntryOhos>) <- set) {
-                    this.drawHighlightLines(c, (pix.x), (pix.y), set)
+                if (let Some(set: ICandleDataSet) <- set) {
+                    this.drawCandleHighlightLines(c, (pix.x), (pix.y), set)
                 }
             }
         } else {
             return
         }
+    }
+
+    protected func drawCandleHighlightLines(c: CanvasRenderingContext2D, x: Float64, y: Float64,
+        set: ICandleDataSet): Unit {
+        let highLightColor = set.getHighLightColor()
+        this.mHighlightPaint.setColor(Color(highLightColor))
+
+        this.mHighlightPaint.setStrokeWidth(set.getHighlightLineWidth())
+        this.mHighlightPaint.setDashPathEffect(set.getDashPathEffectHighlight())
+        Utils.resetContext2DStyle(c, this.mHighlightPaint)
+        if (set.isVerticalHighlightIndicatorEnabled()) {
+            c.beginPath()
+
+            c.moveTo(x, if (let Some(handle) <- this.mViewPortHandler) {
+                handle.contentTop()
+            } else {
+                0.0
+            })
+            c.lineTo(x, if (let Some(handle) <- this.mViewPortHandler) {
+                handle.contentBottom()
+            } else {
+                0.0
+            })
+            c.stroke()
+            c.closePath()
+        }
+
+        // draw horizontal highlight lines
+        if (set.isHorizontalHighlightIndicatorEnabled()) {
+            c.beginPath()
+
+            c.moveTo(
+                if (let Some(handle) <- this.mViewPortHandler) {
+                    handle.contentLeft()
+                } else {
+                    0.0
+                },
+                y
+            )
+            c.lineTo(
+                if (let Some(handle) <- this.mViewPortHandler) {
+                    handle.contentRight()
+                } else {
+                    0.0
+                },
+                y
+            )
+
+            c.stroke()
+            c.closePath()
+        }
+    }
+
+    protected func isInBoundsX(e: ?CandleEntry, dataSet: ICandleDataSet): Bool {
+        if (let Some(entry) <- e) {
+            let entryIndex = dataSet.getEntryIndexByEntry(entry)
+            if (entryIndex >= dataSet.getEntryCount() * (if (let Some(m) <- this.mAnimator) {
+                Int64(m.getPhaseX())
+            } else {
+                1
+            })) {
+                return false
+            } else {
+                return true
+            }
+        }
+        return false
     }
 }

@@ -12,7 +12,7 @@ public class Fill {
     /**
      * the color that is used for filling
      */
-    private var mColor: UInt32 = 0xffffff //UInt32.parse("0x" + hex.replace("#", ""))
+    private var mColor: UInt32 = 0xffffff
     private var mFinalColor: UInt32 = 0xffffff
     /**
      * the drawable to be used for filling

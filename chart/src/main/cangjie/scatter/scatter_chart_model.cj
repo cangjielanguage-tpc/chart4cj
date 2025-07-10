@@ -19,7 +19,8 @@ public class ScatterChartModel <: BarLineChartBaseModel<ScatterData, IScatterDat
     }
     public static func build(): ScatterChartModel {
         let model: ScatterChartModel = ScatterChartModel()
-
+        model.setHighlighter(ScatterHighlighter(model))
+        model.mChartTouchListener = ScatterChartTouchListener(model, model.mViewPortHandler.getMatrixTouch(), 3.0)
         return model
     }
 
@@ -43,6 +44,24 @@ public class ScatterChartModel <: BarLineChartBaseModel<ScatterData, IScatterDat
 
     public func getScatterData(): ?ScatterData {
         return this.mData
+    }
+
+    public func setHighlighter(highlighter: ScatterHighlighter) {
+        this.mHighlighter = highlighter
+    }
+
+    public func getScatterDataSetByTouchPoint(x: Float64, y: Float64): ?IScatterDataSet {
+        let h: ?Highlight = this.getHighlightByTouchPoint(x, y)
+        if (h.isSome() && this.mData.isSome()) {
+            return this.mData().getDataSetByIndex(h().getDataSetIndex())
+        }
+        return None
+    }
+
+    public func computeScroll(event: GestureEvent): Unit {
+        if (let Some(listener: ScatterChartTouchListener) <- this.mChartTouchListener) {
+            listener.computeScroll(event)
+        }
     }
 }
 

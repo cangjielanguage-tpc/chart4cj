@@ -31,6 +31,23 @@ public class RadarChart {
             }).onTouch({
                 event => this.model.onTouchEvent(event)
             })
+            .hitTestBehavior(if(this.model.getTouchEnabled()) {this.model.getHitTestMode() }else { HitTestMode.None } )
+            .gesture(
+                GestureGroup(GestureMode.Exclusive,
+                [
+                    SwipeGesture()
+                        .onAction({event: GestureEvent =>
+                            if (this.model.isDragDecelerationEnabled()) {
+                                this.model.computeScroll(event)
+                            }
+                        }),
+                    TapGesture( count: 1 )
+                        .onAction({event: GestureEvent =>
+                            this.model.onSingleTapUp(false, Option<TouchEvent>.None, event)
+                        })
+                ]
+                )
+            )
         }
     }
 }

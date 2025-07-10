@@ -21,6 +21,8 @@ public class CandleStickChartModel <: BarLineChartBaseModel<CandleData, ICandleD
             xaxis.setSpaceMin(0.5)
             xaxis.setSpaceMax(0.5)
         }
+        model.setHighlighter(CandleHighlighter(model))
+        model.mChartTouchListener = CandleChartTouchListener(model, model.mViewPortHandler.getMatrixTouch(), 3.0)
         return model
     }
 
@@ -45,4 +47,23 @@ public class CandleStickChartModel <: BarLineChartBaseModel<CandleData, ICandleD
     public func getCandleData(): ?CandleData {
         return this.mData
     }
+
+    public func setHighlighter(highlighter: CandleHighlighter) {
+        this.mHighlighter = highlighter
+    }
+
+    public func getCandleDataSetByTouchPoint(x: Float64, y: Float64): ?ICandleDataSet {
+        let h: ?Highlight = this.getHighlightByTouchPoint(x, y)
+        if (h.isSome() && this.mData.isSome()) {
+            return this.mData().getDataSetByIndex(h().getDataSetIndex())
+        }
+        return None
+    }
+
+    public func computeScroll(event: GestureEvent): Unit {
+        if (let Some(listener: CandleChartTouchListener) <- this.mChartTouchListener) {
+            listener.computeScroll(event)
+        }
+    }
+
 }

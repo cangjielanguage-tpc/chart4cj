@@ -39,6 +39,8 @@ class BarChartMultiplePage {
 
         this.model.setDrawValueAboveBar(true)
         this.model.setHighlightFullBarEnabled(true)
+        this.model.setMarker(BarMarkerView())
+        this.model.setDrawMarkers(true)
 
         this.leftAxis = this.model.getAxisLeft()
         if (let Some(leftaxis) <- this.leftAxis) {

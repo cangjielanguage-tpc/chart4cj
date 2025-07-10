@@ -56,7 +56,6 @@ public type ChartDataWrapper = BarLineScatterCandleBubbleData<IBarLineScatterCan
         IBarLineScatterCandleBubbleDataSet<EntryOhos>
  */
 public class CombinedDataSetWrapper<EW> <: IBarLineScatterCandleBubbleDataSet<EntryOhos> where EW <: EntryOhos {
-//    CombinedDataSetWrapper(let inner: IBarLineScatterCandleBubbleDataSet<EW>) {}
     public var inner: IBarLineScatterCandleBubbleDataSet<EW>
     public init(inner: IBarLineScatterCandleBubbleDataSet<EW>) {
         this.inner = inner

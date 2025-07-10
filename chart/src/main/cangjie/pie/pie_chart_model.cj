@@ -72,17 +72,12 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
             this.mRenderer = PieChartRenderer(this, this.mAnimator(), this.mViewPortHandler)
         }
         this.mXAxis = None
-        let pieHigh: PieHighlighter = PieHighlighter(this)
-        this.mHighlighter = pieHigh as IHighlighter
-        //子类实现
-        //this.mChartTouchListener = PieRadarChartTouchListener<PieData, IPieDataSet, PiEntry>
     }
 
     public static func build(): PieChartModel {
         let model = PieChartModel()
-        let lister: ChartTouchListener<PieData, IPieDataSet, PiEntry> = PieRadarChartTouchListener<PieData, IPieDataSet, PiEntry>(
-            model)
-        model.mChartTouchListener = lister
+        model.mChartTouchListener = PieChartTouchListener(model)
+        model.setHighlighter(PieHighlighter(model))
         return model
     }
 
@@ -441,8 +436,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      *
      * @param text
      */
-    public func setCenterText(text: String /*CharSequence*/
-        ): Unit {
+    public func setCenterText(text: String): Unit {
         this.mCenterText = text
     }
 
@@ -451,8 +445,7 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
      *
      * @return
      */
-    public func getCenterText(): String /*CharSequence*/
-    {
+    public func getCenterText(): String{
         return this.mCenterText
     }
 
@@ -799,5 +792,25 @@ public class PieChartModel <: PieRadarChartBaseModel<PieData, IPieDataSet, PiEnt
 
     public func getPieData(): ?PieData {
         return this.mData
+    }
+
+    public func notifyDataSetChanged() {
+        if (let Some(md: PieData) <- this.mData) {
+            this.calcMinMax()
+            this.mLegendRenderer?.computeLegend(md)
+            this.calculateOffsets()
+        } else {
+            return
+        }
+    }
+
+    public func computeScroll(event: GestureEvent): Unit {
+        if (let Some(listener: PieChartTouchListener) <- this.mChartTouchListener) {
+            listener.computeScroll(event)
+        }
+    }
+
+    public func setHighlighter(highlighter: PieHighlighter) {
+        this.mHighlighter = highlighter
     }
 }

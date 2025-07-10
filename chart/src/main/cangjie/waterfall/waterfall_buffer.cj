@@ -6,6 +6,7 @@ package chart.waterfall
 public class WaterfallBuffer <: BarBuffer {
     private var arrayTop: ArrayList<Float64> = ArrayList<Float64>()
     private var arrayBottom: ArrayList<Float64> = ArrayList<Float64>()
+
     public init(size: Int64, dataSetCount: Int64, containsStacks: Bool) {
         super(size, dataSetCount, containsStacks)
     }

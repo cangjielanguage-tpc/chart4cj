@@ -52,38 +52,37 @@ public class HorizontalBarChart {
                             SwipeGesture()
                                 .onAction({event: GestureEvent =>
                                     if (this.model.isDragDecelerationEnabled()) {
-                                        this.model.computeScrollHorizontal(event);
+                                        this.model.computeScrollHorizontal(event)
                                     }
                                 }),
                             TapGesture( count: 2 )
                                 .onAction({event: GestureEvent =>
-                                    this.model.onDoubleTap(false, event);
+                                    this.model.onDoubleTap(false, Option<TouchEvent>.None, event)
                                 }),
                             TapGesture( count: 1 )
                                 .onAction({event: GestureEvent =>
-                                    this.model.onSingleTapUp(false, event);
+                                    this.model.onSingleTapUp(false, Option<TouchEvent>.None, event)
                                 }),
                             LongPressGesture()
                                 .onAction({event: GestureEvent =>
-                                    this.model.onLongPress(false, LongPressType.DOWN, event);
+                                    this.model.onLongPress(false, LongPressType.DOWN, Option<TouchEvent>.None, event)
                                 })
                                 .onActionEnd({event: GestureEvent =>
-                                    this.model.onLongPress(false, LongPressType.UP, event);
+                                    this.model.onLongPress(false, LongPressType.UP, Option<TouchEvent>.None, event)
                                 }),
                             PinchGesture( fingers: 2 )
                                 .onActionStart({event: GestureEvent =>
-                                    this.model.onPinch(false, PinchActionType.START, event);
+                                    this.model.onPinch(false, PinchActionType.START, Option<TouchEvent>.None, event)
                                 })
                                 .onActionUpdate({event: GestureEvent =>
-                                    this.model.onPinch(false, PinchActionType.UPDATE, event);
+                                    this.model.onPinch(false, PinchActionType.UPDATE, Option<TouchEvent>.None, event)
                                 })
                                 .onActionEnd({event: GestureEvent =>
-                                    this.model.onPinch(false, PinchActionType.END, event);
+                                    this.model.onPinch(false, PinchActionType.END, Option<TouchEvent>.None, event)
                                 })
                         ]
                         )
                     )
-//                    .scale(x: if(this.model.getHorizontalFlip()) { -1} else { 1} )
                 }
 
             }

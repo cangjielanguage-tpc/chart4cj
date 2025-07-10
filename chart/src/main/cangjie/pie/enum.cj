@@ -37,6 +37,13 @@ public enum LastGesture <: Equatable<LastGesture>{
     public operator func !=(b: LastGesture): Bool {
         return !(this == b)
     }
+    public func toString(): String {
+        match (this) {
+            case NONE => "NONE"
+            case SINGLE_TAP => "SINGLE_TAP"
+            case LONG_PRESS => "LONG_PRESS"
+        }
+    }
 }
 
 
