@@ -3,16 +3,8 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.viewPageItems
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import chart.pie.*
-import chart.utils.*
-import chart.components.*
-import chart.charts.*
-import std.collection.{ArrayList}
-import std.random.*
+
 
 @Entry
 @Component
@@ -42,7 +34,7 @@ public class fragmentSimplePieIndex {
     private func initPieData(count: Int64, range: Float64): PieData {
         let entries = ArrayList<PiEntry>()
         for (i in 0..count) {
-            entries.append(PiEntry(((Random().nextFloat64() * range) + range / 5.0), this.parties[i % this.parties.size]
+            entries.add(PiEntry(((Random().nextFloat64() * range) + range / 5.0), this.parties[i % this.parties.size]
             ))
         }
 
@@ -55,26 +47,26 @@ public class fragmentSimplePieIndex {
         // add a lot of colors
         let colors: ArrayList<Int64> = ArrayList()
         for (index in 0..ColorTemplate.VORDIPLOM_COLORS.size) {
-            colors.append(ColorTemplate.VORDIPLOM_COLORS[index])
+            colors.add(ColorTemplate.VORDIPLOM_COLORS[index])
         }
 
         for (index in 0..ColorTemplate.JOYFUL_COLORS.size) {
-            colors.append(ColorTemplate.JOYFUL_COLORS[index])
+            colors.add(ColorTemplate.JOYFUL_COLORS[index])
         }
 
         for (index in 0..ColorTemplate.COLORFUL_COLORS.size) {
-            colors.append(ColorTemplate.COLORFUL_COLORS[index])
+            colors.add(ColorTemplate.COLORFUL_COLORS[index])
         }
         for (index in 0..ColorTemplate.LIBERTY_COLORS.size) {
-            colors.append(ColorTemplate.LIBERTY_COLORS[index])
+            colors.add(ColorTemplate.LIBERTY_COLORS[index])
         }
         for (index in 0..ColorTemplate.PASTEL_COLORS.size) {
-            colors.append(ColorTemplate.PASTEL_COLORS[index])
+            colors.add(ColorTemplate.PASTEL_COLORS[index])
         }
-        colors.append(ColorTemplate.getHoloBlue())
+        colors.add(ColorTemplate.getHoloBlue())
         let colorss: ArrayList<UInt32> = ArrayList()
         for (color in colors) {
-            colorss.append(UInt32(color))
+            colorss.add(UInt32(color))
         }
         dataSet.setColorsByList(colorss)
         return PieData(dataSet)

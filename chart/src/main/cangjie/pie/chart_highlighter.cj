@@ -138,7 +138,7 @@ public open class ChartHighlighter<P, D, S, E> <: IHighlighter where P <: BarLin
                        continue
                     }
                 }
-                this.mHighlightBuffer.appendAll(this.buildHighlights(dataSet(), i, xVal, Rounding.CLOSEST))
+                this.mHighlightBuffer.add(all: this.buildHighlights(dataSet(), i, xVal, Rounding.CLOSEST))
             }
         }
 
@@ -182,7 +182,7 @@ public open class ChartHighlighter<P, D, S, E> <: IHighlighter where P <: BarLin
                 pixels = t.getPixelForValues(e.getX(), e.getY())
             }
 
-            highlights.append(Highlight(e.getX(), y: e.getY(), dataSetIndex: dataSetIndex, dataIndex: 0, stackIndex: 0, xPx: pixels.x, yPx: pixels.y, axis: axisObj))
+            highlights.add(Highlight(e.getX(), y: e.getY(), dataSetIndex: dataSetIndex, dataIndex: 0, stackIndex: 0, xPx: pixels.x, yPx: pixels.y, axis: axisObj))
         }
 
         return highlights

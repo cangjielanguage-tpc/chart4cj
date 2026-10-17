@@ -43,13 +43,15 @@ public class PieChartRenderer <: DataRenderer {
         this.mTransparentCirclePaint.setColor(Color.WHITE)
         this.mTransparentCirclePaint.setStyle(Style.FILL)
         this.mTransparentCirclePaint.setGlobalAlpha(105.0 / 255.0)
+
         this.mCenterTextPaint = TextPaint()
-        this.mCenterTextPaint.setColor(Color.BLACK)
-        this.mCenterTextPaint.setTextSize(Utils.handleDataValues(12.0))
+        this.mCenterTextPaint.setColor(Color.BLUE)
+        this.mCenterTextPaint.setTextSize(Utils.handleDataValues(22.0))
 
         this.mValuePaint.setTextSize(Utils.handleDataValues(13.0))
         this.mValuePaint.setColor(Color.WHITE)
         this.mValuePaint.setTextAlign(TextAlignStyle.Center)
+
         this.mEntryLabelsPaint = ChartPaint()
         this.mEntryLabelsPaint.setColor(Color.WHITE)
         this.mEntryLabelsPaint.setTextAlign(TextAlignStyle.Center)
@@ -262,7 +264,7 @@ public class PieChartRenderer <: DataRenderer {
 
             if (sweepAngleOuter >= 360.0 && Float64(Int64(sweepAngleOuter) % 360) <= Utils.FLOAT_EPSILON) {
                 // ohos is doing "mod 360"
-                this.mPathBuffer.arc(center.x, center.y, radius, 0.0, 2.0 * Float64.PI)
+                this.mPathBuffer.arc(center.x, center.y, radius, 0.0, 2.0 * Float64.getPI())
             // this.mPathBuffer.addCircle(center.x, center.y, radius, Path.Direction.CW)
             } else {
                 // 绘制圆角扇形的路径
@@ -294,10 +296,7 @@ public class PieChartRenderer <: DataRenderer {
 
             // 绘制路径
             Utils.resetContext2DStyle(c, this.mRenderPaint)
-            c.stroke(this.mPathBuffer)
-            //这里未实现c.fill(this.mPathBuffer) 可能有问题
-            //c.fill(this.mPathBuffer)
-            //            c.fill()
+            c.fill(this.mPathBuffer)
 
             angle += sliceAngle * phaseX // 更新角度
         }
@@ -345,7 +344,7 @@ public class PieChartRenderer <: DataRenderer {
 
         if (sweepAngleOuter >= 360.0 && Float64(Int64(sweepAngleOuter) % 360) <= Utils.FLOAT_EPSILON) {
             // ohos is doing "mod 360"
-            this.mPathBuffer.arc(center.x, center.y, innerRadius, 0.0, 2.0 * Float64.PI, anticlockwise: true)
+            this.mPathBuffer.arc(center.x, center.y, innerRadius, 0.0, 2.0 * Float64.getPI(), anticlockwise: true)
         } else {
             if (drawRoundedSlices) {
                 let x: Float64 = center.x + (radius - roundedRadius) * /*(float)*/
@@ -434,7 +433,7 @@ public class PieChartRenderer <: DataRenderer {
 
             if (!this.mChart.isDrawSlicesUnderHoleEnabled() && this.mChart.isDrawRoundedSlicesEnabled()) {
                 // Add curved circle slice and spacing to rotation angle, so that it sits nicely inside
-                rotationAngle += roundedRadius * 360.0 / (Float64.PI * 2.0 * radius)
+                rotationAngle += roundedRadius * 360.0 / (Float64.getPI() * 2.0 * radius)
             }
         }
 
@@ -469,10 +468,6 @@ public class PieChartRenderer <: DataRenderer {
             let xValuePosition: ValuePosition = dataSet.getXValuePosition()
             let yValuePosition: ValuePosition = dataSet.getYValuePosition()
 
-            // apply the text-styling defined by the DataSet
-            //            this.applyValueTextStyle((dataSet as IDataSet<EntryOhos>)())
-
-            //            let lineHeight: Float64 = Utils.calcTextHeight(this.mValuePaint, "Q") + Utils.handleDataValues(4.0)
             let lineHeight: Float64 = 20.0
             let formatter: ?IValueFormatter = dataSet.getValueFormatter()
 
@@ -663,8 +658,10 @@ public class PieChartRenderer <: DataRenderer {
                         Utils.drawImage(
                             c,
                             icon(),
-                            floor(x),
-                            floor(y)
+                            x,
+                            y,
+                            icon().getWidth(),
+                            icon().getHeight()
                         )
                     }
                 }
@@ -687,10 +684,9 @@ public class PieChartRenderer <: DataRenderer {
      * @param y
      */
     protected func drawEntryLabel(c: CanvasRenderingContext2D, label: String, x: Float64, y: Float64): Unit {
-        // c.drawText(label, x, y, this.mEntryLabelsPaint)
         Utils.resetContext2DStyle(c, this.mEntryLabelsPaint)
         c.beginPath()
-        c.strokeText(label, x, y)
+        c.fillText(label, x, y)
         c.closePath()
     }
 
@@ -712,7 +708,7 @@ public class PieChartRenderer <: DataRenderer {
             let center: MPPointF = this.mChart.getCenterCircleBox()
             Utils.resetContext2DStyle(c, this.mHolePaint)
             c.beginPath()
-            c.arc(center.x, center.y, holeRadius, 0.0, 2.0 * Float64.PI)
+            c.arc(center.x, center.y, holeRadius, 0.0, 2.0 * Float64.getPI())
             c.fill()
             c.closePath()
 
@@ -735,8 +731,8 @@ public class PieChartRenderer <: DataRenderer {
             Utils.resetContext2DStyle(c, this.mTransparentCirclePaint)
 
             c.beginPath()
-            c.arc(center.x, center.y, secondHoleRadius, 0.0, 2.0 * Float64.PI, anticlockwise: true)
-            c.arc(center.x, center.y, holeRadius, 0.0, 2.0 * Float64.PI, anticlockwise: false)
+            c.arc(center.x, center.y, secondHoleRadius, 0.0, 2.0 * Float64.getPI(), anticlockwise: true)
+            c.arc(center.x, center.y, holeRadius, 0.0, 2.0 * Float64.getPI(), anticlockwise: false)
             c.fill()
             c.closePath()
             c.restore()
@@ -802,8 +798,7 @@ public class PieChartRenderer <: DataRenderer {
             let textWidth: Float64 = Utils.calcTextWidth(this.mCenterTextPaint, centerText)
             c.save()
             Utils.resetContext2DStyle(c, this.mCenterTextPaint)
-
-            c.fillText(centerText, x - textWidth / 2.0, y)
+            c.fillText(centerText, x - textWidth / 1.5, y)
             c.restore()
             MPPointF.recycleInstance(center)
             MPPointF.recycleInstance(offset)
@@ -864,7 +859,7 @@ public class PieChartRenderer <: DataRenderer {
                 None
             }
 
-            if (set.isNone() || set().isHighlightEnabled()) {
+            if (set.isNone() || !set().isHighlightEnabled()) {
                 continue
             }
 
@@ -900,12 +895,12 @@ public class PieChartRenderer <: DataRenderer {
 
             let accountForSliceSpacing: Bool = sliceSpace > 0.0 && sliceAngle <= 180.0
 
-            var highlightColor: UInt32 = set().getHighlightColor()
-            if (highlightColor == 0) {
+            var highlightColor: ?UInt32 = set().getHighlightColor()
+            if (highlightColor.isNone()) {
                 highlightColor = set().getColor(index)
             }
 
-            this.mRenderPaint.setColor(Color(highlightColor))
+            this.mRenderPaint.setColor(Color(highlightColor()))
 
             let sliceSpaceAngleOuter: Float64 = if (visibleAngleCount == 1) {
                 0.0
@@ -937,7 +932,7 @@ public class PieChartRenderer <: DataRenderer {
             if (sweepAngleOuter >= 360.0 && Int64(sweepAngleOuter) % 360 <= Int64(Utils.FLOAT_EPSILON)) {
                 // ohos is doing "mod 360"
                 // this.mPathBuffer.addCircle(center.x, center.y, highlightedRadius, Path.Direction.CW)
-                this.mHoleCirclePath.arc(center.x, center.y, highlightedRadius, 0.0, 2.0 * Float64.PI)
+                this.mHoleCirclePath.arc(center.x, center.y, highlightedRadius, 0.0, 2.0 * Float64.getPI())
             } else {
                 this.mPathBuffer.moveTo(
                     center.x + highlightedRadius * /*(float)*/
@@ -993,7 +988,7 @@ public class PieChartRenderer <: DataRenderer {
                 if (sweepAngleOuter >= 360.0 && Int64(sweepAngleOuter) % 360 <= Int64(Utils.FLOAT_EPSILON)) {
                     // ohos is doing "mod 360"
                     // this.mPathBuffer.addCircle(center.x, center.y, innerRadius, Path.Direction.CCW)
-                    this.mHoleCirclePath.arc(center.x, center.y, innerRadius, 0.0, 2.0 * Float64.PI)
+                    this.mHoleCirclePath.arc(center.x, center.y, innerRadius, 0.0, 2.0 * Float64.getPI())
                 } else {
                     this.mPathBuffer.lineTo(
                         center.x + innerRadius * /*(float)*/
@@ -1028,11 +1023,9 @@ public class PieChartRenderer <: DataRenderer {
             }
 
             this.mPathBuffer.closePath()
-            //TODO  this.mBitmapCanvas.drawPath(this.mPathBuffer, this.mRenderPaint)
             Utils.resetContext2DStyle(c, this.mRenderPaint)
             c.beginPath()
-            //TODO c.stroke(this.mPathBuffer) c.fill(this.mPathBuffer) 未实现
-            c.fill()
+            c.fill(this.mPathBuffer)
             c.closePath()
         }
         MPPointF.recycleInstance(center)
@@ -1084,7 +1077,7 @@ public class PieChartRenderer <: DataRenderer {
                 // this.mBitmapCanvas.drawCircle(x, y, circleRadius, this.mRenderPaint)
                 Utils.resetContext2DStyle(c, this.mRenderPaint)
                 c.beginPath()
-                c.arc(center.x, center.y, circleRadius, 0.0, 2.0 * Float64.PI)
+                c.arc(center.x, center.y, circleRadius, 0.0, 2.0 * Float64.getPI())
                 c.fill()
                 c.closePath()
             }

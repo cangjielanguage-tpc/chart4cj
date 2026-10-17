@@ -3,12 +3,9 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts
 
-import ohos.hilog.*
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+
 import ohos.state_macro_manage.*
-import ohos_app_cangjie_entry.scrollingCharts.viewPageItems.*
+
 
 @Entry
 @Component
@@ -19,7 +16,7 @@ class ViewPagerPage {
     protected override func aboutToAppear() {
         let datas: ArrayList<Order> = ArrayList<Order>()
         for (i in 0..5) {
-            datas.append(Order("${i}", i * i))
+            datas.add(Order("${i}", i * i))
         }
         this.data = MyDataSource(datas)
     }

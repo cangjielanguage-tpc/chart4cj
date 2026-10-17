@@ -16,22 +16,22 @@ class FilledAxisPage {
         let values1 = ArrayList<EntryOhos>()
         for (i in 0..count) {
             let val: Float64 = Random().nextFloat64() * range + 550.0
-            values1.append(EntryOhos(Float64(i), val))
+            values1.add(EntryOhos(Float64(i), val))
         }
 
         let values2 = ArrayList<EntryOhos>()
         for (i in 0..count) {
             let val: Float64 = Random().nextFloat64() * range + 150.0
-            values2.append(EntryOhos(Float64(i), val))
+            values2.add(EntryOhos(Float64(i), val))
         }
 
         let gradientFillColor1 = ArrayList<ChartColorStop>()
-        gradientFillColor1.append((0x00ffff, 0.1))
-        gradientFillColor1.append((0xffffff, 1.0))
+        gradientFillColor1.add((0x00ffff, 0.1))
+        gradientFillColor1.add((0xffffff, 1.0))
 
         let gradientFillColor2 = ArrayList<ChartColorStop>()
-        gradientFillColor2.append((0xffffff, 0.1))
-        gradientFillColor2.append((0xffffff, 1.0))
+        gradientFillColor2.add((0xffffff, 0.1))
+        gradientFillColor2.add((0xffffff, 1.0))
 
         let dataSet = ArrayList<ILineDataSet>()
 
@@ -43,7 +43,7 @@ class FilledAxisPage {
         set1.setGradientFillColor(gradientFillColor1)
         set1.setColorByColor(0xff000000)
         set1.setLineWidth(2.0)
-        dataSet.append(set1)
+        dataSet.add(set1)
 
         let set2 = LineDataSet(values2, "DataSet 2")
         set2.setDrawFilled(true)
@@ -53,7 +53,7 @@ class FilledAxisPage {
         set2.setGradientFillColor(gradientFillColor2)
         set2.setColorByColor(0xff000000)
         set2.setLineWidth(2.0)
-        dataSet.append(set2)
+        dataSet.add(set2)
 
         let lineData: LineData = LineData(dataSet)
         lineData.setValueTextSize(10.0)

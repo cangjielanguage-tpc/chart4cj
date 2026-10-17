@@ -4,9 +4,6 @@
 
 package ohos_app_cangjie_entry.piePage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -29,25 +26,29 @@ class PieChartPage {
         if (let Some(v) <- l) {
             v.setEnabled(true)
             v.setOrientation(LegendOrientation.VERTICAL)
-            v.setVerticalAlignment(LegendVerticalAlignment.BOTTOM)
-            v.setHorizontalAlignment(LegendHorizontalAlignment.LEFT)
+            v.setVerticalAlignment(LegendVerticalAlignment.TOP)
+            v.setHorizontalAlignment(LegendHorizontalAlignment.RIGHT)
         }
 
 
         this.model.animateX(1000, easing: "Sharp");
         this.model.setUsePercentValues(true);
         this.model.getDescription().setEnabled(false)
+        this.model.setExtraOffsets(5.0, 10.0, 5.0, 5.0);
 
         this.model.setDragDecelerationFrictionCoef(0.95);
 
         this.model.setCenterText("chart");
         this.model.setCenterTextSize(22.0)
 
-        this.model.setDrawHoleEnabled(true);
-        this.model.setHoleColor(0xff000000);
+        this.model.setEntryLabelTextSize(20.0)
 
-        this.model.setTransparentCircleColor(0xff000000);
+        this.model.setDrawHoleEnabled(true);
+        this.model.setHoleColor(Color.WHITE.toUInt32());
+
+        this.model.setTransparentCircleColor(Color.WHITE.toUInt32());
         this.model.setTransparentCircleAlpha(110.0);
+        this.model.setDragDecelerationEnabled(true);
 
         this.model.setHoleRadius(58.0);
         this.model.setTransparentCircleRadius(61.0);
@@ -55,7 +56,7 @@ class PieChartPage {
         this.model.setDrawCenterText(true);
 
         this.model.setRotationAngle(0.0);
-        // enable rotation of the chart by touch
+
         this.model.setRotationEnabled(true);
         this.model.setHighlightPerTapEnabled(true);
 
@@ -65,7 +66,7 @@ class PieChartPage {
     private func setData(count: Int64, range: Int64): Unit {
         var entries: ArrayList<PiEntry> = ArrayList<PiEntry>()
         for (i in 0..count) {
-            entries.append(
+            entries.add(
                 PiEntry((Random().nextFloat64() * Float64 (range)) + Float64 (range) / 5.0, this.parties[i % this.parties.size]))
         }
 
@@ -75,27 +76,28 @@ class PieChartPage {
         dataSet.setIconsOffset(MPPointF(0.0, 40.0))
         dataSet.setSelectionShift(5.0)
         dataSet.setValueTextColor(UInt32(0XFFFFFF))
+        dataSet.setValueTextSize(25.0)
 
         var colors: ArrayList<UInt32> = ArrayList<UInt32>()
         for (i in 0..ColorTemplate.COLORFUL_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.COLORFUL_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.COLORFUL_COLORS[i]))
         }
 
         for (i in 0..ColorTemplate.VORDIPLOM_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.VORDIPLOM_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.VORDIPLOM_COLORS[i]))
         }
 
         for (i in 0..ColorTemplate.JOYFUL_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.JOYFUL_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.JOYFUL_COLORS[i]))
         }
 
         for (i in 0..ColorTemplate.LIBERTY_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.LIBERTY_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.LIBERTY_COLORS[i]))
         }
         for (i in 0..ColorTemplate.PASTEL_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.PASTEL_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.PASTEL_COLORS[i]))
         }
-        colors.append(UInt32(ColorTemplate.getHoloBlue()))
+        colors.add(UInt32(ColorTemplate.getHoloBlue()))
         dataSet.setColorsByList(colors)
         let data: PieData = PieData(dataSet)
 

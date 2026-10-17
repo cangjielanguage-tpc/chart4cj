@@ -2,6 +2,7 @@
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  */
 package chart.line
+import ohos.hilog.Hilog
 
 public open class LineRadarRenderer <: LineScatterCandleRadarRenderer {
     public init(animator: ChartAnimator, viewPortHandler: ViewPortHandler) {
@@ -19,12 +20,8 @@ public open class LineRadarRenderer <: LineScatterCandleRadarRenderer {
             alpha = 0.0
         }
 
-        c.fillStyle(
-            Color(
-            UInt32(ChartColor.argb(fillAlpha / 255.0, Int64(color >> 16) & 0xff, Int64(color >> 8) & 0xff,
-                Int64(color) & 0xff))))
-        // 使用修改后的颜色值进行绘制,cangjie UI 暂不支持以下接口
-        //c.fill(filledPath)
+        c.fillStyle(Color(UInt8(Int64(color >> 16) & 0xff), UInt8(Int64(color >> 8) & 0xff), UInt8(Int64(color) & 0xff),alpha: Float32(alpha / 255.9) ))
+        c.fill(filledPath)
     }
 
     /**
@@ -37,8 +34,7 @@ public open class LineRadarRenderer <: LineScatterCandleRadarRenderer {
     protected func drawFilledPath(c: CanvasRenderingContext2D, filledPath: Path2D, drawable: ChartPixelMap) {
         if (this.clipPathSupported()) {
             c.save()
-            //cangjie UI 暂不支持以下两个接口
-            //c.clip(filledPath)
+            c.clip(filledPath)
 
             if (let Some(handle) <- this.mViewPortHandler) {
                 c.rect(
@@ -76,8 +72,7 @@ public open class LineRadarRenderer <: LineScatterCandleRadarRenderer {
         }
 
         c.fillStyle(gradient)
-        //cangjie UI 暂不支持以下接口
-        //c.fill(filledPath)
+        c.fill(filledPath)
     }
 
     public open func drawData(c: CanvasRenderingContext2D): Unit {}

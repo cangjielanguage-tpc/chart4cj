@@ -33,7 +33,7 @@ public class ScatterDataSet <: LineScatterCandleRadarDataSet<EntryOhos> & IScatt
         var entries: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
         if (let Some(entry) <- this.mEntries) {
             for (i in 0..entry.size) {
-                entries.append(entry[i].copy())
+                entries.add(entry[i].copy())
             }
         }
         let copied: ScatterDataSet = ScatterDataSet(entries, this.getLabel())

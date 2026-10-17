@@ -3,18 +3,8 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import std.collection.{ArrayList}
-import std.math.*
-import std.random.*
-import chart.pie.*
-import chart.utils.*
-import chart.charts.*
-import chart.components.*
-import chart.scatter.*
+
 
 @Entry
 @Component
@@ -38,6 +28,8 @@ class ScatterChartPageReadme {
         this.model.setMaxVisibleValueCount(160)
         this.model.setDrawGridBackground(false)
         this.model.animateXY(2000, 2000)
+        this.model.setDrawMarkers(true)
+        this.model.setMarker(MarkerView())
 
         let xAxis: ?XAxis = this.model.getXAxis() // 获取X轴对象
         if (let Some(xAxis) <- xAxis) {
@@ -77,6 +69,9 @@ class ScatterChartPageReadme {
         set1.setScatterShape(ChartShape.SQUARE)
         set1.setColorByColor(0x2b89ab)
 
+        set1.setHighlightEnabled(true)
+        set1.setHighLightColor(Color.RED.toUInt32())
+
         // 创建散点图数据集2
         let set2 = ScatterDataSet(values2, "DS 2")
         set2.setScatterShape(ChartShape.CIRCLE)
@@ -95,9 +90,9 @@ class ScatterChartPageReadme {
 
         // 创建散点图数据集合
         let dataSets: ArrayList<IScatterDataSet> = ArrayList<IScatterDataSet>()
-        dataSets.append(set1) // add the data sets
-        dataSets.append(set2)
-        dataSets.append(set3)
+        dataSets.add(set1) // add the data sets
+        dataSets.add(set2)
+        dataSets.add(set3)
 
         // 创建散点图数据
         let dataResult: ScatterData = ScatterData(dataSets)
@@ -116,7 +111,7 @@ class ScatterChartPageReadme {
         for (i in 0..Int64(xRange)) {
             let x = Float64(i)
             let y = Random().nextFloat64() * yRange
-            values.append(EntryOhos(x, y))
+            values.add(EntryOhos(x, y))
         }
         return values
     }

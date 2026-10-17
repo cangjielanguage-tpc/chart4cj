@@ -16,7 +16,7 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
         if (let Some(batdata) <- barData) {
             this.horizontalBarBuffer = Array<HorizontalBarBuffer>(
                 batdata.getDataSetCount(),
-                item: HorizontalBarBuffer(0, 0, false)
+                repeat: HorizontalBarBuffer(0, 0, false)
             )
             for (i in 0..this.horizontalBarBuffer.size) {
                 let set: ?IBarDataSet = batdata.getDataSetByIndex(i)
@@ -225,62 +225,65 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                             break
                         }
 
-                        let entry: BarEntry = dataSet.getEntryForIndex(j / 4)()
-                        let val: Float64 = entry.getY()
-                        var formattedValue: String = ""
+                        let entry: ?BarEntry = dataSet.getEntryForIndex(j / 4)
+                        if(let Some(barEntry) <- entry) {
+                            let val: Float64 = barEntry.getY()
+                            var formattedValue: String = ""
 
-                        if (formatter.isSome()) {
-                            formattedValue = formatter().getFormattedValue(val, entry, i, this.mViewPortHandler())
-                        }
+                            if (formatter.isSome()) {
+                                formattedValue = formatter().getFormattedValue(val, barEntry, i, this.mViewPortHandler())
+                            }
 
-                        // calculate the correct offset depending on the draw position of the value
-                        let valueTextWidth: Float64 = Utils.calcTextWidth(this.mValuePaint, formattedValue)
-                        posOffset = if (drawValueAboveBar) {
-                            valueOffsetPlus
-                        } else {
-                            -(valueTextWidth + valueOffsetPlus)
-                        }
-                        negOffset = if (drawValueAboveBar) {
-                            -(valueTextWidth + valueOffsetPlus) - (buffer.buffer[j + 2] - buffer.buffer[j])
-                        } else {
-                            valueOffsetPlus - (buffer.buffer[j + 2] - buffer.buffer[j])
-                        }
+                            // calculate the correct offset depending on the draw position of the value
+                            let valueTextWidth: Float64 = Utils.calcTextWidth(this.mValuePaint, formattedValue)
+                            posOffset = if (drawValueAboveBar) {
+                                valueOffsetPlus
+                            } else {
+                                -(valueTextWidth + valueOffsetPlus)
+                            }
+                            negOffset = (if (drawValueAboveBar) {
+                                -(valueTextWidth + valueOffsetPlus)
+                            } else {
+                                valueOffsetPlus
+                            }) - (buffer.buffer[j + 2] - buffer.buffer[j])
 
-                        if (isInverted) {
-                            posOffset = -posOffset - valueTextWidth
-                            negOffset = -negOffset - valueTextWidth
-                        }
-                        if (dataSet.isDrawValuesEnabled()) {
-                            this.drawHorizontalValue(
-                                c,
-                                formattedValue,
-                                buffer.buffer[j + 2] + if (val >= 0.0) {
+                            if (isInverted) {
+                                posOffset = -posOffset - valueTextWidth
+                                negOffset = -negOffset - valueTextWidth
+                            }
+                            if (dataSet.isDrawValuesEnabled()) {
+                                this.drawHorizontalValue(
+                                    c,
+                                    formattedValue,
+                                    buffer.buffer[j + 2] + if (val >= 0.0) {
+                                        posOffset
+                                    } else {
+                                        negOffset
+                                    },
+                                    y + halfTextHeight,
+                                    dataSet.getValueTextColor(j / 2)
+                                )
+                            }
+
+                            if (barEntry.getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
+                                let icon: ?ChartPixelMap = barEntry.getIcon()
+
+                                var px: Float64 = buffer.buffer[j + 2] + if (val >= 0.0) {
                                     posOffset
                                 } else {
                                     negOffset
-                                },
-                                y + halfTextHeight,
-                                dataSet.getValueTextColor(j / 2)
-                            )
-                        }
+                                }
+                                var py: Float64 = y
 
-                        if (entry.getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
-                            let icon: ?ChartPixelMap = entry.getIcon()
+                                px += iconsOffset.x
+                                py += iconsOffset.y
 
-                            var px: Float64 = buffer.buffer[j + 2] + if (val >= 0.0) {
-                                posOffset
-                            } else {
-                                negOffset
-                            }
-                            var py: Float64 = y
-
-                            px += iconsOffset.x
-                            py += iconsOffset.y
-
-                            if (let Some(i) <- icon) {
-                                Utils.drawImage(c, i, floor(px), floor(py))
+                                if (let Some(i) <- icon) {
+                                    Utils.drawImage(c, i, floor(px), floor(py),i.getWidth(),i.getHeight())
+                                }
                             }
                         }
+
                     }
 
                 // if each value of a potential stack should be drawn
@@ -292,120 +295,31 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
 
                     let count: Int64 = dataSet.getEntryCount() * Int64(this.mAnimator().getPhaseX())
                     while (index < count) {
-                        let entry: BarEntry = dataSet.getEntryForIndex(index)()
+                        let entry: ?BarEntry = dataSet.getEntryForIndex(index)
+                        if(let Some(barEntry) <- entry) {
+                            let color: UInt32 = dataSet.getValueTextColor(index)
+                            let vals: Array<Float64> = barEntry.getYVals()
 
-                        let color: UInt32 = dataSet.getValueTextColor(index)
-                        let vals: Array<Float64> = entry.getYVals()
-
-                        // we still draw stacked bars, but there is one
-                        // non-stacked
-                        // in between
-                        if (vals.size == 0) {
-                            if (!this.mViewPortHandler().isInBoundsTop(buffer.buffer[bIndex + 1])) {
-                                break
-                            }
-
-                            if (!this.mViewPortHandler().isInBoundsX(buffer.buffer[bIndex])) {
-                                continue
-                            }
-
-                            if (!this.mViewPortHandler().isInBoundsBottom(buffer.buffer[bIndex + 1])) {
-                                continue
-                            }
-
-                            let val: Float64 = entry.getY()
-                            var formattedValue: String = ""
-                            if (formatter.isSome()) {
-                                formattedValue = formatter().getFormattedValue(val, entry, i, this.mViewPortHandler())
-                            }
-
-                            // calculate the correct offset depending on the draw position of the value
-                            let valueTextWidth: Float64 = Utils.calcTextWidth(this.mValuePaint, formattedValue)
-                            posOffset = if (drawValueAboveBar) {
-                                valueOffsetPlus
-                            } else {
-                                -(valueTextWidth + valueOffsetPlus)
-                            }
-                            negOffset = if (drawValueAboveBar) {
-                                -(valueTextWidth + valueOffsetPlus)
-                            } else {
-                                valueOffsetPlus
-                            }
-
-                            if (isInverted) {
-                                posOffset = -posOffset - valueTextWidth
-                                negOffset = -negOffset - valueTextWidth
-                            }
-
-                            if (dataSet.isDrawValuesEnabled()) {
-
-                                this.drawHorizontalValue(c, formattedValue,
-                                    buffer.buffer[bIndex + 2]
-                                    + if (entry.getY() >= 0.0) {
-                                    posOffset
-                                } else {
-                                    negOffset
-                                }, buffer.buffer[bIndex + 1] + halfTextHeight, color)
-                            }
-
-                            if (entry.getIcon().isNone() && dataSet.isDrawIconsEnabled()) {
-                                let icon: ?ChartPixelMap = entry.getIcon()
-
-                                var px: Float64 = buffer.buffer[bIndex + 2]
-                                    + if (entry.getY() >= 0.0) {
-                                    posOffset
-                                } else {
-                                    negOffset
-                                }
-                                var py: Float64 = buffer.buffer[bIndex + 1]
-
-                                px += iconsOffset.x
-                                py += iconsOffset.y
-
-                                if (icon.isSome()) {
-                                    Utils.drawImage(
-                                        c,
-                                        icon(),
-                                        px,
-                                        py
-                                    )
-                                }
-                            }
-                        } else {
-                            let transformed: Array<Float64> = Array<Float64>(vals.size * 2, item: 0.0)
-
-                            var posY: Float64 = 0.0
-                            var negY: Float64 = -entry.getNegativeSum()
-                            var m: Int64 = 0
-                            var idx: Int64 = 0
-                            while (m < transformed.size) {
-                                let value: Float64 = vals[idx]
-                                var y: Float64 = 0.0
-
-                                if (value == 0.0 && (posY == 0.0 || negY == 0.0)) {
-                                    // Take care of the situation of a 0.0 value, which overlaps a non-zero bar
-                                    y = value
-                                } else if (value >= 0.0) {
-                                    posY += value
-                                    y = posY
-                                } else {
-                                    y = negY
-                                    negY -= value
+                            // we still draw stacked bars, but there is one
+                            // non-stacked
+                            // in between
+                            if (vals.size == 0) {
+                                if (!this.mViewPortHandler().isInBoundsTop(buffer.buffer[bIndex + 1])) {
+                                    break
                                 }
 
-                                transformed[m] = y * phaseY
-                                m += 2
-                                idx++
-                            }
+                                if (!this.mViewPortHandler().isInBoundsX(buffer.buffer[bIndex])) {
+                                    continue
+                                }
 
-                            trans?.pointValuesToPixel(transformed)
-                            var k: Int64 = 0
-                            while (k < transformed.size) {
-                                let val: Float64 = vals[k / 2]
+                                if (!this.mViewPortHandler().isInBoundsBottom(buffer.buffer[bIndex + 1])) {
+                                    continue
+                                }
+
+                                let val: Float64 = barEntry.getY()
                                 var formattedValue: String = ""
                                 if (formatter.isSome()) {
-                                    formattedValue = formatter().getFormattedValue(val, entry, i,
-                                        this.mViewPortHandler())
+                                    formattedValue = formatter().getFormattedValue(val, barEntry, i, this.mViewPortHandler())
                                 }
 
                                 // calculate the correct offset depending on the draw position of the value
@@ -426,48 +340,141 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
                                     negOffset = -negOffset - valueTextWidth
                                 }
 
-                                let drawBelow: Bool = (val == 0.0 && negY == 0.0 && posY > 0.0) || val < 0.0
-
-                                let x = transformed[k] + if (drawBelow) {
-                                    negOffset
-                                } else {
-                                    posOffset
-                                }
-                                let y = (buffer.buffer[bIndex + 1] + buffer.buffer[bIndex + 3]) / 2.0
-
-                                if (!this.mViewPortHandler().isInBoundsTop(y)) {
-                                    break
-                                }
-
-                                if (!this.mViewPortHandler().isInBoundsX(x)) {
-                                    k += 2
-                                    continue
-                                }
-
-                                if (!this.mViewPortHandler().isInBoundsBottom(y)) {
-                                    k += 2
-                                    continue
-                                }
-
                                 if (dataSet.isDrawValuesEnabled()) {
-                                    this.drawHorizontalValue(c, formattedValue, x, y + halfTextHeight, color)
+
+                                    this.drawHorizontalValue(c, formattedValue,
+                                        buffer.buffer[bIndex + 2]
+                                        + if (barEntry.getY() >= 0.0) {
+                                        posOffset
+                                    } else {
+                                        negOffset
+                                    }, buffer.buffer[bIndex + 1] + halfTextHeight, color)
                                 }
 
-                                if (entry.getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
-                                    let icon: ?ChartPixelMap = entry.getIcon()
-                                    if (let Some(i) <- icon) {
-                                        Utils.drawImage(c, i, (x + iconsOffset.x), (y + iconsOffset.y))
+                                if (barEntry.getIcon().isNone() && dataSet.isDrawIconsEnabled()) {
+                                    let icon: ?ChartPixelMap = barEntry.getIcon()
+
+                                    var px: Float64 = buffer.buffer[bIndex + 2]
+                                        + if (barEntry.getY() >= 0.0) {
+                                        posOffset
+                                    } else {
+                                        negOffset
+                                    }
+                                    var py: Float64 = buffer.buffer[bIndex + 1]
+
+                                    px += iconsOffset.x
+                                    py += iconsOffset.y
+
+                                    if (icon.isSome()) {
+                                        Utils.drawImage(
+                                            c,
+                                            icon(),
+                                            px,
+                                            py,
+                                            icon().getWidth(),
+                                            icon().getHeight()
+                                        )
                                     }
                                 }
-                                k += 2
+                            } else {
+                                let transformed: Array<Float64> = Array<Float64>(vals.size * 2, repeat: 0.0)
+
+                                var posY: Float64 = 0.0
+                                var negY: Float64 = -barEntry.getNegativeSum()
+                                var m: Int64 = 0
+                                var idx: Int64 = 0
+                                while (m < transformed.size) {
+                                    let value: Float64 = vals[idx]
+                                    var y: Float64 = 0.0
+
+                                    if (value == 0.0 && (posY == 0.0 || negY == 0.0)) {
+                                        // Take care of the situation of a 0.0 value, which overlaps a non-zero bar
+                                        y = value
+                                    } else if (value >= 0.0) {
+                                        posY += value
+                                        y = posY
+                                    } else {
+                                        y = negY
+                                        negY -= value
+                                    }
+
+                                    transformed[m] = y * phaseY
+                                    m += 2
+                                    idx++
+                                }
+
+                                trans?.pointValuesToPixel(transformed)
+                                var k: Int64 = 0
+                                while (k < transformed.size) {
+                                    let val: Float64 = vals[k / 2]
+                                    var formattedValue: String = ""
+                                    if (formatter.isSome()) {
+                                        formattedValue = formatter().getFormattedValue(val, barEntry, i,
+                                            this.mViewPortHandler())
+                                    }
+
+                                    // calculate the correct offset depending on the draw position of the value
+                                    let valueTextWidth: Float64 = Utils.calcTextWidth(this.mValuePaint, formattedValue)
+                                    posOffset = if (drawValueAboveBar) {
+                                        valueOffsetPlus
+                                    } else {
+                                        -(valueTextWidth + valueOffsetPlus)
+                                    }
+                                    negOffset = if (drawValueAboveBar) {
+                                        -(valueTextWidth + valueOffsetPlus)
+                                    } else {
+                                        valueOffsetPlus
+                                    }
+
+                                    if (isInverted) {
+                                        posOffset = -posOffset - valueTextWidth
+                                        negOffset = -negOffset - valueTextWidth
+                                    }
+
+                                    let drawBelow: Bool = (val == 0.0 && negY == 0.0 && posY > 0.0) || val < 0.0
+
+                                    let x = transformed[k] + if (drawBelow) {
+                                        negOffset
+                                    } else {
+                                        posOffset
+                                    }
+                                    let y = (buffer.buffer[bIndex + 1] + buffer.buffer[bIndex + 3]) / 2.0
+
+                                    if (!this.mViewPortHandler().isInBoundsTop(y)) {
+                                        break
+                                    }
+
+                                    if (!this.mViewPortHandler().isInBoundsX(x)) {
+                                        k += 2
+                                        continue
+                                    }
+
+                                    if (!this.mViewPortHandler().isInBoundsBottom(y)) {
+                                        k += 2
+                                        continue
+                                    }
+
+                                    if (dataSet.isDrawValuesEnabled()) {
+                                        this.drawHorizontalValue(c, formattedValue, x, y + halfTextHeight, color)
+                                    }
+
+                                    if (barEntry.getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
+                                        let icon: ?ChartPixelMap = barEntry.getIcon()
+                                        if (let Some(i) <- icon) {
+                                            Utils.drawImage(c, i, (x + iconsOffset.x), (y + iconsOffset.y),i.getWidth(),i.getHeight())
+                                        }
+                                    }
+                                    k += 2
+                                }
                             }
+                            bIndex = if (vals.size == 0) {
+                                bIndex + 4
+                            } else {
+                                bIndex + 4 * vals.size
+                            }
+                            index++
                         }
-                        bIndex = if (vals.size == 0) {
-                            bIndex + 4
-                        } else {
-                            bIndex + 4 * vals.size
-                        }
-                        index++
+
                     }
                 }
                 MPPointF.recycleInstance(iconsOffset)
@@ -503,14 +510,4 @@ public class HorizontalBarChartRenderer <: BarChartRenderer {
     public func setHighlightDrawPos(high: Highlight, bar: ChartRect) {
         high.setDraw(bar.centerY(), bar.right)
     }
-
-//    public func isDrawingValuesAllowed(chart: BarDataProvider) {
-//        let chartData: ?BarData = chart.getBarData()
-//        if (chartData.isSome() && this.mViewPortHandler.isSome()) {
-//            return chartData().getEntryCount() < chart.getMaxVisibleCount()
-//                * Int64(this.mViewPortHandler().getScaleY())
-//        } else {
-//            return false
-//        }
-//    }
 }

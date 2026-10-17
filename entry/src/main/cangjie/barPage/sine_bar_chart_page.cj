@@ -4,9 +4,6 @@
 
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -71,7 +68,7 @@ class SineBarChartPage {
 
         let entries: ArrayList<BarEntry> = ArrayList<BarEntry>()
         for (i in 0..count) {
-            entries.append(BarEntry(Float64(i), dataResult[i]))
+            entries.add(BarEntry(Float64(i), dataResult[i]))
         }
 
         let set: BarDataSet
@@ -88,7 +85,7 @@ class SineBarChartPage {
             set.setDrawValues(false)
 
             let dataSetList: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
-            dataSetList.append(set)
+            dataSetList.add(set)
             let data: BarData = BarData(dataSetList)
             data.setBarWidth(0.8)
             this.model.setData(data)

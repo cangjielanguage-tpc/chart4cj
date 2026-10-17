@@ -20,17 +20,17 @@ class DualAxisPage {
 
         for (i in 0..count) {
             let yVal: Float64 = Random().nextFloat64() * (range / 2.0) + 50.0
-            values1.append(EntryOhos(Float64(i), yVal))
+            values1.add(EntryOhos(Float64(i), yVal))
         }
 
         for (i in 0..count) {
             let yVal: Float64 = Random().nextFloat64() * range + 100.0
-            values2.append(EntryOhos(Float64(i), yVal))
+            values2.add(EntryOhos(Float64(i), yVal))
         }
 
         for (i in 0..count) {
             let yVal: Float64 = Random().nextFloat64() * range + 120.0
-            values3.append(EntryOhos(Float64(i), yVal))
+            values3.add(EntryOhos(Float64(i), yVal))
         }
 
         let dataSet = ArrayList<ILineDataSet>()
@@ -44,7 +44,7 @@ class DualAxisPage {
         set1.setCircleColor(0XCC33FF)
         set1.setColorByColor(0XCC33FF)
         set1.setLineWidth(2.0)
-        dataSet.append(set1)
+        dataSet.add(set1)
 
         let set2 = LineDataSet(values2, "DataSet 2")
         set2.setDrawFilled(false)
@@ -55,7 +55,7 @@ class DualAxisPage {
         set2.setCircleColor(0Xff000000)
         set2.setColorByColor(0Xff000000)
         set2.setLineWidth(2.0)
-        dataSet.append(set2)
+        dataSet.add(set2)
 
         let set3 = LineDataSet(values3, "DataSet 3")
         set3.setDrawFilled(false)
@@ -66,7 +66,7 @@ class DualAxisPage {
         set3.setCircleColor(0xFFFF00)
         set3.setColorByColor(0xFFFF00)
         set3.setLineWidth(2.0)
-        dataSet.append(set3)
+        dataSet.add(set3)
         let lineData: LineData = LineData(dataSet)
         lineData.setValueTextSize(10.0)
 

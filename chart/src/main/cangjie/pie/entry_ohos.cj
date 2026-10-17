@@ -8,7 +8,7 @@ public open class EntryOhos <: BaseEntry {
 
     public init(x: Float64, y: Float64, icon!: ?ChartPixelMap = Option<ChartPixelMap>.None,
         data!: ?Any = Option<Any>.None) {
-        super(y, icon, data);
+        super(y, icon, data)
         this.x = x
     }
     public open func getX(): Float64 {
@@ -45,10 +45,6 @@ public open class EntryOhos <: BaseEntry {
      */
     public func equalTo(e: EntryOhos): Bool {
 
-        //        if (e.getData() != this.getData()) {
-        //            return false
-        //        }
-
         if (abs(e.x - this.x) > Utils.FLOAT_EPSILON) {
             return false
         }
@@ -63,7 +59,7 @@ public open class EntryOhos <: BaseEntry {
     /**
      * returns a string representation of the entry containing x-index and value
      */
-    public func toString(): String {
+    public open func toString(): String {
         return "Entry, x: ${this.x}  y: ${this.getY()}"
     }
 

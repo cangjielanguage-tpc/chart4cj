@@ -63,7 +63,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
         let list = ArrayList<S>()
 
         for (data in array) {
-            list.append(data)
+            list.add(data)
         }
 
         return list
@@ -276,7 +276,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
      * @return
      */
     public func getDataSetLabels(): Array<String> {
-        var types: Array<String> = Array<String>(mDataSets.size, item: "")
+        var types: Array<String> = Array<String>(mDataSets.size, repeat: "")
 
         for (i in 0..this.mDataSets.size) {
             types[i] = this.mDataSets[i].getLabel()
@@ -332,7 +332,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
      */
     public func addDataSet(d: S): Unit {
         this.calcMinMax(d)
-        this.mDataSets.append(d)
+        this.mDataSets.add(d)
     }
 
     /**
@@ -347,7 +347,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
         if (index == -1) {
             return false
         }
-        this.mDataSets.remove(index)
+        this.mDataSets.remove(at: index)
         this.notifyDataChanged()
         return true
     }
@@ -372,7 +372,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
             return false
         }
 
-        this.mDataSets.remove(index)
+        this.mDataSets.remove(at: index)
         this.notifyDataChanged()
         return true
     }
@@ -555,7 +555,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
             clrcnt += this.mDataSets[i].getColors().size
         }
 
-        let colors: Array<UInt32> = Array<UInt32>(clrcnt, item: 0)
+        let colors: Array<UInt32> = Array<UInt32>(clrcnt, repeat: 0)
         var cnt: Int64 = 0
 
         for (i in 0..this.mDataSets.size) {
@@ -681,7 +681,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
      */
     public func setDrawValues(enabled: Bool): Unit {
         for (data in this.mDataSets) {
-            data.setDrawValues(enabled);
+            data.setDrawValues(enabled)
         }
     }
 
@@ -692,7 +692,7 @@ public open class ChartData<S, E> where S <: IDataSet<E>, E <: EntryOhos {
      */
     public func setHighlightEnabled(enabled: Bool): Unit {
         for (data in this.mDataSets) {
-            data.setHighlightEnabled(enabled);
+            data.setHighlightEnabled(enabled)
         }
     }
 

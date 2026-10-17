@@ -3,9 +3,6 @@
  */
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -70,18 +67,18 @@ class StackedNegativePage {
 
     private func getStackData(): BarData {
         let values: ArrayList<BarEntry> = ArrayList<BarEntry>()
-        values.append(BarEntry(5.0, [-10.0, 10.0]))
-        values.append(BarEntry(15.0, [-12.0, 13.0]))
-        values.append(BarEntry(25.0, [-15.0, 15.0]))
-        values.append(BarEntry(35.0, [-17.0, 17.0]))
-        values.append(BarEntry(45.0, [-19.0, 20.0]))
-        values.append(BarEntry(45.0, [-19.0, 20.0]))
-        values.append(BarEntry(55.0, [-19.0, 19.0]))
-        values.append(BarEntry(65.0, [-16.0, 16.0]))
-        values.append(BarEntry(75.0, [-13.0, 14.0]))
-        values.append(BarEntry(85.0, [-10.0, 11.0]))
-        values.append(BarEntry(95.0, [-5.0, 6.0]))
-        values.append(BarEntry(105.0, [-1.0, 2.0]))
+        values.add(BarEntry(5.0, [-10.0, 10.0]))
+        values.add(BarEntry(15.0, [-12.0, 13.0]))
+        values.add(BarEntry(25.0, [-15.0, 15.0]))
+        values.add(BarEntry(35.0, [-17.0, 17.0]))
+        values.add(BarEntry(45.0, [-19.0, 20.0]))
+        values.add(BarEntry(45.0, [-19.0, 20.0]))
+        values.add(BarEntry(55.0, [-19.0, 19.0]))
+        values.add(BarEntry(65.0, [-16.0, 16.0]))
+        values.add(BarEntry(75.0, [-13.0, 14.0]))
+        values.add(BarEntry(85.0, [-10.0, 11.0]))
+        values.add(BarEntry(95.0, [-5.0, 6.0]))
+        values.add(BarEntry(105.0, [-1.0, 2.0]))
 
         let set1: BarDataSet
 
@@ -92,7 +89,7 @@ class StackedNegativePage {
 
         set1.setDrawValues(true)
         let dataSets: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
-        dataSets.append(set1)
+        dataSets.add(set1)
 
         let data: BarData = BarData(dataSets)
         data.setValueTextColor(0XFFFFFF)

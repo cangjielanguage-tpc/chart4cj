@@ -58,7 +58,7 @@ class InvertedAxisPage {
         for (i in 1..count) { //X轴坐标个数
             // 设置数据点Y值
             let val = Random().nextFloat64() * range //Y轴值
-            values.append(EntryOhos(Float64(i), val))
+            values.add(EntryOhos(Float64(i), val))
         }
 
         this.dataSet = LineDataSet(values, "DataSet 1")
@@ -75,7 +75,7 @@ class InvertedAxisPage {
         this.dataSet.setDrawCircleHole(true)
 
         let dataSetList: ArrayList<ILineDataSet> = ArrayList<ILineDataSet>()
-        dataSetList.append(this.dataSet)
+        dataSetList.add(this.dataSet)
 
         let lineData: LineData = LineData(dataSetList)
         lineData.setValueTextSize(10.0)

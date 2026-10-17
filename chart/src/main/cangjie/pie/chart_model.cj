@@ -25,7 +25,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
     /**
      * If set to true, chart continues to scroll after touch up
      */
-    private var mDragDecelerationEnabled: Bool = true
+    private var mDragDecelerationEnabled: Bool = false
     /**
      * Deceleration friction coefficient in [0  1] interval, higher values
      * indicate that speed will decrease slowly, for example if it set to 0, it
@@ -99,6 +99,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
     private var mExtraLeftOffset: Float64 = 0.0
     protected var width: Float64 = Utils.handleDataValues(50.0)
     protected var height: Float64 = Utils.handleDataValues(50.0)
+    protected var mHitTestMode: HitTestMode = HitTestMode.Default
 
     public func getYChartMin(): Float64
 
@@ -107,7 +108,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
     public func getMaxVisibleCount(): Int64
 
     public func onAnimationUpdate(result: AnimatorResult): Unit {
-        this.invalidate();
+        this.invalidate()
     }
 
     /**
@@ -214,7 +215,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         if (this.mViewPortHandler.hasChartDimens()) {
             job.run<D, S, E>()
         } else {
-            this.mJobs.append(job)
+            this.mJobs.add(job)
         }
     }
 
@@ -308,7 +309,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         if (this.mDescription.isEnabled()) {
             let position: ?MPPointF = this.mDescription.getPosition()
 
-            this.mDescPaint.setFontFamily(this.mDescription.getTypeface())
+            this.mDescPaint.setFontFamily(this.mDescription.getTypeface().toString())
             this.mDescPaint.setTextSize(this.mDescription.getTextSize())
             this.mDescPaint.setColor(this.mDescription.getTextColor())
             this.mDescPaint.setTextAlign(this.mDescription.getTextAlign())
@@ -514,10 +515,6 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
     public func highlightValueForObject(high: ?Highlight, callListener: Bool): Unit {
         var highlight = high
 
-        //    let callListenerBool: Bool = match (callListener) {
-        //    	case Some(_) => callListener()
-        //        case None => false
-        //    }
         var e: ?E = Option<E>.None
 
         if (highlight.isNone()) {
@@ -552,7 +549,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
             } else {
                 // notify the listener
                 if (e.isSome() && high.isSome()) {
-                    //          this.mSelectionListener().onValueSelected(e, highlight)
+                    this.mSelectionListener().onValueSelected(e(), high())
                 }
             }
         }
@@ -581,7 +578,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
             AppLog.error(LOG_TAG + ":Can't select by touch. No data set.")
             return Option<Highlight>.None
         } else {
-            let hghLighter = this.getHighlighter()
+            let hghLighter: ?IHighlighter = this.getHighlighter()
             if (let Some(h) <- hghLighter) {
                 return h.getHighlight(x, y)
             } else {
@@ -629,24 +626,17 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      * draws all MarkerViews on the highlighted positions
      */
     protected open func drawMarkers(c: CanvasRenderingContext2D): Unit {
-        match (mLastGesture) {
-            case LastGesture.SINGLE_TAP => ()
-            case _ => return
-        }
-
-        // let paints: ChartPaint[] = []
-
-        // if there is no marker view or drawing marker is disabled
-        if (this.mMarker.isNone() || this.isDrawMarkersEnabled() || !this.valuesToHighlight()) {
+        if(this.mLastGesture != LastGesture.SINGLE_TAP) {
             return
         }
-
+        if (this.mMarker.isNone() || !this.isDrawMarkersEnabled() || !this.valuesToHighlight()) {
+            return
+        }
         if (let Some(h) <- this.mIndicesToHighlight) {
             if (let Some(md) <- this.mData) {
                 for (highlight in h) {
                     var dataSet: ?S = md.getDataSetByIndex(highlight.getDataSetIndex())
-
-                    if (let Some(d: IDataSet<EntryOhos>) <- dataSet) {
+                    if (let Some(d) <- dataSet) {
                         let e: ?E = md.getEntryForHighlight(highlight)
                         var entryIndex: Int64
                         if (let Some(ee) <- e) {
@@ -672,10 +662,9 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         // return paints
     }
 
-    protected func drawLongPressMarkers(c: CanvasRenderingContext2D): Unit {
-        match (mLastGesture) {
-            case LastGesture.LONG_PRESS => ()
-            case _ => return
+    protected open func drawLongPressMarkers(c: CanvasRenderingContext2D): Unit {
+        if(this.mLastGesture != LastGesture.LONG_PRESS ) {
+            return
         }
 
         if (this.mLongPressMarker.isNone() || !this.isDrawLongPressMarkersEnabled() || !this.valuesToHighlight()) {
@@ -685,7 +674,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         if (this.mIndicesToHighlight.isSome() && this.mData.isSome()) {
             for (highlight in this.mIndicesToHighlight()) {
                 let dataSet = this.mData().getDataSetByIndex(highlight.getDataSetIndex())
-                if (let Some(d:IDataSet<EntryOhos>) <- dataSet) {
+                if (let Some(d: S) <- dataSet) {
                     let e: ?E = this.mData().getEntryForHighlight(highlight)
                     if (e.isNone()) {
                         continue
@@ -805,7 +794,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         if (this.mAnimator.isNone()) {
             return
         }
-        this.mAnimator().animateX(durationMillis, easing: easing);
+        this.mAnimator().animateX(durationMillis, easing: easing)
     }
 
     /**
@@ -820,7 +809,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
         if (this.mAnimator.isNone()) {
             return
         }
-        this.mAnimator().animateY(durationMillis, easing: easing);
+        this.mAnimator().animateY(durationMillis, easing: easing)
     }
 
     /**
@@ -1069,7 +1058,7 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      * @param tf
      */
     public func setNoDataTextTypeface(tf: FontFamily) {
-        this.mInfoPaint.setFontFamily(tf)
+        this.mInfoPaint.setFontFamily(tf.toString())
     }
 
     /**
@@ -1328,16 +1317,6 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
     }
 
     /**
-     * Sets a custom highligher object for the chart that handles / processes
-     * all highlight touch events performed on the chart-view.
-     *
-     * @param highlighter
-     */
-    public func setHighlighter<P, D, S, E>(highlighter: ChartHighlighter<P, D, S, E>) where P <: BarLineScatterCandleBubbleDataProvider<D, S, E> {
-        this.mHighlighter = highlighter
-    }
-
-    /**
      * Returns a recyclable MPPointF instance.
      *
      * @return
@@ -1392,5 +1371,18 @@ public abstract class ChartModel<D, S, E> <: ChartInterface<D, S, E> & AnimatorU
      */
     public func setUnbindEnabled(enabled: Bool) {
         this.mUnbind = enabled
+    }
+
+    public func clearJobs() {
+        let length: Int64 = this.mJobs.size
+        for (i in 0..length) {
+            if(let Some(job) <- this.mJobs.get(i)) {
+                MoveViewJob.recycleInstance(job)
+            }
+
+        }
+    }
+    public func getHitTestMode(): HitTestMode {
+        return this.mHitTestMode
     }
 }

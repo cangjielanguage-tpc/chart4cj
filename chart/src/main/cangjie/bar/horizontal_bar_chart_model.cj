@@ -13,8 +13,6 @@ public class HorizontalBarChartModel <: BarChartModel {
             this.mRenderer = HorizontalBarChartRenderer(this, animator, this.mViewPortHandler)
         }
 
-//        this.setHighlighter(HorizontalBarHighlighter(this))
-
         if (let Some(axisLeft) <- this.mAxisLeft) {
             this.mAxisRendererLeft = YAxisRendererHorizontalBarChart(this.mViewPortHandler, axisLeft,
                 this.mLeftAxisTransformer())
@@ -33,6 +31,8 @@ public class HorizontalBarChartModel <: BarChartModel {
 
     public static func build(): HorizontalBarChartModel {
         let model: HorizontalBarChartModel = HorizontalBarChartModel()
+        model.setHighlighter(HorizontalBarHighlighter(model))
+        model.mChartTouchListener = HorizontalBarChartTouchListener(model, model.mViewPortHandler.getMatrixTouch(), 3.0)
         return model
     }
 
@@ -225,7 +225,7 @@ public class HorizontalBarChartModel <: BarChartModel {
         }
     }
 
-    protected var mGetPositionBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
+    protected var mGetPositionBuffer: Array<Float64> = Array<Float64>(2, repeat: 0.0)
 
     /**
      * Returns a recyclable MPPointF instance.
@@ -324,4 +324,15 @@ public class HorizontalBarChartModel <: BarChartModel {
         let maxScale = this.getAxisRange(axis) / maxYRange
         this.mViewPortHandler.setMinMaxScaleX(minScale, maxScale)
     }
+
+    public func setHighlighter(highlighter: HorizontalBarHighlighter) {
+        this.mHighlighter = highlighter
+    }
+
+    public func computeScrollHorizontal(event: GestureEvent): Unit {
+        if (let Some(listener: HorizontalBarChartTouchListener) <- this.mChartTouchListener) {
+            listener.computeScroll(event)
+        }
+    }
+
 }

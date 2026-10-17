@@ -15,7 +15,7 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
         var mins: Float64 = min
         var maxs: Float64 = max
         if (this.mTrans.isNone() || this.mViewPortHandler.isNone()) {
-            return;
+            return
         }
         if (let Some(handle) <- this.mViewPortHandler) {
             // calculate the starting and entry point of the y-labels (depending on
@@ -45,7 +45,7 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
     }
 
     protected func computeSize(): Unit {
-        this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface())
+        this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface().toString())
         this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize())
 
         let longest: String = this.mXAxis.getLongestLabel()
@@ -75,7 +75,7 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
         }
         let xoffset: Float64 = this.mXAxis.getXOffset()
 
-        this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface())
+        this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface().toString())
         this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize())
         this.mAxisLabelPaint.setColor(this.mXAxis.getTextColor())
 
@@ -114,7 +114,7 @@ public class XAxisRendererHorizontalBarChart <: XAxisRenderer {
         let labelRotationAngleDegrees: Int64 = this.mXAxis.getLabelRotationAngle()
         let centeringEnabled: Bool = this.mXAxis.isCenterAxisLabelsEnabled()
 
-        let positions: Array<Float64> = Array(Int64(this.mXAxis.mEntryCount * 2.0), item: 0.0)
+        let positions: Array<Float64> = Array(Int64(this.mXAxis.mEntryCount * 2.0), repeat: 0.0)
 
         for (i in 0..positions.size : 2) {
 

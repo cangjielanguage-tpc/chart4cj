@@ -3,18 +3,8 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.viewPageItems
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import chart.pie.*
-import chart.utils.*
-import chart.components.*
-import chart.charts.*
-import chart.line.*
-import std.collection.{ArrayList}
-import std.format.*
-import ohos_app_cangjie_entry.scrollingCharts.data.*
+
 
 @Entry
 @Component
@@ -74,25 +64,25 @@ public class fragSimpleLineCircleIndex {
         let valuesN = ArrayList<EntryOhos>()
         let n: Array<Float64> = N().data
         for (i in 0..n.size) {
-            valuesN.append(EntryOhos(Float64(i), n[i]))
+            valuesN.add(EntryOhos(Float64(i), n[i]))
         }
 
         let valuesNlogn = ArrayList<EntryOhos>()
         let nlogn: Array<Float64> = Nlogn().data
         for (i in 0..nlogn.size) {
-            valuesNlogn.append(EntryOhos(Float64(i), nlogn[i]))
+            valuesNlogn.add(EntryOhos(Float64(i), nlogn[i]))
         }
 
         let valuesSquare = ArrayList<EntryOhos>()
         let square: Array<Float64> = Square().data
         for (i in 0..square.size) {
-            valuesSquare.append(EntryOhos(Float64(i), square[i]))
+            valuesSquare.add(EntryOhos(Float64(i), square[i]))
         }
 
         let valuesThree = ArrayList<EntryOhos>()
         let three: Array<Float64> = Three().data
         for (i in 0..three.size) {
-            valuesThree.append(EntryOhos(Float64(i), three[i]))
+            valuesThree.add(EntryOhos(Float64(i), three[i]))
         }
 
         let dataSet = ArrayList<ILineDataSet>()
@@ -145,10 +135,10 @@ public class fragSimpleLineCircleIndex {
         set4.setColorByColor(0x8ceaff)
         set4.setLineWidth(2.5)
 
-        dataSet.append(set1)
-        dataSet.append(set2)
-        dataSet.append(set3)
-        dataSet.append(set4)
+        dataSet.add(set1)
+        dataSet.add(set2)
+        dataSet.add(set3)
+        dataSet.add(set4)
 
         return LineData(dataSet)
     }

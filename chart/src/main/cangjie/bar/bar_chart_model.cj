@@ -22,6 +22,7 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
 
     private var mMinAngleForSlices: Float64 = 0.0
 
+
     init() {
         super()
     }
@@ -32,6 +33,7 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
         model.mRenderer = BarChartRenderer(model, model.mAnimator(), model.mViewPortHandler)
 
         model.setHighlighter(BarHighlighter(model))
+        model.mChartTouchListener = BarChartTouchListener(model, model.mViewPortHandler.getMatrixTouch(), 3.0)
 
         let xAxis: ?XAxis = model.getXAxis()
         if (let Some(xaxis) <- xAxis) {
@@ -100,15 +102,11 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
             let highLighter: ?IHighlighter = this.getHighlighter()
             if (let Some(lighter) <- highLighter) {
                 let h: ?Highlight = lighter.getHighlight(x, y)
-                if (let Some(hh) <- h) {
-                    if (!this.isHighlightFullBarEnabled()) {
-                        return None
-                    }
-                    return Highlight(hh.getX(), y: hh.getY(), dataSetIndex: hh.getDataSetIndex(), dataIndex: 0,
-                        stackIndex: -1, xPx: hh.getXPx(), yPx: hh.getYPx(), axis: hh.getAxis())
-                } else {
-                    return None
+                if(h.isNone() || !this.isHighlightFullBarEnabled()) {
+                    return h
                 }
+                return Highlight(h().getX(), y: h().getY(), dataSetIndex: h().getDataSetIndex(), dataIndex: 0,
+                        stackIndex: -1, xPx: h().getXPx(), yPx: h().getYPx(), axis: h().getAxis())
             } else {
                 return None
             }
@@ -285,4 +283,38 @@ public open class BarChartModel <: BarLineChartBaseModel<BarData, IBarDataSet, B
             this.notifyDataSetChanged()
         }
     }
+
+    public func setHighlighter(highlighter: BarHighlighter) {
+        this.mHighlighter = highlighter
+    }
+
+    public func getBarDataSetByTouchPoint(x: Float64, y: Float64): ?IBarDataSet {
+        let h: ?Highlight = this.getHighlightByTouchPoint(x, y)
+        if (h.isSome() && this.mData.isSome()) {
+            return this.mData().getDataSetByIndex(h().getDataSetIndex())
+        }
+        return None
+    }
+
+    public func computeScroll(event: GestureEvent): Unit {
+        if (let Some(listener: BarChartTouchListener) <- this.mChartTouchListener) {
+            listener.computeScroll(event)
+        }
+    }
+
+    public func getBarEntryByTouchPoint(x: Float64, y: Float64): ?BarEntry {
+        let h: ?Highlight = this.getHighlightByTouchPoint(x, y)
+        if (h.isSome() && this.mData.isSome()) {
+            return this.mData().getEntryForHighlight(h())
+        }
+        return None
+    }
+
+    public func calcPosition(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): (Float64, Float64) {
+        if (let Some(listener: BarChartTouchListener) <- this.mChartTouchListener) {
+            return listener.getXyByEvent(isTouchEvent, touchEvent, gestureEvent)
+        }
+        return (0.0, 0.0)
+    }
+
 }

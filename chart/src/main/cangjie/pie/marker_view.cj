@@ -41,14 +41,10 @@ public class MarkerView <: IMarker {
     public func draw(c: CanvasRenderingContext2D, posX: Float64, posY: Float64, e: EntryOhos, highlight: Highlight) {
         let offset: MPPointF = this.getOffsetForDrawingAtPoint(posX, posY)
         c.save()
-
-        let roundX = Float64.parse(e.getX().format(".1"))
-        let roundY = Float64.parse(e.getY().format(".1"))
-        let text: String = "x: ${round(roundX)} y:${round(roundY)}"
-
+        let text: String = "x: ${e.getX().format(".1")} y: ${e.getY().format(".1")}"
         let textMetrics: TextMetrics = c.measureText(text)
-        var measureWidth: Float64 = textMetrics.width
-        var measureHeight: Float64 = textMetrics.height
+        var measureWidth: Float64 = vp2px(textMetrics.width.vp)().value
+        var measureHeight: Float64 = vp2px(textMetrics.height.vp)().value
         let padding: Float64 = 5.0
 
         c.beginPath()
@@ -71,7 +67,7 @@ public class MarkerView <: IMarker {
         c.closePath()
 
         c.fillStyle(Color.BLACK)
-        //TODO c.textAlignStyle = Center
+        c.textAlign(TextAlignStyle.Center)
         c.fillText(text, left, top - 3.0 * padding)
         c.closePath()
         c.restore()

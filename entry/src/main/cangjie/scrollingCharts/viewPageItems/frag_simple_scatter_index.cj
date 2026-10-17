@@ -3,17 +3,7 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.viewPageItems
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import chart.pie.*
-import chart.utils.*
-import chart.components.*
-import chart.charts.*
-import chart.scatter.*
-import std.collection.{ArrayList}
-import std.random.*
 
 @Entry
 @Component
@@ -91,7 +81,7 @@ public class FragSimpleScatterIndex {
             let entries: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
 
             for (j in 0..count) {
-                entries.append(EntryOhos(Float64(j), Random().nextFloat64() * range + range / 5.0))
+                entries.add(EntryOhos(Float64(j), Random().nextFloat64() * range + range / 5.0))
             }
             let ds: ScatterDataSet = ScatterDataSet(entries, this.mLabels[i])
             ds.setScatterShape(shapes[i % shapes.size])
@@ -99,7 +89,7 @@ public class FragSimpleScatterIndex {
             ds.setScatterShapeSize(9.0)
             ds.setDrawValues(false)
             ds.setIconsOffset(MPPointF(0.0, 0.0))
-            sets.append(ds)
+            sets.add(ds)
         }
         return ScatterData(sets)
     }

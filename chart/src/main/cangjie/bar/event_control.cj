@@ -35,9 +35,9 @@ public class EventControl {
     private var eventMap: HashMap<EventType, Bool> = HashMap<EventType, Bool>()
 
     public init() {
-        this.eventMap.put(EventType.SingleTap, true)
-        this.eventMap.put(EventType.DoubleTap, true)
-        this.eventMap.put(EventType.LongPress, true)
+        this.eventMap.add(EventType.SingleTap, true)
+        this.eventMap.add(EventType.DoubleTap, true)
+        this.eventMap.add(EventType.LongPress, true)
     }
 
     // 事件是否启用
@@ -80,7 +80,7 @@ public class EventControl {
 
     private func setEvent(evType: EventType, sel: Bool) {
         if (this.eventMap.contains(evType)) {
-            this.eventMap.put(evType, sel)
+            this.eventMap.add(evType, sel)
         }
     }
 }

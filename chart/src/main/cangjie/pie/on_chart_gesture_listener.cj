@@ -11,7 +11,7 @@ public interface OnChartGestureListener {
      * @param me
      * @param lastPerformedGesture
      */
-    func onChartGestureStart(isTouchEvent: Bool, me: Any, lastPerformedGesture: ChartGesture): Unit
+    func onChartGestureStart(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, lastPerformedGesture: ChartGesture): Unit
 
     /**
      * Callbacks when a touch-gesture has ended on the chart (ACTION_UP, ACTION_CANCEL)
@@ -19,27 +19,27 @@ public interface OnChartGestureListener {
      * @param me
      * @param lastPerformedGesture
      */
-    func onChartGestureEnd(isTouchEvent: Bool, me: Any, lastPerformedGesture: ChartGesture): Unit
+    func onChartGestureEnd(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, lastPerformedGesture: ChartGesture): Unit
     /**
      * Callbacks when the chart is longpressed.
      *
      * @param me
      */
-    func onChartLongPressed(isTouchEvent: Bool, me: Any): Unit
+    func onChartLongPressed(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 
     /**
      * Callbacks when the chart is double-tapped.
      *
      * @param me
      */
-    func onChartDoubleTapped(isTouchEvent: Bool, me: Any): Unit
+    func onChartDoubleTapped(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 
     /**
      * Callbacks when the chart is single-tapped.
      *
      * @param me
      */
-    func onChartSingleTapped(isTouchEvent: Bool, me: Any): Unit
+    func onChartSingleTapped(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 
     /**
      * Callbacks then a fling gesture is made on the chart.
@@ -49,7 +49,7 @@ public interface OnChartGestureListener {
      * @param velocityX
      * @param velocityY
      */
-    func onChartFling(isTouchEvent: Bool, me1: Any, me2: TouchEvent, velocityX: Float64, velocityY: Float64): Unit
+    func onChartFling(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, touch: TouchEvent, velocityX: Float64, velocityY: Float64): Unit
 
     /**
      * Callbacks when the chart is scaled / zoomed via pinch zoom / double-tap gesture.
@@ -58,7 +58,7 @@ public interface OnChartGestureListener {
      * @param scaleX scalefactor on the x-axis
      * @param scaleY scalefactor on the y-axis
      */
-    func onChartScale(isTouchEvent: Bool, me: Any, scaleX: Float64, scaleY: Float64): Unit
+    func onChartScale(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, scaleX: Float64, scaleY: Float64): Unit
 
     /**
      * Callbacks when the chart is moved / translated via drag gesture.
@@ -67,5 +67,7 @@ public interface OnChartGestureListener {
      * @param dX translation distance on the x-axis
      * @param dY translation distance on the y-axis
      */
-    func onChartTranslate(isTouchEvent: Bool, me: Any, dX: Float64, dY: Float64): Unit
+    func onChartTranslate(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, dX: Float64, dY: Float64): Unit
+
+    func onChartMove(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit
 }

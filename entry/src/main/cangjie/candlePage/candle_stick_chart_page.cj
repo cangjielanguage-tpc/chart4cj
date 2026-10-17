@@ -3,9 +3,6 @@
  */
 package ohos_app_cangjie_entry.candlePage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -54,9 +51,9 @@ class CandlestickChartPage {
             let val = (Random().nextFloat64() * 41.0)
 
             if (Random().nextFloat64() * 100.0 < 25.0) {
-                values.append(BubblesEntry(Float64(i), val))
+                values.add(BubblesEntry(Float64(i), val))
             } else {
-                values.append(BubblesEntry(Float64(i), val))
+                values.add(BubblesEntry(Float64(i), val))
             }
         }
 
@@ -78,7 +75,7 @@ class CandlestickChartPage {
 
             let even: Bool = i % 2 == 0
 
-            values.append(
+            values.add(
                 CandleEntry(
                     Float64(i),
                     shadowH: val + high,

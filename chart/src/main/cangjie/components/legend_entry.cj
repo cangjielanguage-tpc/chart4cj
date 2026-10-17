@@ -28,7 +28,7 @@ public class LegendEntry {
      * The legend entry text.
      * A `null` label will start a group.
      */
-    public var label: String = "";
+    public var label: String = ""
     /**
      * The form to draw for this entry.
      *
@@ -36,27 +36,27 @@ public class LegendEntry {
      * `EMPTY` will avoid drawing a form, but keep its space.
      * `DEFAULT` will use the Legend's default.
      */
-    public var form: LegendForm = LegendForm.DEFAULT;
+    public var form: LegendForm = LegendForm.DEFAULT
     /**
      * Form size will be considered except for when .None is used
      *
      * Set as NaN to use the legend's default
      */
-    public var formSize: Float64 = Float64.NaN;
+    public var formSize: Float64 = Float64.NaN
     /**
      * Line width used for shapes that consist of lines.
      *
      * Set as NaN to use the legend's default
      */
-    public var formLineWidth: Float64 = Float64.NaN;
+    public var formLineWidth: Float64 = Float64.NaN
     /**
      * Line dash path effect used for shapes that consist of lines.
      *
      * Set to null to use the legend's default
      */
-    public var formLineDashEffect: ?DashPathEffect = None;
+    public var formLineDashEffect: ?DashPathEffect = None
     /**
      * The color for drawing the form
      */
-    public var formColor: UInt32 = ColorTemplate.COLOR_NONE;
+    public var formColor: UInt32 = ColorTemplate.COLOR_NONE
 }

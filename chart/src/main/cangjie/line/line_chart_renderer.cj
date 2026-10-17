@@ -2,6 +2,8 @@
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  */
 package chart.line
+import ohos.distributed_kv_store.Entry
+import ohos.hilog.Hilog
 
 public class LineChartRenderer <: LineRadarRenderer {
     public var mChart: LineDataProvider
@@ -21,6 +23,7 @@ public class LineChartRenderer <: LineRadarRenderer {
     }
 
     public func initBuffers() {
+        Hilog.info(0x0000,"LineChartRenderer","This is an empty function")
     }
 
     public func drawData(c: CanvasRenderingContext2D): Unit {
@@ -90,25 +93,29 @@ public class LineChartRenderer <: LineRadarRenderer {
         this.mXBounds?.set(this.mChart, dataSet)
 
         var cubicPath: Path2D = Path2D()
-        // cubicPath.reset()
 
         if (this.mXBounds().range >= 1) {
-            var prev = dataSet.getEntryForIndex(this.mXBounds().mins)()
+            var prev = dataSet.getEntryForIndex(this.mXBounds().mins)
             var cur = prev
 
             Utils.resetContext2DStyle(c, this.mRenderPaint)
             // let the spline start
-            cubicPath.moveTo(cur.getX(), cur.getY() * phaseY)
+            cubicPath.moveTo(cur().getX(), cur().getY() * phaseY)
 
-            for (j in this.mXBounds().mins + 1..=this.mXBounds().range + this.mXBounds().mins) {
+            for (j in  (this.mXBounds().mins + 1)..= (this.mXBounds().range + this.mXBounds().mins)) {
                 prev = cur
-                cur = dataSet.getEntryForIndex(j)()
+                cur = dataSet.getEntryForIndex(j)
 
-                let cpx: Float64 = (prev.getX()) + (cur.getX() - prev.getX()) / 2.0
+                let cpx: Float64 = (prev().getX())
+                + (cur().getX() - prev().getX()) / 2.0
 
-                cubicPath.bezierCurveTo(cpx, prev.getY() * phaseY, cpx, cur.getY() * phaseY, cur.getX(),
-                    cur.getY() * phaseY)
+                cubicPath.bezierCurveTo(
+                    cpx, prev().getY() * phaseY,
+                    cpx, cur().getY() * phaseY,
+                    cur().getX(), cur().getY() * phaseY
+                )
             }
+
         }
 
         // if filled is enabled, close the path
@@ -122,7 +129,10 @@ public class LineChartRenderer <: LineRadarRenderer {
         this.mRenderPaint.setColor(Color(dataSet.getColor()))
         this.mRenderPaint.setStyle(Style.STROKE)
 
-        // TODO 当前UI不支持 Matrix2D
+        if (let Some(transform) <- trans) {
+            cubicPath = transform.pathValueToPixel(cubicPath)
+        }
+
         Utils.resetContext2DStyle(c, this.mRenderPaint)
         c.beginPath()
         c.stroke(cubicPath)
@@ -173,7 +183,7 @@ public class LineChartRenderer <: LineRadarRenderer {
             // let the spline start
             cubicPath.moveTo(cur().getX(), cur().getY() * phaseY)
 
-            for (j in this.mXBounds().mins + 1..=this.mXBounds().range + this.mXBounds().mins) {
+            for (j in this.mXBounds().mins + 1..=(this.mXBounds().range + this.mXBounds().mins)) {
                 prevPrev = prev
                 prev = cur
                 cur = if (nextIndex == j) {
@@ -208,7 +218,6 @@ public class LineChartRenderer <: LineRadarRenderer {
         // if filled is enabled, close the path
         if (dataSet.isDrawFilledEnabled()) {
             let cubicFillPath: Path2D = Path2D()
-            // cubicFillPath.reset()
             cubicFillPath.addPath(cubicPath)
 
             if (let Some(t) <- trans) {
@@ -219,7 +228,10 @@ public class LineChartRenderer <: LineRadarRenderer {
         this.mRenderPaint.setColor(Color(dataSet.getColor()))
         this.mRenderPaint.setStyle(Style.STROKE)
 
-        // TODO 当前UI不支持 Matrix2D
+        if (let Some(t) <- trans) {
+            cubicPath = t.pathValueToPixel(cubicPath)
+        }
+
         Utils.resetContext2DStyle(c, this.mRenderPaint)
         c.beginPath()
         c.stroke(cubicPath)
@@ -230,13 +242,23 @@ public class LineChartRenderer <: LineRadarRenderer {
     protected func drawCubicFill(c: CanvasRenderingContext2D, dataSet: ILineDataSet, spline: Path2D, trans: Transformer,
         bounds: XBounds) {
         let fillMin: Float64 = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart)
-        var splineTemp = spline
+        if (dataSet.getEntryCount() == 1) {
+            let entryIndex0: EntryOhos = dataSet.getEntryForIndex(0)()
+            let xRange = this.mChart.getHighestVisibleX() - this.mChart.getLowestVisibleX()
+            let interval = xRange / this.mChart.getContentRect().width() * dataSet.getCircleRadius()
+            spline.moveTo(entryIndex0.getX() - interval, entryIndex0.getY())
+            spline.lineTo(entryIndex0.getX() + interval, entryIndex0.getY())
+            spline.lineTo(entryIndex0.getX() + interval, fillMin)
+            spline.lineTo(entryIndex0.getX() - interval, fillMin)
+            spline.closePath()
+        } else {
+            spline.lineTo(dataSet.getEntryForIndex(bounds.mins + bounds.range)().getX(), fillMin)
+            spline.lineTo(dataSet.getEntryForIndex(bounds.mins)().getX(), fillMin)
+            spline.closePath()
+        }
 
-        splineTemp.lineTo(dataSet.getEntryForIndex(bounds.mins + bounds.range)().getX(), fillMin)
-        splineTemp.lineTo(dataSet.getEntryForIndex(bounds.mins)().getX(), fillMin)
-        splineTemp.closePath()
+        var splineTemp = trans.pathValueToPixel(spline)
 
-        // TODO 当前UI不支持 Matrix2D splineTemp = trans.pathValueToPixel(splineTemp)
         let drawable: ?ChartPixelMap = dataSet.getFillDrawable()
         let gradientFillColor: ?ArrayList<ChartColorStop> = dataSet.getGradientFillColor()
         if (let Some(d) <- drawable) {
@@ -258,7 +280,7 @@ public class LineChartRenderer <: LineRadarRenderer {
         }
     }
 
-    private var mLineBuffer: Array<Float64> = Array<Float64>(10, item: 0.0)
+    private var mLineBuffer: Array<Float64> = Array<Float64>(10, repeat: 0.0) //这里是4？
 
     protected func drawLinear(c: CanvasRenderingContext2D, dataSet: ILineDataSet): Unit {
         if (this.mXBounds.isNone()) {
@@ -295,7 +317,7 @@ public class LineChartRenderer <: LineRadarRenderer {
         if (dataSet.getColors().size > 1) {
             let Float64OfFloats = pointsPerEntryPair * 2
             if (this.mLineBuffer.size <= Float64OfFloats) {
-                this.mLineBuffer = Array<Float64>(Float64OfFloats * 2, item: 0.0)
+                this.mLineBuffer = Array<Float64>(Float64OfFloats * 2, repeat: 0.0)
             }
             let maxs = this.mXBounds().mins + this.mXBounds().range
             for (j in this.mXBounds().mins..maxs) {
@@ -328,6 +350,9 @@ public class LineChartRenderer <: LineRadarRenderer {
                     this.mLineBuffer[3] = this.mLineBuffer[1]
                 }
 
+                if (let Some(t) <- trans) {
+                    t.pointValuesToPixel(this.mLineBuffer)
+                }
                 // Determine the start and end coordinates of the line, and make sure they differ.
                 let firstCoordinateX = this.mLineBuffer[0]
                 let firstCoordinateY = this.mLineBuffer[1]
@@ -338,17 +363,13 @@ public class LineChartRenderer <: LineRadarRenderer {
                     continue
                 }
 
-                if (let Some(t) <- trans) {
-                    t.pointValuesToPixel(this.mLineBuffer)
-                }
-
                 if (this.mViewPortHandler.isNone() || !this.mViewPortHandler().isInBoundsRight(firstCoordinateX)) {
                     break
                 }
 
                 // make sure the lines don't do shitty things outside
                 // bounds
-                if (!this.mViewPortHandler.isNone() || !this.mViewPortHandler().isInBoundsLeft(lastCoordinateX) ||
+                if (this.mViewPortHandler.isNone() || !this.mViewPortHandler().isInBoundsLeft(lastCoordinateX) ||
                     !this.mViewPortHandler().isInBoundsTop(max(firstCoordinateY, lastCoordinateY)) ||
                     !this.mViewPortHandler().isInBoundsBottom(min(firstCoordinateY, lastCoordinateY))) {
                     continue
@@ -372,7 +393,7 @@ public class LineChartRenderer <: LineRadarRenderer {
             if (this.mLineBuffer.size < max((entryCount) * pointsPerEntryPair, pointsPerEntryPair) * 2) {
                 this.mLineBuffer = Array<Float64>(
                     max((entryCount) * pointsPerEntryPair, pointsPerEntryPair) * 4,
-                    item: 0.0
+                    repeat: 0.0
                 )
             }
 
@@ -381,63 +402,61 @@ public class LineChartRenderer <: LineRadarRenderer {
 
             e1 = dataSet.getEntryForIndex(this.mXBounds().mins)
             if(e1.isSome()) {
+                var j = 0
+                for (x in this.mXBounds().mins..=this.mXBounds().range + this.mXBounds().mins) {
+                    e1 = dataSet.getEntryForIndex(if (x == 0) {
+                        0
+                    } else {
+                        (x - 1)
+                    })
+                    e2 = dataSet.getEntryForIndex(x)
 
+                    if(e1.isNone() || e2.isNone()) {
+                        continue
+                    }
 
-            var j = 0
-            for (x in this.mXBounds().mins..=this.mXBounds().range + this.mXBounds().mins) {
-                e1 = dataSet.getEntryForIndex(if (x == 0) {
-                    0
-                } else {
-                    (x - 1)
-                })
-                e2 = dataSet.getEntryForIndex(x)
+                    this.mLineBuffer[j] = e1().getX()
+                    j++
+                    this.mLineBuffer[j] = e1().getY() * phaseY
+                    j++
 
-                if(e1.isNone() || e2.isNone()) {
-                    continue
-                }
-
-                this.mLineBuffer[j] = e1().getX()
-                j++
-                this.mLineBuffer[j] = e1().getY() * phaseY
-                j++
-
-                if (isDrawSteppedEnabled) {
+                    if (isDrawSteppedEnabled) {
+                        this.mLineBuffer[j] = e2().getX()
+                        j += 1
+                        this.mLineBuffer[j] = e1().getY() * phaseY
+                        j += 1
+                        this.mLineBuffer[j] = e2().getX()
+                        j += 1
+                        this.mLineBuffer[j] = e1().getY() * phaseY
+                        j += 1
+                    }
                     this.mLineBuffer[j] = e2().getX()
                     j += 1
-                    this.mLineBuffer[j] = e1().getY() * phaseY
-                    j += 1
-                    this.mLineBuffer[j] = e2().getX()
-                    j += 1
-                    this.mLineBuffer[j] = e1().getY() * phaseY
+                    this.mLineBuffer[j] = e2().getY() * phaseY
                     j += 1
                 }
-                this.mLineBuffer[j] = e2().getX()
-                j += 1
-                this.mLineBuffer[j] = e2().getY() * phaseY
-                j += 1
+
+                if (j > 0) {
+                    if (let Some(t) <- trans) {
+                        t.pointValuesToPixel(this.mLineBuffer)
+                    }
+
+                    var size = max((this.mXBounds().range + 1) * pointsPerEntryPair, pointsPerEntryPair) * 2
+                    size = Int64(floor(Float64(size)))
+
+                    this.mRenderPaint.setColor(Color(dataSet.getColor()))
+                    Utils.resetContext2DStyle(canvas, this.mRenderPaint)
+                    canvas.beginPath()
+
+                    canvas.moveTo(this.mLineBuffer[0], this.mLineBuffer[1])
+                    for (i in 0..size : 2) {
+                        canvas.lineTo(this.mLineBuffer[i], this.mLineBuffer[i + 1])
+                    }
+
+                    canvas.stroke()
+                    canvas.closePath()
+                }
             }
-
-            if (j > 0) {
-                if (let Some(t) <- trans) {
-                    t.pointValuesToPixel(this.mLineBuffer)
-                }
-
-                var size = max((this.mXBounds().range + 1) * pointsPerEntryPair, pointsPerEntryPair) * 2
-                size = Int64(floor(Float64(size)))
-
-                this.mRenderPaint.setColor(Color(dataSet.getColor()))
-                Utils.resetContext2DStyle(canvas, this.mRenderPaint)
-                canvas.beginPath()
-
-                canvas.moveTo(this.mLineBuffer[0], this.mLineBuffer[1])
-                for (i in 0..size : 2) {
-                    canvas.lineTo(this.mLineBuffer[i], this.mLineBuffer[i + 1])
-                }
-
-                canvas.stroke()
-                canvas.closePath()
-            }
-        }
             }
         this.mRenderPaint.setDashPathEffect(Option<DashPathEffect>.None)
     }
@@ -457,13 +476,13 @@ public class LineChartRenderer <: LineRadarRenderer {
         var filled: Path2D = this.mGenerateFilledPathBuffer
 
         let startingIndex: Int64 = bounds.mins
+
         let endingIndex: Int64 = bounds.range + bounds.mins
         let indexInterval: Int64 = 128
 
         var currentStartIndex: Int64 = 0
         var currentEndIndex: Int64 = indexInterval
         var iterations: Int64 = 0
-
         // 迭代执行以避免大范围的 OutOfMemory 错误
         do {
             currentStartIndex = startingIndex + iterations * indexInterval
@@ -476,7 +495,8 @@ public class LineChartRenderer <: LineRadarRenderer {
 
             if (currentStartIndex <= currentEndIndex) {
                 filled = this.generateFilledPath(dataSet, currentStartIndex, currentEndIndex, filled)
-                // TODO 当前UI不支持 Matrix2D filled = trans.pathValueToPixel(filled)
+
+                filled = trans.pathValueToPixel(filled)
 
                 let isInverted: Bool = this.mChart.isInverted(dataSet.getAxisDependency())
 
@@ -516,6 +536,7 @@ public class LineChartRenderer <: LineRadarRenderer {
      */
     private func generateFilledPath(dataSet: ILineDataSet, startIndex: Int64, endIndex: Int64, outputPath: Path2D): Path2D {
         let fillMin: Float64 = dataSet.getFillFormatter().getFillLinePosition(dataSet, this.mChart)
+
         let phaseY: Float64 = if (let Some(m) <- this.mAnimator) {
             m.getPhaseY()
         } else {
@@ -526,32 +547,32 @@ public class LineChartRenderer <: LineRadarRenderer {
         var filled: Path2D = outputPath
 
         filled = Path2D()
+        let entry: ?EntryOhos = dataSet.getEntryForIndex(startIndex)
+        if(let Some(lineEntry) <- entry) {
+            filled.moveTo(lineEntry.getX(), fillMin)
+            filled.lineTo(lineEntry.getX(), lineEntry.getY() * phaseY)
+            var currentEntry: ?EntryOhos = None
+            var previousEntry: EntryOhos = lineEntry
+            for (x in (startIndex + 1)..=endIndex) {
+                currentEntry = dataSet.getEntryForIndex(x)
 
-        let entry: EntryOhos = dataSet.getEntryForIndex(startIndex)()
+                if (isDrawSteppedEnabled) {
+                    filled.lineTo(currentEntry().getX(), previousEntry.getY() * phaseY)
+                }
 
-        filled.moveTo(entry.getX(), fillMin)
-        filled.lineTo(entry.getX(), entry.getY() * phaseY)
-
-        var currentEntry: ?EntryOhos = None
-        var previousEntry: EntryOhos = entry
-        for (x in startIndex + 1..=endIndex) {
-            currentEntry = dataSet.getEntryForIndex(x)
-
-            if (isDrawSteppedEnabled) {
-                filled.lineTo(currentEntry().getX(), previousEntry.getY() * phaseY)
+                filled.lineTo(currentEntry().getX(), currentEntry().getY() * phaseY)
+                previousEntry = currentEntry()
             }
 
-            filled.lineTo(currentEntry().getX(), currentEntry().getY() * phaseY)
+            // close up
+            if (currentEntry.isSome()) {
+                filled.lineTo(currentEntry().getX(), fillMin)
+            }
 
-            previousEntry = currentEntry()
+            filled.closePath()
         }
 
-        // close up
-        if (currentEntry.isSome()) {
-            filled.lineTo(currentEntry().getX(), fillMin)
-        }
 
-        filled.closePath()
         return filled
     }
 
@@ -625,35 +646,40 @@ public class LineChartRenderer <: LineRadarRenderer {
                         !this.mViewPortHandler().isInBoundsY(y)) {
                         continue
                     }
-                    let entry: EntryOhos = dataSet.getEntryForIndex(j / 2 + this.mXBounds().mins)()
-                    if (dataSet.isDrawValuesEnabled()) {
-                        let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
-                        if (valueFormatter.isSome()) {
-                            this.drawValue(
+                    let entry: ?EntryOhos = dataSet.getEntryForIndex(j / 2 + this.mXBounds().mins)
+                    if(let Some(lineEntry) <- entry) {
+                        if (dataSet.isDrawValuesEnabled()) {
+                            let valueFormatter: ?IValueFormatter = dataSet.getValueFormatter()
+                            if (valueFormatter.isSome()) {
+                                this.drawValue(
+                                    c,
+                                    valueFormatter(),
+                                    lineEntry.getY(),
+                                    lineEntry,
+                                    i,
+                                    x,
+                                    y - valOffset,
+                                    Color(dataSet.getValueTextColor(j / 2))
+                                )
+                            }
+                        }
+
+                        if (lineEntry.getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
+                            let icon: ?ChartPixelMap = lineEntry.getIcon()
+                            if (icon.isNone()) {
+                                return
+                            }
+                            Utils.drawImage(
                                 c,
-                                valueFormatter(),
-                                entry.getY(),
-                                entry,
-                                i,
-                                x,
-                                y - valOffset,
-                                Color(dataSet.getValueTextColor(j / 2))
+                                icon(),
+                                floor(x + iconsOffset.x),
+                                floor(y + iconsOffset.y),
+                                icon().getWidth(),
+                                icon().getHeight()
                             )
                         }
                     }
 
-                    if (entry.getIcon().isSome() && dataSet.isDrawIconsEnabled()) {
-                        let icon: ?ChartPixelMap = entry.getIcon()
-                        if (icon.isNone()) {
-                            return
-                        }
-                        Utils.drawImage(
-                            c,
-                            icon(),
-                            floor(x + iconsOffset.x),
-                            floor(y + iconsOffset.y)
-                        )
-                    }
                 }
 
                 MPPointF.recycleInstance(iconsOffset)
@@ -668,7 +694,7 @@ public class LineChartRenderer <: LineRadarRenderer {
     /**
      * buffer for drawing the circles
      */
-    private var mCirclesBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
+    private var mCirclesBuffer: Array<Float64> = Array<Float64>(2, repeat: 0.0)
 
     protected func drawCircles(c: CanvasRenderingContext2D) {
         if (this.mViewPortHandler.isNone() || this.mAnimator.isNone()) {
@@ -739,39 +765,35 @@ public class LineChartRenderer <: LineRadarRenderer {
 
     public func fill(c: CanvasRenderingContext2D, set: ILineDataSet, drawCircleHole: Bool,
         drawTransparentCircleHole: Bool, offsetX: Float64, offsetY: Float64): Unit {
-        let colorCount: Int64 = set.getCircleColorCount()
         let circleRadius: Float64 = set.getCircleRadius()
         let circleHoleRadius: Float64 = set.getCircleHoleRadius()
-        for (i in 0..colorCount) {
-            this.mRenderPaint.setColor(Color(set.getCircleColor(i)))
-            if (drawTransparentCircleHole) {
-                // Begin path for circle with hole
-                Utils.resetContext2DStyle(c, this.mRenderPaint)
+        if (drawTransparentCircleHole) {
+            // Begin path for circle with hole
+            Utils.resetContext2DStyle(c, this.mRenderPaint)
+            c.beginPath()
+            c.arc(circleRadius + offsetX, circleRadius + offsetY, circleRadius, 0.0, Float64.getPI() * 2.0,
+                anticlockwise: false)
+
+            // Cut hole in path
+            c.arc(circleRadius + offsetX, circleRadius + offsetY, circleHoleRadius, 0.0, Float64.getPI() * 2.0,
+                anticlockwise: true)
+
+            // Fill in-between
+            c.fill()
+            c.closePath()
+        } else {
+            Utils.resetContext2DStyle(c, this.mRenderPaint)
+            c.beginPath()
+            c.arc(circleRadius + offsetX, circleRadius + offsetY, circleRadius, 0.0, Float64.getPI() * 2.0)
+            c.fill()
+            c.closePath()
+
+            if (drawCircleHole) {
+                Utils.resetContext2DStyle(c, this.mCirclePaintInner)
                 c.beginPath()
-                c.arc(circleRadius + offsetX, circleRadius + offsetY, circleRadius, 0.0, Float64.PI * 2.0,
-                    anticlockwise: false)
-
-                // Cut hole in path
-                c.arc(circleRadius + offsetX, circleRadius + offsetY, circleHoleRadius, 0.0, Float64.PI * 2.0,
-                    anticlockwise: true)
-
-                // Fill in-between
+                c.arc(circleRadius + offsetX, circleRadius + offsetY, circleHoleRadius, 0.0, Float64.getPI() * 2.0)
                 c.fill()
                 c.closePath()
-            } else {
-                Utils.resetContext2DStyle(c, this.mRenderPaint)
-                c.beginPath()
-                c.arc(circleRadius + offsetX, circleRadius + offsetY, circleRadius, 0.0, Float64.PI * 2.0)
-                c.fill()
-                c.closePath()
-
-                if (drawCircleHole) {
-                    Utils.resetContext2DStyle(c, this.mCirclePaintInner)
-                    c.beginPath()
-                    c.arc(circleRadius + offsetX, circleRadius + offsetY, circleHoleRadius, 0.0, Float64.PI * 2.0)
-                    c.fill()
-                    c.closePath()
-                }
             }
         }
     }
@@ -812,6 +834,7 @@ public class LineChartRenderer <: LineRadarRenderer {
 
             // draw the lines
             this.drawHighlightLines(c, pix.x, pix.y, set())
+            MPPointD.recycleInstance(pix)
         }
     }
 
@@ -825,6 +848,72 @@ public class LineChartRenderer <: LineRadarRenderer {
 
         if (this.mDrawBitmap.isSome()) {
             this.mDrawBitmap = None
+        }
+    }
+
+    protected func isInBoundsX(e: ?EntryOhos, dataSet: ILineDataSet): Bool {
+        if (let Some(entry) <- e) {
+            let entryIndex = dataSet.getEntryIndexByEntry(entry)
+            if (entryIndex >= dataSet.getEntryCount() * (if (let Some(m) <- this.mAnimator) {
+                Int64(m.getPhaseX())
+            } else {
+                1
+            })) {
+                return false
+            } else {
+                return true
+            }
+        }
+        return false
+    }
+
+    protected func drawHighlightLines(c: CanvasRenderingContext2D, x: Float64, y: Float64, set: ILineDataSet): Unit {
+        let highLightColor = set.getHighLightColor()
+        this.mHighlightPaint.setColor(Color(highLightColor))
+
+        this.mHighlightPaint.setStrokeWidth(set.getHighlightLineWidth())
+        this.mHighlightPaint.setDashPathEffect(set.getDashPathEffectHighlight())
+        Utils.resetContext2DStyle(c, this.mHighlightPaint)
+        if (set.isVerticalHighlightIndicatorEnabled()) {
+            c.beginPath()
+
+            c.moveTo(x, if (let Some(handle) <- this.mViewPortHandler) {
+                handle.contentTop()
+            } else {
+                0.0
+            })
+            c.lineTo(x, if (let Some(handle) <- this.mViewPortHandler) {
+                handle.contentBottom()
+            } else {
+                0.0
+            })
+            c.stroke()
+            c.closePath()
+        }
+
+        // draw horizontal highlight lines
+        if (set.isHorizontalHighlightIndicatorEnabled()) {
+            c.beginPath()
+
+            c.moveTo(
+                if (let Some(handle) <- this.mViewPortHandler) {
+                    handle.contentLeft()
+                } else {
+                    0.0
+                },
+                y
+            )
+            c.lineTo(
+                if (let Some(handle) <- this.mViewPortHandler) {
+                    handle.contentRight()
+                } else {
+                    0.0
+                },
+                y
+            )
+
+            c.stroke()
+            c.closePath()
         }
     }
 }

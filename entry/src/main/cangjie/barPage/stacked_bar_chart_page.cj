@@ -3,9 +3,6 @@
  */
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -77,25 +74,25 @@ class StackedBarChartPage {
 
     private func getStackData(): BarData {
         let values: ArrayList<BarEntry> = ArrayList<BarEntry>()
-        values.append(BarEntry(1.0, [38.0, 28.0, 39.8]))
-        values.append(BarEntry(2.0, [18.2, 16.1, 16.1]))
-        values.append(BarEntry(3.0, [45.8, 49.8, 26.7]))
-        values.append(BarEntry(4.0, [36.5, 43.8, 15.1]))
-        values.append(BarEntry(5.0, [51.5, 35.4, 24.1]))
-        values.append(BarEntry(6.0, [44.9, 21.4, 15.9]))
-        values.append(BarEntry(7.0, [32.9, 40.4, 32.7]))
-        values.append(BarEntry(8.0, [24.3, 31.0, 47.1]))
-        values.append(BarEntry(9.0, [17.4, 48.4, 49.6]))
-        values.append(BarEntry(10.0, [32.0, 29.8, 20.0]))
-        values.append(BarEntry(11.0, [43.9, 52.7, 27.7]))
-        values.append(BarEntry(12.0, [28.4, 46.2, 51.8]))
-        values.append(BarEntry(13.0, [42.6, 51.9, 44.0]))
-        values.append(BarEntry(14.0, [14.8, 22.4, 31.2]))
-        values.append(BarEntry(15.0, [50.3, 18.7, 18.3]))
-        values.append(BarEntry(16.0, [20.7, 22.9, 40.2]))
-        values.append(BarEntry(17.0, [49.4, 38.3, 41.7]))
-        values.append(BarEntry(18.0, [45.9, 40.7, 29.5]))
-        values.append(BarEntry(19.0, [37.1, 31.8, 42.9]))
+        values.add(BarEntry(1.0, [38.0, 28.0, 39.8]))
+        values.add(BarEntry(2.0, [18.2, 16.1, 16.1]))
+        values.add(BarEntry(3.0, [45.8, 49.8, 26.7]))
+        values.add(BarEntry(4.0, [36.5, 43.8, 15.1]))
+        values.add(BarEntry(5.0, [51.5, 35.4, 24.1]))
+        values.add(BarEntry(6.0, [44.9, 21.4, 15.9]))
+        values.add(BarEntry(7.0, [32.9, 40.4, 32.7]))
+        values.add(BarEntry(8.0, [24.3, 31.0, 47.1]))
+        values.add(BarEntry(9.0, [17.4, 48.4, 49.6]))
+        values.add(BarEntry(10.0, [32.0, 29.8, 20.0]))
+        values.add(BarEntry(11.0, [43.9, 52.7, 27.7]))
+        values.add(BarEntry(12.0, [28.4, 46.2, 51.8]))
+        values.add(BarEntry(13.0, [42.6, 51.9, 44.0]))
+        values.add(BarEntry(14.0, [14.8, 22.4, 31.2]))
+        values.add(BarEntry(15.0, [50.3, 18.7, 18.3]))
+        values.add(BarEntry(16.0, [20.7, 22.9, 40.2]))
+        values.add(BarEntry(17.0, [49.4, 38.3, 41.7]))
+        values.add(BarEntry(18.0, [45.9, 40.7, 29.5]))
+        values.add(BarEntry(19.0, [37.1, 31.8, 42.9]))
 
         let set1: BarDataSet
 
@@ -105,10 +102,10 @@ class StackedBarChartPage {
         set1.setStackLabels(["Births", "Divorces", "Marriages"])
 
         let dataSets: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
-        dataSets.append(set1)
+        dataSets.add(set1)
 
         let data: BarData = BarData(dataSets)
-        data.setValueTextColor(0xffffff)
+        data.setValueTextColor(0x000000)
         return data
     }
     private func getColors(): Array<UInt32> {

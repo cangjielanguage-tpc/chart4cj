@@ -13,7 +13,7 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
 
     protected func computeAxisValues(mins: Float64, maxs: Float64): Unit {
         if (this.mAxis.isNone()) {
-           return;
+           return
         }
 
         let yMin: Float64 = mins
@@ -160,7 +160,7 @@ public class YAxisRendererRadarChart <: YAxisRenderer {
             return
         }
 
-        this.mAxisLabelPaint.setFontFamily(this.mYAxis.getTypeface())
+        this.mAxisLabelPaint.setFontFamily(this.mYAxis.getTypeface().toString())
         this.mAxisLabelPaint.setTextSize(this.mYAxis.getTextSize())
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor())
 

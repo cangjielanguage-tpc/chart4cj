@@ -61,7 +61,7 @@ public class RadarDataSet <: LineRadarDataSet<RadarEntry> & IRadarDataSet {
         let entries: ArrayList<RadarEntry> = ArrayList<RadarEntry>()
         if (let Some(entry) <- this.mEntries) {
             for (i in 0..entry.size) {
-                entries.append(entry[i].copy())
+                entries.add(entry[i].copy())
             }
         }
         let copied: RadarDataSet = RadarDataSet(entries, this.getLabel())

@@ -3,17 +3,8 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import std.collection.{ArrayList}
-import std.math.*
-import std.random.*
-import chart.charts.*
-import chart.pie.*
-import chart.utils.*
-import chart.components.*
+
 
 @Entry
 @Component
@@ -57,6 +48,8 @@ class PieChartPageReadme {
         this.model.setEntryLabelColor(0xFF000000)
         this.model.setEntryLabelTextSize(18.0)
         this.model.setRotationAngle(0.0) // 设置旋转角度
+        this.model.setDrawMarkers(true)
+        this.model.setMarker(MarkerView())
 
         // 通过触摸启用图表的旋转
         this.model.setRotationEnabled(true)
@@ -68,7 +61,7 @@ class PieChartPageReadme {
     private func setData(count: Int64, range: Int64): Unit {
         var entries: ArrayList<PiEntry> = ArrayList<PiEntry>()
         for (i in 0..count) {
-            entries.append(
+            entries.add(
                 PiEntry(
                     (Random().nextFloat64() * Float64(range)) + Float64(range) / 5.0,
                     this.parties[i % this.parties.size]
@@ -86,28 +79,30 @@ class PieChartPageReadme {
         dataSet.setIconsOffset(MPPointF(0.0, 40.0))
         // 设置选中时数据项的偏移距离
         dataSet.setSelectionShift(5.0)
+        dataSet.setHighlightColor(Color.PINK.toUInt32())
+        dataSet.setHighlightEnabled(true)
 
         // 添加颜色
         var colors: ArrayList<UInt32> = ArrayList<UInt32>()
         for (i in 0..ColorTemplate.COLORFUL_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.COLORFUL_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.COLORFUL_COLORS[i]))
         }
 
         for (i in 0..ColorTemplate.VORDIPLOM_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.VORDIPLOM_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.VORDIPLOM_COLORS[i]))
         }
 
         for (i in 0..ColorTemplate.JOYFUL_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.JOYFUL_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.JOYFUL_COLORS[i]))
         }
 
         for (i in 0..ColorTemplate.LIBERTY_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.LIBERTY_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.LIBERTY_COLORS[i]))
         }
         for (i in 0..ColorTemplate.PASTEL_COLORS.size) {
-            colors.append(UInt32(ColorTemplate.PASTEL_COLORS[i]))
+            colors.add(UInt32(ColorTemplate.PASTEL_COLORS[i]))
         }
-        colors.append(UInt32(ColorTemplate.getHoloBlue()))
+        colors.add(UInt32(ColorTemplate.getHoloBlue()))
         dataSet.setColorsByList(colors)
 
         // 生成图表数据

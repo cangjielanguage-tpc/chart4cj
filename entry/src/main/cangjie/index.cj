@@ -4,24 +4,7 @@
 
 package ohos_app_cangjie_entry
 
-import ohos.base.LengthProp
-import ohos.component.Column
-import ohos.component.Row
-import ohos.component.Button
-import ohos.component.Text
-import ohos.component.CustomView
-import ohos.component.CJEntry
-import ohos.component.loadNativeView
-import ohos.state_manage.SubscriberManager
-import ohos.state_manage.ObservedProperty
-import ohos.state_manage.LocalStorage
-import ohos.state_macro_manage.Entry
-import ohos.state_macro_manage.Component
-import ohos.state_macro_manage.State
-import ohos.state_macro_manage.r
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+internal import kit.UIKit.*
 import ohos.state_macro_manage.*
 import ohos.router.*
 import std.collection.*
@@ -97,3 +80,4 @@ class Item {
         }.backgroundColor(this.backGround)
     }
 }
+

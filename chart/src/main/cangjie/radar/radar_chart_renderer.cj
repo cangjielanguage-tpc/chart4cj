@@ -169,55 +169,60 @@ public class RadarChartRenderer <: LineRadarRenderer {
             iconsOffset.y = Utils.handleDataValues(iconsOffset.y)
 
             for (j in 0..dataSet().getEntryCount()) {
-                let entry: RadarEntry = dataSet().getEntryForIndex(j)()
-
-                if (let Some(center) <- center) {
-                    pOut = Utils.getPosition(
-                        center,
-                        (entry.getY() - this.mChart.getYChartMin()) * factor * phaseY,
-                        sliceangle * Float64(j) * phaseX + this.mChart.getRotationAngle(),
-                        pOut
-                    )
-                }
-
-                let formatter: ?IValueFormatter = dataSet().getValueFormatter()
-                if (dataSet().isDrawValuesEnabled() && formatter.isSome()) {
-                    this.drawValue(
-                        c,
-                        formatter(),
-                        entry.getY(),
-                        entry,
-                        i,
-                        pOut.x,
-                        pOut.y - yoffset,
-                        Color(dataSet().getValueTextColor(j))
-                    )
-                }
-
-                if (entry.getIcon().isSome() && dataSet().isDrawIconsEnabled()) {
-                    let icon: ?ChartPixelMap = entry.getIcon()
-
+                let entry: ?RadarEntry = dataSet().getEntryForIndex(j)
+                if(let Some(radarEntry) <- entry) {
                     if (let Some(center) <- center) {
-                        pIcon = Utils.getPosition(
+                        pOut = Utils.getPosition(
                             center,
-                            entry.getY() * factor * phaseY + iconsOffset.y,
+                            (radarEntry.getY() - this.mChart.getYChartMin()) * factor * phaseY,
                             sliceangle * Float64(j) * phaseX + this.mChart.getRotationAngle(),
-                            pIcon
+                            pOut
                         )
                     }
 
-                    //noinspection SuspiciousNameCombination
-                    pIcon.y += iconsOffset.x
-
-                    if (let Some(icon) <- icon) {
-                        Utils.drawImage(
+                    let formatter: ?IValueFormatter = dataSet().getValueFormatter()
+                    if (dataSet().isDrawValuesEnabled() && formatter.isSome()) {
+                        this.drawValue(
                             c,
-                            icon,
-                            floor(pIcon.x),
-                            floor(pIcon.y)
+                            formatter(),
+                            radarEntry.getY(),
+                            radarEntry,
+                            i,
+                            pOut.x,
+                            pOut.y - yoffset,
+                            Color(dataSet().getValueTextColor(j))
                         )
+                    }
+
+                    if (radarEntry.getIcon().isSome() && dataSet().isDrawIconsEnabled()) {
+                        let icon: ?ChartPixelMap = radarEntry.getIcon()
+
+                        if (let Some(center) <- center) {
+                            pIcon = Utils.getPosition(
+                                center,
+                                radarEntry.getY() * factor * phaseY + iconsOffset.y,
+                                sliceangle * Float64(j) * phaseX + this.mChart.getRotationAngle(),
+                                pIcon
+                            )
+                        }
+
+                        //noinspection SuspiciousNameCombination
+                        pIcon.y += iconsOffset.x
+
+                        if (let Some(icon) <- icon) {
+                            Utils.drawImage(
+                                c,
+                                icon,
+                                floor(pIcon.x),
+                                floor(pIcon.y),
+                                icon.getWidth(),
+                                icon.getHeight()
+                            )
+                        }
                     }
                 }
+
+
             }
 
             MPPointF.recycleInstance(iconsOffset)
@@ -348,7 +353,7 @@ public class RadarChartRenderer <: LineRadarRenderer {
                 }
 
                 high.setDraw(pOut.x, pOut.y)
-                //TODO this.drawHighlightLines(c, pOut.x, pOut.y, set())
+                this.drawHighlightLines(c, pOut.x, pOut.y, set())
                 if (set().isDrawHighlightCircleEnabled()) {
                     if (!pOut.x.isNaN() && !pOut.y.isNaN()) {
                         var strokeColor: UInt32 = set().getHighlightCircleStrokeColor()
@@ -402,16 +407,15 @@ public class RadarChartRenderer <: LineRadarRenderer {
             var p: Path2D = this.mDrawHighlightCirclePathBuffer
             p = Path2D()
             c.beginPath()
-            p.arc(point.x, point.y, outerRadius, 0.0, 2.0 * Float64.PI, anticlockwise: false)
+            p.arc(point.x, point.y, outerRadius, 0.0, 2.0 * Float64.getPI(), anticlockwise: false)
             if (innerRadius > 0.0) {
-                p.arc(point.x, point.y, innerRadius, 0.0, 2.0 * Float64.PI, anticlockwise: true)
+                p.arc(point.x, point.y, innerRadius, 0.0, 2.0 * Float64.getPI(), anticlockwise: true)
             }
             this.mHighlightCirclePaint.setColor(Color(fillColor))
             this.mHighlightCirclePaint.setStyle(Style.FILL)
             Utils.resetContext2DStyle(c, this.mHighlightCirclePaint)
             c.closePath()
-            //TODO c.fill(p)
-            c.stroke(p)
+            c.fill(p)
         }
 
         if (strokeColor != ColorTemplate.COLOR_NONE) {
@@ -420,11 +424,60 @@ public class RadarChartRenderer <: LineRadarRenderer {
             this.mHighlightCirclePaint.setStrokeWidth(Utils.handleDataValues(strokeWidth))
             Utils.resetContext2DStyle(c, this.mHighlightCirclePaint)
             c.beginPath()
-            c.arc(point.x, point.y, outerRadius, 0.0, 2.0 * Float64.PI)
+            c.arc(point.x, point.y, outerRadius, 0.0, 2.0 * Float64.getPI())
             c.stroke()
             c.closePath()
         }
 
         c.restore()
+    }
+
+    protected func drawHighlightLines(c: CanvasRenderingContext2D, x: Float64, y: Float64, set: IRadarDataSet): Unit {
+        let highLightColor = set.getHighLightColor()
+        this.mHighlightPaint.setColor(Color(highLightColor))
+
+        this.mHighlightPaint.setStrokeWidth(set.getHighlightLineWidth())
+        this.mHighlightPaint.setDashPathEffect(set.getDashPathEffectHighlight())
+        Utils.resetContext2DStyle(c, this.mHighlightPaint)
+        if (set.isVerticalHighlightIndicatorEnabled()) {
+            c.beginPath()
+
+            c.moveTo(x, if (let Some(handle) <- this.mViewPortHandler) {
+                handle.contentTop()
+            } else {
+                0.0
+            })
+            c.lineTo(x, if (let Some(handle) <- this.mViewPortHandler) {
+                handle.contentBottom()
+            } else {
+                0.0
+            })
+            c.stroke()
+            c.closePath()
+        }
+
+        if (set.isHorizontalHighlightIndicatorEnabled()) {
+            c.beginPath()
+
+            c.moveTo(
+                if (let Some(handle) <- this.mViewPortHandler) {
+                    handle.contentLeft()
+                } else {
+                    0.0
+                },
+                y
+            )
+            c.lineTo(
+                if (let Some(handle) <- this.mViewPortHandler) {
+                    handle.contentRight()
+                } else {
+                    0.0
+                },
+                y
+            )
+
+            c.stroke()
+            c.closePath()
+        }
     }
 }

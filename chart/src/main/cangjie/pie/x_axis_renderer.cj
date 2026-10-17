@@ -73,7 +73,7 @@ public open class XAxisRenderer <: AxisRenderer {
     protected open func computeSize() {
         let longest: String = this.mXAxis.getLongestLabel()
 
-        this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface())
+        this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface().toString())
         this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize())
 
         let labelSize: FSize = Utils.calcTextSize(this.mAxisLabelPaint, longest)
@@ -103,18 +103,18 @@ public open class XAxisRenderer <: AxisRenderer {
 
         var yoffset = this.mXAxis.getYOffset()
 
-        this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface())
+        this.mAxisLabelPaint.setFontFamily(this.mXAxis.getTypeface().toString())
         this.mAxisLabelPaint.setTextSize(this.mXAxis.getTextSize())
         this.mAxisLabelPaint.setColor(this.mXAxis.getTextColor())
 
         let pointF: MPPointF = MPPointF.getInstance(0.0, 0.0)
         if (this.mXAxis.getPosition() == XAxisPosition.TOP) {
             pointF.x = 0.5
-            pointF.y = 0.8
+            pointF.y = 3.0
             this.drawLabels(c, this.mViewPortHandler().contentTop() - yoffset, pointF)
         } else if (this.mXAxis.getPosition() == XAxisPosition.TOP_INSIDE) {
             pointF.x = 0.5
-            pointF.y = 1.5
+            pointF.y = 1.0
             this.drawLabels(c, this.mViewPortHandler().contentTop() + yoffset + Float64(this.mXAxis.mLabelRotatedHeight),
                 pointF)
         } else if (this.mXAxis.getPosition() == XAxisPosition.BOTTOM) {
@@ -182,7 +182,7 @@ public open class XAxisRenderer <: AxisRenderer {
         let labelRotationAngleDegrees = this.mXAxis.getLabelRotationAngle()
         let centeringEnabled = this.mXAxis.isCenterAxisLabelsEnabled()
 
-        let positions: Array<Float64> = Array<Float64>(Int64(this.mXAxis.mEntryCount) * 2, item: 0.0)
+        let positions: Array<Float64> = Array<Float64>(Int64(this.mXAxis.mEntryCount) * 2, repeat: 0.0)
 
         let labelPosition: XAxisLabelPosition = this.mXAxis.getXAxisLabelPosition()
         var i: Int64 = 0
@@ -238,7 +238,7 @@ public open class XAxisRenderer <: AxisRenderer {
         Utils.drawXAxisValue(c, formattedLabel, x, y, this.mAxisLabelPaint, anchor, angleDegrees, labelPosition)
     }
 
-    protected var mRenderGridLinesBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
+    protected var mRenderGridLinesBuffer: Array<Float64> = Array<Float64>(2, repeat: 0.0)
 
     public func renderGridLines(c: CanvasRenderingContext2D): Unit {
         if (this.mAxis.isNone() || !this.mXAxis.isDrawGridLinesEnabled() || !this.mXAxis.isEnabled()) {
@@ -252,7 +252,7 @@ public open class XAxisRenderer <: AxisRenderer {
         c.clip()
 
         if (this.mRenderGridLinesBuffer.size != Int64(this.mAxis().mEntryCount * 2.0)) {
-            this.mRenderGridLinesBuffer = Array<Float64>(Int64(this.mXAxis.mEntryCount * 2.0), item: 0.0)
+            this.mRenderGridLinesBuffer = Array<Float64>(Int64(this.mXAxis.mEntryCount * 2.0), repeat: 0.0)
         }
         let positions: Array<Float64> = this.mRenderGridLinesBuffer
 
@@ -318,7 +318,7 @@ public open class XAxisRenderer <: AxisRenderer {
         c.closePath()
     }
 
-    protected var mRenderLimitLinesBuffer = Array<Float64>(2, item: 0.0)
+    protected var mRenderLimitLinesBuffer = Array<Float64>(2, repeat: 0.0)
     protected var mLimitLineClippingRect = ChartRect()
 
     private func renderLinesInner(c: CanvasRenderingContext2D, lines: ?ArrayList<LimitLine>) {
@@ -378,7 +378,7 @@ public open class XAxisRenderer <: AxisRenderer {
         this.renderLinesInner(c, limitLines)
     }
 
-    public var mLimitLineSegmentsBuffer: Array<Float64> = Array<Float64>(4, item: 0.0)
+    public var mLimitLineSegmentsBuffer: Array<Float64> = Array<Float64>(4, repeat: 0.0)
 
     public func renderLimitLineLine(c: CanvasRenderingContext2D, limitLine: LimitLine, position: Array<Float64>): Unit {
         this.mLimitLineSegmentsBuffer[0] = position[0]

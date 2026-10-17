@@ -234,7 +234,7 @@ public open class ViewPortHandler {
         return save
     }
 
-    protected var valsBufferForFitScreen: Array<Float64> = Array<Float64>(9, item: 0.0)
+    protected var valsBufferForFitScreen: Array<Float64> = Array<Float64>(9, repeat: 0.0)
 
     /**
      * Resets all zooming and dragging and makes the chart fit exactly it's
@@ -312,7 +312,7 @@ public open class ViewPortHandler {
     /**
      * buffer for storing the 9 matrix values of a 3x3 matrix
      */
-    protected var matrixBuffer: Array<Float64> = Array<Float64>(9, item: 0.0)
+    protected var matrixBuffer: Array<Float64> = Array<Float64>(9, repeat: 0.0)
 
     /**
      * call this method to refresh the graph with a given matrix

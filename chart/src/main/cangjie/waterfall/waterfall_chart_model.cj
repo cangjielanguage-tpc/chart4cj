@@ -19,6 +19,7 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
         model.mRenderer = WaterfallChartRenderer(model, model.mAnimator(), model.mViewPortHandler)
 
         model.setHighlighter(WaterfallHighlighter(model))
+        model.mChartTouchListener = WaterfallChartTouchListener(model, model.mViewPortHandler.getMatrixTouch(), 3.0)
         let xAxis: ?XAxis = model.getXAxis()
         if (let Some(xaxis) <- xAxis) {
             xaxis.setSpaceMin(0.5)
@@ -30,7 +31,7 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
         if (let Some(data: WaterfallData) <- this.mData) {
             return data
         } else {
-            return None;
+            return None
         }
     }
 
@@ -77,7 +78,7 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
     }
 
     public func setDrawBarShadow(enabled: Bool): Unit  {
-        this.mDrawBarShadow = enabled;
+        this.mDrawBarShadow = enabled
     }
 
     public func isDrawBarShadowEnabled(): Bool {
@@ -186,5 +187,38 @@ public class WaterfallChartModel <: BarLineChartBaseModel<WaterfallData, IWaterf
             }
             this.notifyDataSetChanged()
         }
+    }
+
+    public func setHighlighter(highlighter: WaterfallHighlighter) {
+        this.mHighlighter = highlighter
+    }
+
+    public func getWaterfallDataSetByTouchPoint(x: Float64, y: Float64): ?IWaterfallDataSet {
+        let h: ?Highlight = this.getHighlightByTouchPoint(x, y)
+        if (h.isSome() && this.mData.isSome()) {
+            return this.mData().getDataSetByIndex(h().getDataSetIndex())
+        }
+        return None
+    }
+
+    public func computeScroll(event: GestureEvent): Unit {
+        if (let Some(listener: WaterfallChartTouchListener) <- this.mChartTouchListener) {
+            listener.computeScroll(event)
+        }
+    }
+
+    public func getWaterfallEntryByTouchPoint(x: Float64, y: Float64): ?WaterfallEntry {
+        let h: ?Highlight = this.getHighlightByTouchPoint(x, y)
+        if (h.isSome() && this.mData.isSome()) {
+            return this.mData().getEntryForHighlight(h())
+        }
+        return None
+    }
+
+    public func calcPosition(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): (Float64, Float64) {
+        if (let Some(listener: WaterfallChartTouchListener) <- this.mChartTouchListener) {
+            return listener.getXyByEvent(isTouchEvent, touchEvent, gestureEvent)
+        }
+        return (0.0, 0.0)
     }
 }

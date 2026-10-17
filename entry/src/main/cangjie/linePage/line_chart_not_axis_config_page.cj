@@ -37,9 +37,9 @@ class LineChartNotAxisConfigPage {
             let val = (Random().nextFloat64() * 141.0)
 
             if (Random().nextFloat64() * 100.0 < 25.0) {
-                values.append(EntryOhos(Float64(i), val))
+                values.add(EntryOhos(Float64(i), val))
             } else {
-                values.append(EntryOhos(Float64(i), val))
+                values.add(EntryOhos(Float64(i), val))
             }
         }
 
@@ -59,7 +59,7 @@ class LineChartNotAxisConfigPage {
         this.dataSet.setCircleHoleRadius(2.0) //设置内径
 
         let dataSetList: ArrayList<ILineDataSet> = ArrayList<ILineDataSet>()
-        dataSetList.append(this.dataSet)
+        dataSetList.add(this.dataSet)
 
         let lineData: LineData = LineData(dataSetList)
         return lineData

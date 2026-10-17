@@ -3,9 +3,6 @@
  */
 package ohos_app_cangjie_entry.bubblePage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 class MyOnChartValueSelectedListener <: OnChartValueSelectedListener {
@@ -81,9 +78,9 @@ class BubbleChartPage {
             let val = (Random().nextFloat64() * 41.0)
 
             if (Random().nextFloat64() * 100.0 < 25.0) {
-                values.append(BubblesEntry(Float64(i), val))
+                values.add(BubblesEntry(Float64(i), val))
             } else {
-                values.append(BubblesEntry(Float64(i), val))
+                values.add(BubblesEntry(Float64(i), val))
             }
         }
 
@@ -91,7 +88,7 @@ class BubbleChartPage {
         dataSet.setDrawIcons(false)
 
         let dataSetList: ArrayList<BubbleDataSet> = ArrayList<BubbleDataSet>()
-        dataSetList.append(dataSet)
+        dataSetList.add(dataSet)
 
         this.setData(5, 50.0)
         this.model.notifyDataSetChanged()
@@ -109,11 +106,11 @@ class BubbleChartPage {
         let values3 = ArrayList<BubblesEntry>()
 
         for (i in 0..count) {
-            values1.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            values1.add(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
             )
-            values2.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            values2.add(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
             )
-            values3.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
+            values3.add(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range)
             )
         }
 
@@ -136,9 +133,9 @@ class BubbleChartPage {
         set3.setDrawValues(this.isDrawValuesEnable)
 
         let dataSets = ArrayList<IBubbleDataSet>()
-        dataSets.append(set1)
-        dataSets.append(set2)
-        dataSets.append(set3)
+        dataSets.add(set1)
+        dataSets.add(set2)
+        dataSets.add(set3)
         let dataResult: BubbleData = BubbleData(dataSets)
         dataResult.setDrawValues(this.isDrawValuesEnable)
         dataResult.setValueTextSize(8.0)

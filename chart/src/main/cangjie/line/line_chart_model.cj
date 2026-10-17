@@ -14,7 +14,8 @@ public class LineChartModel <: BarLineChartBaseModel<LineData, ILineDataSet, Ent
         let model: LineChartModel = LineChartModel()
         model.mAnimator = ChartAnimator(model)
         model.mRenderer = LineChartRenderer(model, model.mAnimator(), model.mViewPortHandler)
-
+        model.setHighlighter(LineHighlighter(model))
+        model.mChartTouchListener = LineChartTouchListener(model, model.mViewPortHandler.getMatrixTouch(), 3.0)
         return model
     }
 
@@ -38,5 +39,38 @@ public class LineChartModel <: BarLineChartBaseModel<LineData, ILineDataSet, Ent
 
     public func getLineData(): ?LineData {
         return this.mData
+    }
+
+    public func setHighlighter(highlighter: LineHighlighter) {
+        this.mHighlighter = highlighter
+    }
+
+    public func getLineDataSetByTouchPoint(x: Float64, y: Float64): ?ILineDataSet {
+        let h: ?Highlight = this.getHighlightByTouchPoint(x, y)
+        if (h.isSome() && this.mData.isSome()) {
+            return this.mData().getDataSetByIndex(h().getDataSetIndex())
+        }
+        return None
+    }
+
+    public func computeScroll(event: GestureEvent): Unit {
+        if (let Some(listener: LineChartTouchListener) <- this.mChartTouchListener) {
+            listener.computeScroll(event)
+        }
+    }
+
+    public func getLineEntryByTouchPoint(x: Float64, y: Float64): ?EntryOhos {
+        let h: ?Highlight = this.getHighlightByTouchPoint(x, y)
+        if (h.isSome() && this.mData.isSome()) {
+            return this.mData().getEntryForHighlight(h())
+        }
+        return None
+    }
+
+    public func calcPosition(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): (Float64, Float64) {
+        if (let Some(listener: LineChartTouchListener) <- this.mChartTouchListener) {
+            return listener.getXyByEvent(isTouchEvent, touchEvent, gestureEvent)
+        }
+        return (0.0, 0.0)
     }
 }
