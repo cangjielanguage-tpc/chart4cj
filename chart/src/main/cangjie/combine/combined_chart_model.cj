@@ -27,8 +27,7 @@ public class CombinedChartModel <: BarLineChartBaseModel<CombinedData, IBarLineS
         super()
         this.mDrawOrder = [DrawOrder.WATERFALL, DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.LINE, DrawOrder.CANDLE,
             DrawOrder.SCATTER]
-        //this.setHighlighter(CombinedHighlighter(this, this, this))
-        //this.setHighlightFullBarEnabled(true)
+        this.setHighlightFullBarEnabled(true)
     }
 
     public static func build(): CombinedChartModel {
@@ -38,6 +37,9 @@ public class CombinedChartModel <: BarLineChartBaseModel<CombinedData, IBarLineS
         if (let Some(mAnimator) <- model.mAnimator) {
             model.mRenderer = CombinedChartRenderer(model, mAnimator, model.mViewPortHandler)
         }
+
+        model.setHighlighter(CombinedHighlighter(model))
+        model.mChartTouchListener = CombinedChartTouchListener(model, model.mViewPortHandler.getMatrixTouch(), 3.0)
 
         return model
     }
@@ -215,49 +217,100 @@ public class CombinedChartModel <: BarLineChartBaseModel<CombinedData, IBarLineS
      * draws all MarkerViews on the highlighted positions
      */
     protected func drawMarkers(canvas: CanvasRenderingContext2D): Unit {
-
-        // if there is no marker view or drawing marker is disabled
         if (this.mMarker.isNone() || !this.isDrawMarkersEnabled() || !this.valuesToHighlight() ||
             this.mIndicesToHighlight.isNone()) {
             return
         }
 
-        //TODO i: Float64 = 0
-        for (i in 0..this.mIndicesToHighlight().size) {
-            let highlight: ?Highlight = this.mIndicesToHighlight()[i]
+        for (highlight in this.mIndicesToHighlight()) {
+            let e: ?EntryOhos = this.mData().getEntryForHighlight(highlight)
+            if(e.isNone()) {
+                continue
+            }
 
-            if (let Some(mData: CombinedData) <- this.mData) {
-                let set: ?IBarLineScatterCandleBubbleDataSet<EntryOhos> = mData.getDataSetByHighlight(highlight())
-                if (set.isNone()) {
-                    continue
-                }
+            let dataSet = this.mData().getDataSetForEntry(e())
 
-                let e: ?EntryOhos = mData.getEntryForHighlight(highlight())
-                if (e.isNone()) {
-                    continue
-                }
-
-                let entryIndex: Float64 = Float64(set().getEntryIndexByEntry(e()))
+            if (let Some(d: IDataSet<EntryOhos>) <- dataSet) {
+                let entryIndex: Float64 = Float64(d.getEntryIndexByEntry(e()))
 
                 if (this.mAnimator.isNone()) {
                     continue
                 }
                 // make sure entry not null
-                if (entryIndex > Float64(set().getEntryCount()) * this.mAnimator().getPhaseX()) {
+                if (entryIndex > Float64(d.getEntryCount()) * this.mAnimator().getPhaseX()) {
                     continue
                 }
 
-                let pos: Array<Float64> = this.getMarkerPosition(highlight())
+                let pos: Array<Float64> = this.getMarkerPosition(highlight)
 
                 // check bounds
                 if (!this.mViewPortHandler.isInBounds(pos[0], pos[1])) {
                     continue
                 }
                 // draw the marker
-                this.mMarker().draw(canvas, pos[0], pos[1], e(), highlight())
+                this.mMarker().draw(canvas, pos[0], pos[1], e(), highlight)
             } else {
                 continue
             }
         }
     }
+
+    protected func drawLongPressMarkers(c: CanvasRenderingContext2D): Unit {
+        if(this.mLastGesture != LastGesture.LONG_PRESS ) {
+            return
+        }
+
+        if (this.mLongPressMarker.isNone() || !this.isDrawLongPressMarkersEnabled() || !this.valuesToHighlight()) {
+            return
+        }
+
+        if (this.mIndicesToHighlight.isSome() && this.mData.isSome()){
+            for(highlight in this.mIndicesToHighlight()) {
+                let e: ?EntryOhos = this.mData().getEntryForHighlight(highlight)
+                if(e.isNone()) {
+                    continue
+                }
+                let dataSet = this.mData().getDataSetForEntry(e())
+                if(dataSet.isNone()) {
+                    continue
+                }
+                if (let Some(d: IDataSet<EntryOhos>) <- dataSet) {
+                    let entryIndex: Int64 = d.getEntryIndexByEntry(e())
+                    if (this.mAnimator.isNone() || Float64(entryIndex) >
+                        Float64(d.getEntryCount()) * this.mAnimator().getPhaseX()) {
+                        continue
+                    }
+                    let pos: Array<Float64> = this.getMarkerPosition(highlight)
+                    if (!this.mViewPortHandler.isInBounds(pos[0], pos[1])) {
+                        continue
+                    }
+                    if (this.mLongPressMarker.isSome()) {
+                        this.mLongPressMarker().draw(c, pos[0], pos[1], e(), highlight)
+                    }
+                }
+
+
+            }
+        }
+    }
+
+    public func setHighlighter(highlighter: CombinedHighlighter) {
+        this.mHighlighter = highlighter
+    }
+
+    public func getCombinedDataSetByTouchPoint(x: Float64, y: Float64): ?IBarLineScatterCandleBubbleDataSet<EntryOhos> {
+        let h: ?Highlight = this.getHighlightByTouchPoint(x, y)
+        if (h.isSome() && this.mData.isSome()) {
+            return this.mData().getDataSetByIndex(h().getDataSetIndex())
+        }
+        return None
+    }
+
+    public func computeScroll(event: GestureEvent): Unit {
+        if (let Some(listener: CombinedChartTouchListener) <- this.mChartTouchListener) {
+            listener.computeScroll(event)
+        }
+    }
+
+
 }

@@ -4,6 +4,7 @@
 package chart.pie
 
 public class CandleEntry <: EntryOhos {
+    let FLAG: String = "CandleEntry"
     private var mShadowHigh: Float64 = 0.0
     private var mShadowLow: Float64 = 0.0
     private var mClose: Float64 = 0.0
@@ -72,4 +73,8 @@ public class CandleEntry <: EntryOhos {
     public func setOpen(open: Float64): Unit {
         this.mOpen = open
     }
+    public func toString(): String {
+        return FLAG
+    }
+
 }

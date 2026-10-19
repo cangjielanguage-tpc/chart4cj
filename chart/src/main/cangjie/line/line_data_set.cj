@@ -47,9 +47,9 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
         super(yVals, label)
         this.calcMinMax()
         this.mCircleColors.clear()
-        this.mCircleColors.append(UInt32(ChartColor.rgb(140, 234, 255)))
+        this.mCircleColors.add(UInt32(ChartColor.rgb(140, 234, 255)))
         this.mColors.clear()
-        this.mColors.append(0x868686)
+        this.mColors.add(0x868686)
     }
 
     public func getCircleColor(index: Int64): UInt32 {
@@ -60,7 +60,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
         let entries = ArrayList<EntryOhos>()
         if (let Some(e) <- this.mEntries) {
             for (i in 0..e.size) {
-                entries.append(e[i].copy())
+                entries.add(e[i].copy())
             }
         }
         let copied = LineDataSet(entries, this.getLabel())
@@ -233,7 +233,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
         }
         clrs.clear()
         for (color in colors) {
-            clrs.append(color)
+            clrs.add(color)
         }
         this.mCircleColors = clrs
     }
@@ -247,7 +247,7 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
     public func setCircleColor(color: UInt32): Unit {
         this.resetCircleColors()
 
-        this.mCircleColors.append(color)
+        this.mCircleColors.add(color)
     }
 
     /**
@@ -303,9 +303,6 @@ public class LineDataSet <: LineRadarDataSet<EntryOhos> & ILineDataSet {
         return this.mFillFormatter
     }
 
-    public func getDashPathEffectHighlight(): ?DashPathEffect {
-        return None
-    }
     public func isDrawSteppedEnabled(): Bool {
         return this.mMode == Mode.STEPPED
     }

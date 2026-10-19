@@ -8,6 +8,7 @@ internal import chart.utils.*
 internal import chart.bar.*
 internal import std.collection.*
 internal import std.math.*
+internal import std.time.DateTime
 internal import ohos.component.*
 internal import ohos.base.*
 internal import ohos.device_info.*

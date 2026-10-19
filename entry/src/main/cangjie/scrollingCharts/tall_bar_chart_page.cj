@@ -3,9 +3,6 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -85,7 +82,7 @@ class TallBarChartPage {
         for (i in start..(start + count)) {
             let multi = range
             let val: Float64 = round(Random().nextFloat64() * multi)
-            values.append(BarEntry(Float64(i), val))
+            values.add(BarEntry(Float64(i), val))
         }
 
         let set1: BarDataSet
@@ -104,7 +101,7 @@ class TallBarChartPage {
             set1.setDrawValues(false)
 
             let dataSets: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
-            dataSets.append(set1)
+            dataSets.add(set1)
 
             let data: BarData = BarData(dataSets)
 

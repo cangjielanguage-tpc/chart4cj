@@ -9,14 +9,10 @@ public open class ChartPaint {
     var globalCompositeOperation: String = "source-over"
 
     var fillStyle: Color = Color.WHITE
-    var fillStyle1: String = "#ffffff"
     var fillStyle2: ?CanvasGradient = Option<CanvasGradient>.None
-    //var fillStyle3: CanvasPattern
 
     var strokeStyle: Color = Color.BLACK
-    var strokeStyle1: String = "#000000"
     var strokeStyle2: CanvasGradient = CanvasRenderingContext2D(RenderingContextSettings(antialias: true)).createLinearGradient(0,0,0,0)
-    // var strokeStyle3: CanvasPattern
 
     var filter: String = "none"
     var imageSmoothingEnabled: Bool = true
@@ -31,12 +27,12 @@ public open class ChartPaint {
     var shadowOffsetX: Float64 = 0.0
     var shadowOffsetY: Float64 = 0.0
     var direction: Direction = Direction.Auto
-    var fontStyle: FontStyleType = FontStyleType.NORMAL
-    var fontWeight: FontWeightType = FontWeightType.NORMAL
+    var fontStyle: FontStyle = FontStyle.Normal
+    var fontWeight: FontWeight  = FontWeight.Normal
     var fontSize: Float64 = 14.0
     var fontSizeUnit: FontSizeUnit = FontSizeUnit.VP
-    var fontFamily: FontFamily = NONE
-    var font: String = "normal normal 14vp"
+    var fontFamily: String  = "sans-serif"
+    var font: (FontStyle, FontWeight, Length, String) = (FontStyle.Normal, FontWeight.Normal, 14.vp, "sans-serif")
     var textAlign: TextAlignStyle = Left
     var textBaseline: TextBaseline = Alphabetic
     var lineDash: Array<Int64> = Array<Int64>()
@@ -50,14 +46,10 @@ public open class ChartPaint {
         this.globalCompositeOperation = paint.globalCompositeOperation
 
         this.fillStyle = paint.fillStyle
-        this.fillStyle1 = paint.fillStyle1
         this.fillStyle2 = paint.fillStyle2
-        //this.fillStyle3 = paint.fillStyle3
 
         this.strokeStyle = paint.strokeStyle
-        this.strokeStyle1 = paint.strokeStyle1
         this.strokeStyle2 = paint.strokeStyle2
-        // this.strokeStyle3 = paint.strokeStyle3
 
         this.filter = paint.filter
         this.imageSmoothingEnabled = paint.imageSmoothingEnabled
@@ -89,36 +81,21 @@ public open class ChartPaint {
         this.strokeStyle = color
     }
 
-    public func setColor(color: String) {
-        this.fillStyle1 = color
-        this.strokeStyle1 = color
-    }
-
     public func setColor(color: CanvasGradient) {
         this.fillStyle2 = color
         this.strokeStyle2 = color
     }
 
-    //    public func setColor(color: CanvasPattern) {
-    //            this.fillStyle3 = color
-    //            this.strokeStyle3 = color
-    //    }
 
     public func getColor(): Color {
         return this.fillStyle
     }
 
-    public func getColor1(): String {
-        return this.fillStyle1
-    }
 
     public func getColor2(): ?CanvasGradient {
         return this.fillStyle2
     }
 
-    //    public func getColor3(): CanvasPattern {
-    //            return this.fillStyle3
-    //        }
 
     public func setStyle(styleType: Style) {
         this.styleType = styleType
@@ -148,59 +125,33 @@ public open class ChartPaint {
         this.fillStyle = fillStyle
     }
 
-    public func setFillStyle(fillStyle: String) {
-        this.fillStyle1 = fillStyle
-    }
-
     public func setFillStyle(fillStyle: CanvasGradient) {
         this.fillStyle2 = fillStyle
     }
 
-    //    public func setFillStyle(fillStyle: CanvasPattern) {
-    //            this.fillStyle = fillStyle3
-    //        }
-
     public func getFillStyle(): Color {
         return this.fillStyle
-    }
-
-    public func getFillStyle1(): String {
-        return this.fillStyle1
     }
 
     public func getFillStyle2(): ?CanvasGradient {
         return this.fillStyle2
     }
 
-    //    public func getFillStyle3(): CanvasPattern {
-    //            return this.fillStyle3
-    //        }
-
     public func setStrokeStyle(strokeStyle: Color) {
         this.strokeStyle = strokeStyle
     }
-    public func setStrokeStyle(strokeStyle: String) {
-        this.strokeStyle1 = strokeStyle
-    }
+
     public func setStrokeStyle(strokeStyle: CanvasGradient) {
         this.strokeStyle2 = strokeStyle
     }
-    //    public func setStrokeStyle(strokeStyle: CanvasPattern) {
-    //            this.strokeStyle3 = strokeStyle
-    //        }
 
     public func getStrokeStyle(): Color {
         return this.strokeStyle
     }
-    public func getStrokeStyle1(): String {
-        return this.strokeStyle1
-    }
+
     public func getStrokeStyle2(): CanvasGradient {
         return this.strokeStyle2
     }
-    //    public func getStrokeStyle3(): CanvasPattern {
-    //            return this.strokeStyle3
-    //        }
 
     public func setFilter(filterType: String) {
         this.filter = filterType
@@ -306,55 +257,47 @@ public open class ChartPaint {
         return this.direction
     }
 
-    public func setTextSize(textSize: Float64, textSizeUnit!: FontSizeUnit = PX): Unit {
+    public func setTextSize(textSize: Float64): Unit {
         this.fontSize = textSize
-        this.fontSizeUnit = textSizeUnit
-
-        this.font = this.fontStyle.toString() + " " + this.fontWeight.toString() + " " + this.fontSize.toString() +
-            this.fontSizeUnit.toString() + " " + this.fontFamily.toString()
+        this.font = (this.fontStyle, this.fontWeight, this.fontSize.vp, this.fontFamily)
     }
 
     public func getTextSize(): Float64 {
         return this.fontSize
     }
 
-    public func setFontStyle(fontStyle: FontStyleType): Unit {
+    public func setFontStyle(fontStyle: FontStyle): Unit {
         this.fontStyle = fontStyle
-        this.font = this.fontStyle.toString() + " " + this.fontWeight.toString() + " " + this.fontSize.toString() +
-            this.fontSizeUnit.toString() + " " + this.fontFamily.toString()
+        this.font = (this.fontStyle, this.fontWeight, this.fontSize.vp, this.fontFamily)
     }
 
-    public func getFontStyle(): FontStyleType {
+    public func getFontStyle(): FontStyle  {
         return this.fontStyle
     }
 
-    public func setFontWeight(fontWeight: FontWeightType): Unit {
+    public func setFontWeight(fontWeight: FontWeight ): Unit {
         this.fontWeight = fontWeight
-        this.font = this.fontStyle.toString() + " " + this.fontWeight.toString() + " " + this.fontSize.toString() +
-            this.fontSizeUnit.toString() + " " + this.fontFamily.toString()
+        this.font = (this.fontStyle, this.fontWeight, this.fontSize.vp, this.fontFamily)
     }
 
-    public func getFontWeight(): FontWeightType {
+    public func getFontWeight(): FontWeight {
         return this.fontWeight
     }
 
-    public func setFontFamily(fontFamily: FontFamily): Unit {
+    public func setFontFamily(fontFamily: String): Unit {
         this.fontFamily = fontFamily
-        this.font = this.fontStyle.toString() + " " + this.fontWeight.toString() + " " + this.fontSize.toString() +
-            this.fontSizeUnit.toString() + " " + this.fontFamily.toString()
+        this.font = (this.fontStyle, this.fontWeight, this.fontSize.vp, this.fontFamily)
     }
 
-    public func getFontFamily(): FontFamily {
+    public func getFontFamily(): String {
         return this.fontFamily
     }
 
-    public func setFont(fontStyle!: FontStyleType = NORMAL, fontWeight!: FontWeightType = NORMAL,
-        fontSize!: Float64 = 14.0, fontSizeUnit!: FontSizeUnit = PX, fontFamily!: FontFamily = NONE) {
-        this.font = this.fontStyle.toString() + " " + this.fontWeight.toString() + " " + this.fontSize.toString() +
-            this.fontSizeUnit.toString() + " " + this.fontFamily.toString()
+    public func setFont(font: (FontStyle, FontWeight, Length, String)) {
+        this.font = font
     }
 
-    public func getFont(): String {
+    public func getFont(): (FontStyle, FontWeight, Length, String) {
         return this.font
     }
 

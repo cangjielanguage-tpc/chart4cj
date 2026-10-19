@@ -3,15 +3,7 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts.listViewItems
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import chart.pie.*
-import chart.utils.*
-import chart.components.*
-import chart.charts.*
-import chart.line.*
 
 @Component
 public class LineChartItem {

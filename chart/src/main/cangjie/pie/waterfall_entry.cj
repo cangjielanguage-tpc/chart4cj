@@ -32,7 +32,7 @@ public class WaterfallEntry <: EntryOhos {
     }
 
     public func setHighlights(highlights: Array<WaterfallHighlight>): Unit {
-        this.mHighlights = Array<WaterfallHighlight>(highlights.size, item: WaterfallHighlight(0.0, 0.0))
+        this.mHighlights = Array<WaterfallHighlight>(highlights.size, repeat: WaterfallHighlight(0.0, 0.0))
         if (highlights.size > 0) {
             for (i in 0..highlights.size) {
                 this.mHighlights[i] = highlights[i]
@@ -89,7 +89,7 @@ public class WaterfallEntry <: EntryOhos {
             if (v.size == 0) {
                 return
             } else {
-                this.mRanges = Array(v.size, item: RangeChart(0.0, 0.0))
+                this.mRanges = Array(v.size, repeat: RangeChart(0.0, 0.0))
 
                 var negRemain: Float64 = -this.mNegativeSum //getNegativeSum
                 var posRemain: Float64 = 0.0
@@ -115,30 +115,30 @@ public class WaterfallEntry <: EntryOhos {
 }
 
 public class WaterfallHighlight {
-  private var minY: Float64  = 0.0;
-  private var maxY: Float64 = 0.0;
-  private var color: UInt32 = 0xff0000;
+  private var minY: Float64  = 0.0
+  private var maxY: Float64 = 0.0
+  private var color: UInt32 = 0xff0000
 
   public init(minY: Float64, maxY: Float64, color!: UInt32 = 0xff0000) {
-    this.minY = minY;
-    this.maxY = maxY;
-    this.color = color;
+    this.minY = minY
+    this.maxY = maxY
+    this.color = color
 
   }
 
   public func getMinY() {
-    return this.minY;
+    return this.minY
   }
 
   public func getMaxY() {
-    return this.maxY;
+    return this.maxY
   }
 
   public func getColor() {
-    return this.color;
+    return this.color
   }
 
   public func setColor(color: UInt32) {
-    this.color = color;
+    this.color = color
   }
 }

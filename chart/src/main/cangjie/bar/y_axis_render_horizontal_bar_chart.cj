@@ -11,7 +11,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
 
     public func computeAxis(yMin: Float64, yMax: Float64, inverted: Bool): Unit {
         if (this.mTrans.isNone() || this.mViewPortHandler.isNone()) {
-            return;
+            return
         }
         var mins: Float64 = yMin
         var maxs: Float64 = yMax
@@ -48,7 +48,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
         }
         let positions: Array<Float64> = this.getTransformedPositions()
 
-        this.mAxisLabelPaint.setFontFamily(this.mYAxis.getTypeface())
+        this.mAxisLabelPaint.setFontFamily(this.mYAxis.getTypeface().toString())
         this.mAxisLabelPaint.setTextSize(this.mYAxis.getTextSize())
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor())
         this.mAxisLabelPaint.setTextAlign(TextAlignStyle.Center)
@@ -110,7 +110,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
      */
     protected func drawYLabels(c: CanvasRenderingContext2D, fixedPosition: Float64, positions: Array<Float64>,
         offset: Float64): Unit {
-        this.mAxisLabelPaint.setFontFamily(this.mYAxis.getTypeface())
+        this.mAxisLabelPaint.setFontFamily(this.mYAxis.getTypeface().toString())
         this.mAxisLabelPaint.setTextSize(this.mYAxis.getTextSize())
         this.mAxisLabelPaint.setColor(this.mYAxis.getTextColor())
 
@@ -138,7 +138,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
 
     protected func getTransformedPositions(): Array<Float64> {
         if (this.mGetTransformedPositionsBuffer.size != Int64(this.mYAxis.mEntryCount * 2.0)) {
-            this.mGetTransformedPositionsBuffer = Array<Float64>(Int64(this.mYAxis.mEntryCount * 2.0), item: 0.0)
+            this.mGetTransformedPositionsBuffer = Array<Float64>(Int64(this.mYAxis.mEntryCount * 2.0), repeat: 0.0)
         }
         let positions: Array<Float64> = this.mGetTransformedPositionsBuffer
 
@@ -230,7 +230,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
     }
 
     protected var mRenderLimitLinesPathBuffer: Path2D = Path2D()
-    protected var mRenderLimitLinesBuffer: Array<Float64> = Array<Float64>(4, item: 0.0)
+    protected var mRenderLimitLinesBuffer: Array<Float64> = Array<Float64>(4, repeat: 0.0)
 
     /**
      * Draws the LimitLines associated with this axis to the screen.
@@ -295,7 +295,7 @@ public class YAxisRendererHorizontalBarChart <: YAxisRenderer {
                 this.mLimitLinePaint.setStyle(l.getTextStyle())
                 this.mLimitLinePaint.setDashPathEffect(Option<DashPathEffect>.None)
                 this.mLimitLinePaint.setColor(l.getTextColor())
-                this.mLimitLinePaint.setFontFamily(l.getTypeface())
+                this.mLimitLinePaint.setFontFamily(l.getTypeface().toString())
                 this.mLimitLinePaint.setStrokeWidth(0.5)
                 this.mLimitLinePaint.setTextSize(l.getTextSize())
 

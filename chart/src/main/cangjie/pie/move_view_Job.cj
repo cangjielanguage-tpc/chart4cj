@@ -4,7 +4,7 @@
 package chart.pie
 
 public class MoveViewJob <: Poolable {
-    protected var pts: Array<Float64> = Array<Float64>(2, item: 0.0)
+    protected var pts: Array<Float64> = Array<Float64>(2, repeat: 0.0)
     protected var mViewPortHandler: ?ViewPortHandler = Option<ViewPortHandler>.None
     protected var xValue: Float64 = 0.0
     protected var yValue: Float64 = 0.0
@@ -12,7 +12,7 @@ public class MoveViewJob <: Poolable {
     protected var view: Any
 
     private static var pool: ObjectPool<MoveViewJob> = ObjectPool(2,
-        MoveViewJob(Option<ViewPortHandler>.None, 0.0, 0.0, Option<Transformer>.None, None)).create()
+        MoveViewJob(Option<ViewPortHandler>.None, 0.0, 0.0, Option<Transformer>.None, Option<Any>.None)).create()
 
     public static func getInstance(viewPortHandler: ViewPortHandler, xValue: Float64, yValue: Float64,
         trans: Transformer, v: Any): MoveViewJob  {

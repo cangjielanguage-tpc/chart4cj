@@ -26,7 +26,7 @@ class LineChartPage {
     private var mLineWidth: String = "85"
     private var limitLine1: LimitLine = LimitLine(0.0, "")
     private var limitLine2: LimitLine = LimitLine(0.0, "")
-    private var dataSet: LineDataSet = LineDataSet(ArrayList<EntryOhos>(EntryOhos(0.0, 0.0)), "")
+    private var dataSet: LineDataSet = LineDataSet(ArrayList<EntryOhos>(), "")
     private var lineData: LineData = LineData()
 
     protected override func aboutToAppear() {
@@ -41,6 +41,9 @@ class LineChartPage {
 
         this.model.setMaxVisibleValueCount(60)
         this.model.setDrawGridBackground(false)
+        this.model.setLongPressCursorEnabled(true)
+        this.model.setDrawLongPressMarkers(true)
+        this.model.setLongPressMarker(LongPressMarkerView())
 
         this.limitLine1 = LimitLine(120.0, "Upper Limit")
         this.limitLine1.setLineWidth(4.0)
@@ -97,7 +100,7 @@ class LineChartPage {
         let values: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
         let val: Array<Float64> = [58.2, 103.8, 94.4, 162.0, 131.6, 33.3, 27.8, 114.4, 76.0, 81.8, 43.2]
         for (i in start..=10) {
-            values.append(EntryOhos(Float64(i), val[i]))
+            values.add(EntryOhos(Float64(i), val[i]))
         }
 
         this.dataSet = LineDataSet(values, "DataSet")
@@ -109,9 +112,9 @@ class LineChartPage {
         this.dataSet.setColorByColor(0x000000) //设置折线颜色
 
         let gradientFillColor = ArrayList<ChartColorStop>()
-        gradientFillColor.append((0x0C0099CC, 0.2))
-        gradientFillColor.append((0x7F0099CC, 0.4))
-        gradientFillColor.append((0x0099CC, 1.0))
+        gradientFillColor.add((0x0C0099CC, 0.2))
+        gradientFillColor.add((0x7F0099CC, 0.4))
+        gradientFillColor.add((0x0099CC, 1.0))
         this.dataSet.setGradientFillColor(gradientFillColor) // 设置图表填充颜色
         this.dataSet.setDrawFilled(true)
 
@@ -123,7 +126,7 @@ class LineChartPage {
         this.dataSet.setCircleHoleRadius(2.0) //设置内径
 
         let dataSetList: ArrayList<ILineDataSet> = ArrayList<ILineDataSet>()
-        dataSetList.append(this.dataSet)
+        dataSetList.add(this.dataSet)
 
         let lineData: LineData = LineData(dataSetList)
         return lineData

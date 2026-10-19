@@ -388,12 +388,10 @@ public abstract class AxisBase <: ComponentBase {
      * @param l
      */
     public func addLimitLine(l: LimitLine): Unit {
-        this.mLimitLines.append(l)
+        this.mLimitLines.add(l)
 
         if (this.mLimitLines.size > 6) {
-            //      Info("MPChart",
-            //        "Warning! You have more than 6 LimitLines on your axis, do you really want " +
-            //        "that?")
+              Hilog.warn(0x000000, "MPChart","Warning! You have more than 6 LimitLines on your axis, do you really want that?")
         }
     }
 
@@ -408,20 +406,11 @@ public abstract class AxisBase <: ComponentBase {
             )
         }
 
-        this.mGridLines.append(line)
+        this.mGridLines.add(line)
     }
 
     public func getGridLines(): ArrayList<LimitLine> {
         return this.mGridLines
-    }
-
-    /**
-     * Removes the specified LimitLine from the axis.
-     *
-     * @param l
-     */
-    public func removeLimitLine(l: LimitLine): Unit {
-        //    this.mLimitLines.remove(l)
     }
 
     /**
@@ -501,9 +490,11 @@ public abstract class AxisBase <: ComponentBase {
     }
 
     private func isFullWidthCharacter(char: String): Bool {
-        //    const regExp = RegExp("[\u4E00-\u9FA5]|[\uFF00-\uFFEF]|[\u3000-\u303F]")
-        //    return regExp.test(char)
-        return true
+        let regExp = Regex("[\u{4E00}-\u{9FA5}]|[\u{FF00}-\u{FFEF}]|[\u{3000}-\u{303F}]")
+        match (regExp.find(char)) {
+            case Some(r) => return true
+            case None => return false
+        }
     }
 
     public func getFormattedLabel(index: Int64): String {

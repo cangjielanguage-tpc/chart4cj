@@ -3,24 +3,8 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
-import std.collection.*
-import std.math.*
-import std.random.*
-import chart.pie.*
-import chart.utils.{Mode, AxisDependency, ColorTemplate, ChartColor}
-import chart.charts.*
-import chart.combine.*
-import chart.line.*
-import chart.waterfall.*
-import chart.bar.*
-import chart.scatter.*
-import chart.candle.*
-import chart.bubble.*
-import chart.components.*
+
 
 @Entry
 @Component
@@ -44,6 +28,9 @@ class CombinedChartPageReadme {
 
         this.model.setMaxVisibleValueCount(60) // 设置图表最大可见数值数量为 60
         this.model.setDrawGridBackground(false) // 禁用图表绘制网格背景
+        this.model.setHighlightFullBarEnabled(true)
+        this.model.setDrawMarkers(true)
+        this.model.setMarker(MarkerView())
 
         let xAxis: ?XAxis = this.model.getXAxis() // 获取X轴对象
         if (let Some(xAxis) <- xAxis) {
@@ -76,6 +63,7 @@ class CombinedChartPageReadme {
         this.generateScatterData(data) // 生成散点图数据
         this.generateCandleData(data) // 生成蜡烛图数据
         this.generateBarData(data) // 生成柱状图数据
+        data.setHighlightEnabled(true)
         this.model.setData(data) // 设置图表数据
         this.model.invalidate() // 重绘图表
     }
@@ -87,7 +75,7 @@ class CombinedChartPageReadme {
         var entries: ArrayList<EntryOhos> = ArrayList()
 
         for (index in 0..this.count) {
-            entries.append(EntryOhos(Float64(index) + 0.5, this.getRandom(15.0, 5.0)))
+            entries.add(EntryOhos(Float64(index) + 0.5, this.getRandom(15.0, 5.0)))
         }
 
         let set: LineDataSet = LineDataSet(entries, "Line DataSet") //创建线形图数据集合
@@ -99,6 +87,8 @@ class CombinedChartPageReadme {
         set.setDrawValues(false) //不绘制值
         set.setValueTextSize(8.0) //设置值大小
         set.setValueTextColor(0xca4443) //设置值颜色
+        set.setHighlightEnabled(true)
+        set.setHighLightColor(Color.RED.toUInt32())
         set.setAxisDependency(AxisDependency.LEFT) //设置数据集的轴依赖为左侧 Y 轴
         d.addDataSet(set)
         data.setLineData(d)
@@ -108,7 +98,7 @@ class CombinedChartPageReadme {
         var values: ArrayList<WaterfallEntry> = ArrayList<WaterfallEntry>()
 
         for (i in 0..this.count - 1) {
-            values.append(WaterfallEntry(Float64(i) + 0.5, 35.0, 50.0))
+            values.add(WaterfallEntry(Float64(i) + 0.5, 35.0, 50.0))
         }
 
         let dataSet = WaterfallDataSet(values, "Waterfall")
@@ -116,9 +106,11 @@ class CombinedChartPageReadme {
         dataSet.setColorByColor(UInt32(ColorTemplate.COLORFUL_COLORS[0])) //设置图颜色
         dataSet.setValueTextSize(8.0) //设置值大小
         dataSet.setDrawValues(false) //不绘制值
+        dataSet.setHighlightEnabled(true)
+        dataSet.setHighLightColor(Color.RED.toUInt32())
 
         let dataSetList: ArrayList<IWaterfallDataSet> = ArrayList<IWaterfallDataSet>()
-        dataSetList.append(dataSet)
+        dataSetList.add(dataSet)
 
         let waterfallData: WaterfallData = WaterfallData(dataSetList)
         waterfallData.setBarWidth(0.6) //设置瀑布图宽度
@@ -131,10 +123,10 @@ class CombinedChartPageReadme {
 
         for (index in 0..this.count) {
             // 普通柱状图
-            entries1.append(BarEntry(0.0, this.getRandom(10.0, 6.0)))
+            entries1.add(BarEntry(0.0, this.getRandom(10.0, 6.0)))
 
             // 堆叠
-            entries2.append(BarEntry(0.0, [this.getRandom(10.0, 6.0), this.getRandom(10.0, 6.0)]))
+            entries2.add(BarEntry(0.0, [this.getRandom(10.0, 6.0), this.getRandom(10.0, 6.0)]))
         }
 
         let set1: BarDataSet = BarDataSet(entries1, "Bar 1")
@@ -143,6 +135,8 @@ class CombinedChartPageReadme {
         set1.setValueTextSize(8.0) //设置值大小
         set1.setAxisDependency(AxisDependency.LEFT) //设置数据集的轴依赖为左侧Y轴
         set1.setDrawValues(false) // 不绘制值
+        set1.setHighlightEnabled(true)
+        set1.setHighLightColor(Color.RED.toUInt32())
 
         let set2: BarDataSet = BarDataSet(entries2, "")
         set2.setStackLabels(["Stack 1", "Stack 2"])
@@ -151,14 +145,16 @@ class CombinedChartPageReadme {
         set2.setValueTextSize(8.0) //设置值大小
         set2.setAxisDependency(AxisDependency.LEFT) //设置数据集的轴依赖为左侧Y轴
         set2.setDrawValues(false) // 不绘制值
+        set2.setHighlightEnabled(true)
+        set2.setHighLightColor(Color.ORANGE.toUInt32())
 
         let groupSpace = 0.06 // 组间距
         let barSpace = 0.02 // 组内图间距
         let barWidth = 0.45 // 柱状图宽度
 
         let set: ArrayList<IBarDataSet> = ArrayList()
-        set.append(set1)
-        set.append(set2)
+        set.add(set1)
+        set.add(set2)
         let d: BarData = BarData(set)
         d.setBarWidth(barWidth) //设置柱状图宽度
 
@@ -173,7 +169,7 @@ class CombinedChartPageReadme {
         var entries: ArrayList<EntryOhos> = ArrayList<EntryOhos>()
 
         for (index in 0..this.count) {
-            entries.append(EntryOhos(Float64(index) + 0.25, this.getRandom(10.0, 55.0)))
+            entries.add(EntryOhos(Float64(index) + 0.25, this.getRandom(10.0, 55.0)))
         }
 
         let set: ScatterDataSet = ScatterDataSet(entries, "Scatter DataSet")
@@ -181,6 +177,8 @@ class CombinedChartPageReadme {
         set.setScatterShapeSize(7.5) // 设置散点图大小
         set.setDrawValues(false) // 不绘制值
         set.setValueTextSize(10.0) //设置值大小
+        set.setHighlightEnabled(true)
+        set.setHighLightColor(Color.BLUE.toUInt32())
         d.addDataSet(set)
         data.setScatterData(d)
     }
@@ -191,7 +189,7 @@ class CombinedChartPageReadme {
         var entries: ArrayList<CandleEntry> = ArrayList()
 
         for (index in 0..this.count : 2) {
-            entries.append(CandleEntry(Float64(index + 1), shadowH: 90.0, shadowL: 70.0, open: 85.0, close: 75.0))
+            entries.add(CandleEntry(Float64(index + 1), shadowH: 90.0, shadowL: 70.0, open: 85.0, close: 75.0))
         }
 
         let set: CandleDataSet = CandleDataSet(entries, "Candle DataSet")
@@ -200,6 +198,8 @@ class CombinedChartPageReadme {
         set.setBarSpace(0.3) // 设置蜡烛间距
         set.setValueTextSize(10.0) //设置值大小
         set.setDrawValues(false) // 不绘制值
+        set.setHighlightEnabled(true)
+        set.setHighLightColor(Color.BLUE.toUInt32())
         d.addDataSet(set)
         data.setCandleData(d)
     }
@@ -212,7 +212,7 @@ class CombinedChartPageReadme {
         for (index in 0..this.count) {
             let y = this.getRandom(10.0, 105.0)
             let size = this.getRandom(20.0, 30.0)
-            entries.append(BubblesEntry(Float64(index) + 0.5, y, size: size))
+            entries.add(BubblesEntry(Float64(index) + 0.5, y, size: size))
         }
 
         let set: BubbleDataSet = BubbleDataSet(entries, "Bubble DataSet")
@@ -223,6 +223,8 @@ class CombinedChartPageReadme {
         set.setValueTextSize(8.0) //设置值大小
         set.setValueTextColor(0xffffff) // 设置值颜色
         set.setDrawValues(false) // 不绘制值
+        set.setHighlightEnabled(true)
+        set.setHighLightColor(Color.BLUE.toUInt32())
         bd.addDataSet(set)
         data.setBubbleData(bd)
     }

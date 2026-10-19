@@ -12,7 +12,7 @@ public class Fill {
     /**
      * the color that is used for filling
      */
-    private var mColor: UInt32 = 0xffffff //UInt32.parse("0x" + hex.replace("#", ""))
+    private var mColor: UInt32 = 0xffffff
     private var mFinalColor: UInt32 = 0xffffff
     /**
      * the drawable to be used for filling
@@ -92,7 +92,7 @@ public class Fill {
     }
 
     private func calculateAlphaForGradientColors(): Unit {
-        let newColor: Array<UInt32> = Array<UInt32>(this.mGradientColors().size, item: 0)
+        let newColor: Array<UInt32> = Array<UInt32>(this.mGradientColors().size, repeat: 0)
 
         for (i in 0..this.mGradientColors().size) {
             newColor[i] = UInt32(ColorTemplate.colorWithAlpha(Int64(this.mGradientColors()[i]), this.mAlpha))

@@ -28,7 +28,7 @@ public class PieData <: ChartData<IPieDataSet, PiEntry> {
      */
     public func setDataSet(dataSet: IPieDataSet): Unit {
         this.mDataSets.clear()
-        this.mDataSets.append(dataSet)
+        this.mDataSets.add(dataSet)
         this.notifyDataChanged()
     }
 

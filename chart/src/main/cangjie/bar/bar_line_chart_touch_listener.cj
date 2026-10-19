@@ -2,6 +2,7 @@
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  */
 package chart.bar
+import ohos.hilog.Hilog
 
 public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> where D <: BarLineScatterCandleBubbleData<S,
     E>, S <: IBarLineScatterCandleBubbleDataSet<E>, E <: EntryOhos {
@@ -24,7 +25,7 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
     private var mSavedXDist: Float64 = 1.0
     private var mSavedYDist: Float64 = 1.0
     private var mSavedDist: Float64 = 1.0
-    private var mClosestDataSetToTouch: ?IDataSet<EntryOhos> = None
+    private var mClosestDataSetToTouch: ?IBarLineScatterCandleBubbleDataSet<EntryOhos> = None
     /**
      * used for tracking velocity of dragging
      */
@@ -39,13 +40,19 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
      * the minimum distance between the pointers that will trigger a zoom gesture
      */
     private var mMinScalePointerDistance: Float64 = 0.0
-
     private var mStartPointX: Float64 = 0.0
     private var mStartPointY: Float64 = 0.0
     private var mSingleTapThreshold: Int64 = 10
-
     private var mLongPressStatus: Bool = false
     private var isDragging: Bool = false
+
+    private var downTime: Int64 = 0
+    private var downPointX: Float64 = -1.0
+    private var downPointY: Float64 = -1.0
+    private var maxSwipePointX: Float64 = -1.0
+    private var maxSwipePointY: Float64 = -1.0
+    private var animatorIsPlaying: Bool = false
+    private var animatorResult: ?AnimatorResult = Option<AnimatorResult>.None
 
     var barChartModel: BarLineChartBaseModel<D, S, E>
 
@@ -69,15 +76,15 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
 
     public func onTouch(event: TouchEvent) {
         match (event.eventType) {
-            case TouchType.Down => this.actionDown(true, event)
-            case TouchType.Move => this.actionMove(true, event)
-            case TouchType.Up => this.actionUp(true, event)
-            case TouchType.Cancel => this.actionUp(true, event)
+            case TouchType.Down => this.actionDown(true, event, Option<GestureEvent>.None)
+            case TouchType.Move => this.actionMove(true, event, Option<GestureEvent>.None)
+            case TouchType.Up => this.actionUp(true, event, Option<GestureEvent>.None)
+            case TouchType.Cancel => this.actionUp(true, event, Option<GestureEvent>.None)
             case _ => ()
         }
     }
 
-    public func actionDown(isTouchEvent: Bool, event: Any): Unit {
+    public func actionDown(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         if (!this.barChartModel.isDragEnabled() && (!this.barChartModel.isScaleXEnabled() &&
             !this.barChartModel.isScaleYEnabled())) {
             return
@@ -85,38 +92,48 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
         if (isTouchEvent) {
-            let touchEvent = event as TouchEvent
+            if (this.animatorResult.isSome() && this.animatorIsPlaying) {
+                this.animatorResult().pause()
+                this.animatorIsPlaying = false
+            }
             if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                xCoordinate = touchEvent().touches[0].x
+                yCoordinate = touchEvent().touches[0].y
             }
-            xCoordinate = touchEvent().touches[0].x
-            yCoordinate = touchEvent().touches[0].y
+
+            // down initial value
+            this.downTime = DateTime.now().nanosecond
+            this.downPointX = xCoordinate
+            this.downPointY = yCoordinate
+
         } else {
- //TODO
-//            let gestureEvent = event as GestureEvent
-//            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
-//                return
-//            }
-//            xCoordinate = gestureEvent().fingerList[0].localX
-//            yCoordinate = gestureEvent().fingerList[0].localY
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
+                return
+            } else {
+                xCoordinate = gestureEvent().fingerList[0].localX
+                yCoordinate = gestureEvent().fingerList[0].localY
+            }
+
         }
         this.mStartPointX = xCoordinate
         this.mStartPointY = yCoordinate
 
-        this.startAction(isTouchEvent, event)
+        this.startAction(isTouchEvent, touchEvent, gestureEvent)
         this.stopDeceleration()
-        this.saveTouchStart(isTouchEvent, event)
+        this.saveTouchStart(isTouchEvent, touchEvent, gestureEvent)
     }
 
-    public func actionPinchDown(isTouchEvent: Bool, event: Any): Unit {
+    public func actionPinchDown(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         this.barChartModel.disableScroll()
-        this.saveTouchStart(true, event)
+        this.saveTouchStart(true, touchEvent, gestureEvent)
         // get the distance between the pointers on the x-axis
-        this.mSavedXDist = BarLineChartTouchListener<D, S, E>.getXDist(isTouchEvent, event)
+        this.mSavedXDist = BarLineChartTouchListener<D, S, E>.getXDist(isTouchEvent, touchEvent, gestureEvent)
         // get the distance between the pointers on the y-axis
-        this.mSavedYDist = BarLineChartTouchListener<D, S, E>.getYDist(isTouchEvent, event)
+        this.mSavedYDist = BarLineChartTouchListener<D, S, E>.getYDist(isTouchEvent, touchEvent, gestureEvent)
         // get the total distance between the pointers
-        this.mSavedDist = BarLineChartTouchListener<D, S, E>.spacing(isTouchEvent, event)
+        this.mSavedDist = BarLineChartTouchListener<D, S, E>.spacing(isTouchEvent, touchEvent, gestureEvent)
         if (this.mSavedDist > 10.0) {
             if (this.barChartModel.isPinchZoomEnabled()) {
                 this.mTouchMode = 4 //ChartTouchListener.PINCH_ZOOM
@@ -136,73 +153,76 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
                 }
             }
             // determine the touch-pointer center
-            BarLineChartTouchListener<D, S, E>.midPoint(this.mTouchPointCenter, isTouchEvent, event)
+            BarLineChartTouchListener<D, S, E>.midPoint(this.mTouchPointCenter, isTouchEvent, touchEvent, gestureEvent)
         }
     }
 
-    public func actionMove(isTouchEvent: Bool, event: Any): Unit {
-        var xCoordinate: Float64 = actionMoveisTouchEventFunc(isTouchEvent, event)[0]
-        var yCoordinate: Float64 = actionMoveisTouchEventFunc(isTouchEvent, event)[1]
-
-        if (!this.barChartModel.getViewPortHandler().isInBounds(xCoordinate, yCoordinate)) {
-            this.barChartModel.highlightValueForObject(Option<Highlight>.None, true)
-        }
-
-        this.isDragging = false
-        // long press cursor response capability
-        if (this.barChartModel.getLongPressCursorEnabled()) {
-            this.longPressCursorAction(isTouchEvent, event, xCoordinate, yCoordinate)
-            return
-        }
-
-        if (this.mTouchMode == 1 /*ChartTouchListener.DRAG*/ ) {
-            actionMoveTouchModeIs1(isTouchEvent, event, xCoordinate, yCoordinate)
-        } else if (this.mTouchMode == 2 || this.mTouchMode == 3 || this.mTouchMode == 4) {
-            this.barChartModel.disableScroll()
-            if (this.barChartModel.isScaleXEnabled() || this.barChartModel.isScaleYEnabled()) {
-                this.performZoom(isTouchEvent, event)
+    public func actionMove(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
+        let l: ?OnChartGestureListener = this.barChartModel.getOnChartGestureListener()
+        if(let Some(listener) <- l) {
+            if (this.barChartModel.getLongPressCursorEnabled()) {
+                if (this.mLongPressStatus) {
+                    listener.onChartMove(isTouchEvent, touchEvent, gestureEvent)
+                }
+            } else {
+                listener.onChartMove(isTouchEvent, touchEvent, gestureEvent)
             }
-        } else if (this.mTouchMode == 0 &&
-            abs(
-            ChartTouchListener<D, S, E>.distance(xCoordinate, this.mTouchStartPoint.x, yCoordinate,
-            this.mTouchStartPoint.y)) > this.mDragTriggerDist && this.barChartModel.getViewPortHandler().isInBounds(
-            xCoordinate, yCoordinate)) {
-            actionMoveTouchModeIs0(isTouchEvent, event, xCoordinate, yCoordinate)
         }
 
-        // perform the transformation, update the chart
-        this.mMatrix = this.barChartModel.getViewPortHandler().refresh(
-            this.mMatrix,
-            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(
-                ),
-            true
-        )
-    }
-
-    private func actionMoveisTouchEventFunc(isTouchEvent: Bool, event: Any): (Float64, Float64) {
         var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
-                return (xCoordinate, yCoordinate)
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
+                return
+            } else {
+                xCoordinate = touchEvent().touches[0].x
+                yCoordinate = touchEvent().touches[0].y
             }
-            xCoordinate = touch().touches[0].x
-            yCoordinate = touch().touches[0].y
-            return (xCoordinate, yCoordinate)
+            if (this.barChartModel.getLongPressCursorEnabled() && !this.mLongPressStatus) {
+                this.calculateLongPress(touchEvent())
+              }
         } else {
-//TODO
-//            let gesture = event as GestureEvent
-//            if (gesture.isNone() || gesture().fingerList.size == 0) {
-//                return (xCoordinate, yCoordinate)
-//            }
-//            xCoordinate = gesture().fingerList[0].localX
-//            yCoordinate = gesture().fingerList[0].localY
-            return (xCoordinate, yCoordinate)
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
+                return
+            } else {
+                xCoordinate = gestureEvent().fingerList[0].localX
+                yCoordinate = gestureEvent().fingerList[0].localY
+            }
         }
+        this.isDragging = false
+
+        // long press cursor response capability
+        if (this.barChartModel.getLongPressCursorEnabled()) {
+            this.longPressCursorAction(isTouchEvent, touchEvent, gestureEvent, xCoordinate, yCoordinate)
+            return
+        }
+
+         if (!this.barChartModel.getViewPortHandler().isInBounds(xCoordinate, yCoordinate)) {
+            this.barChartModel.highlightValueForObject(Option<Highlight>.None, true)
+        }
+
+        if (this.mTouchMode == 1 /*ChartTouchListener.DRAG*/ ) {
+            actionMoveTouchModeIs1(isTouchEvent, touchEvent, gestureEvent, xCoordinate, yCoordinate)
+        } else if (this.mTouchMode == 2 || this.mTouchMode == 3 || this.mTouchMode == 4) {
+            this.barChartModel.disableScroll()
+            if (this.barChartModel.isScaleXEnabled() || this.barChartModel.isScaleYEnabled() && this.barChartModel.isPinchZoomEnabled()) {
+                this.performZoom(isTouchEvent, touchEvent, gestureEvent)
+            }
+           // this.mMatrix = this.barChartModel.getViewPortHandler().refresh(this.mMatrix, this.barChartModel, true)
+        } else if (this.mTouchMode == 0 &&
+            abs(
+            BarLineChartTouchListener<D, S, E>.distance(xCoordinate, this.mTouchStartPoint.x, yCoordinate,
+            this.mTouchStartPoint.y)) > this.mDragTriggerDist && this.barChartModel.getViewPortHandler().isInBounds(
+            xCoordinate, yCoordinate)) {
+            actionMoveTouchModeIs0(isTouchEvent, touchEvent, gestureEvent, xCoordinate, yCoordinate)
+        }
+
+        // perform the transformation, update the chart
+        this.mMatrix = this.barChartModel.getViewPortHandler().refresh(this.mMatrix,this.barChartModel,true)
     }
 
-    private func actionMoveTouchModeIs1(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64): Unit {
+
+    private func actionMoveTouchModeIs1(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, xCoordinate: Float64, yCoordinate: Float64): Unit {
         this.barChartModel.disableScroll()
         let x: Float64 = if (this.barChartModel.isDragXEnabled()) {
             xCoordinate - this.mTouchStartPoint.x
@@ -214,10 +234,10 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         } else {
             0.0
         }
-        this.performDrag(isTouchEvent, event, x, y)
+        this.performDrag(isTouchEvent, touchEvent, gestureEvent, x, y)
     }
 
-    private func actionMoveTouchModeIs0(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64) {
+    private func actionMoveTouchModeIs0(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, xCoordinate: Float64, yCoordinate: Float64) {
         if (this.barChartModel.isDragEnabled()) {
             this.isDragging = true
 
@@ -234,17 +254,18 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             } else {
                 if (this.barChartModel.isHighlightPerDragEnabled()) {
                     this.mLastGesture = ChartGesture.DRAG
-                    this.performHighlightDrag(isTouchEvent, event, true)
+                    this.performHighlightDrag(isTouchEvent, touchEvent, gestureEvent, false)
                 }
             }
         }
     }
 
-    private func touchMode0Or7(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64): Unit {
+    private func touchMode0Or71(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, xCoordinate: Float64, yCoordinate: Float64): Unit {
         if (this.barChartModel.isDragEnabled()) {
             this.isDragging = true
 
             let shouldPan: Bool = !this.barChartModel.isFullyZoomedOut() || !this.barChartModel.hasNoDragOffset()
+
             if (shouldPan && !this.mLongPressStatus) {
                 let distanceX: Float64 = abs(xCoordinate - this.mTouchStartPoint.x)
                 let distanceY: Float64 = abs(yCoordinate - this.mTouchStartPoint.y)
@@ -253,21 +274,21 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
                     isDragYEnabled() || distanceY <= distanceX)) {
                     this.mLastGesture = ChartGesture.DRAG
                     this.mTouchMode = 1
-                    this.performHighlightDrag(isTouchEvent, event, true)
+                    this.barChartModel.highlightValueForObject(Option<Highlight>.None, true)
                 }
             } else if (this.mLongPressStatus) {
                 if (this.barChartModel.isHighlightPerDragEnabled()) {
                     this.mLastGesture = ChartGesture.DRAG
-                    this.performHighlightDrag(isTouchEvent, event, true)
+                    this.performHighlightDrag(isTouchEvent, touchEvent, gestureEvent, false)
                 }
             } else if (!this.mLongPressStatus) {
                 // response event of sliding left or right
-                this.barChartModel.getOnChartGestureListener()?.onChartTranslate(isTouchEvent, event,
+                this.barChartModel.getOnChartGestureListener()?.onChartTranslate(isTouchEvent, touchEvent, gestureEvent,
                     xCoordinate - this.mStartPointX, yCoordinate - this.mStartPointY)
             }
         }
     }
-    private func longPressCursorAction(isTouchEvent: Bool, event: Any, xCoordinate: Float64, yCoordinate: Float64) {
+    private func longPressCursorAction(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, xCoordinate: Float64, yCoordinate: Float64) {
         if (this.mTouchMode == 1) {
             this.barChartModel.disableScroll()
             let x: Float64 = if (this.barChartModel.isDragXEnabled()) {
@@ -280,52 +301,106 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             } else {
                 0.0
             }
-            this.performDrag(isTouchEvent, event, x, y)
+            if (!this.barChartModel.getSwipeEnabled()) {
+                this.barChartModel.highlightValueForObject(Option<Highlight>.None, true)
+            }
+            this.performDrag(isTouchEvent, touchEvent, gestureEvent, x, y)
         } else if (this.mTouchMode == 2 || this.mTouchMode == 3 || this.mTouchMode == 4) {
             this.barChartModel.disableScroll()
             if (this.barChartModel.isScaleXEnabled() || this.barChartModel.isScaleYEnabled()) {
-                this.performZoom(isTouchEvent, event)
-                this.performHighlightDrag(isTouchEvent, event, true)
+                this.performZoom(isTouchEvent, touchEvent, gestureEvent)
+                this.barChartModel.highlightValueForObject(Option<Highlight>.None, true)
+                this.performHighlightDrag(isTouchEvent, touchEvent, gestureEvent, false)
             }
-        } else if ((this.mTouchMode == 0 || this.mTouchMode == 7)
-            &&
-            abs(
-            ChartTouchListener<D, S, E>.distance(xCoordinate, this.mTouchStartPoint.x, yCoordinate,
+        } else if ((this.mTouchMode == 0 || this.mTouchMode == 7)&&abs(BarLineChartTouchListener<D, S, E>.distance(xCoordinate, this.mTouchStartPoint.x, yCoordinate,
             this.mTouchStartPoint.y)) > this.mDragTriggerDist) {
-            touchMode0Or7(isTouchEvent, event, xCoordinate, yCoordinate)
+                touchMode0Or71(isTouchEvent, touchEvent, gestureEvent, xCoordinate, yCoordinate)
         }
 
         // perform the transformation, update the chart
-        this.mMatrix = this.barChartModel.getViewPortHandler().refresh(
-            this.mMatrix,
-            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(
-                ),
-            true
-        )
+        this.mMatrix = this.barChartModel.getViewPortHandler().refresh(this.mMatrix,this.barChartModel,true)
     }
 
-    public func actionUp(isTouchEvent: Bool, event: Any): Unit {
+    private func calculateLongPress(event: TouchEvent): Unit {
+        let curTime: Int64 = DateTime.now().nanosecond
+        if (this.downTime > 0 && this.downPointX != -1.0 && (curTime - this.downTime) >= this.barChartModel.getLongPressDuration()) {
+            let curPointX: Float64 = event.touches[0].x
+            let curPointY: Float64 = event.touches[0].y
+            let rangePointX: Float64 = abs(curPointX - this.downPointX)
+            let rangePointY: Float64 = abs(curPointY - this.downPointY)
+            if (rangePointX > this.maxSwipePointX) {
+                this.maxSwipePointX = rangePointX
+            }
+            if (rangePointY > this.maxSwipePointY) {
+                this.maxSwipePointY = rangePointY
+            }
+            if (this.maxSwipePointX <= 1.0 && this.maxSwipePointY <= 1.0) {
+                this.mLongPressStatus = true
+                this.resetSwipeParam()
+                let h: ?Highlight = this.barChartModel.getHighlightByTouchPoint(curPointX, curPointY)
+                if (let Some(highlight) <- h) {
+                    this.performHighlight(highlight, Option<TouchEvent>.None)
+                }
+            }
+        }
+    }
+
+    private func calculateSwipe(event: TouchEvent, isTouchEvent: Bool): Unit {
         this.mLongPressStatus = false
+        let curPointX: Float64 = event.touches[0].x
+        let curPointY: Float64 = event.touches[0].y
+        if (this.downPointX != -1.0 && abs(curPointX - this.downPointX) <= 10.0) {
+            let h: ?Highlight = this.barChartModel.getHighlightByTouchPoint(curPointX, curPointY)
+            if (let Some(highlight) <- h) {
+                this.performHighlight(highlight, Option<TouchEvent>.None)
+            }
+            let l: ?OnChartGestureListener = this.barChartModel.getOnChartGestureListener()
+            l?.onChartMove(isTouchEvent, event, Option<GestureEvent>.None)
+        } else if (this.downPointX != -1.0 && abs(curPointX - this.downPointX) >= 50.0) {
+            let x: Float64 = if(this.barChartModel.isDragXEnabled()) { curPointX - this.mTouchStartPoint.x}else {0.0 }
+            let y: Float64 = if(this.barChartModel.isDragYEnabled()) {curPointY - this.mTouchStartPoint.y }else { 0.0}
+            this.barChartModel.highlightValueForObject(Option<Highlight>.None, true)
+            if (this.barChartModel.getSwipeEnabled()) {
+                this.performSwipe(true, event, Option<GestureEvent>.None, x, y)
+            }
+        }
+        this.resetSwipeParam()
+    }
+
+    private func resetSwipeParam(): Unit {
+        this.downTime = 0
+        this.downPointX = -1.0
+        this.downPointY = -1.0
+        this.maxSwipePointX = -1.0
+        this.maxSwipePointY = -1.0
+    }
+
+
+    public func actionUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         var gestureFingersCount: Int64 = 1
         var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                xCoordinate = touchEvent().touches[0].x
+                yCoordinate = touchEvent().touches[0].y
+                gestureFingersCount = touchEvent().touches.size
             }
-            xCoordinate = touch().touches[0].x
-            yCoordinate = touch().touches[0].y
-            gestureFingersCount = touch().touches.size
+
+            if (this.barChartModel.getLongPressCursorEnabled()) {
+                this.calculateSwipe(touchEvent(), isTouchEvent)
+            }
         } else {
-  //TODO
-//            let gesture = event as GestureEvent
-//            if (gesture.isNone() || gesture().fingerList.size == 0) {
-//                return
-//            }
-//            xCoordinate = gesture().fingerList[0].localX
-//            yCoordinate = gesture().fingerList[0].localY
-//            gestureFingersCount = gesture().fingerList.size
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
+                return
+            } else {
+                xCoordinate = gestureEvent().fingerList[0].localX
+                yCoordinate = gestureEvent().fingerList[0].localY
+                gestureFingersCount = gestureEvent().fingerList.size
+            }
+
         }
 
         if (abs(xCoordinate) > Float64(Utils.getMinimumFlingVelocity()) || abs(yCoordinate) > Float64(Utils.
@@ -333,7 +408,7 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             if (this.mTouchMode == 1 /* ChartTouchListener.DRAG*/ && this.barChartModel.isDragDecelerationEnabled()) {
                 this.stopDeceleration()
 
-                this.mDecelerationLastTime = DateTime.now().second * 1000
+                this.mDecelerationLastTime = DateTime.now().nanosecond
 
                 this.mDecelerationCurrentPoint.x = xCoordinate
                 this.mDecelerationCurrentPoint.y = yCoordinate
@@ -341,45 +416,32 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         }
 
         if (this.mTouchMode == 2 || this.mTouchMode == 3 || this.mTouchMode == 4 || this.mTouchMode == 5) {
-
-            // Range might have changed, which means that Y-axis labels
-            // could have changed in size, affecting Y-axis size.
-            // So we need to recalculate offsets.
             this.barChartModel.calculateOffsets()
         }
 
         this.mTouchMode = 0
         this.barChartModel.enableScroll()
 
-        this.endAction(isTouchEvent, event)
+        this.endAction(isTouchEvent, touchEvent, gestureEvent)
 
         if (gestureFingersCount >= 2) {
             this.mTouchMode = 5
         }
+        this.saveTouchStart(isTouchEvent, touchEvent, gestureEvent)
     }
 
-    public func actionPinchUp(isTouchEvent: Bool, event: Any): Unit {
+    public func actionPinchUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         this.mTouchMode = 5
 
         // perform the transformation, update the chart
-        this.mMatrix = this.barChartModel.getViewPortHandler().refresh(
-            this.mMatrix,
-            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(
-                ),
-            true
-        )
+        this.mMatrix = this.barChartModel.getViewPortHandler().refresh(this.mMatrix, this.barChartModel, true)
     }
 
-    public func actionCancel(isTouchEvent: Bool, event: Any): Unit {
+    public func actionCancel(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         this.mTouchMode = 0
-        this.endAction(isTouchEvent, event)
+        this.endAction(isTouchEvent, touchEvent, gestureEvent)
         // perform the transformation, update the chart
-        this.mMatrix = this.barChartModel.getViewPortHandler().refresh(
-            this.mMatrix,
-            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(
-                ),
-            true
-        )
+        this.mMatrix = this.barChartModel.getViewPortHandler().refresh(this.mMatrix,this.barChartModel,true)
     }
 
     /**
@@ -392,29 +454,34 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
      *
      * @param event
      */
-    private func saveTouchStart(isTouchEvent: Bool, event: Any) {
+    private func saveTouchStart(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mSavedMatrix.set(this.mMatrix)
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                this.mTouchStartPoint.x = touchEvent().touches[0].x
+                this.mTouchStartPoint.y = touchEvent().touches[0].y
             }
-            this.mTouchStartPoint.x = touch().touches[0].x
-            this.mTouchStartPoint.y = touch().touches[0].y
+
         } else {
- //TODO
-//            let gesture = event as GestureEvent
-//            if (gesture.isNone() || gesture().fingerList.size == 0) {
-//                return
-//            }
-//            this.mTouchStartPoint.x = gesture().fingerList[0].globalX
-//            this.mTouchStartPoint.y = gesture().fingerList[0].globalY
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
+                return
+            } else {
+                this.mTouchStartPoint.x = gestureEvent().fingerList[0].globalX
+                this.mTouchStartPoint.y = gestureEvent().fingerList[0].globalY
+            }
+
         }
 
-        this.mClosestDataSetToTouch = (this.barChartModel.getDataSetByTouchPoint(
-            this.mTouchStartPoint.x,
-            this.mTouchStartPoint.y
-        ) as IBarLineScatterCandleBubbleDataSet<EntryOhos>)()
+        this.mClosestDataSetToTouch = this.barChartModel.getDataSetByTouchPoint(this.mTouchStartPoint.x,this.mTouchStartPoint.y)
+    }
+
+    private func performSwipe(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, distanceX: Float64, distanceY: Float64) {
+        let l: ?OnChartGestureListener = this.barChartModel.getOnChartGestureListener()
+        if (let Some(listener) <- l) {
+            listener.onChartTranslate(isTouchEvent, touchEvent, gestureEvent, distanceX, distanceY)
+        }
     }
 
     /**
@@ -422,7 +489,7 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
      *
      * @param event
      */
-    private func performDrag(isTouchEvent: Bool, event: Any, distanceX: Float64, distanceY: Float64) {
+    private func performDrag(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, distanceX: Float64, distanceY: Float64) {
         this.mLastGesture = ChartGesture.DRAG
 
         this.mMatrix.set(this.mSavedMatrix)
@@ -435,16 +502,15 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             newDistanceY = -distanceY
         }
 
-        this.mMatrix.postTranslate(distanceX, newDistanceY)
-
         if (let Some(listener) <- l) {
-            listener.onChartTranslate(isTouchEvent, event, distanceX, distanceY)
+            listener.onChartTranslate(isTouchEvent, touchEvent, gestureEvent, distanceX, distanceY)
         }
-        this.barChartModel.invalidate()
+        this.mMatrix.postTranslate(distanceX, newDistanceY)
+        //this.barChartModel.invalidate()
     }
 
     private func performZoomTouchModeIs4(totalDist: Float64, h: ViewPortHandler, l: ?OnChartGestureListener,
-        t: MPPointF, isTouchEvent: Bool, event: Any) {
+        t: MPPointF, isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mLastGesture = ChartGesture.PINCH_ZOOM
 
         let scale: Float64 = totalDist / this.mSavedDist // total scale
@@ -479,16 +545,16 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             this.mMatrix.postScale(scaleX, scaleY, centerX: t.x, centerY: t.y)
 
             if (let Some(listener) <- l) {
-                listener.onChartScale(isTouchEvent, event, scaleX, scaleY)
+                listener.onChartScale(isTouchEvent, touchEvent, gestureEvent, scaleX, scaleY)
             }
         }
     }
 
-    private func performZoomTouchModeIs2(h: ViewPortHandler, isTouchEvent: Bool, event: Any, t: MPPointF,
+    private func performZoomTouchModeIs2(h: ViewPortHandler, isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, t: MPPointF,
         l: ?OnChartGestureListener) {
         this.mLastGesture = ChartGesture.X_ZOOM
 
-        let xDist: Float64 = BarLineChartTouchListener<D, S, E>.getXDist(isTouchEvent, event)
+        let xDist: Float64 = BarLineChartTouchListener<D, S, E>.getXDist(isTouchEvent, touchEvent, gestureEvent)
         let scaleX: Float64 = xDist / this.mSavedXDist // x-axis scale
 
         let isZoomingOut: Bool = (scaleX < 1.0)
@@ -503,16 +569,16 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             this.mMatrix.postScale(scaleX, 1.0, centerX: t.x, centerY: t.y)
 
             if (let Some(listener) <- l) {
-                listener.onChartScale(isTouchEvent, event, scaleX, 1.0)
+                listener.onChartScale(isTouchEvent, touchEvent, gestureEvent, scaleX, 1.0)
             }
         }
     }
 
     private func performZoomTouchModeIs3(totalDist: Float64, h: ViewPortHandler, l: ?OnChartGestureListener,
-        t: MPPointF, isTouchEvent: Bool, event: Any) {
+        t: MPPointF, isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mLastGesture = ChartGesture.Y_ZOOM
 
-        let yDist: Float64 = BarLineChartTouchListener<D, S, E>.getYDist(isTouchEvent, event)
+        let yDist: Float64 = BarLineChartTouchListener<D, S, E>.getYDist(isTouchEvent, touchEvent, gestureEvent)
         let scaleY: Float64 = yDist / this.mSavedYDist // y-axis scale
 
         let isZoomingOut: Bool = (scaleY < 1.0)
@@ -527,7 +593,7 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             this.mMatrix.postScale(1.0, scaleY, centerX: t.x, centerY: t.y)
 
             if (let Some(listener) <- l) {
-                listener.onChartScale(isTouchEvent, event, 1.0, scaleY)
+                listener.onChartScale(isTouchEvent, touchEvent, gestureEvent, 1.0, scaleY)
             }
         }
     }
@@ -536,22 +602,19 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
      *
      * @param event
      */
-    private func performZoom(isTouchEvent: Bool, event: Any) {
+    private func performZoom(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         var gestureFingersCount: Int64 = 1
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            gestureFingersCount = touch().touches.size
+            gestureFingersCount = touchEvent().touches.size
         } else {
- //TODO
-//            let gesture = event as GestureEvent
-//            gestureFingersCount = gesture().fingerList.size
+            gestureFingersCount = gestureEvent().fingerList.size
         }
         if (gestureFingersCount >= 2) { // two finger zoom
 
             let l: ?OnChartGestureListener = this.barChartModel.getOnChartGestureListener()
 
             // get the distance between the pointers of the touch event
-            let totalDist: Float64 = BarLineChartTouchListener<D, S, E>.spacing(isTouchEvent, event)
+            let totalDist: Float64 = BarLineChartTouchListener<D, S, E>.spacing(isTouchEvent, touchEvent, gestureEvent)
 
             if (totalDist > this.mMinScalePointerDistance) {
 
@@ -561,11 +624,11 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
 
                 // take actions depending on the activated touch mode
                 if (this.mTouchMode == 4 /* ChartTouchListener.PINCH_ZOOM*/ ) {
-                    performZoomTouchModeIs4(totalDist, h, l, t, isTouchEvent, event)
+                    performZoomTouchModeIs4(totalDist, h, l, t, isTouchEvent, touchEvent, gestureEvent)
                 } else if (this.mTouchMode == 2 /*ChartTouchListener.X_ZOOM*/ && this.barChartModel.isScaleXEnabled()) {
-                    performZoomTouchModeIs2(h, isTouchEvent, event, t, l)
+                    performZoomTouchModeIs2(h, isTouchEvent, touchEvent, gestureEvent, t, l)
                 } else if (this.mTouchMode == 3 /* ChartTouchListener.Y_ZOOM*/ && this.barChartModel.isScaleYEnabled()) {
-                    performZoomTouchModeIs3(totalDist, h, l, t, isTouchEvent, event)
+                    performZoomTouchModeIs3(totalDist, h, l, t, isTouchEvent, touchEvent, gestureEvent)
                 }
 
                 MPPointF.recycleInstance(t)
@@ -578,38 +641,39 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
      *
      * @param e
      */
-    func performHighlightDrag(isTouchEvent: Bool, event: Any, isLongPressed: Bool) {
+    func performHighlightDrag(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>, isLongPressed: Bool) {
         var xCoordinate: Float64 = 0.0
         var yCoordinate: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                xCoordinate = touchEvent().touches[0].x
+                yCoordinate = touchEvent().touches[0].y
             }
-            xCoordinate = touch().touches[0].x
-            yCoordinate = touch().touches[0].y
         } else {
- //TODO
-//            let gesture = event as GestureEvent
-//            if (gesture.isNone() || gesture().fingerList.size == 0) {
-//                return
-//            }
-//            xCoordinate = gesture().fingerList[0].localX
-//            yCoordinate = gesture().fingerList[0].localY
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
+                return
+            } else {
+                xCoordinate = gestureEvent().fingerList[0].localX
+                yCoordinate = gestureEvent().fingerList[0].localY
+            }
         }
         let h: ?Highlight = this.barChartModel.getHighlightByTouchPoint(xCoordinate, yCoordinate)
-
-        if (!isLongPressed) {
-            this.mLastHighlighted = h
+        if(h.isSome() && this.mLastHighlighted.isSome() && !h().equalTo(this.mLastHighlighted())) {
+            if (!isLongPressed) {
+                this.mLastHighlighted = h
+            }
+            this.barChartModel.highlightValueForObject(
+                if (isLongPressed) {
+                    this.mLastHighlighted
+                } else {
+                    h
+                },
+                true
+            )
         }
-        this.barChartModel.highlightValueForObject(
-            if (isLongPressed) {
-                this.mLastHighlighted
-            } else {
-                h
-            },
-            true
-        )
+
     }
 
     /**
@@ -623,25 +687,25 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
      * @param point
      * @param event
      */
-    private static func midPoint(point: MPPointF, isTouchEvent: Bool, event: Any) {
+    private static func midPoint(point: MPPointF, isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         var x: Float64 = 0.0
         var y: Float64 = 0.0
 
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                x = touchEvent().touches[0].x + touchEvent().touches[1].x
+                y = touchEvent().touches[0].y + touchEvent().touches[1].y
             }
-            x = touch().touches[0].x + touch().touches[1].x
-            y = touch().touches[0].y + touch().touches[1].y
         } else {
- //TODO
-//            let gesture = event as GestureEvent
-//            if (gesture.isNone() || gesture().fingerList.size == 0) {
-//                return
-//            }
-//            x = gesture().fingerList[0].localX + gesture().fingerList[1].localX
-//            y = gesture().fingerList[0].localY + gesture().fingerList[1].localY
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
+                return
+            } else {
+                x = gestureEvent().fingerList[0].localX + gestureEvent().fingerList[1].localX
+                y = gestureEvent().fingerList[0].localY + gestureEvent().fingerList[1].localY
+            }
+
         }
         point.x = (x / 2.0)
         point.y = (y / 2.0)
@@ -653,25 +717,26 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
      * @param event
      * @return
      */
-    private static func spacing(isTouchEvent: Bool, event: Any): Float64 {
+    private static func spacing(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Float64 {
         var x: Float64 = 0.0
         var y: Float64 = 0.0
 
         if (isTouchEvent) {
-            let touch = event as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return 0.0
+            } else {
+                x = touchEvent().touches[0].x - touchEvent().touches[1].x
+                y = touchEvent().touches[0].y - touchEvent().touches[1].y
             }
-            x = touch().touches[0].x - touch().touches[1].x
-            y = touch().touches[0].y - touch().touches[1].y
+
         } else {
- //TODO
-//            let gesture = event as GestureEvent
-//            if (gesture.isNone() || gesture().fingerList.size == 0) {
-//                return 0.0
-//            }
-//            x = gesture().fingerList[0].localX - gesture().fingerList[1].localX
-//            y = gesture().fingerList[0].localY - gesture().fingerList[1].localY
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
+                return 0.0
+            } else {
+                x = gestureEvent().fingerList[0].localX - gestureEvent().fingerList[1].localX
+                y = gestureEvent().fingerList[0].localY - gestureEvent().fingerList[1].localY
+            }
+
         }
 
         return sqrt(x * x + y * y)
@@ -684,21 +749,22 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
      * @param e
      * @return
      */
-    private static func getXDist(isTouchEvent: Bool, e: Any): Float64 {
+    private static func getXDist(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Float64 {
         var x: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return 0.0
+            } else {
+                x = abs(touchEvent().touches[0].x - touchEvent().touches[1].x)
             }
-            x = abs(touch().touches[0].x - touch().touches[1].x)
+
         } else {
- //TODO
-//            let gesture = e as GestureEvent
-//            if (gesture.isNone() || gesture().fingerList.size == 0) {
-//                return 0.0
-//            }
-//            x = abs(gesture().fingerList[0].localX - gesture().fingerList[1].localX)
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
+                return 0.0
+            } else {
+                x = abs(gestureEvent().fingerList[0].localX - gestureEvent().fingerList[1].localX)
+            }
+
         }
         return x
     }
@@ -710,21 +776,22 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
      * @param e
      * @return
      */
-    private static func getYDist(isTouchEvent: Bool, e: Any): Float64 {
+    private static func getYDist(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Float64 {
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return 0.0
+            } else {
+                y = abs(touchEvent().touches[0].y - touchEvent().touches[1].y)
             }
-            y = abs(touch().touches[0].y - touch().touches[1].y)
+
         } else {
- //TODO
-//            let gesture = e as GestureEvent
-//            if (gesture.isNone() || gesture().fingerList.size == 0) {
-//                return 0.0
-//            }
-//            y = abs(gesture().fingerList[0].localY - gesture().fingerList[1].localY)
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
+                return 0.0
+            } else {
+                y = abs(gestureEvent().fingerList[0].localY - gestureEvent().fingerList[1].localY)
+            }
+
         }
         return y
     }
@@ -789,24 +856,25 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         this.mDragTriggerDist = Utils.handleDataValues(dragTriggerDistance)
     }
 
-    public func onDoubleTap(isTouchEvent: Bool, e: Any): Unit {
+    public func onDoubleTap(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         var x: Float64 = 0.0
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
                 return
+            } else {
+                x = touchEvent().touches[0].x
+                y = touchEvent().touches[0].y
             }
-            x = touch().touches[0].x
-            y = touch().touches[0].y
+
         } else {
- //TODO
-//            let gesture = e as GestureEvent
-//            if (gesture.isNone() || gesture().fingerList.size == 0) {
-//                return
-//            }
-//            x = gesture().fingerList[0].localX
-//            y = gesture().fingerList[0].localY
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
+                return
+            } else {
+                x = gestureEvent().fingerList[0].localX
+                y = gestureEvent().fingerList[0].localY
+            }
+
         }
 
         this.mLastGesture = ChartGesture.DOUBLE_TAP
@@ -814,7 +882,7 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         let l: ?OnChartGestureListener = this.barChartModel.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartDoubleTapped(isTouchEvent, e)
+            listener.onChartDoubleTapped(isTouchEvent, touchEvent, gestureEvent)
         }
         let chartData = this.barChartModel.getData()
         // check if double-tap zooming is enabled
@@ -839,23 +907,22 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
             }
 
             if (let Some(listener) <- l) {
-                listener.onChartScale(isTouchEvent, e, scaleX, scaleY)
+                listener.onChartScale(isTouchEvent, touchEvent, gestureEvent, scaleX, scaleY)
             }
 
             MPPointF.recycleInstance(trans)
         }
     }
 
-    public func onLongPressed(isTouchEvent: Bool, e: Any) {
-        this.startAction(isTouchEvent, e)
+    public func onLongPressed(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
+        this.startAction(isTouchEvent, touchEvent, gestureEvent)
 
-        this.mLongPressStatus = true
         this.mLastGesture = ChartGesture.LONG_PRESS
 
         let l: ?OnChartGestureListener = this.barChartModel.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartLongPressed(isTouchEvent, e)
+            listener.onChartLongPressed(isTouchEvent, touchEvent, gestureEvent)
         }
 
         if (!this.barChartModel.isHighlightPerLongPressEnabled()) {
@@ -867,67 +934,68 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         var x: Float64 = 0.0
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
+                return
+            } else {
+                x = touchEvent().touches[0].x
+                y = touchEvent().touches[0].y
+            }
+
+        } else {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
             }
-            x = touch().touches[0].x
-            y = touch().touches[0].y
-        } else {
- //TODO
-//            let gesture = e as GestureEvent
-//            if (gesture.isNone() || gesture().fingerList.size == 0) {
-//                return
-//            }
-//            x = gesture().fingerList[0].localX
-//            y = gesture().fingerList[0].localY
+            x = gestureEvent().fingerList[0].localX
+            y = gestureEvent().fingerList[0].localY
         }
         let h: ?Highlight = this.barChartModel.getHighlightByTouchPoint(x, y)
         if (let Some(highlight) <- h) {
-            this.performHighlight(highlight, Option<TouchEvent>.None)
+            if (!this.barChartModel.getLongPressCursorEnabled()) {
+                this.performHighlight(highlight, Option<TouchEvent>.None)
+            }
+
         }
     }
 
-    public func getXyByEvent(isTouchEvent: Bool, e: Any): (Float64, Float64) {
+    public func getXyByEvent(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): (Float64, Float64) {
         var x: Float64 = 0.0
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
+                return (0.0, 0.0)
+            } else {
+                x = touchEvent().touches[0].x
+                y = touchEvent().touches[0].y
+            }
+
+        } else {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return (0.0, 0.0)
             }
-            x = touch().touches[0].x
-            y = touch().touches[0].y
-        } else {
- //TODO
-//            let gesture = e as GestureEvent
-//            if (gesture.isNone() || gesture().fingerList.size == 0) {
-//                return (0.0, 0.0)
-//            }
-//            x = gesture().fingerList[0].localX
-//            y = gesture().fingerList[0].localY
+            x = gestureEvent().fingerList[0].localX
+            y = gestureEvent().fingerList[0].localY
         }
         return (x, y)
     }
 
-    public func onLongPressUp(isTouchEvent: Bool, e: Any) {
+    public func onLongPressUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mLastGesture = ChartGesture.LONG_PRESS
-        this.endAction(isTouchEvent, e)
+        this.endAction(isTouchEvent, touchEvent, gestureEvent)
     }
 
-    public func onLongPressCancel(isTouchEvent: Bool, e: Any) {
+    public func onLongPressCancel(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>) {
         this.mLastGesture = ChartGesture.LONG_PRESS
-        this.endAction(isTouchEvent, e)
+        this.endAction(isTouchEvent, touchEvent, gestureEvent)
     }
 
-    public func onSingleTapUp(isTouchEvent: Bool, e: Any): Unit {
-        this.actionDown(isTouchEvent, e)
+    public func onSingleTapUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
+        this.actionDown(isTouchEvent, touchEvent, gestureEvent)
         this.mLastGesture = ChartGesture.SINGLE_TAP
 
         let l: ?OnChartGestureListener = this.barChartModel.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartSingleTapped(isTouchEvent, e)
+            listener.onChartSingleTapped(isTouchEvent, touchEvent, gestureEvent)
         }
 
         if (!this.barChartModel.isHighlightPerTapEnabled()) {
@@ -937,27 +1005,31 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         var x: Float64 = 0.0
         var y: Float64 = 0.0
         if (isTouchEvent) {
-            let touch = e as TouchEvent
-            if (touch.isNone() || touch().touches.size == 0) {
+            if (touchEvent.isNone() || touchEvent().touches.size == 0) {
+                return
+            } else {
+                x = touchEvent().touches[0].x
+                y = touchEvent().touches[0].y
+            }
+
+        } else {
+            if (gestureEvent.isNone() || gestureEvent().fingerList.size == 0) {
                 return
             }
-            x = touch().touches[0].x
-            y = touch().touches[0].y
-        } else {
- //TODO
-//            let gesture = e as GestureEvent
-//            if (gesture.isNone() || gesture().fingerList.size == 0) {
-//                return
-//            }
-//            x = gesture().fingerList[0].localX
-//            y = gesture().fingerList[0].localY
-        }
-        let h: ?Highlight = this.barChartModel.getHighlightByTouchPoint(x, y)
-        if (let Some(highlight) <- h) {
-            this.performHighlight(highlight, Option<TouchEvent>.None)
+            x = gestureEvent().fingerList[0].localX
+            y = gestureEvent().fingerList[0].localY
         }
 
-        this.actionUp(isTouchEvent, e)
+        let h: ?Highlight = this.barChartModel.getHighlightByTouchPoint(x, y)
+
+        if (let Some(highlight) <- h) {
+            if (!this.barChartModel.getLongPressCursorEnabled()) {
+                this.performHighlight(highlight, Option<TouchEvent>.None)
+            }
+
+        }
+
+        this.actionUp(isTouchEvent, touchEvent, gestureEvent)
     }
 
     public func onFling(isTouchEvent: Bool, e1: TouchEvent, e2: TouchEvent, velocityX: Float64, velocityY: Float64): Bool {
@@ -966,7 +1038,7 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         let l: ?OnChartGestureListener = this.barChartModel.getOnChartGestureListener()
 
         if (let Some(listener) <- l) {
-            listener.onChartFling(isTouchEvent, e1, e2, velocityX, velocityY)
+            listener.onChartFling(isTouchEvent, e1, Option<GestureEvent>.None, e2, velocityX, velocityY)
         }
 
         return false
@@ -977,36 +1049,50 @@ public class BarLineChartTouchListener<D, S, E> <: ChartTouchListener<D, S, E> w
         this.mDecelerationVelocity.y = 0.0
     }
 
-    public func computeScroll() {
-        if (this.mDecelerationVelocity.x == 0.0 && this.mDecelerationVelocity.y == 0.0) {
+    public func computeScroll(event: GestureEvent) {
+        var angle = event.angle
+        angle = (angle * Float64.getPI()) / 180.0
+        var speedX = event.speed * cos(angle)
+        var speedY = event.speed * sin(angle)
+        if (speedX == 0.0 && speedY == 0.0) {
             return
         }
 
-        let currentTime: Int64 = DateTime.now().second * 1000
+        speedX *= this.barChartModel.getDragDecelerationFrictionCoef() / 30.0
+        speedY *= this.barChartModel.getDragDecelerationFrictionCoef() / 30.0
 
-        this.mDecelerationVelocity.x *= this.barChartModel.getDragDecelerationFrictionCoef()
-        this.mDecelerationVelocity.y *= this.barChartModel.getDragDecelerationFrictionCoef()
+        let dragDistanceX: Float64 =  if(this.barChartModel.isDragXEnabled()) { speedX} else {0.0 }
+        let dragDistanceY: Float64 = if(this.barChartModel.isDragYEnabled()) {speedY }else { 0.0}
 
-        let timeInterval: Int64 = (currentTime - this.mDecelerationLastTime) / 1000
-
-        let distanceX: Float64 = this.mDecelerationVelocity.x * Float64(timeInterval)
-        let distanceY: Float64 = this.mDecelerationVelocity.y * Float64(timeInterval)
-
-        this.mDecelerationCurrentPoint.x += distanceX
-        this.mDecelerationCurrentPoint.y += distanceY
-
-        this.mMatrix = this.barChartModel.getViewPortHandler().refresh(
-            this.mMatrix,
-            (this.barChartModel as ChartModel<ChartData<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)(
-                ),
-            false
+        let options: AnimatorOptions = AnimatorOptions(
+            duration: 1000,
+            easing: 'ease-out',
+            delay: 0,
+            fill: AnimatorFill.Forwards,
+            direction: AnimatorDirection.Normal,
+            iterations: 1,
+            begin: 0.0,
+            end: 1.0
         )
 
-        this.mDecelerationLastTime = currentTime
-
-        if (!(abs(this.mDecelerationVelocity.x) >= 0.01 || abs(this.mDecelerationVelocity.y) >= 0.01)) {
-            this.barChartModel.calculateOffsets()
-            this.stopDeceleration()
+        if (let Some(animatorResult) <- this.animatorResult) {
+            this.animatorIsPlaying = false
+            animatorResult.reset(options)
+        } else {
+            this.animatorResult = AnimatorResult(options)
         }
+
+        this.animatorResult().onframe = {value: Float64 =>
+            let x = (dragDistanceX * value)
+            let y = (dragDistanceY * value)
+            this.performDrag(false, Option<TouchEvent>.None , event, x, y)
+            this.mMatrix = this.barChartModel.getViewPortHandler().refresh(this.mMatrix, this.barChartModel, true)
+        }
+
+        this.animatorResult().onfinish = { =>
+            this.animatorIsPlaying = false
+        }
+        this.animatorResult().play()
+        this.animatorIsPlaying = true
     }
 }

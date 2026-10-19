@@ -7,43 +7,43 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
     /**
      * the space in pixels between the chart-slices, default 0f
      */
-    private var mSliceSpace: Float64 = 0.0;
-    private var mAutomaticallyDisableSliceSpacing: Bool = false;
+    private var mSliceSpace: Float64 = 0.0
+    private var mAutomaticallyDisableSliceSpacing: Bool = false
     /**
      * indicates the selection distance of a pie slice
      */
-    private var mShift: Float64 = 18.0;
-    private var mXValuePosition: ValuePosition = ValuePosition.INSIDE_SLICE;
-    private var mYValuePosition: ValuePosition = ValuePosition.INSIDE_SLICE;
-    private var mValueLineColor: UInt32 = 0xff000000;
-    private var mUseValueColorForLine: Bool = false;
-    private var mValueLineWidth: Float64 = 1.0;
-    private var mValueLinePart1OffsetPercentage: Float64 = 75.0;
-    private var mValueLinePart1Length: Float64 = 0.3;
-    private var mValueLinePart2Length: Float64 = 0.4;
-    private var mValueLineVariableLength: Bool = true;
-    private var mHighlightColor: ?UInt32 = None;
+    private var mShift: Float64 = 18.0
+    private var mXValuePosition: ValuePosition = ValuePosition.INSIDE_SLICE
+    private var mYValuePosition: ValuePosition = ValuePosition.INSIDE_SLICE
+    private var mValueLineColor: UInt32 = 0xff000000
+    private var mUseValueColorForLine: Bool = false
+    private var mValueLineWidth: Float64 = 1.0
+    private var mValueLinePart1OffsetPercentage: Float64 = 75.0
+    private var mValueLinePart1Length: Float64 = 0.3
+    private var mValueLinePart2Length: Float64 = 0.4
+    private var mValueLineVariableLength: Bool = true
+    private var mHighlightColor: ?UInt32 = None
 
     public init(yVals: ArrayList<PiEntry>, label: String) {
-        super(yVals, label);
+        super(yVals, label)
         this.calcMinMax()
     }
 
     public func copy(): DataSet<PiEntry> {
-        let entries = ArrayList<PiEntry>();
+        let entries = ArrayList<PiEntry>()
         match (this.mEntries) {
             case None => ()
             case Some(m) => for (i in 0..m.size) {
-                entries.append(m.get(i)().copy());
+                entries.add(m.get(i)().copy())
             }
         }
-        let copied = PieDataSet(entries, this.getLabel());
-        this.copyTo(copied);
-        return copied;
+        let copied = PieDataSet(entries, this.getLabel())
+        this.copyTo(copied)
+        return copied
     }
 
     public func myCalcMinMax(e: PiEntry): Unit {
-        super.myCalcMinMax(e);
+        super.myCalcMinMax(e)
     }
 
     /**
@@ -66,7 +66,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
     }
     
     public func getSliceSpace(): Float64 {
-        return this.mSliceSpace;
+        return this.mSliceSpace
     }
 
     /**
@@ -86,7 +86,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
      * @return
      */
     public func isAutomaticallyDisableSliceSpacingEnabled(): Bool {
-        return this.mAutomaticallyDisableSliceSpacing;
+        return this.mAutomaticallyDisableSliceSpacing
     }
 
     /**
@@ -100,11 +100,11 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
     }
     
     public func getSelectionShift(): Float64 {
-        return this.mShift;
+        return this.mShift
     }
 
     public func getXValuePosition(): ValuePosition {
-        return this.mXValuePosition;
+        return this.mXValuePosition
     }
 
     public func setXValuePosition(xValuePosition: ValuePosition): Unit {
@@ -112,7 +112,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
     }
     
     public func getYValuePosition(): ValuePosition {
-        return this.mYValuePosition;
+        return this.mYValuePosition
     }
 
     public func setYValuePosition(yValuePosition: ValuePosition): Unit {
@@ -123,7 +123,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
      * When valuePosition is OutsideSlice, indicates line color
      */
     public func getValueLineColor(): UInt32 {
-        return this.mValueLineColor;
+        return this.mValueLineColor
     }
 
     public func setValueLineColor(valueLineColor: UInt32): Unit {
@@ -132,7 +132,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
 
     
     public func isUseValueColorForLineEnabled(): Bool {
-        return this.mUseValueColorForLine;
+        return this.mUseValueColorForLine
     }
 
     public func setUseValueColorForLine(enabled: Bool): Unit {
@@ -143,7 +143,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
      * When valuePosition is OutsideSlice, indicates line width
      */
     public func getValueLineWidth(): Float64 {
-        return this.mValueLineWidth;
+        return this.mValueLineWidth
     }
 
     public func setValueLineWidth(valueLineWidth: Float64): Unit {
@@ -154,7 +154,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
      * When valuePosition is OutsideSlice, indicates offset as percentage out of the slice size
      */
     public func getValueLinePart1OffsetPercentage(): Float64 {
-        return this.mValueLinePart1OffsetPercentage;
+        return this.mValueLinePart1OffsetPercentage
     }
 
     public func setValueLinePart1OffsetPercentage(valueLinePart1OffsetPercentage: Float64): Unit {
@@ -165,7 +165,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
      * When valuePosition is OutsideSlice, indicates length of first half of the line
      */
     public func getValueLinePart1Length(): Float64 {
-        return this.mValueLinePart1Length;
+        return this.mValueLinePart1Length
     }
     public func setValueLinePart1Length(valueLinePart1Length: Float64): Unit {
         this.mValueLinePart1Length = valueLinePart1Length
@@ -175,7 +175,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
      * When valuePosition is OutsideSlice, indicates length of second half of the line
      */
     public func getValueLinePart2Length(): Float64 {
-        return this.mValueLinePart2Length;
+        return this.mValueLinePart2Length
     }
 
     public func setValueLinePart2Length(valueLinePart2Length: Float64): Unit {
@@ -186,7 +186,7 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
      * When valuePosition is OutsideSlice, this allows variable line length
      */
     public func isValueLineVariableLength(): Bool {
-        return this.mValueLineVariableLength;
+        return this.mValueLineVariableLength
     }
 
     public func setValueLineVariableLength(valueLineVariableLength: Bool): Unit {
@@ -194,9 +194,8 @@ public class PieDataSet <: DataSet<PiEntry> & IPieDataSet  {
     }
 
     /** Gets the color for the highlighted sector */
-    // @Nullable
-    public func getHighlightColor(): UInt32 {
-        return this.mHighlightColor();
+    public func getHighlightColor(): ?UInt32 {
+        return this.mHighlightColor
     }
 
     /** Sets the color for the highlighted sector (null for using entry color) */

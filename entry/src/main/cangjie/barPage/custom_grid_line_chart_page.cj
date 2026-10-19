@@ -4,9 +4,6 @@
 
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 public class ColorArray {
@@ -71,32 +68,32 @@ class CustomGridLineChartPage {
 
     private func getNormalData(): BarData {
         let values: ArrayList<BarEntry> = ArrayList<BarEntry>()
-        values.append(BarEntry(1.0, 73.3))
-        values.append(BarEntry(2.0, 5.4))
-        values.append(BarEntry(3.0, 73.9))
-        values.append(BarEntry(4.0, 79.9))
-        values.append(BarEntry(5.0, 69.3))
-        values.append(BarEntry(6.0, 70.7))
-        values.append(BarEntry(7.0, 81.2))
-        values.append(BarEntry(8.0, 13.1))
-        values.append(BarEntry(9.0, 34.2))
-        values.append(BarEntry(10.0, 58.4))
-        values.append(BarEntry(11.0, 44.7))
-        values.append(BarEntry(12.0, 10.5))
-        values.append(BarEntry(13.0, 15.6))
-        values.append(BarEntry(14.0, 95.8))
-        values.append(BarEntry(15.0, 57.4))
-        values.append(BarEntry(16.0, 64.5))
-        values.append(BarEntry(17.0, 21.4))
-        values.append(BarEntry(18.0, 33.2))
-        values.append(BarEntry(19.0, 96.9))
+        values.add(BarEntry(1.0, 73.3))
+        values.add(BarEntry(2.0, 5.4))
+        values.add(BarEntry(3.0, 73.9))
+        values.add(BarEntry(4.0, 79.9))
+        values.add(BarEntry(5.0, 69.3))
+        values.add(BarEntry(6.0, 70.7))
+        values.add(BarEntry(7.0, 81.2))
+        values.add(BarEntry(8.0, 13.1))
+        values.add(BarEntry(9.0, 34.2))
+        values.add(BarEntry(10.0, 58.4))
+        values.add(BarEntry(11.0, 44.7))
+        values.add(BarEntry(12.0, 10.5))
+        values.add(BarEntry(13.0, 15.6))
+        values.add(BarEntry(14.0, 95.8))
+        values.add(BarEntry(15.0, 57.4))
+        values.add(BarEntry(16.0, 64.5))
+        values.add(BarEntry(17.0, 21.4))
+        values.add(BarEntry(18.0, 33.2))
+        values.add(BarEntry(19.0, 96.9))
 
         let dataSet: BarDataSet = BarDataSet(values, "DataSet")
         dataSet.setDrawIcons(false)
         dataSet.setColorByColor(0xFFC0CB)
 
         let dataSetList: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
-        dataSetList.append(dataSet)
+        dataSetList.add(dataSet)
 
         let barData: BarData = BarData(dataSetList)
         barData.setBarWidth(0.85)
@@ -104,8 +101,8 @@ class CustomGridLineChartPage {
     }
     func getArrData(): ArrayList<ColorArray> {
         var list: ArrayList<ColorArray> = ArrayList<ColorArray>()
-        list.append(ColorArray("红色:", Color.RED, "red"))
-        list.append(ColorArray("蓝色:", Color.BLUE, "blue"))
+        list.add(ColorArray("红色:", Color.RED, "red"))
+        list.add(ColorArray("蓝色:", Color.BLUE, "blue"))
         return list
     }
 

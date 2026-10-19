@@ -20,10 +20,30 @@ public enum ValuePosition <: Equatable<ValuePosition> {
     }
 }
 
-public enum LastGesture {
+public enum LastGesture <: Equatable<LastGesture>{
     | NONE
     | SINGLE_TAP
     | LONG_PRESS
+
+    public operator func ==(b: LastGesture): Bool {
+        match ((this, b)) {
+            case (SINGLE_TAP, SINGLE_TAP) => true
+            case (LONG_PRESS, LONG_PRESS) => true
+            case (NONE, NONE) => true
+            case _ => false
+        }
+    }
+
+    public operator func !=(b: LastGesture): Bool {
+        return !(this == b)
+    }
+    public func toString(): String {
+        match (this) {
+            case NONE => "NONE"
+            case SINGLE_TAP => "SINGLE_TAP"
+            case LONG_PRESS => "LONG_PRESS"
+        }
+    }
 }
 
 

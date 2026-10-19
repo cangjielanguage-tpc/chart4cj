@@ -5,4 +5,5 @@ package chart.pie
 
 public interface  IBarLineScatterCandleBubbleDataSet<E> <: IDataSet<E> where E <: EntryOhos {
     public func getHighLightColor(): UInt32
+    public func toString(): String
 }

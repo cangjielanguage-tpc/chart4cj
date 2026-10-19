@@ -72,7 +72,7 @@ public class RadarHighlighter <: PieRadarHighlighter<RadarChartModel, RadarData,
                     )
                 }
 
-                highlightBuffer.append(
+                highlightBuffer.add(
                     Highlight(Float64(index), y: entry.getY(), dataSetIndex: i, dataIndex: 0, stackIndex: 0, xPx: pOut.x,
                     yPx: pOut.y, axis: dataSet.getAxisDependency()))
             } else {

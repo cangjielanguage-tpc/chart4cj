@@ -3,9 +3,6 @@
  */
 package ohos_app_cangjie_entry.scrollingCharts
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -55,7 +52,7 @@ class ManyBarChartsPage {
         let entries: ArrayList<BarEntry> = ArrayList<BarEntry>()
 
         for (i in 0..12) {
-            entries.append(BarEntry(Float64(i), (Random().nextFloat64() * 70.0) + 30.0))
+            entries.add(BarEntry(Float64(i), (Random().nextFloat64() * 70.0) + 30.0))
         }
 
         let d: BarDataSet = BarDataSet(entries, "New DataSet ${cnt}")
@@ -63,13 +60,13 @@ class ManyBarChartsPage {
         d.setDrawIcons(false)
 
         let sets: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
-        sets.append(d)
+        sets.add(d)
 
         let cd: BarData = BarData(sets)
         cd.setValueTextSize(10.0)
 
         model.setData(cd)
 
-        this.list.append(model)
+        this.list.add(model)
     }
 }

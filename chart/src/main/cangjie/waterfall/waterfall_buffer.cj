@@ -6,6 +6,7 @@ package chart.waterfall
 public class WaterfallBuffer <: BarBuffer {
     private var arrayTop: ArrayList<Float64> = ArrayList<Float64>()
     private var arrayBottom: ArrayList<Float64> = ArrayList<Float64>()
+
     public init(size: Int64, dataSetCount: Int64, containsStacks: Bool) {
         super(size, dataSetCount, containsStacks)
     }
@@ -44,8 +45,8 @@ public class WaterfallBuffer <: BarBuffer {
             } else {
                 maxY
             }
-            this.arrayTop.append(e().getMaxY())
-            this.arrayBottom.append(e().getMinY())
+            this.arrayTop.add(e().getMaxY())
+            this.arrayBottom.add(e().getMinY())
             this.addWaterfall(x - barWidthHalf, top * this.phaseY, x + barWidthHalf, bottom * this.phaseY)
         }
 

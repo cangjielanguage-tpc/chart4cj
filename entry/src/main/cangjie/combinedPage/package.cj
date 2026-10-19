@@ -3,9 +3,12 @@
  */
 package ohos_app_cangjie_entry.combinedPage
 
+internal import kit.UIKit.*
+
 internal import std.collection.*
 internal import std.math.*
-internal import std.random.*
+internal import std.random.Random
+
 internal import chart.pie.*
 internal import chart.utils.{Mode,AxisDependency,ColorTemplate,ChartColor}
 internal import chart.charts.*

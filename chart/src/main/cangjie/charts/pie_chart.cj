@@ -4,45 +4,67 @@
 
 package chart.charts
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Component
 public class PieChart {
     var model: PieChartModel = PieChartModel.build()
-    private var setting: RenderingContextSettings = RenderingContextSettings(antialias: true)
-    private var context2D: CanvasRenderingContext2D = CanvasRenderingContext2D(this.setting)
+    var antiAliasing: Bool = true
+    private var setting: ?RenderingContextSettings = Option<RenderingContextSettings>.None
+    private var context2D: ?CanvasRenderingContext2D = Option<CanvasRenderingContext2D>.None
+
+    protected override func aboutToAppear() {
+        this.setting = RenderingContextSettings(antialias: this.antiAliasing)
+        this.context2D = CanvasRenderingContext2D(this.setting())
+    }
+
+    protected override func aboutToDisappear(): Unit {
+        this.model.clearJobs()
+    }
+
+    func invalidate(){
+        this.model.invalidate()
+    }
 
     func build() {
         Column() {
-            Canvas(this.context2D).onReady({
-                => this.model.setContext2D(this.context2D)
-            }).onAreaChange(
-                {
-                oldArea: Area, newArea: Area => if (((newArea.width != oldArea.width) || (newArea.height != oldArea.
-                    height))) {
-                    this.model.onChartSizeChanged(px2vp(newArea.width.px)().value, px2vp(newArea.height.px)().value, px2vp(oldArea.width.px)().value, px2vp(oldArea.height.px)().value)
-                    this.model.onDraw(this.context2D)
-                    let jobs = this.model.mJobs
-                    let length = jobs.size
-                    for (i in 0..length) {
-                        jobs[i].run<PieData, IPieDataSet, PiEntry>()
-                    }
-                    jobs.clear()
+            Stack(Alignment.TopStart) {
+                if(let Some(context2D) <- this.context2D) {
+                    Canvas(context2D).onReady(
+                        {
+                            =>
+                            this.model.setContext2D(context2D)
+                            this.model.onDraw(context2D)
+                        }
+                    ).onAreaChange(
+                        {
+                        oldArea: Area, newArea: Area => if (((newArea.width != oldArea.width) || (newArea.height != oldArea.
+                            height))) {
+                            this.model.onChartSizeChanged(newArea.width, newArea.height, oldArea.width, oldArea.height)
+                        }
+                    }).onTouch({
+                        event => this.model.onTouchEvent(event)
+                    })
+                    .hitTestBehavior(if(this.model.getTouchEnabled()) {this.model.getHitTestMode() }else { HitTestMode.None } )
+                    .gesture(
+                        GestureGroup(GestureMode.Exclusive,
+                        [
+                            SwipeGesture()
+                                .onAction({event: GestureEvent =>
+                                    if (this.model.isDragDecelerationEnabled()) {
+                                        this.model.computeScroll(event)
+                                    }
+                                }),
+                            TapGesture( count: 1 )
+                                .onAction({event: GestureEvent =>
+                                    this.model.onSingleTapUp(false, Option<TouchEvent>.None, event)
+                                })
+                        ]
+                        )
+                    )
                 }
-            }).onTouch({
-                event => this.model.onTouchEvent(event)
-            })
-            //           .priorityGesture(
-            //             TapGesture({ count: 1 })
-            //               .onAction({event: GestureEvent =>
-            //                 if (event && this.model) {
-            //                   this.model.onSingleTapUp(false, event)
-            //                 }
-            //               })
-            //           )
+
+            }
         }
     }
 }

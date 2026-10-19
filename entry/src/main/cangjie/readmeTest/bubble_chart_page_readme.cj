@@ -3,18 +3,8 @@
  */
 package ohos_app_cangjie_entry.readmeTest
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
+
 import ohos.state_macro_manage.*
-import std.collection.{ArrayList}
-import std.math.*
-import std.random.*
-import chart.pie.*
-import chart.utils.*
-import chart.bubble.*
-import chart.charts.*
-import chart.components.*
 
 @Entry
 @Component
@@ -37,6 +27,8 @@ class BubbleChartPageReadme {
 
         this.model.setMaxVisibleValueCount(60) // 设置图表最大可见数值数量
         this.model.setDrawGridBackground(false) // 设置不绘制网格背景
+        this.model.setDrawMarkers(true)
+        this.model.setMarker(MarkerView())
 
         let xAxis: ?XAxis = this.model.getXAxis() // 获取 X 轴对象
         if (let Some(x) <- xAxis) {
@@ -67,18 +59,21 @@ class BubbleChartPageReadme {
             let val = (Random().nextFloat64() * 41.0)
 
             if (Random().nextFloat64() * 100.0 < 25.0) {
-                values.append(BubblesEntry(Float64(i), val))
+                values.add(BubblesEntry(Float64(i), val))
             } else {
-                values.append(BubblesEntry(Float64(i), val))
+                values.add(BubblesEntry(Float64(i), val))
             }
         }
         // 创建散点图数据集
         let dataSet: BubbleDataSet = BubbleDataSet(values, "DataSet")
         dataSet.setDrawIcons(false)
 
+        dataSet.setHighlightEnabled(true)
+        dataSet.setHighLightColor(Color.RED.toUInt32())
+
         // 创建散点图数据集合
         let dataSetList: ArrayList<BubbleDataSet> = ArrayList<BubbleDataSet>()
-        dataSetList.append(dataSet)
+        dataSetList.add(dataSet)
 
         // 设置图表数据
         this.setData(5, 50.0)
@@ -93,11 +88,11 @@ class BubbleChartPageReadme {
         let values3 = ArrayList<BubblesEntry>()
 
         for (i in 0..count) {
-            values1.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range
+            values1.add(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range
             ))
-            values2.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range
+            values2.add(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range
             ))
-            values3.append(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range
+            values3.add(BubblesEntry(Float64(i), Random().nextFloat64() * range, size: Random().nextFloat64() * range
             ))
         }
         // 创建散点图数据集1
@@ -123,9 +118,9 @@ class BubbleChartPageReadme {
 
         // 创建散点图数据集合
         let dataSets = ArrayList<IBubbleDataSet>()
-        dataSets.append(set1)
-        dataSets.append(set2)
-        dataSets.append(set3)
+        dataSets.add(set1)
+        dataSets.add(set2)
+        dataSets.add(set3)
 
         // 创建散点图数据
         let dataResult: BubbleData = BubbleData(dataSets)

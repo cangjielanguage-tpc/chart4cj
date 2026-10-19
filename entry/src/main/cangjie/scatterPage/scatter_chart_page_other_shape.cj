@@ -3,9 +3,6 @@
  */
 package ohos_app_cangjie_entry.scatterPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -26,9 +23,9 @@ class ScatterChartPageOtherShape {
             let val = (Random().nextFloat64() * 41.0)
 
             if (Random().nextFloat64() * 100.0 < 25.0) {
-                values.append(EntryOhos(Float64(i), val))
+                values.add(EntryOhos(Float64(i), val))
             } else {
-                values.append(EntryOhos(Float64(i), val))
+                values.add(EntryOhos(Float64(i), val))
             }
         }
 
@@ -60,9 +57,9 @@ class ScatterChartPageOtherShape {
         set3.setScatterShapeSize(8.0);
 
         let dataSets: ArrayList<IScatterDataSet> = ArrayList<IScatterDataSet>()
-        dataSets.append(set1); // add the data sets
-        dataSets.append(set2);
-        dataSets.append(set3);
+        dataSets.add(set1); // add the data sets
+        dataSets.add(set2);
+        dataSets.add(set3);
 
         let dataResult: ScatterData = ScatterData(dataSets);
         dataResult.setDrawValues(true);
@@ -80,7 +77,7 @@ class ScatterChartPageOtherShape {
         for (i in 0..Int64(xRange)) {
             let x = Float64(i); // Random x value within specified count.
             let y = Random().nextFloat64() * yRange; // Random y value within specified range.
-            values.append(EntryOhos(x, y));
+            values.add(EntryOhos(x, y));
         }
         return values;
     }

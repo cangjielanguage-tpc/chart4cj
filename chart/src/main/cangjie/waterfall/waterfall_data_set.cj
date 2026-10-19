@@ -17,15 +17,15 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
     private var mStackLabels: Array<String> = Array<String>()
     protected var mFills: ?ArrayList<Fill> = None
 
-    private var enableMaxOrMinHighlightColor: Bool = false;
+    private var enableMaxOrMinHighlightColor: Bool = false
 
-    private var maxyHighlightColor: UInt32 = 0xFF0000;
+    private var maxyHighlightColor: UInt32 = 0xFF0000
 
-    private var minyHighlightColor: UInt32 = 0xFF0000;
-    private var yAxisSegmentationColors: Array<WaterfallHighlight> = [];
-    private var maxTopHighlightEXIST: Bool = false;
-    private var opacity: Float64 = 100.0;
-    private var minBottomHighlightEXIST: Bool = false;
+    private var minyHighlightColor: UInt32 = 0xFF0000
+    private var yAxisSegmentationColors: Array<WaterfallHighlight> = []
+    private var maxTopHighlightEXIST: Bool = false
+    private var opacity: Float64 = 100.0
+    private var minBottomHighlightEXIST: Bool = false
 
     public init(yVals: ArrayList<WaterfallEntry>, label: String) {
         super(yVals, label)
@@ -36,7 +36,7 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
     }
     private func calcStackSize(yVals: ArrayList<WaterfallEntry>): Unit {
         for (i in 0..yVals.size) {
-            let vals: Array<Float64> = yVals[i].getYVals();
+            let vals: Array<Float64> = yVals[i].getYVals()
 
             if (vals.size > this.mStackSize) {
                 this.mStackSize = vals.size
@@ -63,7 +63,7 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
     }
 
     public func getEnableMaxOrMinHighlightColor(): Bool {
-        return this.enableMaxOrMinHighlightColor;
+        return this.enableMaxOrMinHighlightColor
     }
 
     public func setMaxyHighlightColor(value: UInt32) {
@@ -71,7 +71,7 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
     }
 
     public func getMaxyHighlightColor(): UInt32 {
-        return this.maxyHighlightColor;
+        return this.maxyHighlightColor
     }
 
     public func setMinyHighlightColor(value: UInt32) {
@@ -79,7 +79,7 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
     }
 
     public func getMinyHighlightColor(): UInt32 {
-        return this.minyHighlightColor;
+        return this.minyHighlightColor
     }
 
     public func setYAxisSegmentationColors(value: Array<WaterfallHighlight>) {
@@ -87,7 +87,7 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
     }
 
     public func getYAxisSegmentationColors(): Array<WaterfallHighlight> {
-        return this.yAxisSegmentationColors;
+        return this.yAxisSegmentationColors
     }
 
     /**
@@ -99,7 +99,7 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
             for (value in m) {
                 var h: Array<WaterfallHighlight> = value.getHighlights()
                 for (highlight in h) {
-                    highlight.setColor(color);
+                    highlight.setColor(color)
                 }
             }
         }
@@ -110,16 +110,16 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
      * @returns 包含所有高亮点颜色的数组，元素可以是字符串或数字。
      */
     public func getDotsColors(): Array<UInt32> {
-        var colors: ArrayList<UInt32> = ArrayList<UInt32>();
+        var colors: ArrayList<UInt32> = ArrayList<UInt32>()
         if (let Some(m: ArrayList<WaterfallEntry>) <- this.mEntries) {
             for (value in m) {
-                let entry = value.getHighlights();
+                let entry = value.getHighlights()
                 for (highlight in entry) {
-                    colors.append(highlight.getColor());
+                    colors.add(highlight.getColor())
                 }
             }
         }
-        return colors.toArray();
+        return colors.toArray()
     }
 
     public func setMaxTopHighlightEXIST(value: Bool) {
@@ -127,7 +127,7 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
     }
 
     public func getMaxTopHighlightEXIST(): Bool {
-        return this.maxTopHighlightEXIST;
+        return this.maxTopHighlightEXIST
     }
 
     public func setMinBottomHighlightEXIST(value: Bool) {
@@ -135,15 +135,15 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
     }
 
     public func getMinBottomHighlightEXIST(): Bool {
-        return this.minBottomHighlightEXIST;
+        return this.minBottomHighlightEXIST
     }
 
     public func setOpacity(value: Float64) {
         this.opacity = value
     }
 
-    public func getOpacity(): String {
-        return "opacity(${this.opacity}%)";
+    public func getOpacity(): Float64 {
+        return this.opacity
     }
 
     public func setMaxTopHighLightEXIST(value: Bool) {
@@ -160,7 +160,7 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
                 this.mYMax = e.getMaxY()
             }
 
-            this.calcMinMaxX(e);
+            this.calcMinMaxX(e)
         }
     }
 
@@ -221,7 +221,7 @@ public class WaterfallDataSet <: BarLineScatterCandleBubbleDataSet<WaterfallEntr
 
         if (let Some(m) <- this.mEntries) {
             for (i in 0..m.size) {
-                entries.append(m[i].copy())
+                entries.add(m[i].copy())
             }
         }
         let copied = WaterfallDataSet(entries, this.getLabel())

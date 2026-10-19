@@ -4,7 +4,8 @@
 package chart.bubble
 
 public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubblesEntry> & IBubbleDataSet {
-    static var mMaxSize: Float64 = 0.0
+    let FLAG_DATA: String = "BubbleDataSet"
+    protected var mMaxSize: Float64 = 0.0
     protected var mNormalizeSize: Bool = true
     private var mHighlightCircleWidth: Float64 = 2.5
 
@@ -25,8 +26,8 @@ public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubblesEntry> & 
     public func myCalcMinMaxBubble(e: BubblesEntry): Unit {
         super.myCalcMinMaxBubble(e)
         let size: Float64 = e.getSize()
-        if (size > BubbleDataSet.mMaxSize) {
-            BubbleDataSet.mMaxSize = size
+        if (size > this.mMaxSize) {
+            this.mMaxSize = size
         }
     }
 
@@ -34,7 +35,7 @@ public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubblesEntry> & 
         let entries: ArrayList<BubblesEntry> = ArrayList<BubblesEntry>()
         if (let Some(m) <- this.mEntries) {
             for (i in 0..m.size) {
-                entries.append(m[i].copy())
+                entries.add(m[i].copy())
             }
         }
         let copied = BubbleDataSet(entries, this.getLabel())
@@ -48,7 +49,7 @@ public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubblesEntry> & 
     }
 
     public func getMaxSize(): Float64 {
-        return BubbleDataSet.mMaxSize
+        return this.mMaxSize
     }
 
     public func isNormalizeSizeEnabled(): Bool {
@@ -68,5 +69,9 @@ public class BubbleDataSet <: BarLineScatterCandleBubbleDataSet<BubblesEntry> & 
 
     public operator func !=(s: Any): Bool {
         return !(this == s)
+    }
+
+    public override func toString(): String {
+        return FLAG_DATA
     }
 }

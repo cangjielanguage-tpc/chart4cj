@@ -55,7 +55,7 @@ public class LegendRenderer <: Renderer {
         let decreasingColor: UInt32 = dataSet.getDecreasingColor()
         let increasingColor: UInt32 = dataSet.getIncreasingColor()
 
-        this.computedEntries.append(
+        this.computedEntries.add(
             LegendEntry(
                 "",
                 dataSet.getForm(),
@@ -66,7 +66,7 @@ public class LegendRenderer <: Renderer {
             )
         )
 
-        this.computedEntries.append(
+        this.computedEntries.add(
             LegendEntry(
                 dataSet.getLabel(),
                 dataSet.getForm(),
@@ -79,12 +79,12 @@ public class LegendRenderer <: Renderer {
     }
 
     func computeLegendMatchBarSet(dataSet: IBarDataSet, clrs: ArrayList<UInt32>): Unit {
-        let sLabels: Array<String> = dataSet.getStackLabels();
-        let minEntries: Int64 = min(clrs.size, dataSet.getStackSize());
+        let sLabels: Array<String> = dataSet.getStackLabels()
+        let minEntries: Int64 = min(clrs.size, dataSet.getStackSize())
         for (j in 0..minEntries) {
             var label: String = ""
             if (sLabels.size > 0) {
-                let labelIndex: Int64 = j % minEntries;
+                let labelIndex: Int64 = j % minEntries
                 label = if (labelIndex < sLabels.size) {
                     sLabels[labelIndex]
                 } else {
@@ -94,8 +94,8 @@ public class LegendRenderer <: Renderer {
                 label = ""
             }
 
-            let dashEffect = dataSet.getFormLineDashEffect(); // 使用空对象作为默认值
-            this.computedEntries.append(
+            let dashEffect = dataSet.getFormLineDashEffect() // 使用空对象作为默认值
+            this.computedEntries.add(
                 LegendEntry(
                     label,
                     dataSet.getForm(),
@@ -104,15 +104,15 @@ public class LegendRenderer <: Renderer {
                     dashEffect,
                     clrs[j]
                 )
-            );
+            )
         }
 
-        let label = dataSet.getLabel();
+        let label = dataSet.getLabel()
         if (label != "") {
 
             // add the legend description label
-            let dashEffect = dataSet.getFormLineDashEffect();
-            this.computedEntries.append(
+            let dashEffect = dataSet.getFormLineDashEffect()
+            this.computedEntries.add(
                 LegendEntry(
                     dataSet.getLabel(),
                     LegendForm.NONE,
@@ -151,7 +151,7 @@ public class LegendRenderer <: Renderer {
             case Some(pieDataSet: IPieDataSet) =>
                 let entryCounts: Int64 = min(clrs.size, entryCount)
                 for (j in 0..entryCounts) {
-                    this.computedEntries.append(
+                    this.computedEntries.add(
                         LegendEntry(
                             pieDataSet.getEntryForIndex(j)().getLabel(),
                             dataSet().getForm(),
@@ -164,7 +164,7 @@ public class LegendRenderer <: Renderer {
                 }
                 let label = pieDataSet.getLabel()
                 if (label != "") {
-                    this.computedEntries.append(
+                    this.computedEntries.add(
                         LegendEntry(
                             dataSet().getLabel(),
                             LegendForm.NONE,
@@ -192,7 +192,7 @@ public class LegendRenderer <: Renderer {
 
     private func addComputedEntries<D, S, E>(clrs: ArrayList<UInt32>, entryCount: Int64, dataSet: ?S, data: ?D, i: Int64): Unit where D <: ChartData<S,
     E>, S <: IDataSet<E>, E <: EntryOhos {
-        var j: Int64 = 0;
+        var j: Int64 = 0
         while (j < clrs.size && j < entryCount) {
             var label: String = ""
 
@@ -203,20 +203,20 @@ public class LegendRenderer <: Renderer {
                 if (data.isNone()) {
                     label = ""
                 }
-                let dataObj = data().getDataSetByIndex(i);
+                let dataObj = data().getDataSetByIndex(i)
                 if (dataObj.isNone()) {
                     label = ""
                 } else {
                     label = dataObj().getLabel()
                 }
             }
-            var clrsData: UInt32 = 0;
+            var clrsData: UInt32 = 0
             if (clrs.isEmpty()) {
                 clrsData = 0
             }
             clrsData = (clrs[j])
-            let dashEffect = dataSet().getFormLineDashEffect(); // 使用空对象作为默认值
-            this.computedEntries.append(
+            let dashEffect = dataSet().getFormLineDashEffect() // 使用空对象作为默认值
+            this.computedEntries.add(
                 LegendEntry(
                     label,
                     dataSet().getForm(),
@@ -225,7 +225,7 @@ public class LegendRenderer <: Renderer {
                     dashEffect,
                     clrsData
                 )
-            );
+            )
             j++
         }
     }
@@ -251,7 +251,7 @@ public class LegendRenderer <: Renderer {
                 let dataSource: ?Array<LegendEntry> = this.mLegend().getExtraEntries()
                 if (let Some(data) <- dataSource) {
                     for (i in 0..data.size) {
-                        this.computedEntries.append(data[i])
+                        this.computedEntries.add(data[i])
                     }
                 }
             }
@@ -260,7 +260,7 @@ public class LegendRenderer <: Renderer {
                     l.setEntries(this.computedEntries)
                     let tf: FontFamily = l.getTypeface()
 
-                    this.mLegendLabelPaint.setFontFamily(tf)
+                    this.mLegendLabelPaint.setFontFamily(tf.toString())
 
                     this.mLegendLabelPaint.setTextSize(l.getTextSize())
                     this.mLegendLabelPaint.setColor(l.getTextColor())
@@ -279,7 +279,7 @@ public class LegendRenderer <: Renderer {
 
         let tf: FontFamily = this.mLegend().getTypeface()
 
-        this.mLegendLabelPaint.setFontFamily(tf)
+        this.mLegendLabelPaint.setFontFamily(tf.toString())
 
         this.mLegendLabelPaint.setTextSize(this.mLegend().getTextSize())
         this.mLegendLabelPaint.setColor(this.mLegend().getTextColor())
@@ -289,11 +289,12 @@ public class LegendRenderer <: Renderer {
         let labelLineHeight: Float64 = Utils.getLineHeight(this.mLegendLabelPaint, c)
 
         // 计算标签行间距，包括额外的垂直空间
-        let labelLineSpacing: Float64 = Utils.getLineSpacing(this.mLegendLabelPaint, c)
+        let labelLineSpacing: Float64 = Utils.getLineSpacing(this.mLegendLabelPaint, c) * 0.3
             + Utils.handleDataValues(this.mLegend().getYEntrySpace())
 
         // 计算形状偏移以使其与文本垂直居中
-        let formYOffset: Float64 = labelLineHeight - Utils.calcTextHeight(c, this.mLegendLabelPaint, "ABC") / 2.0
+        let formYOffset: Float64 = labelLineHeight - labelLineHeight / 2.0
+
         // 获取图例条目
         let entries: Array<LegendEntry> = this.mLegend().getEntries()
 
@@ -613,7 +614,7 @@ public class LegendRenderer <: Renderer {
                 this.mLegendFormPaint.setStyle(Style.FILL)
                 Utils.resetContext2DStyle(c, this.mLegendFormPaint)
                 c.beginPath()
-                c.arc(x + half, y, half, 0.0, 2.0 * Float64.PI)
+                c.arc(x + half, y, half, 0.0, 2.0 * Float64.getPI())
                 c.closePath()
                 c.fill()
 

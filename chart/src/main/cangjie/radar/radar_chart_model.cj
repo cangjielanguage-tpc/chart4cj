@@ -51,9 +51,6 @@ public class RadarChartModel <: PieRadarChartBaseModel<RadarData, IRadarDataSet,
     }
     public static func build(): RadarChartModel {
         let model: RadarChartModel = RadarChartModel()
-        let lister: ChartTouchListener<RadarData, IRadarDataSet, RadarEntry> = PieRadarChartTouchListener<RadarData, IRadarDataSet, RadarEntry>(
-            model)
-        model.mChartTouchListener = lister
         model.mAnimator = ChartAnimator(model)
         model.mRenderer = RadarChartRenderer(model, model.mAnimator(), model.mViewPortHandler)
         model.mYAxisRenderer = YAxisRendererRadarChart(model.mViewPortHandler, model.mYAxis, model,
@@ -63,7 +60,8 @@ public class RadarChartModel <: PieRadarChartBaseModel<RadarData, IRadarDataSet,
                 Option<Transformer>.None)
         }
 
-        model.mHighlighter = RadarHighlighter(model)
+        model.mChartTouchListener = RadarChartTouchListener(model)
+        model.setHighlighter(RadarHighlighter(model))
         return model
     }
 
@@ -156,6 +154,7 @@ public class RadarChartModel <: PieRadarChartBaseModel<RadarData, IRadarDataSet,
 
         this.drawMarkers(canvas)
     }
+
 
     /**
      * Returns the factor that is needed to transform values into pixels.
@@ -361,5 +360,15 @@ public class RadarChartModel <: PieRadarChartBaseModel<RadarData, IRadarDataSet,
 
     public func getRadarData():?RadarData {
         return this.mData
+    }
+
+    public func computeScroll(event: GestureEvent): Unit {
+        if (let Some(listener: RadarChartTouchListener) <- this.mChartTouchListener) {
+            listener.computeScroll(event)
+        }
+    }
+
+    public func setHighlighter(highlighter: RadarHighlighter) {
+        this.mHighlighter = highlighter
     }
 }

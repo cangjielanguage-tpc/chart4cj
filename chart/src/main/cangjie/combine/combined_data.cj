@@ -57,7 +57,7 @@ public class CombinedData <: BarLineScatterCandleBubbleData<IBarLineScatterCandl
         for (data in allData) {
             data.calcMinMax()
             let sets = data.getDataSets()
-            this.mDataSets.appendAll(sets)
+            this.mDataSets.add(all: sets)
 
             if (data.getYMax() > this.mYMax) {
                 this.mYMax = data.getYMax()
@@ -120,22 +120,22 @@ public class CombinedData <: BarLineScatterCandleBubbleData<IBarLineScatterCandl
     public func getAllData(): ArrayList<ChartDataWrapper> {
         let data: ArrayList<ChartDataWrapper> = ArrayList<ChartDataWrapper>()
         if (let Some(mWaterfallData) <- this.mWaterfallData) {
-            data.append(CombinedChartDataWrapper(mWaterfallData))
+            data.add(CombinedChartDataWrapper(mWaterfallData))
         }
         if (let Some(mLineData) <- this.mLineData) {
-            data.append(CombinedChartDataWrapper(mLineData))
+            data.add(CombinedChartDataWrapper(mLineData))
         }
         if (let Some(mBarData) <- this.mBarData) {
-            data.append(CombinedChartDataWrapper(mBarData))
+            data.add(CombinedChartDataWrapper(mBarData))
         }
         if (let Some(mScatterData) <- this.mScatterData) {
-            data.append(CombinedChartDataWrapper(mScatterData))
+            data.add(CombinedChartDataWrapper(mScatterData))
         }
         if (let Some(mCandleData) <- this.mCandleData) {
-            data.append(CombinedChartDataWrapper(mCandleData))
+            data.add(CombinedChartDataWrapper(mCandleData))
         }
         if (let Some(mBubbleData) <- this.mBubbleData) {
-            data.append(CombinedChartDataWrapper(mBubbleData))
+            data.add(CombinedChartDataWrapper(mBubbleData))
         }
         return data
     }
@@ -183,59 +183,141 @@ public class CombinedData <: BarLineScatterCandleBubbleData<IBarLineScatterCandl
             return Option<EntryOhos>.None
         }
 
-        let data: ChartDataWrapper = this.
-            getDataByIndex(highlight.getDataIndex())
-
-        if (highlight.getDataSetIndex() >= data.getDataSetCount()) {
-            return Option<EntryOhos>.None
-        }
-
-        // The value of the highlighted entry could be NaN -
-        //   if we are not interested in highlighting a specific value.
-
-        let dataSet = data.getDataSetByIndex(highlight.getDataSetIndex())
-        if (dataSet.isNone()) {
-            return Option<EntryOhos>.None
-        }
-        let entries: ?ArrayList<EntryOhos> = dataSet().getEntriesForXValue(highlight.getX())
-
-        if (let Some(entries) <- entries) {
-            for (i in 0..entries.size) {
-                let entry = entries[i]
-                if (entry.getY() == highlight.getY() || highlight.getY().isNaN()) {
-                    return entry
+        let data: ?ChartDataWrapper = this.getDataByIndex(highlight.getDataIndex())
+        match(data) {
+            case Some(bubbledata: CombinedChartDataWrapper<IBubbleDataSet, BubblesEntry>) =>
+                let data = bubbledata.inner
+                if(highlight.getDataSetIndex() >= data.getDataSetCount()) {
+                    return Option<EntryOhos>.None
                 }
-            }
-        } else {
-            return Option<EntryOhos>.None
+                let dataSet = data.getDataSetByIndex(highlight.getDataSetIndex())
+                if (dataSet.isNone()) {
+                    return Option<EntryOhos>.None
+                }
+                let entries: ?ArrayList<BubblesEntry> = dataSet().getEntriesForXValue(highlight.getX())
+
+                if (let Some(entries) <- entries) {
+                    for (i in 0..entries.size) {
+                        let entry = entries[i]
+                        if (entry.getY() == highlight.getY() || highlight.getY().isNaN()) {
+                            return entry
+                        }
+                    }
+                } else {
+                    return Option<EntryOhos>.None
+                }
+            case Some(scatterdata: CombinedChartDataWrapper<IScatterDataSet, EntryOhos>) =>
+                let data = scatterdata.inner
+                if(highlight.getDataSetIndex() >= data.getDataSetCount()) {
+                    return Option<EntryOhos>.None
+                }
+                let dataSet = data.getDataSetByIndex(highlight.getDataSetIndex())
+                if (dataSet.isNone()) {
+                    return Option<EntryOhos>.None
+                }
+                let entries: ?ArrayList<EntryOhos> = dataSet().getEntriesForXValue(highlight.getX())
+
+                if (let Some(entries) <- entries) {
+                    for (i in 0..entries.size) {
+                        let entry = entries[i]
+                        if (entry.getY() == highlight.getY() || highlight.getY().isNaN()) {
+                            return entry
+                        }
+                    }
+                } else {
+                    return Option<EntryOhos>.None
+                }
+            case Some(linedata: CombinedChartDataWrapper<ILineDataSet, EntryOhos>) =>
+                let data = linedata.inner
+                if(highlight.getDataSetIndex() >= data.getDataSetCount()) {
+                    return Option<EntryOhos>.None
+                }
+                let dataSet = data.getDataSetByIndex(highlight.getDataSetIndex())
+                if (dataSet.isNone()) {
+                    return Option<EntryOhos>.None
+                }
+                let entries: ?ArrayList<EntryOhos> = dataSet().getEntriesForXValue(highlight.getX())
+
+                if (let Some(entries) <- entries) {
+                    for (i in 0..entries.size) {
+                        let entry = entries[i]
+                        if (entry.getY() == highlight.getY() || highlight.getY().isNaN()) {
+                            return entry
+                        }
+                    }
+                } else {
+                    return Option<EntryOhos>.None
+                }
+            case Some(waterfalldata: CombinedChartDataWrapper<IWaterfallDataSet, WaterfallEntry>) =>
+                let data = waterfalldata.inner
+                if(highlight.getDataSetIndex() >= data.getDataSetCount()) {
+                    return Option<EntryOhos>.None
+                }
+                let dataSet = data.getDataSetByIndex(highlight.getDataSetIndex())
+                if (dataSet.isNone()) {
+                    return Option<EntryOhos>.None
+                }
+                let entries: ?ArrayList<WaterfallEntry> = dataSet().getEntriesForXValue(highlight.getX())
+
+                if (let Some(entries) <- entries) {
+                    for (i in 0..entries.size) {
+                        let entry = entries[i]
+                        if (entry.getY() == highlight.getY() || highlight.getY().isNaN()) {
+                            return entry
+                        }
+                    }
+                } else {
+                    return Option<EntryOhos>.None
+                }
+            case Some(candledata: CombinedChartDataWrapper<ICandleDataSet, CandleEntry>) =>
+                let data = candledata.inner
+                if(highlight.getDataSetIndex() >= data.getDataSetCount()) {
+                    return Option<EntryOhos>.None
+                }
+                let dataSet = data.getDataSetByIndex(highlight.getDataSetIndex())
+                if (dataSet.isNone()) {
+                    return Option<EntryOhos>.None
+                }
+                let entries: ?ArrayList<CandleEntry> = dataSet().getEntriesForXValue(highlight.getX())
+
+                if (let Some(entries) <- entries) {
+                    for (i in 0..entries.size) {
+                        let entry = entries[i]
+                        if (entry.getY() == highlight.getY() || highlight.getY().isNaN()) {
+                            return entry
+                        }
+                    }
+                } else {
+                    return Option<EntryOhos>.None
+                }
+            case Some(bardata: CombinedChartDataWrapper<IBarDataSet, BarEntry>) =>
+                let data = bardata.inner
+                if(highlight.getDataSetIndex() >= data.getDataSetCount()) {
+                    return Option<EntryOhos>.None
+                }
+                let dataSet = data.getDataSetByIndex(highlight.getDataSetIndex())
+                if (dataSet.isNone()) {
+                    return Option<EntryOhos>.None
+                }
+                let entries: ?ArrayList<BarEntry> = dataSet().getEntriesForXValue(highlight.getX())
+
+                if (let Some(entries) <- entries) {
+                    for (i in 0..entries.size) {
+                        let entry = entries[i]
+                        if (entry.getY() == highlight.getY() || highlight.getY().isNaN()) {
+                            return entry
+                        }
+                    }
+                } else {
+                    return Option<EntryOhos>.None
+                }
+            case _ => return Option<EntryOhos>.None
         }
 
         return Option<EntryOhos>.None
     }
 
-    /**
-     * Get dataset for highlight
-     *
-     * @param highlight current highlight
-     * @return dataset related to highlight
-     */
-    public func getDataSetByHighlight(highlight: Highlight): ?IBarLineScatterCandleBubbleDataSet<EntryOhos> {
-        if (highlight.getDataIndex() >= this.getAllData().size) {
-            return None
-        }
-
-        let data: ChartDataWrapper = this.
-            getDataByIndex(highlight.getDataIndex())
-
-        if (highlight.getDataSetIndex() >= data.getDataSetCount()) {
-            return None
-        }
-
-        return data.getDataSets()[(highlight.getDataSetIndex())]
-    }
-
-    public func getDataIndex(
-        data: ChartDataWrapper): Int64 {
+    public func getDataIndex(data: ChartDataWrapper): Int64 {
         return this.getAllData().indexOf(data)
     }
 

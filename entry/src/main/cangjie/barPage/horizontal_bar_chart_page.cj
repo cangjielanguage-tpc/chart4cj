@@ -3,9 +3,6 @@
  */
 package ohos_app_cangjie_entry.barPage
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Entry
@@ -23,6 +20,7 @@ class HorizontalBarChartPage {
 
         this.model.setDrawBarShadow(false)
         this.model.setDrawValueAboveBar(true)
+        this.model.setHighlightFullBarEnabled(true)
 
         let description: Description = this.model.getDescription()
 
@@ -67,7 +65,7 @@ class HorizontalBarChartPage {
         let values: ArrayList<BarEntry> = ArrayList<BarEntry>()
         for (i in startAxis..endAxis) {
             let val = Random().nextFloat64() * Float64(range)
-            values.append(BarEntry(Float64(i), val))
+            values.add(BarEntry(Float64(i), val))
         }
 
         let dataSet: BarDataSet = BarDataSet(values, "DataSet")
@@ -75,8 +73,11 @@ class HorizontalBarChartPage {
 
         dataSet.setColorByColor(0x8CEAFF)
 
+        dataSet.setHighlightEnabled(true)
+        dataSet.setHighLightColor(Color.RED.toUInt32())
+
         let dataSetList: ArrayList<IBarDataSet> = ArrayList<IBarDataSet>()
-        dataSetList.append(dataSet)
+        dataSetList.add(dataSet)
 
         let barData: BarData = BarData(dataSetList)
         barData.setValueTextSize(10.0)

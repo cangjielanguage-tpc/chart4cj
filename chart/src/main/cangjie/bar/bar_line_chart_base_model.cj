@@ -2,6 +2,7 @@
  * Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
  */
 package chart.bar
+import ohos.hilog.Hilog
 
 public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & BarLineScatterCandleBubbleDataProvider<D, S, E> where D <: BarLineScatterCandleBubbleData<S,
     E>, S <: IBarLineScatterCandleBubbleDataSet<E>, E <: EntryOhos {
@@ -76,6 +77,8 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
      */
     protected var mLongPressCursorEnabled: Bool = false
     protected var mLongPressDuration: Int64 = 500
+    protected var mSwipeEnabled: Bool = false
+    protected var isHorizontalFlip: Bool = false
 
     public init() {
         super()
@@ -91,8 +94,6 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         if (let Some(xaxis) <- this.mXAxis) {
             this.mXAxisRenderer = XAxisRenderer(this.mViewPortHandler, xaxis, this.mLeftAxisTransformer())
         }
-        //子类去实现
-        //this.setHighlighter((ChartHighlighter(this) as ChartHighlighter<BarLineScatterCandleBubbleDataProvider<IDataSet<EntryOhos>, EntryOhos>, IDataSet<EntryOhos>, EntryOhos>)())
 
         this.mGridBackgroundPaint = ChartPaint()
         this.mGridBackgroundPaint().setStyle(Style.FILL)
@@ -108,6 +109,13 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
     private var totalTime: Int64 = 0
     private var drawCycles: Int64 = 0
 
+    public func setHorizontalFlip(isHorizontalFlip: Bool): Unit {
+        this.isHorizontalFlip = isHorizontalFlip
+    }
+
+    public func getHorizontalFlip(): Bool {
+        return this.isHorizontalFlip
+    }
     public func setLongPressCursorEnabled(enabled: Bool): Unit {
         this.mLongPressCursorEnabled = enabled
     }
@@ -122,6 +130,14 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
 
     public func getLongPressDuration(): Int64 {
         return this.mLongPressDuration
+    }
+
+    public func setSwipeEnabled(enabled: Bool): Unit {
+        this.mSwipeEnabled = enabled
+    }
+
+    public func getSwipeEnabled(): Bool {
+        return this.mSwipeEnabled
     }
 
     public func getEventControl() {
@@ -145,6 +161,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         }
         // 清空画布，防止图表堆叠
         context2D.clearRect(0.0, 0.0, this.mViewPortHandler.getChartWidth(), this.mViewPortHandler.getChartHeight())
+
 
         // execute all drawing commands
         this.drawGridBackground(context2D)
@@ -626,17 +643,17 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         }
 
         match (event.eventType) {
-            case TouchType.Down => this.mChartTouchListener().actionDown(true, event)
+            case TouchType.Down => this.mChartTouchListener().actionDown(true, event, Option<GestureEvent>.None)
 
-            case TouchType.Move => this.mChartTouchListener().actionMove(true, event)
+            case TouchType.Move => this.mChartTouchListener().actionMove(true, event, Option<GestureEvent>.None)
 
-            case TouchType.Up => this.mChartTouchListener().actionUp(true, event)
+            case TouchType.Up => this.mChartTouchListener().actionUp(true, event, Option<GestureEvent>.None)
 
             case _ => ()
         }
     }
 
-    public func onSingleTapUp(isTouchEvent: Bool, event: Any): Unit {
+    public func onSingleTapUp(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         if (!this.mTouchEnabled) {
             return
         }
@@ -644,11 +661,11 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             return
         }
         if (this.mChartTouchListener.isSome()) {
-            this.mChartTouchListener().onSingleTapUp(isTouchEvent, event)
+            this.mChartTouchListener().onSingleTapUp(isTouchEvent, touchEvent, gestureEvent)
         }
     }
 
-    public func onDoubleTap(isTouchEvent: Bool, event: Any): Unit {
+    public func onDoubleTap(isTouchEvent: Bool, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         if (!this.mTouchEnabled) {
             return
         }
@@ -656,11 +673,11 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
             return
         }
         if (this.mChartTouchListener.isSome()) {
-            this.mChartTouchListener().onDoubleTap(isTouchEvent, event)
+            this.mChartTouchListener().onDoubleTap(isTouchEvent, touchEvent, gestureEvent)
         }
     }
 
-    public func onLongPress(isTouchEvent: Bool, actionType: LongPressType, event: Any): Unit {
+    public func onLongPress(isTouchEvent: Bool, actionType: LongPressType, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         if (!this.mTouchEnabled) {
             return
         }
@@ -669,35 +686,27 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         }
         if (let Some(mChartTouchL) <- this.mChartTouchListener) {
             match (actionType) {
-                case DOWN => mChartTouchL.onLongPressed(isTouchEvent, event)
-                case UP => mChartTouchL.onLongPressUp(isTouchEvent, event)
-                case CANCEL => mChartTouchL.onLongPressCancel(isTouchEvent, event)
-                case _ => mChartTouchL.onLongPressed(isTouchEvent, event)
+                case DOWN => mChartTouchL.onLongPressed(isTouchEvent, touchEvent, gestureEvent)
+                case UP => mChartTouchL.onLongPressUp(isTouchEvent, touchEvent, gestureEvent)
+                case CANCEL => mChartTouchL.onLongPressCancel(isTouchEvent, touchEvent, gestureEvent)
+                case _ => mChartTouchL.onLongPressed(isTouchEvent, touchEvent, gestureEvent)
             }
         }
     }
 
-    public func calcPos(isTouchEvent: Bool, event: Any): (Float64, Float64) {
-        return (this.mChartTouchListener as BarLineChartTouchListener<D, S, E>)().getXyByEvent(isTouchEvent, event)
-    }
 
-    public func onPinch(isTouchEvent: Bool, actionType: PinchActionType, event: Any): Unit {
+    public func onPinch(isTouchEvent: Bool, actionType: PinchActionType, touchEvent: Option<TouchEvent>, gestureEvent: Option<GestureEvent>): Unit {
         if (!this.mTouchEnabled) {
             return
         }
         if (let Some(mChartTouchL) <- this.mChartTouchListener) {
             match (actionType) {
-                case START => mChartTouchL.actionPinchDown(isTouchEvent, event)
-                case UPDATE => mChartTouchL.actionMove(isTouchEvent, event)
-                case END => mChartTouchL.actionPinchUp(isTouchEvent, event)
+                case START => mChartTouchL.actionPinchDown(isTouchEvent, touchEvent, gestureEvent)
+                case UPDATE => mChartTouchL.actionMove(isTouchEvent, touchEvent, gestureEvent)
+                case END => mChartTouchL.actionPinchUp(isTouchEvent, touchEvent, gestureEvent)
                 case CANCEL => ()
-                case _ => mChartTouchL.actionCancel(isTouchEvent, event)
+                case _ => mChartTouchL.actionCancel(isTouchEvent, touchEvent, gestureEvent)
             }
-        }
-    }
-    public func computeScroll(): Unit {
-        if (let Some(listener: BarLineChartTouchListener<D, S, E>) <- this.mChartTouchListener) {
-            listener.computeScroll()
         }
     }
 
@@ -1068,7 +1077,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         return this.mDrawListener
     }
 
-    private var mGetPositionBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
+    private var mGetPositionBuffer: Array<Float64> = Array<Float64>(2, repeat: 0.0)
 
     /**
      * Returns a recyclable MPPointF instance.
@@ -1704,7 +1713,7 @@ public abstract class BarLineChartBaseModel<D, S, E> <: ChartModel<D, S, E> & Ba
         return None
     }
 
-    public var mOnSizeChangedBuffer: Array<Float64> = Array<Float64>(2, item: 0.0)
+    public var mOnSizeChangedBuffer: Array<Float64> = Array<Float64>(2, repeat: 0.0)
 
     public func onSizeChanged(w: Float64, h: Float64, oldw: Float64, oldh: Float64): Unit {
 

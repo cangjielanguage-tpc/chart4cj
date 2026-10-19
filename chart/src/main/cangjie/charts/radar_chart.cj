@@ -3,9 +3,6 @@
  */
 package chart.charts
 
-import ohos.base.*
-import ohos.component.*
-import ohos.state_manage.*
 import ohos.state_macro_manage.*
 
 @Component
@@ -22,7 +19,7 @@ public class RadarChart {
                 {
                 oldArea: Area, newArea: Area => if (((newArea.width != oldArea.width) || (newArea.height != oldArea.
                     height))) {
-                    this.model.onChartSizeChanged(px2vp(newArea.width.px)().value, px2vp(newArea.height.px)().value, px2vp(oldArea.width.px)().value, px2vp(oldArea.height.px)().value)
+                    this.model.onChartSizeChanged(newArea.width, newArea.height, oldArea.width, oldArea.height)
                     this.model.onDraw(this.context2D)
                     let jobs = this.model.mJobs
                     let length = jobs.size
@@ -34,6 +31,23 @@ public class RadarChart {
             }).onTouch({
                 event => this.model.onTouchEvent(event)
             })
+            .hitTestBehavior(if(this.model.getTouchEnabled()) {this.model.getHitTestMode() }else { HitTestMode.None } )
+            .gesture(
+                GestureGroup(GestureMode.Exclusive,
+                [
+                    SwipeGesture()
+                        .onAction({event: GestureEvent =>
+                            if (this.model.isDragDecelerationEnabled()) {
+                                this.model.computeScroll(event)
+                            }
+                        }),
+                    TapGesture( count: 1 )
+                        .onAction({event: GestureEvent =>
+                            this.model.onSingleTapUp(false, Option<TouchEvent>.None, event)
+                        })
+                ]
+                )
+            )
         }
     }
 }
